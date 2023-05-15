@@ -8,12 +8,12 @@ else
 	//safelist db
     define('DB_MASTER_HOST', '82.180.152.103');
     define('DB_MASTER_USER', 'u966959669_virtualstage');
-    define('DB_MASTER_PASS', '4g]/VG@!A');
+    define('DB_MASTER_PASS', 'Ay$8&98[gG7');
     define('DB_MASTER_DBNAME', 'u966959669_virtualstage');
 
     define('DB_SLAVE_HOST', '82.180.152.103');
     define('DB_SLAVE_USER', 'u966959669_virtualstage');
-    define('DB_SLAVE_PASS', '4g]/VG@!A');
+    define('DB_SLAVE_PASS', 'Ay$8&98[gG7');
     define('DB_SLAVE_DBNAME', 'u966959669_virtualstage');
 
 	// email
