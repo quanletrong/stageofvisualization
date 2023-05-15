@@ -26,7 +26,8 @@
 				<li class="nav-item">
 					<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
 				</li>
-				<li class="nav-item d-none d-sm-inline-block">
+
+				<!-- <li class="nav-item d-none d-sm-inline-block">
 					<a href="#" class="nav-link">Home</a>
 				</li>
 				<li class="nav-item d-none d-sm-inline-block">
@@ -44,7 +45,8 @@
 
 				<li class="nav-item d-none d-sm-inline-block">
 					<a href="setting" class="nav-link">Cài đặt website</a>
-				</li>
+				</li> -->
+
 			</ul>
 
 			<!-- Right navbar links -->
@@ -216,91 +218,150 @@
 							</a>
 
 						</li>
-						<!-- QUẢN LÝ NỘI DUNG -->
-						<li class="nav-header">QUẢN LÝ BẤT ĐỘNG SẢN</li>
+						<!-- QUẢN LÝ DANH MỤC -->
+						<li class="nav-header">QUẢN LÝ DANH MỤC</li>
 						<li class="nav-item">
-							<a href="bds" class="nav-link">
+							<a href="service" class="nav-link">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
-									Bất động sản
+									Dịch vụ
 									<!-- <i class="right fas fa-angle-left"></i> -->
 								</p>
 							</a>
 						</li>
 
 						<li class="nav-item">
-							<a href="project" class="nav-link">
+							<a href="style" class="nav-link">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
-									Dự án
+									Phong cách thiết kế
 								</p>
 							</a>
 						</li>
 
 						<li class="nav-item">
-							<a href="tag" class="nav-link">
+							<a href="room" class="nav-link">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
-									Thẻ đánh nhãn
-								</p>
-							</a>
-						</li>
-
-						<li class="nav-header">QUẢN LÝ BÀI VIẾT</li>
-						<li class="nav-item">
-							<a href="news" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Tin tức
+									Loại phòng thiết kế
 								</p>
 							</a>
 						</li>
 
 						<li class="nav-item">
-							<a href="auction" class="nav-link">
+							<a href="library" class="nav-link">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
-									Lịch đấu giá đất
+									Thư viện
 								</p>
 							</a>
 						</li>
 
+						<!-- CÀI ĐẶT WEBSITE -->
+						<li class="nav-header">CÀI ĐẶT WEBSITE</li>
 						<li class="nav-item">
-							<a href="document" class="nav-link">
+							<a href="setting" class="nav-link">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
-									Tài liệu luật
+									Cài đặt website
+									<i class="fas fa-angle-left right"></i>
 								</p>
 							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="setting/info" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Thông tin cơ bản</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="setting/home" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Trang chủ</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="setting/how_it_work" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Trang dướng dẫn tạo đơn</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="setting/price" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Trang bảng giá</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="setting/order" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Trang tạo đơn</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="setting/privacy_policy" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Trang chính sách</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="setting/termsofuse" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Điều khoản</p>
+									</a>
+								</li>
+								
+								<li class="nav-item">
+									<a href="setting/refund_policy" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Trang hoàn tiền</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="setting/introduce" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Trang giới thiệu</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="setting/contact" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Trang liên hệ</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="setting/recruitment" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Trang tuyển dụng</p>
+									</a>
+								</li>
+							</ul>
 						</li>
 
-						<li class="nav-header">QUẢN LÝ KHU VỰC</li>
-						<li class="nav-item">
-							<a href="street" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Đường
-								</p>
-							</a>
-						</li>
-
-						<li class="nav-item">
-							<a href="commune" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Xã
-								</p>
-							</a>
-						</li>
-
+						<!-- QUẢN LÝ NGƯỜI DÙNG -->
 						<li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
 						<li class="nav-item">
 							<a href="user" class="nav-link">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
 									Người dùng
+									<i class="fas fa-angle-left right"></i>
 								</p>
 							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="user/index" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Danh sách người dùng</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="user/add" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Thêm người dùng</p>
+									</a>
+								</li>
+							</ul>
 						</li>
 
 						<li class="nav-item">
@@ -312,18 +373,6 @@
 							</a>
 						</li>
 
-						<li class="nav-header">KHÁC</li>
-						<li class="nav-item">
-							<a href="setting" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Cài đặt website
-								</p>
-							</a>
-						</li>
-
-						<!-- CÀI ĐẶT WEBSITE -->
-						<!-- <li class="nav-header">CÀI ĐẶT WEBSITE</li> -->
 					</ul>
 				</nav>
 				<!-- /.sidebar-menu -->
