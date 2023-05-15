@@ -1,0 +1,22 @@
+<Files .htaccess>
+	order deny,allow
+	deny from all
+</Files> 
+
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks 
+	RewriteEngine On
+    RewriteBase /
+	
+	#comment if dev on local
+	RewriteCond %{HTTPS}  off
+	RewriteRule ^(.*)$ https:\/\/%{HTTP_HOST}/$1 [R=302,L]
+	
+    RewriteCond %{REQUEST_FILENAME} !-f
+ 	RewriteCond %{REQUEST_FILENAME} !-d
+    
+   	RewriteRule ^(.*)$ index.php/$1 [L,NC]
+   	
+	RewriteRule upgrade$ upgrade\.php [L,NC] 
+	
+</IfModule>

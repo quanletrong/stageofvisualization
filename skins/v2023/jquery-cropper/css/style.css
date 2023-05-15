@@ -1,0 +1,75 @@
+/* 
+    Author     : Tomaz Dragar
+    Mail       : <tomaz@dragar.net>
+    Homepage   : http://www.dragar.net
+*/
+
+#jcrop-fileInput{
+  width:0;
+  height:0;
+  overflow:hidden;
+}
+
+#jcrop-modal{
+  z-index: 999;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: #5F5F5F;
+  opacity: 0.95;
+  display: none;
+}
+
+#jcrop-preview{
+  z-index: 1000;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: none;
+  border: 4px solid #A5A2A2;
+  border-radius: 4px;
+  float: left;
+  font-size: 0px;
+  line-height: 0px;
+}
+
+#jcrop-preview .buttons{
+  width: 36px;
+  position: absolute;
+  bottom:0px;
+  right: -44px;
+}
+
+#jcrop-preview .buttons .ok{
+  border: 4px solid #F5F5F5;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  line-height: 0px;
+  font-size: 0px;
+  background-image: url('../images/Ok.png');
+  background-repeat: no-repeat;
+  box-sizing: content-box;
+}
+#jcrop-preview .buttons .ok:hover{
+  background-image: url('../images/OkGreen.png');
+}
+
+#jcrop-preview .buttons .cancel{
+  margin-bottom: 4px;
+  border: 4px solid #F5F5F5;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  line-height: 0px;
+  font-size: 0px;
+  background-image: url('../images/Cancel.png');
+  background-repeat: no-repeat;
+  box-sizing: content-box;
+}
+
+#jcrop-preview .buttons .cancel:hover{
+  background-image: url('../images/CancelRed.png');
+}

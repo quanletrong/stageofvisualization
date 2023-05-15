@@ -1,0 +1,16 @@
+<Files .htaccess>
+	order deny,allow
+	deny from all
+</Files> 
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /admin/
+	
+    RewriteCond %{REQUEST_FILENAME} !-f
+ 	RewriteCond %{REQUEST_FILENAME} !-d
+    
+   	RewriteRule ^(.*)$ index.php/$1 [L,NC]
+   	
+	RewriteRule upgrade$ upgrade\.php [L,NC]
+</IfModule>

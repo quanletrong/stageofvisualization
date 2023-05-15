@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /app/
+Disallow: /fonts/
+Disallow: /js/
+Disallow: /skins/
+Disallow: /uploads/

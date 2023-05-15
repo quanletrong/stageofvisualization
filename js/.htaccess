@@ -1,0 +1,16 @@
+Options -Indexes -ExecCGI
+RemoveHandler .php .phtml .php3 .php4
+RemoveType .php .phtml .php3 .php4
+php_flag engine off
+<Files .htaccess>
+	order deny,allow
+	deny from all
+</Files>
+<FilesMatch .*>
+	order deny,allow
+	deny from all
+</FilesMatch>
+<FilesMatch "\.(gif|jpe?g|png|js|css)$">
+	Order deny,allow
+	Allow from all
+</FilesMatch>
