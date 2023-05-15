@@ -65,3 +65,8 @@ define('SESSION_CONFIG_TIME_EXPIRE', 28800);
 define('ADMIN', '1');
 define('SALE', '2');
 define('USER', '3');
+
+// SERVICE
+define('SERVICE_RUN', 1);
+define('SERVICE_STOP', 0);
+

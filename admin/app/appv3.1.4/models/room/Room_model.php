@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Service_model extends CI_Model
+class Room_model extends CI_Model
 {
     public function __construct()
     {
@@ -8,14 +8,14 @@ class Service_model extends CI_Model
         parent::__construct();
     }
 
-    function add($name, $sapo, $image_before, $image_after, $price, $status, $id_user, $create_time)
+    function add($id_service, $name, $image_before, $image_after, $status, $id_user, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_service (name, sapo, image_before, image_after, price, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_room (id_service, name, image_before, image_after, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $sapo, $image_before, $image_after, $price, $status, $id_user, $create_time];
+            $param = [$id_service, $name, $image_before, $image_after, $status, $id_user, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -34,13 +34,14 @@ class Service_model extends CI_Model
         $iconn = $this->db->conn_id;
 
         $where = 'WHERE 1=1 ';
-        $where .= $status !== '' ? " AND A.status = ? " : "";
+        $where .= $status !== '' ? " AND A.status =? " : "";
 
         $sql = "
-        SELECT A.*, B.username 
-        FROM tbl_service as A 
+        SELECT A.*, B.username, C.name as service_name
+        FROM tbl_room as A 
         LEFT JOIN tbl_user as B ON A.id_user = B.id_user 
-
+        LEFT JOIN tbl_service as C ON A.id_service = C.id_service 
+        $where
         ORDER BY sort ASC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -58,7 +59,7 @@ class Service_model extends CI_Model
                         $row['image_after_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image_after'];
 
 
-                        $data[$row['id_service']] = $row;
+                        $data[$row['id_room']] = $row;
                     }
                 }
             } else {
@@ -70,14 +71,14 @@ class Service_model extends CI_Model
         return $data;
     }
 
-    function get_info($id_service)
+    function get_info($id_room)
     {
         $data = [];
         $iconn = $this->db->conn_id;
-        $sql = "SELECT * FROM tbl_service WHERE id_service = ? LIMIT 1";
+        $sql = "SELECT * FROM tbl_room WHERE id_room = ? LIMIT 1";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([$id_service])) {
+            if ($stmt->execute([$id_room])) {
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
             } else {
                 var_dump($stmt->errorInfo());
@@ -88,14 +89,14 @@ class Service_model extends CI_Model
         return $data;
     }
 
-    function edit($name, $sapo, $price, $image_before, $image_after, $status, $update_time, $id_service)
+    function edit($id_service, $name, $image_before, $image_after, $status, $update_time, $id_room)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_service SET name=?, sapo=?, price=?, image_before=?, image_after=?, status=?, update_time=? WHERE id_service=?";
+        $sql = "UPDATE tbl_room SET id_service=?, name=?, image_before=?, image_after=?, status=?, update_time=? WHERE id_room=?";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $sapo, $price, $image_before, $image_after, $status, $update_time, $id_service];
+            $param = [$id_service, $name, $image_before, $image_after, $status, $update_time, $id_room];
 
             if ($stmt->execute($param)) {
                 $execute = true;
