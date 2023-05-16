@@ -39,6 +39,11 @@
 				body: 'Cập nhật thành công!'
 			})
 		<?php } ?>
+
+		// for bootstrap-switch
+		$("input[data-bootstrap-switch]").each(function() {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        })
 	</script>
 </body>
 </html>
