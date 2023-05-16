@@ -46,7 +46,6 @@ class Service extends MY_Controller
             $id_service  = is_numeric($id_service) && $id_service > 0 ? $id_service : 0;
             $create_time = date('Y-m-d H:i:s');
 
-
             // TẠO MỚI 
             if ($_POST['action'] == 'add') {
 
