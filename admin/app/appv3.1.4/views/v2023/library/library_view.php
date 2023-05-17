@@ -38,7 +38,7 @@
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">STT</th>
+                                        <th class="text-center" width=50>STT</th>
                                         <th style="min-width: 200px; width: 200px;">Tên</th>
                                         <th style="min-width: 200px; width: 200px;">Phòng</th>
                                         <th style="min-width: 200px; width: 200px;">Phong cách</th>

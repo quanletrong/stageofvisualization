@@ -38,11 +38,10 @@ class Library extends MY_Controller
 
         // SUBMIT FORM (nếu có)
         if (isset($_POST['action'])) {
-            $name        = $this->input->post('name');
-            $sapo        = $this->input->post('sapo');
+            $id_room     = $this->input->post('id_room');
+            $id_style    = $this->input->post('id_style');
             $status      = $this->input->post('status');
             $image       = $this->input->post('image');
-            $slide        = $this->input->post('slide');
             $id_library  = $this->input->post('id_library');
             $id_library  = is_numeric($id_library) && $id_library > 0 ? $id_library : 0;
             $create_time = date('Y-m-d H:i:s');
@@ -54,14 +53,25 @@ class Library extends MY_Controller
                 $status = $status == 'on' ? 1 : 0;
                 //END validate
 
-                $copy = copy_image_from_file_manager_to_public_upload($image, date('Y'), date('m'));
-                if ($copy['status']) {
-                    $exc = $this->Library_model->add($name, $sapo, $copy['basename'], $slide, $status, $this->_session_uid(), $create_time);
-                    $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!';
-                } else {
-                    $msg = $copy['error'];
+                // $copy = copy_image_from_file_manager_to_public_upload($image, date('Y'), date('m')); TODO: copy ảnh
+                // if ($copy['status']) {
+                //     $exc = $this->Library_model->add($name, $sapo, $copy['basename'], $image, $status, $this->_session_uid(), $create_time);
+                //     $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!';
+                // } else {
+                //     $msg = $copy['error'];
+                // }
+                $image_arr = json_decode($image, true);
+
+                if (empty($image_arr)) {
+                    $this->session->set_flashdata('flsh_msg', 'Không lưu được ảnh');
+                    redirect('library');
                 }
-                $this->session->set_flashdata('flsh_msg', $msg);
+
+                foreach ($image_arr as $key => $item) {
+                    $exc = $this->Library_model->add($id_room, $id_style, $item['name'], $item['image'], $status, $this->_session_uid(), $create_time);
+                }
+                // $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!'; //TODO: tạm set mặc định
+                $this->session->set_flashdata('flsh_msg', 'OK');
                 redirect('library');
             }
 
@@ -93,7 +103,7 @@ class Library extends MY_Controller
             //             }
             //         }
 
-            //         $exc = $this->Library_model->edit($name, $sapo, $image_ok, $slide, $status, $update_time, $id_library);
+            //         $exc = $this->Library_model->edit($name, $sapo, $image_ok, $image, $status, $update_time, $id_library);
             //         $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
             //         redirect('library');
             //     }

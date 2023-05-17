@@ -9,8 +9,8 @@
     RewriteBase /
 	
 	#comment if dev on local
-	#RewriteCond %{HTTPS}  off
-	#RewriteRule ^(.*)$ https:\/\/%{HTTP_HOST}/$1 [R=302,L]
+	RewriteCond %{HTTPS}  off
+	RewriteRule ^(.*)$ https:\/\/%{HTTP_HOST}/$1 [R=302,L]
 	
     RewriteCond %{REQUEST_FILENAME} !-f
  	RewriteCond %{REQUEST_FILENAME} !-d

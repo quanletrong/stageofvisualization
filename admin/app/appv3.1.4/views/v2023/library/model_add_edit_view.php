@@ -16,40 +16,33 @@
                     <input type="hidden" name="id_library" value="">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-12 col-lg-6">
+                            <div class="col-12 col-md-4">
                                 <div class="form-group">
-                                    <label for="name">Tên ảnh</label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên phong cách thiết kế">
+                                    <label>Loại phòng</label>
+                                    <select class="select2" style="width: 100%;" name="id_room">
+                                        <?php foreach ($list_room as $id_room => $room) { ?>
+                                            <option value="<?= $id_room ?>"><?= $room['name'] ?></option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
-
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label>Phong cách thiết kế</label>
+                                    <select class="select2" style="width: 100%;" name="id_style">
+                                        <?php foreach ($list_style as $id_style => $style) { ?>
+                                            <option value="<?= $id_style ?>"><?= $style['name'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
                                 <div class="mb-1">
                                     <label>Có hiển thị ra ngoài trang người dùng không?</label>
                                 </div>
 
                                 <div class="form-group d-flex" style="gap:20px">
                                     <input type="checkbox" id="status" name="status" data-bootstrap-switch data-off-color="danger" data-on-color="success">
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6">
-                                <div class="form-group">
-                                    <label>Loại phòng</label>
-                                    <select class="select2" style="width: 100%;" name="id_service">
-                                        <option value="0">Chọn</option>
-                                        <?php foreach ($list_room as $id_room => $room) { ?>
-                                            <option value="<?= $id_room ?>"><?= $room['name'] ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Phong cách thiết kế</label>
-                                    <select class="select2" style="width: 100%;" name="id_service">
-                                        <option value="0">Chọn</option>
-                                        <?php foreach ($list_style as $id_style => $style) { ?>
-                                            <option value="<?= $id_style ?>"><?= $style['name'] ?></option>
-                                        <?php } ?>
-                                    </select>
                                 </div>
                             </div>
 
@@ -111,7 +104,7 @@
 <script>
     var SLIDE = {};
     $(function() {
-
+        $('.select2').select2();
         $('.iframe-btn').fancybox({
             'type': 'iframe',
             'autoScale': true,
@@ -129,27 +122,8 @@
                 $(form).find('input[name="image"]').val(JSON.stringify(SLIDE))
                 form.submit();
             },
-            rules: {
-                name: {
-                    required: true,
-                    minlength: 5,
-                    maxlength: 256
-                },
-                image: {
-                    required: true
-                }
-
-            },
-            messages: {
-                name: {
-                    required: 'Không được bỏ trống',
-                    minlength: 'Tối thiểu 5 ký tự',
-                    maxlength: 'Tối đa 256 ký tự',
-                },
-                image: {
-                    required: 'Không được bỏ trống'
-                }
-            },
+            rules: {},
+            messages: {},
             errorElement: 'span',
             errorPlacement: function(error, element) {
                 error.addClass('invalid-feedback');
@@ -170,34 +144,36 @@
             var modal = $(this);
             if (type == 'edit') {
                 var library = button.data('library');
-                $('#frm_library input[name=action]').val('edit');
-                $('#frm_library input[name=id_library]').val(library.id_library);
                 modal.find('.modal-title').text(`Sửa thông tin - ${library.name}`);
-                modal.find('.modal-body #name').val(library.name);
-                modal.find('.modal-body #image').val(library.image);
+                modal.find('.modal-body input[name=action]').val('edit');
+                modal.find('.modal-body input[name=id_room]').val(library.id_room);
+                modal.find('.modal-body input[name=id_style]').val(library.id_style);
                 modal.find('.modal-body #status').bootstrapSwitch('state', parseInt(library.status));
+                modal.find('.modal-body #image').val(library.image);
                 modal.find('.modal-body #image_pre').attr('src', library.image_path);
 
-                try {
-                    SLIDE = JSON.parse(library.image);
-                    render_image();
-                    modal.find('.modal-body #image').val(library.image);
-                } catch (error) {
-                    SLIDE = {};
-                }
+                let image_id = Date.now();
+                SLIDE[image_id] = {
+                    'name' : library.name,
+                    'image' : library.image_path,
+                };
+                render_image();
+                $('#table_add_image tfoot').hide();
 
             } else {
-                $('#frm_library input[name=action]').val('add');
-                $('#frm_library input[name=id_library]').val('');
-                modal.find('.modal-title').text(`Thêm phong cách thiết kế`);
-                modal.find('.modal-body #name').val('');
-                modal.find('.modal-body #image').val('');
+                modal.find('.modal-title').text(`Thêm ảnh vào thư viện`);
+                modal.find('.modal-body input[name=action]').val('add');
+                modal.find('.modal-body input[name=id_room]').val('');
+                modal.find('.modal-body input[name=id_style]').val('');
                 modal.find('.modal-body #status').bootstrapSwitch('state', true);
+                modal.find('.modal-body #image').val('');
                 modal.find('.modal-body #image_pre').attr('src', '');
 
                 SLIDE = {}
                 $('#table_add_image tbody').html('');
-                modal.find('.modal-body #image').val('');
+                modal.find('.modal-body #image').val(JSON.stringify(SLIDE));
+               
+                $('#table_add_image tfoot').show();
             }
         });
     });
@@ -254,6 +230,7 @@
     }
 
     function render_image() {
+        console.log(SLIDE)
         for (const image_id in SLIDE) {
 
             let row_new = `<tr id='${image_id}'>

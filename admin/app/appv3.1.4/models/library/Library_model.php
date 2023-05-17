@@ -9,14 +9,14 @@ class Library_model extends CI_Model
     }
 
     // TODO: 
-    function add($name, $sapo, $image, $slide, $status, $id_user, $create_time)
+    function add($id_room, $id_style, $name, $image, $status, $id_user, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_library (name, sapo, image, slide, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_library (id_room, id_style, name, image, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $sapo, $image, $slide, $status, $id_user, $create_time];
+            $param = [$id_room, $id_style, $name, $image, $status, $id_user, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -52,11 +52,12 @@ class Library_model extends CI_Model
             if ($stmt->execute([$status])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $row['image_path'] = '';
-                        $year = date('Y', strtotime($row['create_time']));
-                        $month = date('m', strtotime($row['create_time']));
-                        $row['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image'];
-
+                        //TODO: tạm fix ảnh
+                        // $row['image_path'] = '';
+                        // $year = date('Y', strtotime($row['create_time']));
+                        // $month = date('m', strtotime($row['create_time']));
+                        // $row['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image'];
+                        $row['image_path'] = $row['image'];
                         $data[$row['id_library']] = $row;
                     }
                 }
