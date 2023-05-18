@@ -351,3 +351,27 @@ function isEmpty(obj) {
     }
     return true;
 }
+
+function makeid(length) {
+    let result = '';
+    const characters = '0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
+function toasts_danger (body='Có lỗi xảy ra', title='Thất bại', delay=10000, autohide=true, subtitle=''){
+    $(document).Toasts('create', {
+        class: 'bg-danger',
+        title: title,
+        subtitle: '',
+        body: body,
+        delay: delay,
+        autohide: true,
+        fade: true
+    })
+}

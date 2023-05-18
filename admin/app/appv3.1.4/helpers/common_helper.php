@@ -865,3 +865,62 @@ function create_slug($string)
     $string = strtolower($string);
     return $string;
 }
+
+
+function resError($error, $msg='', $show_status = true)
+{
+    # neu co show_status
+    if ($show_status) {
+        if(ENVIRONMENT == 'development') {
+			$dbgt = debug_backtrace();
+			$line = $dbgt[0]['line'];
+			$file = $dbgt[0]['file'];
+			echo json_encode(['status' => 0, 'error' => $error, 'msg'=>$msg, 'line' => $line, 'file' => $file]);
+		} else {
+			echo json_encode(['status' => 0, 'error' => $error, 'msg'=>$msg]);
+		}
+    } else {
+        # neu data la mang  thi echo json_encode
+        if(is_array($error)) {
+            echo json_encode($error);
+        } 
+        # nguoc lai
+        else {
+            echo $error;
+        }
+        
+    }
+    
+    dbClose();
+    die();
+}
+
+// set response data
+function resSuccess($data, $msg='', $show_status = true)
+{
+    # neu co show_status
+    if ($show_status) {
+
+        if(ENVIRONMENT == 'development') {
+			$dbgt = debug_backtrace();
+			$line = $dbgt[0]['line'];
+			$file = $dbgt[0]['file'];
+			echo json_encode(['status' => 1, 'data' => $data, 'msg'=>$msg, 'line' => $line, 'file' => $file]);
+		} else {
+			echo json_encode(['status' => 1, 'data' => $data, 'msg'=>$msg]);
+		}
+    } else {
+        # neu data la mang  thi echo json_encode
+        if(is_array($data)) {
+            echo json_encode($data);
+        } 
+        # nguoc lai
+        else {
+            echo $data;
+        }
+        
+    }
+    
+    dbClose();
+    die();
+}

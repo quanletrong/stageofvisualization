@@ -24,3 +24,5 @@
 <script src="plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
+<!-- common js -->
+<script src="js/v2023/common.js"></script>

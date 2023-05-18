@@ -65,8 +65,8 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="w-50">Tên ảnh</th>
-                                                        <th class="text-center" width="150"></th>
-                                                        <th class=""></th>
+                                                        <th class="w-25 text-center"></th>
+                                                        <th class="w-25"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -74,11 +74,11 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td></td>
-                                                        <td class="text-center">
-                                                            <button type="button" onclick="add_image()" class="btn btn-primary w-100"><i class="fas fa-plus"></i></button>
+                                                        <td colspan="3" class="text-center">
+                                                            <label for="fileButton" class="btn btn-warning">
+                                                                <i class="fas fa-upload"></i>
+                                                            </label>
                                                         </td>
-                                                        <td></td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -100,6 +100,83 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+
+<!-- upload anh -->
+<form id="frm_files" enctype="multipart/form-data" action="upload" method="post">
+    <input type="file" id="fileButton" name="file[]" accept="image/*" multiple hidden />
+    <script>
+        let IMAGE_ACTIVE = 0;
+        $(function() {
+            $("#frm_files").on('change', '#fileButton', function(e) {
+                e.preventDefault();
+                var formData = new FormData($(this).parents('form')[0]);
+
+                $.ajax({
+                    url: 'upload',
+                    type: 'POST',
+                    xhr: function() {
+                        var myXhr = $.ajaxSettings.xhr();
+                        return myXhr;
+                    },
+                    success: function(response) {
+                        try {
+                            response = JSON.parse(response);
+
+                            if (response.status) {
+
+                                if (Object.keys(response.data).length) {
+                                    for (const [key, value] of Object.entries(response.data)) {
+                                        if (value.status) {
+
+                                            if (IMAGE_ACTIVE > 0) {
+
+                                                SLIDE[IMAGE_ACTIVE] = {
+                                                    'name': value.name,
+                                                    'image': value.link,
+                                                };
+                                                IMAGE_ACTIVE = 0;
+                                            } else {
+                                                let image_id = makeid(5);
+                                                SLIDE[image_id] = {
+                                                    'name': value.name,
+                                                    'image': value.link,
+                                                };
+                                            }
+
+                                        } else {
+                                            let error_text = '';
+                                            for (const [key, error] of Object.entries(value.error)) {
+                                                error_text += '- ' + error + '<br/>';
+                                            }
+                                            toasts_danger(`${error_text} Ảnh: ${value.name} `, 'Thất bại')
+                                        }
+                                    }
+
+                                    render_image();
+
+                                } else {
+                                    toasts_danger('Xin lỗi, không lưu được ảnh', 'Thất bại')
+                                }
+
+                            } else {
+                                toasts_danger(response.error, 'Thất bại')
+                            }
+
+                        } catch (error) {
+                            console.log(error)
+                            toasts_danger('Xin lỗi, upload ảnh đang gặp vấn đề!', 'Thất bại')
+                        }
+                    },
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });
+                return false;
+            });
+        })
+    </script>
+</form>
 
 <script>
     var SLIDE = {};
@@ -154,8 +231,8 @@
 
                 let image_id = Date.now();
                 SLIDE[image_id] = {
-                    'name' : library.name,
-                    'image' : library.image_path,
+                    'name': library.name,
+                    'image': library.image_path,
                 };
                 render_image();
                 $('#table_add_image tfoot').hide();
@@ -172,7 +249,7 @@
                 SLIDE = {}
                 $('#table_add_image tbody').html('');
                 modal.find('.modal-body #image').val(JSON.stringify(SLIDE));
-               
+
                 $('#table_add_image tfoot').show();
             }
         });
@@ -194,24 +271,7 @@
                 'image': ''
             }
 
-            let row_new = `<tr id='${image_id}'>
-                <td class="align-middle">
-                    <input name="" class="form-control border-0" value="" onChange="SLIDE[${image_id}].name = this.value">
-                </td>
-                <td class="align-middle">
-                    <img src="" alt="" class="img-fluid" id="image_${image_id}_pre">
-                    <input type="hidden" id="image_${image_id}" onChange="SLIDE[${image_id}].image = this.value">
-                </td>
-                <td class="text-right py-0 align-middle">
-                    <div class="btn-group btn-group-sm">
-                        <a href="<?= ROOT_DOMAIN ?>/filemanager/filemanager/dialog.php?type=1&field_id=image_${image_id}" class="btn btn-warning iframe-btn"><i class="fas fa-upload"></i></i></a>
-                        <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
-                        <button type="button" class="btn btn-danger" onClick="delete SLIDE[${image_id}]; $('#${image_id}').remove()"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
-            </tr>`;
-
-            $('#table_add_image tbody').append(row_new);
+            $('#table_add_image tbody').append(html_row_image(image_id));
             $('#table_add_image tbody tr').last().find('input').focus();
         } else {
             $('#table_add_image tbody tr').last().find('input').focus();
@@ -229,28 +289,36 @@
         });
     }
 
+    function html_row_image(image_id) {
+        let row_new = `<tr id='${image_id}'>
+            <td class="align-middle">
+                <input name="" class="form-control border-0" value="${SLIDE[image_id].name}" onChange="SLIDE[${image_id}].name = this.value">
+            </td>
+            <td class="align-middle text-center">
+                <img src="${SLIDE[image_id].image}" alt="" class="img-fluid w-50" id="image_${image_id}_pre">
+                <input type="hidden" id="image_${image_id}" onChange="SLIDE[${image_id}].image = this.value">
+            </td>
+            <td class="text-right py-0 align-middle">
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-warning">
+                        <label for="fileButton" onClick="IMAGE_ACTIVE=${image_id}">
+                            <i class="fas fa-upload"></i>
+                        </label>
+                    </button>
+                    
+                    <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
+                    <button type="button" class="btn btn-danger" onClick="delete SLIDE[${image_id}]; $('#${image_id}').remove()"><i class="fas fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>`;
+
+        return row_new;
+    }
+
     function render_image() {
-        console.log(SLIDE)
+        $('#table_add_image tbody').html('');
         for (const image_id in SLIDE) {
-
-            let row_new = `<tr id='${image_id}'>
-                <td class="align-middle">
-                    <input name="" class="form-control border-0" value="${SLIDE[image_id].name}" onChange="SLIDE[${image_id}].name = this.value">
-                </td>
-                <td class="align-middle">
-                    <img src="${SLIDE[image_id].image}" alt="" class="img-fluid" id="image_${image_id}_pre">
-                    <input type="hidden" id="image_${image_id}" onChange="SLIDE[${image_id}].image = this.value">
-                </td>
-                <td class="text-right py-0 align-middle">
-                    <div class="btn-group btn-group-sm">
-                        <a href="<?= ROOT_DOMAIN ?>/filemanager/filemanager/dialog.php?type=1&field_id=image_${image_id}" class="btn btn-warning iframe-btn"><i class="fas fa-upload"></i></i></a>
-                        <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
-                        <button type="button" class="btn btn-danger" onClick="delete SLIDE[${image_id}]; $('#${image_id}').remove()"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
-            </tr>`;
-
-            $('#table_add_image tbody').append(row_new);
+            $('#table_add_image tbody').append(html_row_image(image_id));
         }
 
         $('.iframe-btn').fancybox({
