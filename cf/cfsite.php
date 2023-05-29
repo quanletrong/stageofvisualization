@@ -26,3 +26,5 @@ define('LINK_USER_TRANSACTIONS', 'user/transactions');
 define('LINK_USER_LOGOUT', 'user/logout');
 define('LINK_USER_SIGN_IN', 'user/sign_in');
 define('LINK_USER_SIGN_OUT', 'user/logout');
+define('LINK_USER_LOGIN', 'login');
+define('LINK_USER_REGISTER', 'dang-ky');
