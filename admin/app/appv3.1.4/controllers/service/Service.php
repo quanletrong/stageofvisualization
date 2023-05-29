@@ -53,9 +53,23 @@ class Service extends MY_Controller
                 $status = $status == 'on' ? 1 : 0;
                 //END validate
 
+                // copy and validate room
+                $arr_room = json_decode($room, true);
+                $room_ok = [];
+                foreach ($arr_room as $id => $it) {
+                    $img_room = $it['image'];
+                    $copy = copy_image_from_file_manager_to_public_upload($img_room, date('Y'), date('m'));
+                    if ($copy['status']) {
+                        $room_ok[$id]['name'] = $it['name'];
+                        $room_ok[$id]['image'] = $copy['basename'];
+                    }
+                }
+                // end copy and validate room
+
                 $copy = copy_image_from_file_manager_to_public_upload($image, date('Y'), date('m'));
                 if ($copy['status']) {
-                    $exc = $this->Service_model->add($name, $sapo, $copy['basename'], $room, $price, $status, $this->_session_uid(), $create_time);
+
+                    $exc = $this->Service_model->add($name, $sapo, $copy['basename'], json_encode($room_ok, JSON_FORCE_OBJECT), $price, $status, $this->_session_uid(), $create_time);
                     $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!';
                 } else {
                     $msg = $copy['error'];
@@ -82,7 +96,7 @@ class Service extends MY_Controller
                     $update_time = date('Y-m-d H:i:s');
 
                     // copy anh truoc nếu upload mới
-                    if (basename($image) != $info['image']) {
+                    if (strpos($image, 'uploads/tmp') !== false) {
                         $copy = copy_image_from_file_manager_to_public_upload($image, $year, $monthe);
                         if ($copy['status']) {
                             $image_ok = $copy['basename'];
@@ -92,7 +106,40 @@ class Service extends MY_Controller
                         }
                     }
 
-                    $exc = $this->Service_model->edit($name, $sapo, $price, $image_ok, $room, $status, $update_time, $id_service);
+                    // copy and validate room
+                    $room_old = json_decode($info['room'], true);
+                    $room_ok = [];
+                    $arr_room = json_decode($room, true);
+                    foreach ($arr_room as $id => $it) {
+
+                        // room cũ
+                        if (isset($room_old[$id])) {
+                            $room_ok[$id]['name'] = $it['name'];
+
+                            // room cũ thay đổi ảnh
+                            $img_room = $it['image'];
+                            if (strpos($it['image'], 'uploads/tmp') !== false) {
+                                $copy = copy_image_from_file_manager_to_public_upload($img_room, $year, $monthe);
+                                if ($copy['status']) {
+                                    $room_ok[$id]['image'] = $copy['basename'];
+                                }
+                            } else {
+                                $room_ok[$id]['image'] = $room_old[$id]['image'];
+                            }
+                        }
+                        // thêm room mới
+                        else {
+                            $img_room = $it['image'];
+                            $copy = copy_image_from_file_manager_to_public_upload($img_room, date('Y'), date('m'));
+                            if ($copy['status']) {
+                                $room_ok[$id]['name'] = $it['name'];
+                                $room_ok[$id]['image'] = $copy['basename'];
+                            }
+                        }
+                    }
+                    // end copy and validate room
+
+                    $exc = $this->Service_model->edit($name, $sapo, $price, $image_ok, json_encode($room_ok, JSON_FORCE_OBJECT), $status, $update_time, $id_service);
                     $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
                     redirect('service');
                 }

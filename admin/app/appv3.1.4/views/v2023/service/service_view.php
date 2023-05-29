@@ -39,7 +39,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">STT</th>
-                                        <th style="min-width: 200px; width: 200px;">Tên</th>
+                                        <th style="min-width: 200px; width: 200px;">Dịch vụ</th>
                                         <th class="">Mô tả</th>
                                         <th class="text-center" style="min-width: 70px; width: 70px;">Trước/Sau</th>
                                         <th class="" style="min-width: 70px; width: 70px;">Giá</th>
@@ -77,7 +77,7 @@
                                 <tfoot>
                                     <tr>
                                         <th class="text-center">STT</th>
-                                        <th>Tên</th>
+                                        <th>Dịch vụ</th>
                                         <th class="">Mô tả</th>
                                         <th class="text-center">Trước/Sau</th>
                                         <th class="">Giá</th>
