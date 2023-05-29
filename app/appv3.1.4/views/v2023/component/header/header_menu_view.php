@@ -1,49 +1,52 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-<nav class="navbar sticky-top navbar-expand-lg bg-light" style="box-shadow: 1px 1px 3px 0px #c1c1c1;">
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
+<nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary py-1 shadow-sm bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
-            <!-- <img src="https://placehold.co/160x48/f44336/31343C?text=LOGO" alt="" class="img-fluid"> -->
-            <!-- <img src="images/logo.png" alt="" class="img-fluid"> -->
-            <img src="images/logo-ngang.png" alt="" class="img-fluid">
+            <img width="130" src="images/logo-21.png" alt="logo" class="d-inline-block align-text-top" srcset="">
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
-            aria-controls="offcanvasExample" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 align-items-lg-center justify-content-lg-end">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        VIRTUAL STAGING
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="">Overview</a></li>
+                        <li><a class="dropdown-item" href="<?=LINK_HIW?>">How It Works</a></li>
+                        <li><a class="dropdown-item" href="<?=LINK_PRICINGS?>">Pricing</a></li>
+                        <li><a class="dropdown-item" href="<?=LINK_LIBRARY?>">Library</a></li>
+                    </ul>
+                </li>
+
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Trang chủ</a>
+                    <a class="nav-link active" aria-current="page" href="#">FEATURED LISTINGS</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">BĐS Đông Anh</a>
-                    <div></div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Đấu Giá Đất</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Tin Tức</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Tài Liệu Luật</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Liên Hệ</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav me-right mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fa-regular fa-heart"></i>
+                    <a class="nav-link" href="<?=LINK_ORDER?>">
+                        <button type="button" class="btn btn-danger btn-sm">PLACE ORDER</button>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Đăng nhập</a>
+                    <a href="tel:+18337882226" style="font-weight: bold;color: #333333;">1-833-788-2226</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Đăng ký</a>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ACCOUNT
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="<?=LINK_USER_ORDER?>">My Orders and Listings</a></li>
+                        <li><a class="dropdown-item" href="<?=LINK_USER_NOTICES?>">Notifications </a></li>
+                        <li><a class="dropdown-item" href="<?=LINK_USER_PROFILES?>">Profile</a></li>
+                        <li><a class="dropdown-item" href="<?=LINK_USER_SETTINGS?>">Settings</a></li>
+                        <li><a class="dropdown-item" href="<?=LINK_USER_TRANSACTIONS?>">Transactions</a></li>
+                        <li><a class="dropdown-item" href="<?=LINK_USER_LOGOUT?>">Sign Out</a></li>
+                    </ul>
                 </li>
+
             </ul>
         </div>
     </div>

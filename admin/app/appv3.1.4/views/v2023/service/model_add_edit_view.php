@@ -61,7 +61,7 @@
                                 <div id="room_div">
                                     <div class="card card-info">
                                         <div class="card-header">
-                                            <h3 class="card-title">Loại phòng thuộc nhóm dịch</h3>
+                                            <h3 class="card-title">Danh sách phòng</h3>
 
                                             <div class="card-tools">
                                                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">

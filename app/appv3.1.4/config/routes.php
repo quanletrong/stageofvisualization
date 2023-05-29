@@ -53,35 +53,23 @@ $route['default_controller'] = 'home/home/index';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-// add by toannh for multi language
-if(defined('MULTI_LANGUAGE'))
-{
-	if(MULTI_LANGUAGE)
-	{
-		if(defined('URI_PATH') && URI_PATH == '')
-		{
-			$route['(\w{2})/(.*)'] = '$2';
-			$route['(\w{2})'] = $route['default_controller'];
-		}
-		else if(defined('URI_PATH') && URI_PATH != '')
-		{
-			$route['(\w{2})/[a-zA-Z]*/(.*)'] = '$2';
-			$route['(\w{2})/[a-zA-Z]*'] = $route['default_controller'];
-		}
-	}
-	else
-	{
-		if(defined('URI_PATH') && URI_PATH == '')
-		{
-			$route['(.*)'] = '$1';
-			$route[''] = $route['default_controller'];
-		}
-		else if(defined('URI_PATH') && URI_PATH != '')
-		{
-			
-			$route['[a-zA-Z]*/(.*)'] = '$1';
-			$route['[a-zA-Z]*'] = $route['default_controller'];
-		}
-	}
-}
-// add by toannh for multi language
+$route[LINK_HIW]      = 'hiw/hiw/index';
+$route[LINK_PRICINGS] = 'pricing/pricing/index';
+$route[LINK_LIBRARY]  = 'library/library/index';
+$route[LINK_ORDER]    = 'order/order/index';
+
+$route[LINK_ABOUT]   = 'about/about/index';
+$route[LINK_CAREERS] = 'careers/careers/index';
+$route[LINK_CONTACT] = 'contact/contact/index';
+
+$route[LINK_POLICY] = 'policy/policy/index';
+$route[LINK_TERMS]  = 'terms/terms/index';
+$route[LINK_REFUND] = 'refund/refund/index';
+
+$route[LINK_USER_SIGN_IN]      = 'user/user/login';
+$route[LINK_USER_SIGN_OUT]     = 'user/user/logout';
+$route[LINK_USER_ORDER]        = 'user/user/order';
+$route[LINK_USER_PROFILES]     = 'user/user/profiles';
+$route[LINK_USER_NOTICES]      = 'user/user/notices';
+$route[LINK_USER_SETTINGS]     = 'user/user/settings';
+$route[LINK_USER_TRANSACTIONS] = 'user/user/transactions';
