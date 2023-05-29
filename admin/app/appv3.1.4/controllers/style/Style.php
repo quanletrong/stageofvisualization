@@ -52,9 +52,22 @@ class Style extends MY_Controller
                 $status = $status == 'on' ? 1 : 0;
                 //END validate
 
+                // copy and validate slide
+                $arr_slide = json_decode($slide, true);
+                $slide_ok = [];
+                foreach ($arr_slide as $id => $it) {
+                    $img_slide = $it['image'];
+                    $copy = copy_image_from_file_manager_to_public_upload($img_slide, date('Y'), date('m'));
+                    if ($copy['status']) {
+                        $slide_ok[$id]['name'] = $it['name'];
+                        $slide_ok[$id]['image'] = $copy['basename'];
+                    }
+                }
+                // end copy and validate room
+
                 $copy = copy_image_from_file_manager_to_public_upload($image, date('Y'), date('m'));
                 if ($copy['status']) {
-                    $exc = $this->Style_model->add($name, $sapo, $copy['basename'], $slide, $status, $this->_session_uid(), $create_time);
+                    $exc = $this->Style_model->add($name, $sapo, $copy['basename'], json_encode($slide_ok, JSON_FORCE_OBJECT), $status, $this->_session_uid(), $create_time);
                     $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!';
                 } else {
                     $msg = $copy['error'];
@@ -91,7 +104,40 @@ class Style extends MY_Controller
                         }
                     }
 
-                    $exc = $this->Style_model->edit($name, $sapo, $image_ok, $slide, $status, $update_time, $id_style);
+                    // copy and validate slide
+                    $slide_old = json_decode($info['slide'], true);
+                    $slide_ok = [];
+                    $arr_slide = json_decode($slide, true);
+                    foreach ($arr_slide as $id => $it) {
+
+                        // slide cũ
+                        if (isset($slide_old[$id])) {
+                            $slide_ok[$id]['name'] = $it['name'];
+
+                            // slide cũ thay đổi ảnh
+                            $img_slide = $it['image'];
+                            if (strpos($it['image'], 'uploads/tmp') !== false) {
+                                $copy = copy_image_from_file_manager_to_public_upload($img_slide, $year, $monthe);
+                                if ($copy['status']) {
+                                    $slide_ok[$id]['image'] = $copy['basename'];
+                                }
+                            } else {
+                                $slide_ok[$id]['image'] = $slide_old[$id]['image'];
+                            }
+                        }
+                        // thêm slide mới
+                        else {
+                            $img_slide = $it['image'];
+                            $copy = copy_image_from_file_manager_to_public_upload($img_slide, $year, $monthe);
+                            if ($copy['status']) {
+                                $slide_ok[$id]['name'] = $it['name'];
+                                $slide_ok[$id]['image'] = $copy['basename'];
+                            }
+                        }
+                    }
+                    // end copy and validate slide
+
+                    $exc = $this->Style_model->edit($name, $sapo, $image_ok, json_encode($slide_ok, JSON_FORCE_OBJECT), $status, $update_time, $id_style);
                     $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
                     redirect('style');
                 }

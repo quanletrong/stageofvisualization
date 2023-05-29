@@ -130,7 +130,7 @@ class Service extends MY_Controller
                         // thêm room mới
                         else {
                             $img_room = $it['image'];
-                            $copy = copy_image_from_file_manager_to_public_upload($img_room, date('Y'), date('m'));
+                            $copy = copy_image_from_file_manager_to_public_upload($img_room, $year, $monthe);
                             if ($copy['status']) {
                                 $room_ok[$id]['name'] = $it['name'];
                                 $room_ok[$id]['image'] = $copy['basename'];

@@ -39,7 +39,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">STT</th>
-                                        <th style="min-width: 200px; width: 200px;">Tên</th>
+                                        <th style="min-width: 200px; width: 200px;">Phong cách</th>
                                         <th class="">Mô tả</th>
                                         <th class="text-center" style="min-width: 70px; width: 70px;">Trước/Sau</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
@@ -75,7 +75,7 @@
                                 <tfoot>
                                     <tr>
                                         <th class="text-center">STT</th>
-                                        <th>Tên</th>
+                                        <th>Phong cách</th>
                                         <th class="">Mô tả</th>
                                         <th class="text-center">Trước/Sau</th>
                                         <th class="text-center">Trạng thái</th>

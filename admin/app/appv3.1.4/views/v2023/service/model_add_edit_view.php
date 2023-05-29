@@ -65,7 +65,6 @@
                                     <div class="card card-info">
                                         <div class="card-header">
                                             <h3 class="card-title">Danh sách phòng</h3>
-                                            <small>Hiển thị phần trang chủ</small>
 
                                             <div class="card-tools">
                                                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -278,6 +277,8 @@
     }
 
     function render_room() {
+        $('#table_add_room tbody').html('');
+
         for (const room_id in ROOM) {
 
             let row_new = `<tr id='${room_id}'>
@@ -301,10 +302,5 @@
 
             $('#table_add_room tbody').append(row_new);
         }
-    }
-
-    function getPathImage(image_name, year, month){
-        let hostname = window.location.hostname;
-        return `${hostname}/uploads/images/${year}/${month}/${image_name}`;
     }
 </script>

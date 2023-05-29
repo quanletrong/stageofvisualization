@@ -9,6 +9,7 @@ class Home extends MY_Controller
         parent::__construct();
 
         $this->load->model('service/Service_model');
+        $this->load->model('style/Style_model');
     }
 
     function index()
@@ -22,8 +23,10 @@ class Home extends MY_Controller
         ];
 
         $service = $this->Service_model->get_list(1);
+        $style = $this->Style_model->get_list(1);
 
         $data['service'] = $service;
+        $data['style'] = $style;
 
         $this->_loadHeader($header);
 

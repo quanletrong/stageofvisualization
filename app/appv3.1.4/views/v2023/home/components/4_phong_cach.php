@@ -6,55 +6,16 @@
         <center class="fs-5 fw-light link-color">Explore Stuccco's Virtual Staging Library.</center>
 
         <div class="row">
-            <div class="col-12 col-lg-4 mt-3">
-                <img src="images/7.jpeg" alt="" class="w-100 img-fluid border rounded-1">
-                <div class="mt-2 fw-bold">Comfortable Contemporary </div>
-                <div>
-                    Soft furnishings, neutral colors, clean patterns
+            <?php foreach ($style as $id => $it) { ?>
+                <div class="col-12 col-lg-4 mt-3">
+                    <img src="<?= $it['image_path'] ?>" alt="" class="w-100 img-fluid border rounded-1">
+                    <div class="mt-2 fw-bold"><?= $it['name'] ?></div>
+                    <div>
+                        <?= $it['sapo'] ?>
+                    </div>
+                    <div class="link-color">View Examples</div>
                 </div>
-                <div class="link-color">View Examples</div>
-            </div>
-            <div class="col-12 col-lg-4 mt-3">
-                <img src="images/7.jpeg" alt="" class="w-100 img-fluid border rounded-1">
-                <div class="mt-2 fw-bold">Comfortable Contemporary </div>
-                <div>
-                    Soft furnishings, neutral colors, clean patterns
-                </div>
-                <div class="link-color">View Examples</div>
-            </div>
-            <div class="col-12 col-lg-4 mt-3">
-                <img src="images/7.jpeg" alt="" class="w-100 img-fluid border rounded-1">
-                <div class="mt-2 fw-bold">Comfortable Contemporary </div>
-                <div>
-                    Soft furnishings, neutral colors, clean patterns
-                </div>
-                <div class="link-color">View Examples</div>
-            </div>
-            <div class="col-12 col-lg-4 mt-3">
-                <img src="images/7.jpeg" alt="" class="w-100 img-fluid border rounded-1">
-                <div class="mt-2 fw-bold">Comfortable Contemporary </div>
-                <div>
-                    Soft furnishings, neutral colors, clean patterns
-                </div>
-                <div class="link-color">View Examples</div>
-            </div>
-            <div class="col-12 col-lg-4 mt-3">
-                <img src="images/7.jpeg" alt="" class="w-100 img-fluid border rounded-1">
-                <div class="mt-2 fw-bold">Comfortable Contemporary </div>
-                <div>
-                    Soft furnishings, neutral colors, clean patterns
-                </div>
-                <div class="link-color">View Examples</div>
-            </div>
-            <div class="col-12 col-lg-4 mt-3">
-                <img src="images/7.jpeg" alt="" class="w-100 img-fluid border rounded-1">
-                <div class="mt-2 fw-bold">Comfortable Contemporary </div>
-                <div>
-                    Soft furnishings, neutral colors, clean patterns
-                </div>
-                <div class="link-color">View Examples</div>
-            </div>
-
+            <?php } ?>
         </div>
     </div>
 </div>

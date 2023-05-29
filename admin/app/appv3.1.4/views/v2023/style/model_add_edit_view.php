@@ -38,12 +38,15 @@
                             </div>
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
-                                    <label>Ảnh trước và sau khi thiết kế</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <a href="<?= ROOT_DOMAIN ?>/filemanager/filemanager/dialog.php?type=1&field_id=image" class="btn btn-primary iframe-btn">Chọn ảnh</a>
-                                        </div>
-                                        <input type="text" class="form-control" id="image" name="image" readonly>
+                                    <label>Ảnh chính</label>
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_image_service" data-target="#image">
+                                            <i class="fas fa-upload"></i> Upload ảnh
+                                        </button>
+                                        <input type="hidden" name="image" id="image">
+                                        <span id="image-error" class="invalid-feedback" style="font-size: 80%; color: red;">
+                                            Tin này cần tối thiểu 1 ảnh.
+                                        </span>
                                     </div>
                                     <small>Ảnh sẽ dùng trong phần tạo đơn và bảng giá.</small>
                                     <img src="" id="image_pre" class="rounded img-fluid w-100 shadow mb-3" />
@@ -108,17 +111,6 @@
 <script>
     var SLIDE = {};
     $(function() {
-
-        $('.iframe-btn').fancybox({
-            'type': 'iframe',
-            'autoScale': true,
-            'iframe': {
-                'css': {
-                    'width': '1024px',
-                    'height': '800px'
-                }
-            }
-        });
 
         $('#frm_style').validate({
             submitHandler: function(form) {
@@ -187,6 +179,7 @@
 
                 try {
                     SLIDE = JSON.parse(style.slide);
+                    SLIDE = isEmpty(SLIDE) ? {} : SLIDE;
                     render_slide();
                     modal.find('.modal-body #slide').val(style.slide);
                 } catch (error) {
@@ -210,9 +203,15 @@
         });
     });
 
-    function responsive_filemanager_callback(field_id) {
-        var url = jQuery('#' + field_id).val();
-        $(`#${field_id}_pre`).attr('src', url).show();
+    function cb_upload_image_service(link, target) {
+        $(`${target}_pre`).attr('src', link);
+        $(`${target}-error`).hide();
+    }
+
+    function cb_upload_image_slide(link, target) {
+        $(`${target}_pre`).attr('src', link);
+        let slide_id = $(target).data('id');
+        SLIDE[slide_id].image = link;
     }
 
     // <!-- xu lý thêm ảnh slide -->
@@ -232,11 +231,13 @@
                 </td>
                 <td class="align-middle">
                     <img src="" alt="" class="img-fluid" id="image_${slide_id}_pre">
-                    <input type="hidden" id="image_${slide_id}" onChange="SLIDE[${slide_id}].image = this.value">
+                    <input type="hidden" id="image_${slide_id}" data-id="${slide_id}">
                 </td>
                 <td class="text-right py-0 align-middle">
                     <div class="btn-group btn-group-sm">
-                        <a href="<?= ROOT_DOMAIN ?>/filemanager/filemanager/dialog.php?type=1&field_id=image_${slide_id}" class="btn btn-warning iframe-btn"><i class="fas fa-upload"></i></i></a>
+                        <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_slide" data-target="#image_${slide_id}" >
+                            <i class="fas fa-upload"></i>
+                        </button>
                         <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
                         <button type="button" class="btn btn-danger" onClick="delete SLIDE[${slide_id}]; $('#${slide_id}').remove()"><i class="fas fa-trash"></i></button>
                     </div>
@@ -248,20 +249,10 @@
         } else {
             $('#table_add_slide tbody tr').last().find('input').focus();
         }
-
-        $('.iframe-btn').fancybox({
-            'type': 'iframe',
-            'autoScale': true,
-            'iframe': {
-                'css': {
-                    'width': '1024px',
-                    'height': '800px'
-                }
-            }
-        });
     }
 
     function render_slide() {
+        $('#table_add_slide tbody').html('');
         for (const slide_id in SLIDE) {
 
             let row_new = `<tr id='${slide_id}'>
@@ -269,12 +260,14 @@
                     <input name="" class="form-control border-0" value="${SLIDE[slide_id].name}" onChange="SLIDE[${slide_id}].name = this.value">
                 </td>
                 <td class="align-middle">
-                    <img src="${SLIDE[slide_id].image}" alt="" class="img-fluid" id="image_${slide_id}_pre">
-                    <input type="hidden" id="image_${slide_id}" onChange="SLIDE[${slide_id}].image = this.value">
+                    <img src="${SLIDE[slide_id].image_path}" alt="" class="img-fluid" id="image_${slide_id}_pre">
+                    <input type="hidden" id="image_${slide_id}" data-id="${slide_id}">
                 </td>
                 <td class="text-right py-0 align-middle">
                     <div class="btn-group btn-group-sm">
-                        <a href="<?= ROOT_DOMAIN ?>/filemanager/filemanager/dialog.php?type=1&field_id=image_${slide_id}" class="btn btn-warning iframe-btn"><i class="fas fa-upload"></i></i></a>
+                        <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_slide" data-target="#image_${slide_id}" >
+                            <i class="fas fa-upload"></i>
+                        </button>
                         <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
                         <button type="button" class="btn btn-danger" onClick="delete SLIDE[${slide_id}]; $('#${slide_id}').remove()"><i class="fas fa-trash"></i></button>
                     </div>
@@ -283,16 +276,5 @@
 
             $('#table_add_slide tbody').append(row_new);
         }
-
-        $('.iframe-btn').fancybox({
-            'type': 'iframe',
-            'autoScale': true,
-            'iframe': {
-                'css': {
-                    'width': '1024px',
-                    'height': '800px'
-                }
-            }
-        });
     }
 </script>
