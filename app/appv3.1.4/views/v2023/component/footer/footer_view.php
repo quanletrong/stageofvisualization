@@ -1,10 +1,10 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 <div class="container py-5" id="footer">
     <div class="row">
-        <div class="d-none d-lg-block col-12 col-lg-4 text-center">
+        <div class="d-none d-lg-block col-12 col-lg-3 text-center">
             <img src="images/logo-2.png" alt="" width="200">
         </div>
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-3">
             <div data-bs-toggle="collapse" data-bs-target="#foote_virtual_staging" aria-expanded="false" aria-controls="foote_virtual_staging">
                 <strong>VIRTUAL STAGING</strong>
             </div>
@@ -15,13 +15,21 @@
                 <div class="fw-light mb-2"><a href="<?=LINK_LIBRARY?>">Library</a></div>
             </div>
         </div>
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-3">
             <div data-bs-toggle="collapse" data-bs-target="#foote_company" aria-expanded="false" aria-controls="foote_company">
                 <strong>COMPANY</strong>
             </div>
             <div class="collapse collapse-horizontal show" id="foote_company">
                 <div class="fw-light mb-2"><a href="<?=LINK_ABOUT?>">About</a></div>
                 <div class="fw-light mb-2"><a href="<?=LINK_CAREERS?>">Careers</a></div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-3">
+            <div data-bs-toggle="collapse" data-bs-target="#foote_contact" aria-expanded="false" aria-controls="foote_contact">
+                <strong>CONTACT</strong>
+            </div>
+            <div class="collapse collapse-horizontal show" id="foote_contact">
                 <div class="fw-light mb-2"><a href="<?=LINK_CONTACT?>">Contact</a></div>
                 <div class="fw-light mb-2"><a href="tel:0987654321">Call: 1-833-788-2226</a></div>
                 <div class="fw-light mb-2"><a href="maito:contact@email.com">Email: info@stuccco.com</a></div>

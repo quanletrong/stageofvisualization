@@ -1970,3 +1970,15 @@ function notice_success(title, isReload){
         }
     });
 }
+
+function toasts_danger (body='Có lỗi xảy ra', title='Thất bại', delay=10000, autohide=true, subtitle=''){
+    $(document).Toasts('create', {
+        class: 'bg-danger',
+        title: title,
+        subtitle: '',
+        body: body,
+        delay: delay,
+        autohide: true,
+        fade: true
+    })
+}

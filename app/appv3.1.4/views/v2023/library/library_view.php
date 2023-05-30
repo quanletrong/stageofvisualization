@@ -7,7 +7,7 @@
     <div class="container bg-white">
         <div id="owl-filter-button" class="owl-carousel owl-theme mt-3 ">
             <?php foreach ($room as $id => $rm) { ?>
-                <button class="btn btn-outline-secondary text-uppercase rounded-0 fw-semibold btn-room-filter border border-2 border-secondary" onclick="$('.btn-room-filter').addClass('btn-outline-secondary').removeClass('btn-secondary');$(this).addClass('btn-secondary').removeClass('btn-outline-secondary'); filter()" data-room="<?= $id ?>" style="width: 190px;">
+                <button class="btn btn-outline-secondary btn-sm text-uppercase rounded-0 fw-semibold btn-room-filter border border-2 border-secondary" onclick="$('.btn-room-filter').addClass('btn-outline-secondary').removeClass('btn-secondary');$(this).addClass('btn-secondary').removeClass('btn-outline-secondary'); filter()" data-room="<?= $id ?>" style="width: 190px;">
                     <?= $rm['name'] ?>
                 </button>
             <?php } ?>
