@@ -790,7 +790,7 @@ function copy_image_from_file_manager_to_public_upload($url_fmng_image, $yearFol
     $imginfo = getImageSizeFromUrl($url_fmng_image);
     if (!empty($imginfo)) {
 
-        $basename = basename($url_fmng_image);
+        $basename = generateRandomString(10).'-'.basename($url_fmng_image);
         $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
         // check year folder exists
         $localFolder = $DOCUMENT_ROOT . '/' . PUBLIC_UPLOAD_PATH . '/' . $yearFolder . '/';

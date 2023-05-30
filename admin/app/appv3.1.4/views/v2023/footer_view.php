@@ -102,9 +102,8 @@
 
 									// gọi call back nếu có
 									if (cb != '') {
-										window[cb](value.link, input_target);
 										try {
-											window[cb](value.link, input_target);
+											window[cb](value.link, input_target, value.name);
 										} catch (error) {
 											console.log(error)
 										}

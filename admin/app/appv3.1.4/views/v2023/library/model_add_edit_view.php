@@ -75,9 +75,9 @@
                                                 <tfoot>
                                                     <tr>
                                                         <td colspan="3" class="text-center">
-                                                            <label for="fileButton" class="btn btn-warning">
-                                                                <i class="fas fa-upload"></i>
-                                                            </label>
+                                                            <button type="button" class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_image_library" data-target="">
+                                                                <i class="fas fa-upload"></i> Upload ảnh
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 </tfoot>
@@ -101,97 +101,10 @@
     <!-- /.modal-dialog -->
 </div>
 
-<!-- upload anh -->
-<form id="frm_files" enctype="multipart/form-data" action="upload" method="post">
-    <input type="file" id="fileButton" name="file[]" accept="image/*" multiple hidden />
-    <script>
-        let IMAGE_ACTIVE = 0;
-        $(function() {
-            $("#frm_files").on('change', '#fileButton', function(e) {
-                e.preventDefault();
-                var formData = new FormData($(this).parents('form')[0]);
-
-                $.ajax({
-                    url: 'upload',
-                    type: 'POST',
-                    xhr: function() {
-                        var myXhr = $.ajaxSettings.xhr();
-                        return myXhr;
-                    },
-                    success: function(response) {
-                        try {
-                            response = JSON.parse(response);
-
-                            if (response.status) {
-
-                                if (Object.keys(response.data).length) {
-                                    for (const [key, value] of Object.entries(response.data)) {
-                                        if (value.status) {
-
-                                            if (IMAGE_ACTIVE > 0) {
-
-                                                SLIDE[IMAGE_ACTIVE] = {
-                                                    'name': value.name,
-                                                    'image': value.link,
-                                                };
-                                                IMAGE_ACTIVE = 0;
-                                            } else {
-                                                let image_id = makeid(5);
-                                                SLIDE[image_id] = {
-                                                    'name': value.name,
-                                                    'image': value.link,
-                                                };
-                                            }
-
-                                        } else {
-                                            let error_text = '';
-                                            for (const [key, error] of Object.entries(value.error)) {
-                                                error_text += '- ' + error + '<br/>';
-                                            }
-                                            toasts_danger(`${error_text} Ảnh: ${value.name} `, 'Thất bại')
-                                        }
-                                    }
-
-                                    render_image();
-
-                                } else {
-                                    toasts_danger('Xin lỗi, không lưu được ảnh', 'Thất bại')
-                                }
-
-                            } else {
-                                toasts_danger(response.error, 'Thất bại')
-                            }
-
-                        } catch (error) {
-                            console.log(error)
-                            toasts_danger('Xin lỗi, upload ảnh đang gặp vấn đề!', 'Thất bại')
-                        }
-                    },
-                    data: formData,
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                });
-                return false;
-            });
-        })
-    </script>
-</form>
-
 <script>
     var SLIDE = {};
     $(function() {
         $('.select2').select2();
-        $('.iframe-btn').fancybox({
-            'type': 'iframe',
-            'autoScale': true,
-            'iframe': {
-                'css': {
-                    'width': '1024px',
-                    'height': '800px'
-                }
-            }
-        });
 
         $('#frm_library').validate({
             submitHandler: function(form) {
@@ -223,6 +136,7 @@
                 var library = button.data('library');
                 modal.find('.modal-title').text(`Sửa thông tin - ${library.name}`);
                 modal.find('.modal-body input[name=action]').val('edit');
+                modal.find('.modal-body input[name=id_library]').val(library.id_library);
                 modal.find('.modal-body input[name=id_room]').val(library.id_room);
                 modal.find('.modal-body input[name=id_style]').val(library.id_style);
                 modal.find('.modal-body #status').bootstrapSwitch('state', parseInt(library.status));
@@ -256,55 +170,41 @@
         });
     });
 
-    function responsive_filemanager_callback(field_id) {
-        var url = jQuery('#' + field_id).val();
-        $(`#${field_id}_pre`).attr('src', url).show();
+    function cb_upload_add_image_library(link, target, name) {
+
+        let image_id = Date.now();
+        SLIDE[image_id] = {
+            'name': name,
+            'image': link
+        };
+
+        $('#table_add_image tbody').append(html_row_image(image_id));
     }
 
-    // <!-- xu lý thêm ảnh image -->
-    function add_image() {
-        let row_last = $('#table_add_image tbody tr').last();
-        if (row_last.find('input').val() != '' && row_last.find('img').attr('src') != '') {
-            let image_id = Date.now();
+    function cb_upload_edit_image_library(link, target, name) {
+        let image_id = $(target).data('id');
+        SLIDE[image_id] = {
+            'name': name,
+            'image': link
+        };
 
-            SLIDE[image_id] = {
-                'name': '',
-                'image': ''
-            }
-
-            $('#table_add_image tbody').append(html_row_image(image_id));
-            $('#table_add_image tbody tr').last().find('input').focus();
-        } else {
-            $('#table_add_image tbody tr').last().find('input').focus();
-        }
-
-        $('.iframe-btn').fancybox({
-            'type': 'iframe',
-            'autoScale': true,
-            'iframe': {
-                'css': {
-                    'width': '1024px',
-                    'height': '800px'
-                }
-            }
-        });
+        $(`#${image_id} .input-name`).val(name);
+        $(`#image_${image_id}_pre`).attr('src', link);
     }
 
     function html_row_image(image_id) {
         let row_new = `<tr id='${image_id}'>
             <td class="align-middle">
-                <input name="" class="form-control border-0" value="${SLIDE[image_id].name}" onChange="SLIDE[${image_id}].name = this.value">
+                <input name="" class="form-control border-0 input-name" value="${SLIDE[image_id].name}" onChange="SLIDE[${image_id}].name = this.value">
             </td>
             <td class="align-middle text-center">
                 <img src="${SLIDE[image_id].image}" alt="" class="img-fluid w-50" id="image_${image_id}_pre">
-                <input type="hidden" id="image_${image_id}" onChange="SLIDE[${image_id}].image = this.value">
+                <input type="hidden" id="image_${image_id}"  data-id="${image_id}">
             </td>
             <td class="text-right py-0 align-middle">
                 <div class="btn-group btn-group-sm">
-                    <button type="button" class="btn btn-warning">
-                        <label for="fileButton" onClick="IMAGE_ACTIVE=${image_id}">
-                            <i class="fas fa-upload"></i>
-                        </label>
+                    <button type="button" class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_image_library" data-target="#image_${image_id}">
+                        <i class="fas fa-upload"></i>
                     </button>
                     
                     <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
@@ -321,16 +221,5 @@
         for (const image_id in SLIDE) {
             $('#table_add_image tbody').append(html_row_image(image_id));
         }
-
-        $('.iframe-btn').fancybox({
-            'type': 'iframe',
-            'autoScale': true,
-            'iframe': {
-                'css': {
-                    'width': '1024px',
-                    'height': '800px'
-                }
-            }
-        });
     }
 </script>

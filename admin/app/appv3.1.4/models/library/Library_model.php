@@ -52,12 +52,10 @@ class Library_model extends CI_Model
             if ($stmt->execute()) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        //TODO: tạm fix ảnh
-                        // $row['image_path'] = '';
-                        // $year = date('Y', strtotime($row['create_time']));
-                        // $month = date('m', strtotime($row['create_time']));
-                        // $row['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image'];
-                        $row['image_path'] = $row['image'];
+                        $row['image_path'] = '';
+                        $year = date('Y', strtotime($row['create_time']));
+                        $month = date('m', strtotime($row['create_time']));
+                        $row['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image'];
                         $data[$row['id_library']] = $row;
                     }
                 }
@@ -88,14 +86,14 @@ class Library_model extends CI_Model
         return $data;
     }
 
-    function edit($name, $sapo, $image, $slide, $status, $update_time, $id_library)
+    function edit($id_room, $id_style, $name, $image, $status, $update_time, $id_library)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_library SET name=?, sapo=?, image=?, slide=?, status=?, update_time=? WHERE id_library=?";
+        $sql = "UPDATE tbl_library SET id_room=?, id_style=?, name=?, image=?, status=?, update_time=? WHERE id_library=?";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $sapo, $image, $slide, $status, $update_time, $id_library];
+            $param = [$id_room, $id_style, $name, $image, $status, $update_time, $id_library];
 
             if ($stmt->execute($param)) {
                 $execute = true;

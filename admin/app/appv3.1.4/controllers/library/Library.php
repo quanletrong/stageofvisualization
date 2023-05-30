@@ -57,63 +57,52 @@ class Library extends MY_Controller
                 $status = $status == 'on' ? 1 : 0;
                 //END validate
 
-                // $copy = copy_image_from_file_manager_to_public_upload($image, date('Y'), date('m')); TODO: copy ảnh
-                // if ($copy['status']) {
-                //     $exc = $this->Library_model->add($name, $sapo, $copy['basename'], $image, $status, $this->_session_uid(), $create_time);
-                //     $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!';
-                // } else {
-                //     $msg = $copy['error'];
-                // }
-                $image_arr = json_decode($image, true);
-
-                if (empty($image_arr)) {
-                    $this->session->set_flashdata('flsh_msg', 'Không lưu được ảnh');
-                    redirect('library');
+                // copy and validate image
+                $arr_image = json_decode($image, true);
+                foreach ($arr_image as $id => $it) {
+                    $copy = copy_image_from_file_manager_to_public_upload($it['image'], date('Y'), date('m'));
+                    if ($copy['status']) {
+                        $this->Library_model->add($id_room, $id_style, $it['name'], $copy['basename'], $status, $this->_session_uid(), $create_time);
+                    }
                 }
-
-                foreach ($image_arr as $key => $item) {
-                    $exc = $this->Library_model->add($id_room, $id_style, $item['name'], $item['image'], $status, $this->_session_uid(), $create_time);
-                }
-                // $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!'; //TODO: tạm set mặc định
                 $this->session->set_flashdata('flsh_msg', 'OK');
                 redirect('library');
             }
 
             // CẬP NHẬT
-            // if ($_POST['action'] == 'edit') {
+            if ($_POST['action'] == 'edit') {
 
-            //     // TODO: validate dữ liệu submit
-            //     $status = $status == 'on' ? 1 : 0;
-            //     //END validate
+                // TODO: validate dữ liệu submit
+                $status = $status == 'on' ? 1 : 0;
+                //END validate
 
-            //     $info   = $this->Library_model->get_info($id_library);
-            //     if (empty($info)) {
-            //         $msg = 'Lưu không thành công vui lòng thử lại!';
-            //     } else {
+                $info   = $this->Library_model->get_info($id_library);
+                if (empty($info)) {
+                    $this->session->set_flashdata('flsh_msg', 'Lưu không thành công vui lòng thử lại!');
+                    redirect('library');
+                } else {
 
-            //         $year   = date('Y', strtotime($info['create_time']));
-            //         $monthe = date('m', strtotime($info['create_time']));
-            //         $image_ok = $info['image'];
-            //         $update_time = date('Y-m-d H:i:s');
+                    $year   = date('Y', strtotime($info['create_time']));
+                    $monthe = date('m', strtotime($info['create_time']));
+                    $update_time = date('Y-m-d H:i:s');
 
-            //         // copy anh truoc nếu upload mới
-            //         if (basename($image) != $info['image']) {
-            //             $copy = copy_image_from_file_manager_to_public_upload($image, $year, $monthe);
-            //             if ($copy['status']) {
-            //                 $image_ok = $copy['basename'];
-            //             } else {
-            //                 $this->session->set_flashdata('flsh_msg', $copy['error']);
-            //                 redirect('library');
-            //             }
-            //         }
 
-            //         $exc = $this->Library_model->edit($name, $sapo, $image_ok, $image, $status, $update_time, $id_library);
-            //         $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
-            //         redirect('library');
-            //     }
-            //     $this->session->set_flashdata('flsh_msg', $msg);
-            //     redirect('library');
-            // }
+                    $arr_image = json_decode($image, true);
+                    foreach ($arr_image as $id => $it) {
+
+                        $image_ok = $info['image'];
+                        // copy and validate image
+                        if (strpos($it['image'], 'uploads/tmp') !== false) {
+                            $copy = copy_image_from_file_manager_to_public_upload($it['image'], $year, $monthe);
+                            $image_ok = $copy['basename'];
+                        }
+
+                        $exc = $this->Library_model->edit($id_room, $id_style, $it['name'], $image_ok, $status, $update_time, $id_library);
+                        $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
+                        redirect('library');
+                    }
+                }
+            }
         }
 
         $list_library = $this->Library_model->get_list($sstatus, $sid_room, $sid_style);

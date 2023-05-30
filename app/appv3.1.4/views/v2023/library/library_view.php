@@ -39,7 +39,7 @@
             <?php } ?>
         </div>
 
-        <center class="mt-3">
+        <center class="mt-3 d-none">
             <button class="btn btn-outline-danger">View more...</button>
         </center>
     </div>
