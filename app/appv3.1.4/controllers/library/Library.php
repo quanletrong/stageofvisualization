@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Home extends MY_Controller
+class Library extends MY_Controller
 {
 
     function __construct()
@@ -8,7 +8,8 @@ class Home extends MY_Controller
         $this->_module = trim(strtolower(__CLASS__));
         parent::__construct();
 
-        $this->load->model('service/Service_model');
+        $this->load->model('library/Library_model');
+        $this->load->model('room/Room_model');
         $this->load->model('style/Style_model');
     }
 
@@ -17,20 +18,22 @@ class Home extends MY_Controller
         $data = [];
 
         $header = [
-            'title' => 'Home',
+            'title' => 'Library',
             'active_link' => 'home',
-            'header_page_css_js' => 'home'
+            'header_page_css_js' => 'library'
         ];
 
-        $service = $this->Service_model->get_list(1);
+        $room = $this->Room_model->get_list(1);
         $style = $this->Style_model->get_list(1);
+        $library = $this->Library_model->get_list(1);
 
-        $data['service'] = $service;
+        $data['room'] = $room;
         $data['style'] = $style;
+        $data['library'] = $library;
 
         $this->_loadHeader($header);
 
-        $this->load->view($this->_template_f . 'home/home_view', $data);
+        $this->load->view($this->_template_f . 'library/library_view', $data);
 
         $this->_loadFooter();
     }

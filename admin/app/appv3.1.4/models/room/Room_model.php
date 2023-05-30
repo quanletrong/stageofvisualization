@@ -8,14 +8,14 @@ class Room_model extends CI_Model
         parent::__construct();
     }
 
-    function add($id_service, $name, $image_before, $image_after, $status, $id_user, $create_time)
+    function add($name, $status, $id_user, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_room (id_service, name, image_before, image_after, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_room (name, status, id_user, create_time) VALUES (?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_service, $name, $image_before, $image_after, $status, $id_user, $create_time];
+            $param = [$name, $status, $id_user, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -37,28 +37,16 @@ class Room_model extends CI_Model
         $where .= $status !== '' ? " AND A.status =? " : "";
 
         $sql = "
-        SELECT A.*, B.username, C.name as service_name
+        SELECT A.*, B.username
         FROM tbl_room as A 
         LEFT JOIN tbl_user as B ON A.id_user = B.id_user 
-        LEFT JOIN tbl_service as C ON A.id_service = C.id_service 
         $where
-        ORDER BY sort ASC";
+        ORDER BY sort ASC, status DESC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$status])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $row['image_before_path'] = '';
-                        $year = date('Y', strtotime($row['create_time']));
-                        $month = date('m', strtotime($row['create_time']));
-                        $row['image_before_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image_before'];
-
-                        $row['image_after_path'] = '';
-                        $year = date('Y', strtotime($row['create_time']));
-                        $month = date('m', strtotime($row['create_time']));
-                        $row['image_after_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image_after'];
-
-
                         $data[$row['id_room']] = $row;
                     }
                 }
@@ -89,14 +77,14 @@ class Room_model extends CI_Model
         return $data;
     }
 
-    function edit($id_service, $name, $image_before, $image_after, $status, $update_time, $id_room)
+    function edit($name, $status, $update_time, $id_room)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_room SET id_service=?, name=?, image_before=?, image_after=?, status=?, update_time=? WHERE id_room=?";
+        $sql = "UPDATE tbl_room SET name=?, status=?, update_time=? WHERE id_room=?";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_service, $name, $image_before, $image_after, $status, $update_time, $id_room];
+            $param = [$name, $status, $update_time, $id_room];
 
             if ($stmt->execute($param)) {
                 $execute = true;

@@ -35,6 +35,43 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <form method="GET" action="library">
+                                <div class="row" style="background-color: #dee2e6; padding-top: 1rem; margin-bottom: 1rem;">
+
+                                    <!-- Status -->
+                                    <div class="col-md-3">
+                                        <select class="select2" style="width: 100%;" name="sstatus" data-minimum-results-for-search="Infinity">
+                                            <option value="">Tất trạng thái</option>
+                                            <option value="1" <?= @$_GET['sstatus'] == '1' ? 'selected' : '' ?>>Hiển thị</option>
+                                            <option value="0" <?= @$_GET['sstatus'] == '0' ? 'selected' : '' ?>>Không hiển thị</option>
+                                        </select>
+                                    </div>
+                                    <!-- Phòng -->
+                                    <div class="col-md-3">
+                                        <select class="select2" style="width: 100%;" name="sid_room">
+                                            <option value="">Tất loại phòng</option>
+                                            <?php foreach ($list_room as $rm) { ?>
+                                                <option value="<?= $rm['id_room'] ?>" <?= @$_GET['sid_room'] == $rm['id_room'] ? 'selected' : '' ?>><?= $rm['name'] ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                    <!-- Phong cách -->
+                                    <div class="col-md-3">
+
+                                        <select class="select2" style="width: 100%;" name="sid_style">
+                                            <option value="">Tất cả phong cách</option>
+                                            <?php foreach ($list_style as $st) { ?>
+                                                <option value="<?= $st['id_style'] ?>" <?= @$_GET['sid_style'] == $st['id_style'] ? 'selected' : '' ?>><?= $st['name'] ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+
+                                    <!-- TÌM -->
+                                    <div class="col-md-3 mb-3">
+                                        <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -112,5 +149,7 @@
             "autoWidth": false,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        $('.select2').select2();
     });
 </script>

@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Library_model extends CI_Model
+class Room_model extends CI_Model
 {
     public function __construct()
     {
@@ -8,15 +8,14 @@ class Library_model extends CI_Model
         parent::__construct();
     }
 
-    // TODO: 
-    function add($id_room, $id_style, $name, $image, $status, $id_user, $create_time)
+    function add($name, $status, $id_user, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_library (id_room, id_style, name, image, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_room (name, status, id_user, create_time) VALUES (?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_room, $id_style, $name, $image, $status, $id_user, $create_time];
+            $param = [$name, $status, $id_user, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -29,36 +28,26 @@ class Library_model extends CI_Model
         return $new_id;
     }
 
-    function get_list($status = '', $id_room = '', $id_style = '')
+    function get_list($status = '')
     {
         $data = [];
         $iconn = $this->db->conn_id;
 
         $where = 'WHERE 1=1 ';
-        $where .= $status   !== '' ? " AND A.status = $status " : "";
-        $where .= $id_room  !== '' ? " AND A.id_room = $id_room " : "";
-        $where .= $id_style !== '' ? " AND A.id_style = $id_style " : "";
+        $where .= $status !== '' ? " AND A.status =? " : "";
 
         $sql = "
-        SELECT A.*, B.username, C.name as style_name, D.name as room_name 
-        FROM tbl_library as A 
+        SELECT A.*, B.username
+        FROM tbl_room as A 
         LEFT JOIN tbl_user as B ON A.id_user = B.id_user 
-        LEFT JOIN tbl_style as C ON A.id_style = C.id_style 
-        LEFT JOIN tbl_room as D ON A.id_room = D.id_room 
         $where
         ORDER BY sort ASC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute()) {
+            if ($stmt->execute([$status])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        //TODO: tạm fix ảnh
-                        // $row['image_path'] = '';
-                        // $year = date('Y', strtotime($row['create_time']));
-                        // $month = date('m', strtotime($row['create_time']));
-                        // $row['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image'];
-                        $row['image_path'] = $row['image'];
-                        $data[$row['id_library']] = $row;
+                        $data[$row['id_room']] = $row;
                     }
                 }
             } else {
@@ -70,14 +59,14 @@ class Library_model extends CI_Model
         return $data;
     }
 
-    function get_info($id_library)
+    function get_info($id_room)
     {
         $data = [];
         $iconn = $this->db->conn_id;
-        $sql = "SELECT * FROM tbl_library WHERE id_library = ? LIMIT 1";
+        $sql = "SELECT * FROM tbl_room WHERE id_room = ? LIMIT 1";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([$id_library])) {
+            if ($stmt->execute([$id_room])) {
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
             } else {
                 var_dump($stmt->errorInfo());
@@ -88,14 +77,14 @@ class Library_model extends CI_Model
         return $data;
     }
 
-    function edit($name, $sapo, $image, $slide, $status, $update_time, $id_library)
+    function edit($name, $status, $update_time, $id_room)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_library SET name=?, sapo=?, image=?, slide=?, status=?, update_time=? WHERE id_library=?";
+        $sql = "UPDATE tbl_room SET name=?, status=?, update_time=? WHERE id_room=?";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $sapo, $image, $slide, $status, $update_time, $id_library];
+            $param = [$name, $status, $update_time, $id_room];
 
             if ($stmt->execute($param)) {
                 $execute = true;

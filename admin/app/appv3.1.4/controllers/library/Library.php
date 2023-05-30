@@ -36,6 +36,10 @@ class Library extends MY_Controller
             'header_page_css_js' => 'library'
         ];
 
+        $sid_room  = trim($this->input->get('sid_room'));
+        $sid_style = trim($this->input->get('sid_style'));
+        $sstatus   = trim($this->input->get('sstatus'));
+
         // SUBMIT FORM (nếu có)
         if (isset($_POST['action'])) {
             $id_room     = $this->input->post('id_room');
@@ -112,9 +116,9 @@ class Library extends MY_Controller
             // }
         }
 
-        $list_library = $this->Library_model->get_list();
-        $list_style   = $this->Style_model->get_list();
-        $list_room    = $this->Room_model->get_list();
+        $list_library = $this->Library_model->get_list($sstatus, $sid_room, $sid_style);
+        $list_style   = $this->Style_model->get_list(1);
+        $list_room    = $this->Room_model->get_list(1);
 
         $data['list_library'] = $list_library;
         $data['list_style']   = $list_style;

@@ -230,6 +230,7 @@
                 modal.find('.modal-body #image_pre').attr('src', library.image_path);
 
                 let image_id = Date.now();
+                SLIDE = {};
                 SLIDE[image_id] = {
                     'name': library.name,
                     'image': library.image_path,

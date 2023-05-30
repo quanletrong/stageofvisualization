@@ -35,9 +35,9 @@ class Library_model extends CI_Model
         $iconn = $this->db->conn_id;
 
         $where = 'WHERE 1=1 ';
-        $where .= $status   !== '' ? " AND A.status = $status " : "";
-        $where .= $id_room  !== '' ? " AND A.id_room = $id_room " : "";
-        $where .= $id_style !== '' ? " AND A.id_style = $id_style " : "";
+        $where .= $status   !== '' ? " AND A.status = ? " : "";
+        $where .= $id_room  !== '' ? " AND A.id_room = ? " : "";
+        $where .= $id_style !== '' ? " AND A.id_style = ? " : "";
 
         $sql = "
         SELECT A.*, B.username, C.name as style_name, D.name as room_name 
@@ -45,11 +45,11 @@ class Library_model extends CI_Model
         LEFT JOIN tbl_user as B ON A.id_user = B.id_user 
         LEFT JOIN tbl_style as C ON A.id_style = C.id_style 
         LEFT JOIN tbl_room as D ON A.id_room = D.id_room 
-        $where
+
         ORDER BY sort ASC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute()) {
+            if ($stmt->execute([$status])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         //TODO: tạm fix ảnh

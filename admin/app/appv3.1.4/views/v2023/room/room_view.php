@@ -39,10 +39,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="min-width: 50px; width: 50px;">STT</th>
-                                        <th style="min-width: 100px; width: 100px;">Tên phòng</th>
-                                        <th class="" style="min-width: 150px; width: 150px;">Dịch vụ</th>
-                                        <th class="text-center" style="min-width: 70px; width: 70px;">Trước</th>
-                                        <th class="text-center" style="min-width: 70px; width: 70px;">Sau</th>
+                                        <th>Tên phòng</th>
                                         <th style="min-width: 150px; width: 150px;">Bởi</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
                                         <th style="min-width: 70px; width: 70px;">Action</th>
@@ -54,9 +51,6 @@
                                         <tr>
                                             <td class="align-middle text-center"><?= $index++ ?></td>
                                             <td class="align-middle"><?= $item['name'] ?></td>
-                                            <td class="align-middle"><?= @$item['service_name'] ?></td>
-                                            <td class="align-middle text-center"><img src='<?= $item['image_before_path'] ?>' width="100" class="rounded"></td>
-                                            <td class="align-middle text-center"><img src='<?= $item['image_after_path'] ?>' width="100" class="rounded"></td>
 
                                             <td class="align-middle">
                                                 <strong><?= $item['username'] ?></strong><br>
@@ -83,14 +77,11 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th class="text-center">STT</th>
+                                    <th class="text-center" style="min-width: 50px; width: 50px;">STT</th>
                                         <th>Tên phòng</th>
-                                        <th class="" style="min-width: 150px; width: 150px;">Dịch vụ</th>
-                                        <th class="text-center">Ảnh trước</th>
-                                        <th class="text-center">Ảnh sau</th>
-                                        <th>Bởi</th>
-                                        <th class="text-center">Trạng thái</th>
-                                        <th>Action</th>
+                                        <th style="min-width: 150px; width: 150px;">Bởi</th>
+                                        <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
+                                        <th style="min-width: 70px; width: 70px;">Action</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -126,16 +117,6 @@
                         <div class="row">
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
-                                    <label>Loại dịch vụ</label>
-                                    <select class="select2" style="width: 100%;" name="id_service">
-                                        <option value="0">Chọn</option>
-                                        <?php foreach ($list_service as $id_service => $service) { ?>
-                                            <option value="<?= $id_service ?>"><?= $service['name'] ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
                                     <label for="name">Tên phòng</label>
                                     <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên phòng">
                                 </div>
@@ -152,29 +133,6 @@
                                         <input class="custom-control-input" type="radio" id="status_0" name="status" value="0">
                                         <label for="status_0" class="custom-control-label">Ngừng hiển thị</label>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <div class="form-group">
-                                    <label>Ảnh trước khi thiết kế</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <a href="<?= ROOT_DOMAIN ?>/filemanager/filemanager/dialog.php?type=1&field_id=image_before" class="btn btn-primary iframe-btn">Chọn ảnh</a>
-                                        </div>
-                                        <input type="text" class="form-control" id="image_before" name="image_before" readonly>
-                                    </div>
-                                    <small>Ảnh sẽ dùng trong phần tạo đơn và bảng giá. Kích thước ảnh nên dùng 4x3</small>
-                                    <img src="" id="image_before_pre" class="rounded img-fluid w-100 shadow mb-3" />
-
-                                    <label>Ảnh sau khi thiết kế</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <a href="<?= ROOT_DOMAIN ?>/filemanager/filemanager/dialog.php?type=1&field_id=image_after" class="btn btn-primary iframe-btn">Chọn ảnh</a>
-                                        </div>
-                                        <input type="text" class="form-control" id="image_after" name="image_after" readonly>
-                                    </div>
-                                    <small>Ảnh sẽ dùng trong phần tạo đơn và bảng giá. Kích thước ảnh nên dùng 4x3</small>
-                                    <img src="" id="image_after_pre" class="rounded img-fluid w-100 shadow" />
                                 </div>
                             </div>
                         </div>
@@ -194,24 +152,12 @@
 
 <script>
     $(function() {
-        $('.select2').select2();
         $("#example1").DataTable({
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-        $('.iframe-btn').fancybox({
-            'type': 'iframe',
-            'autoScale': true,
-            'iframe': {
-                'css': {
-                    'width': '1024px',
-                    'height': '800px'
-                }
-            }
-        });
 
         $('#frm_room').validate({
             submitHandler: function(form) {
@@ -223,12 +169,6 @@
                     required: true,
                     minlength: 5,
                     maxlength: 256
-                },
-                image_before: {
-                    required: true
-                },
-                image_after: {
-                    required: true
                 }
 
             },
@@ -237,12 +177,6 @@
                     required: 'Không được bỏ trống',
                     minlength: 'Tối thiểu 5 ký tự',
                     maxlength: 'Tối đa 256 ký tự',
-                },
-                image_before: {
-                    required: 'Không được bỏ trống'
-                },
-                image_after: {
-                    required: 'Không được bỏ trống'
                 }
             },
             errorElement: 'span',
@@ -269,31 +203,17 @@
                 $('#frm_room input[name=id_room]').val(room.id_room);
                 modal.find('.modal-title').text(`Sửa thông tin - ${room.name}`);
                 modal.find('.modal-body #name').val(room.name);
-                modal.find('.modal-body #image_before').val(room.image_before);
 
-                modal.find('.modal-body #image_after').val(room.image_after);
-                modal.find(`.modal-body select[name=id_service][value=${room.id_service}]`).prop('selected', true);
                 modal.find(`.modal-body input:radio[name=status][value=${room.status}]`).prop('checked', true);
-                modal.find('.modal-body #image_before_pre').attr('src', room.image_before_path);
-                modal.find('.modal-body #image_after_pre').attr('src', room.image_after_path);
+                modal.find('.modal-body #image_pre').attr('src', room.image_path);
             } else {
                 $('#frm_room input[name=action]').val('add');
-                $('#frm_room input[name=id_room]').val('');
                 modal.find('.modal-title').text(`Thêm phòng`);
                 modal.find('.modal-body #name').val('');
-                modal.find('.modal-body #image_before').val('');
-                modal.find('.modal-body #image_after').val('');
                 modal.find(`.modal-body input:radio[name=status][value=1]`).prop('checked', true);
-                modal.find('.modal-body #image_before_pre').attr('src', '');
-                modal.find('.modal-body #image_after_pre').attr('src', '');
             }
 
         })
 
     });
-
-    function responsive_filemanager_callback(field_id) {
-        var url = jQuery('#' + field_id).val();
-        $(`#${field_id}_pre`).attr('src', url).show();
-    }
 </script>
