@@ -6,12 +6,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Thư viện thiết kế</h1>
+                    <h1>Thư viện ảnh thiết kế</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
-                        <li class="breadcrumb-item active">Thư viện thiết kế</li>
+                        <li class="breadcrumb-item active">Thư viện ảnh thiết kế</li>
                     </ol>
                 </div>
             </div>
@@ -26,9 +26,9 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h3 class="card-title">Thư viện thiết kế</h3>
+                                <h3 class="card-title">Thư viện ảnh thiết kế</h3>
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-library" data-type="add">
-                                    Thêm mới
+                                    Thêm mới ảnh
                                 </button>
                             </div>
 
