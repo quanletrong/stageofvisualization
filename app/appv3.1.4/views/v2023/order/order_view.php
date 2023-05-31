@@ -1,4 +1,33 @@
+<script>
+    // chi tiết 1 order
+    let ORDER = {};
+    ORDER.image = '';
+    ORDER.room = '';
+    ORDER.service = {};
+    ORDER.requirement = '';
+    ORDER.attach = '';
+
+    let STATE = {};
+    // step 1
+    STATE.name = '';
+    STATE.lastname = '';
+    STATE.email = '';
+    STATE.phone = '';
+
+    // step 2
+    STATE.order = {};
+    STATE.style = 0;
+
+    // step 3
+    STATE.card_number = '';
+    STATE.card_mm = '';
+    STATE.card_yy = '';
+    STATE.card_cvv = '';
+    STATE.coupon = '';
+</script>
 <div class="container-fluid" style="background-color: #fafafa;">
+
+    <!-- STEP 1 -->
     <div class="container py-5" id="step-1">
         <div class="fw-semibold fs-5 mb-3">STEP 1 OF 3: CUSTOMER INFO</div>
 
@@ -7,19 +36,19 @@
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="First Name">
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="First Name" onchange="STATE.name = $(this).val()">
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Last Name">
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Last Name" onchange="STATE.lastname = $(this).val()">
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Email</label>
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="email@email.com">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="email@email.com" onchange="STATE.email = $(this).val()">
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Phone Number (10 Digits)</label>
-                <input type="tel" class="form-control" id="exampleFormControlInput1" pattern="[0-9]{10}" placeholder="Phone number">
+                <input type="tel" class="form-control" id="exampleFormControlInput1" pattern="[0-9]{10}" placeholder="Phone number" onchange="STATE.phone = $(this).val()">
             </div>
 
             <div class="mb-3">
@@ -28,25 +57,7 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-
-            if ($(window).width() < 992) {
-                $('.step-1-box').removeClass('w-50')
-            } else {
-                $('.step-1-box').addClass('w-50')
-            }
-
-            $(window).resize(function() {
-                if ($(window).width() < 992) {
-                    $('.step-1-box').removeClass('w-50')
-                } else {
-                    $('.step-1-box').addClass('w-50')
-                }
-            });
-        });
-    </script>
-
+    <!-- STEP 2 -->
     <div class="container py-5 d-none" id="step-2">
         <div class="fw-semibold fs-5 mb-3">STEP 2 OF 3: ADD PHOTOS </div>
 
@@ -54,91 +65,30 @@
             <div class="col-12 col-lg-6">
                 <div class="border p-4 shadow div_main_1">
                     <div class="mb-3">
-                        <button class="btn btn-lg btn-danger w-100" id="button_upload_image_step_2">Click or Drag and Drop Photos</button>
+                        <button class="btn btn-lg btn-danger w-100" id="button_upload_image_step_2" onclick="add_order()">Click or Drag and Drop Photos</button>
                     </div>
                 </div>
 
-                <div class="border p-4 shadow d-none div_main_2">
-                    <div class="position-relative">
-                        <img src="photo_pre" class="img-fluid w-100" alt="">
-                        <div class="position-absolute" style="top:10px; right: 10px; cursor: pointer;">
-                            <i class="fa-solid fa-xmark fs-3" onclick="step2_remove_image(this)"></i>
-                        </div>
-                    </div>
-
-                    <small>Thumbnail shown. The full quality photo <span class="link-color" style="cursor: pointer;">(preview)</span> will be received when the order is placed.</small>
-
-                    <div class="my-3">
-                        <label for="exampleFormControlInput1" class="form-label fw-bold">Room Type:</label>
-                        <select name="" id="image_room_type" title="Please select room type." class="form-control">
-                            <option value="">Select Room Type</option>
-                            <?php foreach ($list_room as $id => $rm) { ?>
-                                <option value="<?= $id ?>"><?= $rm['name'] ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                    <div class="my-3">
-                        <label for="exampleFormControlInput1" class="form-label fw-bold">Select Services (Select All
-                            That Apply):
-                        </label>
-
-                        <?php foreach ($list_service as $id => $sv) { ?>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault<?= $id ?>">
-                                <label class="form-check-label" for="flexCheckDefault<?= $id ?>">
-                                    <?= $sv['name'] ?> - <?= $sv['price'] ?>
-                                </label>
-                                <i class="fa-solid fa-circle-info text-secondary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModalServices" data-name="<?= $sv['name'] ?>" data-src="<?= $sv['image_path'] ?>" data-sapo="<?= $sv['sapo'] ?>"></i>
-                            </div>
-                        <?php } ?>
-
-                    </div>
-
-                    <div class="my-3">
-                        <label for="exampleFormControlInput1" class="form-label fw-bold">Your Design Requirements
-                            (Optional):</label><br>
-                        <small>For example, your desired Collection ID from the <span class="link-color">Library</span>
-                            (e.g.
-                            CCBR10), your vision, etc.</small>
-                        <textarea class="form-control"></textarea>
-
-                        <div class="mb-3 mt-3">
-                            <label for="formFileSm" class="form-label"> Attach Reference Files</label>
-                            <input class="form-control form-control-sm" id="formFileSm" type="file" placeholder=" Attach Reference Files">
-                        </div>
-                    </div>
-                </div>
+                <div id="list_order"></div>
 
                 <!-- Want to Add More Photos to Your Order?  -->
                 <div class="border p-4 mt-3 shadow d-none div_main_3">
                     <label for="" class="form-label fw-bold">Want to Add More Photos to Your Order?</label>
                     <div class="mb-3">
-                        <button class="btn btn-lg btn-dark text-light w-100 ">Add More Photos to Order</button>
+                        <button class="btn btn-lg btn-dark text-light w-100 " onclick="add_order()">Add More Photos to Order</button>
                     </div>
                 </div>
 
                 <!-- Property Address:  Design Style:-->
-                <div class="border p-4 mt-3 shadow d-none div_main_3">
-                    <label for="" class="form-label fw-bold">Property Address: </label>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Property Address">
-                        <div class="form-check mt-2">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                I prefer to not say / does not apply
-                            </label>
-                        </div>
-                    </div>
-
-                    <!--  -->
+                <div class="border p-4 mt-3 shadow d-none div_main_4">
                     <label for="" class="form-label fw-bold">Design Style:</label>
                     <div>
                         <div class="row">
                             <?php foreach ($list_style as $id => $st) { ?>
-                                <div class="col-12 col-lg-6">
-                                    <div class="form-check mt-2 ps-0 d-flex flex-column align-items-center">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-check mt-2 ps-0 ms-5">
                                         <div class="mt-2">
-                                            <input class="form-check-input" type="radio" name="style" value="<?= $id ?>" id="radio_design_style_<?= $id ?>">
+                                            <input class="form-check-input" type="radio" name="style" value="<?= $id ?>" id="radio_design_style_<?= $id ?>" onchange="STATE.style = this.value">
                                             <label class="form-check-label link-color" for="radio_design_style_<?= $id ?>"><?= $st['name'] ?></label>
                                         </div>
                                         <div class="text-decoration-underline" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModalDesignStyle" data-name="<?= $st['name'] ?>" data-slide="<?= htmlentities($st['slide']) ?>">View Examples</div>
@@ -149,21 +99,12 @@
                         </div>
 
                         <div class="form-check mt-3">
-                            <input class="form-check-input" type="radio" name="style" value="-1" id="radio_im_unsure">
+                            <input class="form-check-input" type="radio" name="style" value="" id="radio_im_unsure" onchange="STATE.style = 0">
                             <label class="form-check-label" for="radio_im_unsure">
                                 I'm unsure, let my designer choose a style for me.
                             </label>
                         </div>
-                        <!-- By Default, Photos Are Delivered In 24 Hours, 7 Days A Week. Do You Want Them Delivered In 12 Hours? -->
-                        <div class="mt-3 d-none">
-                            <label for="" class="form-label fw-bold">By Default, Photos Are Delivered In 24 Hours, 7 Days A
-                                Week. Do You Want Them Delivered In 12 Hours?</label>
 
-                            <select name="" id="" class="form-control">
-                                <option value="">24 Hour Delivery</option>
-                                <option value="">12 Hour Delivery (+$10.00/photo)</option>
-                            </select>
-                        </div>
                         <!-- submit -->
                         <div class="mt-3">
                             <div class="d-flex">
@@ -311,126 +252,7 @@
         </div>
     </div>
 
-    <!-- Button trigger modal -->
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModalServices" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-fullscreen-md-down">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Furniture and Decor</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="position-relative">
-                        <img src="" class="image" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="position-absolute p-2 text-bg-dark shadow" style="top:10px; left: 10px;">BEFORE</div>
-                        <div class="position-absolute p-2 text-bg-dark shadow" style="top:10px; right: 10px;">AFTER</div>
-                    </div>
-                    <p class="mt-3">
-                        <strong class="name">Add Furniture and Decor</strong> - <span class="sapo">Add furniture and decor to a space. This is typically
-                            used on photos of vacant spaces. It can also be used if you would like to keep existing furniture
-                            and add additional furniture and decor around it. This service type does not include item removal.</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <script>
-            $(document).ready(function() {
-                $('#exampleModalServices').on('show.bs.modal', function(event) {
-                    var button = $(event.relatedTarget);
-                    var src = button.data('src');
-                    var name = button.data('name');
-                    var sapo = button.data('sapo');
-                    var modal = $(this);
-
-                    modal.find('.modal-header .modal-title').text(name);
-                    modal.find('.modal-body .image').attr('src', src);
-                    modal.find('.modal-body .name').text(name);
-                    modal.find('.modal-body .sapo').text(sapo);
-                })
-            });
-        </script>
-    </div>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModalDesignStyle" tabindex="-1" aria-labelledby="exampleModalLabelDesignStyle" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-fullscreen-md-down">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabelDesignStyle">Comfortable Contemporary</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="owl-design-style" class="owl-carousel owl-theme mt-3 ">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script>
-            $(document).ready(function() {
-                $('#exampleModalDesignStyle').on('show.bs.modal', function(event) {
-
-                    var button = $(event.relatedTarget);
-                    var name = button.data('name');
-                    var slide = button.data('slide');
-                    var modal = $(this);
-                    modal.find('.modal-header .modal-title').text(name);
-                    $('#owl-design-style').trigger('destroy.owl.carousel');
-                    try {
-                        let html = '';
-                        for (const [key, value] of Object.entries(slide)) {
-                            console.log(`${key}: ${value}`);
-                            html += `<img src="${value.image_path}" class="img-fluid w-100" />`
-                        }
-
-                        $('#owl-design-style').html(html).hide();
-
-                        // $("#owl-design-style").owlCarousel({
-                        //     items: 1,
-                        //     autoplay: false,
-                        //     margin: 10,
-                        //     responsiveClass: true,
-                        //     nav: false,
-                        //     dots: true
-                        // });
-                    } catch (error) {
-                        console.log(error)
-                    }
-
-
-                })
-            });
-        </script>
-    </div>
-
-    <script>
-        $('document').ready(function() {
-            $("#owl-design-style").owlCarousel({
-                items: 1,
-                autoplay: false,
-                margin: 10,
-                responsiveClass: true,
-                nav: false,
-                dots: true
-            });
-
-            $("#button_upload_image_step_2").click(function() {
-                $('#step-2 .div_main_1').addClass('d-none');
-                $('#step-2 .div_main_2').removeClass('d-none');
-                $('#step-2 .div_main_3').removeClass('d-none');
-                $('#step-2 .div_main_4').removeClass('d-none');
-            })
-        })
-
-        function step2_remove_image() {
-            $('#step-2 .div_main_1').removeClass('d-none');
-            $('#step-2 .div_main_2').addClass('d-none');
-            $('#step-2 .div_main_3').addClass('d-none');
-            $('#step-2 .div_main_4').addClass('d-none');
-        }
-    </script>
-
+    <!-- STEP 3 -->
     <div class="container py-5 d-none" id="step-3">
         <div class="fw-semibold fs-5 mb-3">STEP 3 OF 3: CUSTOMER INFO</div>
         <div class="row">
@@ -499,8 +321,115 @@
         </div>
     </div>
 
+
+    <!-- Modal SERVICE -->
+    <div class="modal fade" id="exampleModalServices" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-md-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Furniture and Decor</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="position-relative">
+                        <img src="" class="image" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="position-absolute p-2 text-bg-dark shadow" style="top:10px; left: 10px;">BEFORE</div>
+                        <div class="position-absolute p-2 text-bg-dark shadow" style="top:10px; right: 10px;">AFTER</div>
+                    </div>
+                    <p class="mt-3">
+                        <strong class="name">Add Furniture and Decor</strong> - <span class="sapo">Add furniture and decor to a space. This is typically
+                            used on photos of vacant spaces. It can also be used if you would like to keep existing furniture
+                            and add additional furniture and decor around it. This service type does not include item removal.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                $('#exampleModalServices').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var src = button.data('src');
+                    var name = button.data('name');
+                    var sapo = button.data('sapo');
+                    var modal = $(this);
+
+                    modal.find('.modal-header .modal-title').text(name);
+                    modal.find('.modal-body .image').attr('src', src);
+                    modal.find('.modal-body .name').text(name);
+                    modal.find('.modal-body .sapo').text(sapo);
+                })
+            });
+        </script>
+    </div>
+
+    <!-- Modal DESIGN STYLE -->
+    <div class="modal fade" id="exampleModalDesignStyle" tabindex="-1" aria-labelledby="exampleModalLabelDesignStyle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-md-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabelDesignStyle">Comfortable Contemporary</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="owl-design-style" class="owl-carousel owl-theme mt-3 ">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                $('#exampleModalDesignStyle').on('show.bs.modal', function(event) {
+
+                    var button = $(event.relatedTarget);
+                    var name = button.data('name');
+                    var slide = button.data('slide');
+                    var modal = $(this);
+                    modal.find('.modal-header .modal-title').text(name);
+
+                    try {
+                        let html = '';
+                        for (const [key, value] of Object.entries(slide)) {
+                            html += `<img src="${value.image_path}" class="img-fluid w-100" />`
+                        }
+
+                        $('#owl-design-style').html(html).hide();
+                        $('#owl-design-style').trigger('destroy.owl.carousel');
+                        $("#owl-design-style").owlCarousel({
+                            items: 1,
+                            autoplay: false,
+                            margin: 10,
+                            responsiveClass: true,
+                            nav: false,
+                            dots: true
+                        });
+                        $('#owl-design-style').show()
+                    } catch (error) {
+                        console.log(error)
+                    }
+
+
+                })
+            });
+        </script>
+    </div>
+
     <script>
         $("document").ready(function() {
+
+            if ($(window).width() < 992) {
+                $('.step-1-box').removeClass('w-50')
+            } else {
+                $('.step-1-box').addClass('w-50')
+            }
+
+            $(window).resize(function() {
+                if ($(window).width() < 992) {
+                    $('.step-1-box').removeClass('w-50')
+                } else {
+                    $('.step-1-box').addClass('w-50')
+                }
+            });
+            
             $("#step-1-next").click(function() {
                 $("#step-1").addClass('d-none');
                 $("#step-2").removeClass('d-none');
@@ -528,103 +457,98 @@
                 $("#step-3").addClass('d-none');
                 window.scrollTo(0, 0);
             });
-        })
-    </script>
 
-
-
-    <!-- upload anh -->
-    <form id="quanlt_frm_files" enctype="multipart/form-data" action="upload" method="post">
-        <input type="file" id="quanlt_file_button" name="file[]" accept="image/*" multiple hidden />
-        <script>
-            $(function() {
-                $("#quanlt_frm_files").on('change', '#quanlt_file_button', function(e) {
-                    e.preventDefault();
-                    var formData = new FormData($(this).parents('form')[0]);
-
-                    $.ajax({
-                        url: 'upload',
-                        type: 'POST',
-                        xhr: function() {
-                            var myXhr = $.ajaxSettings.xhr();
-                            return myXhr;
-                        },
-                        success: function(response) {
-                            callback_upload_image(quanlt_cb, response, quanlt_input_target)
-                        },
-                        data: formData,
-                        cache: false,
-                        contentType: false,
-                        processData: false
-                    });
-                    return false;
-                });
+            // STEP 2
+            $("#button_upload_image_step_2").click(function() {
+                $('#step-2 .div_main_1').addClass('d-none');
+                $('#step-2 .div_main_2').removeClass('d-none');
+                $('#step-2 .div_main_3').removeClass('d-none');
+                $('#step-2 .div_main_4').removeClass('d-none');
             })
-            var quanlt_cb;
-            var quanlt_input_target;
+        })
 
-            function quanlt_upload(e) {
-                quanlt_cb = $(e).data('callback');
-                quanlt_input_target = $(e).data('target');
+        function step2_remove_order(order_id) {
 
-                $('#quanlt_file_button').click();
+            delete STATE.order[order_id];
+            let count_order = Object.keys(STATE.order).length;
+
+            $(`#${order_id}`).remove();
+            if (count_order == 0) {
+                $('#step-2 .div_main_1').removeClass('d-none');
+                $('#step-2 .div_main_2').addClass('d-none');
+                $('#step-2 .div_main_3').addClass('d-none');
+                $('#step-2 .div_main_4').addClass('d-none');
             }
+        }
 
-            function callback_upload_image(cb, response, input_target) {
-                try {
-                    try {
-                        response = JSON.parse(response);
+        function cb_upload_image_order(link, target, name) {
+            let order_id = $(target).data('id');
+            $(target + '_pre').attr('src', link);
+            STATE.order[order_id].image = link;
+        }
 
-                        if (response.status) {
+        function add_order() {
+            let order_id = Date.now();
+            let order_new = `<div class="border p-4 shadow div_main_2" id="${order_id}">
+                <div class="position-relative">
+                    <button type="button" class="btn_upload_image d-none" onclick="quanlt_upload(this);" data-callback="cb_upload_image_order" data-target="#image_${order_id}"></button>
+                    <input type="hidden" id="image_${order_id}" data-id="${order_id}"/>
+                    <img id="image_${order_id}_pre" class="img-fluid w-100" alt="">
+                    <div class="position-absolute" style="top:10px; right: 10px; cursor: pointer;">
+                        <i class="fa-solid fa-xmark fs-3" onclick="step2_remove_order(${order_id})"></i>
+                    </div>
+                </div>
 
-                            if (Object.keys(response.data).length) {
-                                for (const [key, value] of Object.entries(response.data)) {
-                                    //upload ok
-                                    if (value.status) {
+                <small>Thumbnail shown. The full quality photo <span class="link-color" style="cursor: pointer;">(preview)</span> will be received when the order is placed.</small>
 
-                                        // gán dữ liệu vào thẻ input target
-                                        $(input_target).val(value.link);
+                <div class="my-3">
+                    <label for="exampleFormControlInput1" class="form-label fw-bold">Room Type:</label>
+                    <select title="Please select room type." class="form-control" onchange="STATE.order[${order_id}].room = this.value">
+                        <option value="">Select Room Type</option>
+                        <?php foreach ($list_room as $id => $rm) { ?>
+                            <option value="<?= $id ?>"><?= $rm['name'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="my-3">
+                    <label for="exampleFormControlInput1" class="form-label fw-bold">Select Services (Select All
+                        That Apply):
+                    </label>
 
-                                        // gọi call back nếu có
-                                        if (cb != '') {
-                                            try {
-                                                window[cb](value.link, input_target, value.name);
-                                            } catch (error) {
-                                                console.log(error)
-                                            }
-                                        }
+                    <?php foreach ($list_service as $id => $sv) { ?>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckDefault_${order_id}_<?= $id ?>" onchange="STATE.order[${order_id}].service[<?= $id ?>] = '<?= $sv['price'] ?>'">
+                            <label class="form-check-label" for="flexCheckDefault_${order_id}_<?= $id ?>">
+                                <?= $sv['name'] ?> - <?= $sv['price'] ?>
+                            </label>
+                            <i class="fa-solid fa-circle-info text-secondary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModalServices" data-name="<?= $sv['name'] ?>" data-src="<?= $sv['image_path'] ?>" data-sapo="<?= $sv['sapo'] ?>"></i>
+                        </div>
+                    <?php } ?>
 
-                                    }
-                                    //upload lỗi
-                                    else {
-                                        let error_text = '';
-                                        for (const [key, error] of Object.entries(value.error)) {
-                                            error_text += '- ' + error + '<br/>';
-                                        }
-                                        toasts_danger(`${error_text} Ảnh: ${value.name} `, 'Thất bại')
-                                        console.log(`${error_text} Ảnh: ${value.name} `, 'Thất bại')
-                                    }
-                                }
-                            } else {
-                                toasts_danger('Xin lỗi, không lưu được ảnh', 'Thất bại')
-                                console.log('Xin lỗi, không lưu được ảnh', 'Thất bại')
-                            }
+                </div>
 
-                        } else {
-                            toasts_danger(response.error, 'Thất bại')
-                            console.log(response.error, 'Thất bại')
-                        }
+                <div class="my-3">
+                    <label for="exampleFormControlInput1" class="form-label fw-bold">Your Design Requirements
+                        (Optional):</label><br>
+                    <small>For example, your desired Collection ID from the <span class="link-color">Library</span>
+                        (e.g.
+                        CCBR10), your vision, etc.</small>
+                    <textarea class="form-control" onchange="STATE.order[${order_id}].requirement = $(this).val()"></textarea>
 
-                    } catch (error) {
-                        console.log(error)
-                        toasts_danger('Xin lỗi, upload ảnh đang gặp vấn đề!', 'Thất bại')
-                        console.log('Xin lỗi, upload ảnh đang gặp vấn đề!', 'Thất bại')
-                    }
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-        </script>
-    </form>
-    <!-- /.upload anh -->
+                    <div class="mb-3 mt-3">
+                        <label for="formFileSm" class="form-label"> Attach Reference Files</label>
+                        <input class="form-control form-control-sm" id="formFileSm" type="file" placeholder=" Attach Reference Files">
+                    </div>
+                </div>
+            </div>`;
+
+            $('#list_order').append(order_new);
+            STATE.order[order_id] = {
+                ...ORDER
+            };
+
+            // upload image luôn
+            $(`#${order_id} .btn_upload_image`).click();
+        }
+    </script>
 </div>

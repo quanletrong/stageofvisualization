@@ -41,7 +41,7 @@
                                         <th class="text-center">STT</th>
                                         <th style="min-width: 200px; width: 200px;">Phong cách</th>
                                         <th class="">Mô tả</th>
-                                        <th class="text-center" style="min-width: 70px; width: 70px;">Trước/Sau</th>
+                                        <th class="text-center" style="min-width: 70px; width: 70px;">Ảnh chính</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
                                         <th style="min-width: 70px; width: 70px;">Action</th>
                                     </tr>
@@ -77,7 +77,7 @@
                                         <th class="text-center">STT</th>
                                         <th>Phong cách</th>
                                         <th class="">Mô tả</th>
-                                        <th class="text-center">Trước/Sau</th>
+                                        <th class="text-center">Ảnh chính</th>
                                         <th class="text-center">Trạng thái</th>
                                         <th>Action</th>
                                     </tr>

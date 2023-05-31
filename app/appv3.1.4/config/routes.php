@@ -57,6 +57,7 @@ $route[LINK_HIW]      = 'hiw/hiw/index';
 $route[LINK_PRICINGS] = 'pricing/pricing/index';
 $route[LINK_LIBRARY]  = 'library/library/index';
 $route[LINK_ORDER]    = 'order/order/index';
+$route['upload']      = 'upload/upload/index';
 
 $route[LINK_ABOUT]   = 'about/about/index';
 $route[LINK_CAREERS] = 'careers/careers/index';
