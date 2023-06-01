@@ -51,6 +51,10 @@
 
                 <div id="list-price">
                 </div>
+                <div class="fw-bold d-flex justify-content-between">
+                    <div>Subtotal:</div>
+                    <div>$<span id="total_price"></span></div>
+                </div>
 
             </div>
 

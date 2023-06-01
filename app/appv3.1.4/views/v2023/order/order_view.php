@@ -130,6 +130,7 @@
                 // render list price
                 let index = 1;
                 let price_html = '';
+                let total_price = 0;
                 for (const [order_id, order_data] of Object.entries(STATE.order)) {
 
                     let price = 0;
@@ -139,10 +140,12 @@
                     price_html += `
                     <div class="mb-2 d-flex justify-content-between">
                         <div>Photo ${index++}:</div>
-                        <div>${price}</div>
+                        <div>$${price}</div>
                     </div>`;
+                    total_price = total_price + price;
                 }
                 $('#list-price').html(price_html);
+                $('#total_price').html(total_price);
             } else {
                 scroll_to(error);
             }
