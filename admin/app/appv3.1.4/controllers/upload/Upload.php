@@ -37,7 +37,8 @@ class Upload extends MY_Controller
                     $tmp_name = $_FILES['file']['tmp_name'][$i];
                     $size = $_FILES['file']['size'][$i];
                     $target_dir = $_SERVER["DOCUMENT_ROOT"] . "/uploads/tmp/";
-                    $target_file = $target_dir . basename($name_file);
+                    $name_file = generateRandomString(5) . '-' . basename($name_file);
+                    $target_file = $target_dir . $name_file;
                     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
                     $data[$i]['status'] = 1;
@@ -53,7 +54,7 @@ class Upload extends MY_Controller
 
                     // Check if file already exists
                     if (file_exists($target_file)) {
-                        $name_file = generateRandomString(5) . '-' . basename($name_file);
+                        $name_file = generateRandomString(5) . '-' . $name_file;
                         $target_file = $target_dir . $name_file;
                     }
 
