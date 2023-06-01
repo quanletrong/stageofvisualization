@@ -4,6 +4,8 @@ if (!defined('CUSTOM_CHECK_GLB')){header("Location: upgrade");die();}
 
 define('PRODUCT_NAME', 'Virtual Staging | Stage Of Visualization | Hanoi');
 
+define('VERSION', 'v2023');
+
 define('LINK_OVERVIEW', 'overview');
 define('LINK_HIW', 'how-it-works');
 define('LINK_PRICINGS', 'pricing');

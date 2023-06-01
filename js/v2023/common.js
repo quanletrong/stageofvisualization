@@ -1982,3 +1982,20 @@ function toasts_danger (body='Có lỗi xảy ra', title='Thất bại', delay=1
         fade: true
     })
 }
+
+function isEmpty(obj) {
+    if (obj == null) return true;
+    if (obj.length > 0) return false;
+    if (obj.length === 0) return true;
+    if (typeof obj !== "object") return true;
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+    return true;
+}
+
+function scrollTo(selector) {
+    $([document.documentElement, document.body]).animate({
+        scrollTop: $(selector).offset().top - 200
+    }, "fast");
+}
