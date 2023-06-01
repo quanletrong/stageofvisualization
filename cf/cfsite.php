@@ -30,3 +30,13 @@ define('LINK_USER_SIGN_IN', 'user/sign_in');
 define('LINK_USER_SIGN_OUT', 'user/logout');
 define('LINK_USER_LOGIN', 'login');
 define('LINK_USER_REGISTER', 'dang-ky');
+
+define('PAY_DANG_CHO', 0);
+define('PAY_HOAN_THANH', 1);
+
+
+define('STATUS_CHUA_LAM', 0);
+define('STATUS_DA_GIAO', 1);
+define('STATUS_DANG_LAM', 2);
+define('STATUS_SUA_LAI', 3);
+define('STATUS_HOAN_THANH', 4);

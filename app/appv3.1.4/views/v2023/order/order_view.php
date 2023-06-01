@@ -170,7 +170,7 @@
         // 
         $('#submit-order').click(function() {
             if (STATE.card_number != '' && STATE.card_mm != '' && STATE.card_yy != '' && STATE.card_cvv != '') {
-                alert('ok order')
+                ajax_order();
             } else {
                 valid_order.element(`*[name="card_number"]`)
                 valid_order.element(`*[name="card_mm"]`);
@@ -186,6 +186,25 @@
             $('#step-2 .div_main_3').removeClass('d-none');
             $('#step-2 .div_main_4').removeClass('d-none');
         })
+
+        function ajax_order() {
+            $.ajax({
+                url: 'order/submit',
+                type: "POST",
+                data: {
+                    order: STATE
+                },
+                success: function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    alert('Success');
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(data);
+                    alert('Error');
+                }
+            });
+        }
     })
 
     // step2_remove_order

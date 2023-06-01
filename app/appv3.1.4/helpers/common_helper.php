@@ -891,6 +891,45 @@ function generateRandomString($length = 10) {
     return $randomString;
 }
 
+function copy_image_from_file_manager_to_public_upload($url_fmng_image, $yearFolder, $monthFolder)
+{
+    $imginfo = getImageSizeFromUrl($url_fmng_image);
+    if (!empty($imginfo)) {
+
+        $basename = generateRandomString(10).'-'.basename($url_fmng_image);
+        $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
+        // check year folder exists
+        $localFolder = $DOCUMENT_ROOT . '/' . PUBLIC_UPLOAD_PATH . '/' . $yearFolder . '/';
+        if (!is_dir($localFolder)) {
+            $ckMkdirYear = mkdir($localFolder, 755);
+            if (!$ckMkdirYear) return ['status' => false, 'error' => 'CAN_NOT_MKDIR_YEAR'];
+        }
+
+        // check month folder exists
+        $localFolder = $DOCUMENT_ROOT . '/' . PUBLIC_UPLOAD_PATH . '/' . $yearFolder . '/' . $monthFolder . '/';
+        if (!is_dir($localFolder)) {
+            $ckMkdirMonth = mkdir($localFolder, 755);
+            if (!$ckMkdirMonth) return ['status' => false, 'error' => 'CAN_NOT_MKDIR_MONTH'];
+        }
+
+        // check file exist
+        $dir_save = $DOCUMENT_ROOT . '/' . PUBLIC_UPLOAD_PATH . '/' . $yearFolder . '/' . $monthFolder . '/' . $basename;
+
+        if (file_exists($dir_save)) {
+            $rdt = generateRandomString(10);
+            $basename = $rdt . $basename;
+            $dir_save = $DOCUMENT_ROOT . '/' . PUBLIC_UPLOAD_PATH . '/' . $yearFolder . '/' . $monthFolder . '/' . $basename;
+        }
+
+        //check move
+        $chkCopy = copy($url_fmng_image, $dir_save);
+        if (!$chkCopy) return ['status' => false, 'error' => 'CAN_NOT_MOVE_FILE'];
+        else return ['status' => true, 'pathname' => $dir_save, 'basename' => $basename];
+    } else {
+        return ['status' => false, 'error' => 'CAN_NOT_GET_IMAGE_INFO'];
+    }
+}
+
 
 function resError($error, $msg='', $show_status = true)
 {
