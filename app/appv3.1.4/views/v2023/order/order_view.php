@@ -126,6 +126,23 @@
                 $("#step-2").addClass('d-none');
                 $("#step-3").removeClass('d-none');
                 window.scrollTo(0, 0);
+
+                // render list price
+                let index = 1;
+                let price_html = '';
+                for (const [order_id, order_data] of Object.entries(STATE.order)) {
+
+                    let price = 0;
+                    for (const [sv_id, value] of Object.entries(order_data.service)) {
+                        price = price + parseFloat(value);
+                    }
+                    price_html += `
+                    <div class="mb-2 d-flex justify-content-between">
+                        <div>Photo ${index++}:</div>
+                        <div>${price}</div>
+                    </div>`;
+                }
+                $('#list-price').html(price_html);
             } else {
                 scroll_to(error);
             }
@@ -146,6 +163,18 @@
             $("#step-3").addClass('d-none');
             window.scrollTo(0, 0);
         });
+
+        // 
+        $('#submit-order').click(function() {
+            if (STATE.card_number != '' && STATE.card_mm != '' && STATE.card_yy != '' && STATE.card_cvv != '') {
+                alert('ok order')
+            } else {
+                valid_order.element(`*[name="card_number"]`)
+                valid_order.element(`*[name="card_mm"]`);
+                valid_order.element(`*[name="card_yy"]`);
+                valid_order.element(`*[name="card_cvv"]`);
+            }
+        })
 
         // STEP 2
         $("#button_upload_image_step_2").click(function() {
@@ -184,7 +213,7 @@
     // cb_upload_image_order
     function cb_upload_attach(link, target, name) {
         let order_id = $(target).data('id');
-        let attach_id = Date.now() +  Object.keys(STATE.order[order_id].attach).length;
+        let attach_id = Date.now() + Object.keys(STATE.order[order_id].attach).length;
         let attach_html = `<div style="position:relative" class="mt-2">
             <img src="${link}"  style="width:50px;aspect-ratio: 1; object-fit: cover;" >
             <i class="fa-solid fa-xmark" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this, ${order_id}, ${attach_id})"></i>
