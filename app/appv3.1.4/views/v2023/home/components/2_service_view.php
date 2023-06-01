@@ -3,7 +3,7 @@
 
         <?php foreach ($service as $id => $it) { ?>
             <center class="fs-3 fw-bold"><?= $it['name'] ?></center>
-            <center class="fs-5"><?= $it['price'] ?>. 12 to 24 Hour Delivery. </center>
+            <center class="fs-5">$<?= $it['price'] ?> Per Photo . 12 to 24 Hour Delivery. </center>
 
             <?php $room = json_decode($it['room'], true) ?>
             <?php if (empty($room)) { ?>

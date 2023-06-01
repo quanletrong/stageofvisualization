@@ -5,7 +5,7 @@
     ORDER.room = '';
     ORDER.service = {};
     ORDER.requirement = '';
-    ORDER.attach = '';
+    ORDER.attach = {};
 
     let STATE = {};
     // step 1
@@ -25,6 +25,11 @@
     STATE.card_cvv = '';
     STATE.coupon = '';
 </script>
+<style>
+    .fa-xmark:hover {
+        color: red;
+    }
+</style>
 <div class="container-fluid" style="background-color: #fafafa;">
 
     <form id="form_order">
@@ -122,7 +127,7 @@
                 $("#step-3").removeClass('d-none');
                 window.scrollTo(0, 0);
             } else {
-                scrollTo(error);
+                scroll_to(error);
             }
         });
 
@@ -154,16 +159,19 @@
     // step2_remove_order
     function step2_remove_order(order_id) {
 
-        delete STATE.order[order_id];
-        let count_order = Object.keys(STATE.order).length;
+        if (confirm("Are you sure you want to delete this photo?") == true) {
+            delete STATE.order[order_id];
+            let count_order = Object.keys(STATE.order).length;
 
-        $(`#${order_id}`).remove();
-        if (count_order == 0) {
-            $('#step-2 .div_main_1').removeClass('d-none');
-            $('#step-2 .div_main_2').addClass('d-none');
-            $('#step-2 .div_main_3').addClass('d-none');
-            $('#step-2 .div_main_4').addClass('d-none');
+            $(`#${order_id}`).remove();
+            if (count_order == 0) {
+                $('#step-2 .div_main_1').removeClass('d-none');
+                $('#step-2 .div_main_2').addClass('d-none');
+                $('#step-2 .div_main_3').addClass('d-none');
+                $('#step-2 .div_main_4').addClass('d-none');
+            }
         }
+
     }
 
     // cb_upload_image_order
@@ -173,10 +181,29 @@
         STATE.order[order_id].image = link;
     }
 
+    // cb_upload_image_order
+    function cb_upload_attach(link, target, name) {
+        let order_id = $(target).data('id');
+        let attach_id = Date.now() +  Object.keys(STATE.order[order_id].attach).length;
+        let attach_html = `<div style="position:relative" class="mt-2">
+            <img src="${link}"  style="width:50px;aspect-ratio: 1; object-fit: cover;" >
+            <i class="fa-solid fa-xmark" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this, ${order_id}, ${attach_id})"></i>
+        </div>`;
+        $(`#${order_id}_attach_pre`).append(attach_html);
+        STATE.order[order_id].attach[attach_id] = link;
+    }
+
+    function remove_attach(e, order_id, attach_id) {
+        if (confirm("Are you sure you want to delete this file?") == true) {
+            delete STATE.order[order_id].attach[attach_id];
+            $(e).parent().remove();
+        }
+    }
+
     // add_order
     function add_order() {
         let order_id = Date.now();
-        let order_new = `<div class="border p-4 shadow div_main_2" id="${order_id}">
+        let order_new = `<div class="border p-4 shadow mb-2 div_main_2" id="${order_id}">
                 <div class="position-relative">
                     <button type="button" class="btn_upload_image d-none" onclick="quanlt_upload(this);" data-callback="cb_upload_image_order" data-target="#image_${order_id}"></button>
                     <input type="hidden" id="image_${order_id}" data-id="${order_id}"/>
@@ -213,7 +240,7 @@
                                 onchange="add_or_remove_service(${order_id}, '<?= $id ?>', '<?= $sv['price'] ?>')"
                             >
                             <label class="form-check-label" for="flexCheckDefault_${order_id}_<?= $id ?>">
-                                <?= $sv['name'] ?> - <?= $sv['price'] ?>
+                                <?= $sv['name'] ?> - $<?= $sv['price'] ?> Per Photo
                             </label>
                             <i class="fa-solid fa-circle-info text-secondary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModalServices" data-name="<?= $sv['name'] ?>" data-src="<?= $sv['image_path'] ?>" data-sapo="<?= $sv['sapo'] ?>"></i>
                         </div>
@@ -230,8 +257,13 @@
                     <textarea class="form-control" onchange="STATE.order[${order_id}].requirement = $(this).val()"></textarea>
 
                     <div class="mb-3 mt-3">
-                        <label for="formFileSm" class="form-label"> Attach Reference Files</label>
-                        <input class="form-control form-control-sm" id="formFileSm" type="file" placeholder=" Attach Reference Files">
+                        <button type="button" class="form-control form-control-sm" onclick="quanlt_upload(this);" data-callback="cb_upload_attach" data-target="#image_${order_id}" style="width: fit-content;">
+                            <i class="fa-solid fa-paperclip"></i>
+                            Attach Reference Files
+                        </button>
+
+                        <div id="${order_id}_attach_pre" class="d-flex" style="gap:10px"></div>
+
                     </div>
                 </div>
             </div>`;

@@ -1994,7 +1994,7 @@ function isEmpty(obj) {
     return true;
 }
 
-function scrollTo(selector) {
+function scroll_to(selector) {
     $([document.documentElement, document.body]).animate({
         scrollTop: $(selector).offset().top - 200
     }, "fast");
