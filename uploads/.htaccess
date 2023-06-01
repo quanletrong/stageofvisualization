@@ -10,7 +10,7 @@ php_flag engine off
 	order deny,allow
 	deny from all
 </FilesMatch>
-<FilesMatch "\.(gif|jpe?g|png|svg)$">
+<FilesMatch "\.(gif|jpe?g|png|PNG|svg)$">
 	Order deny,allow
 	Allow from all
 </FilesMatch>
