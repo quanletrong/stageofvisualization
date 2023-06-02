@@ -924,3 +924,28 @@ function resSuccess($data, $msg='', $show_status = true)
     dbClose();
     die();
 }
+
+function timeSince($date) {
+    $seconds = time() - strtotime($date);
+    $interval = floor($seconds / 31536000);
+    if ($interval >= 1) {
+      return $interval . " năm";
+    }
+    $interval = floor($seconds / 2592000);
+    if ($interval >= 1) {
+      return $interval . " tháng";
+    }
+    $interval = floor($seconds / 86400);
+    if ($interval >= 1) {
+      return $interval . " ngày";
+    }
+    $interval = floor($seconds / 3600);
+    if ($interval >= 1) {
+      return $interval . " giờ";
+    }
+    $interval = floor($seconds / 60);
+    if ($interval >= 1) {
+      return $interval . " phút";
+    }
+    return floor($seconds) . " giây";
+}
