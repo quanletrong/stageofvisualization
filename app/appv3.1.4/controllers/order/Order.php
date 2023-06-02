@@ -45,44 +45,44 @@ class Order extends MY_Controller
 
     function submit()
     {
-        $list_room    = $this->Room_model->get_list(1);
-        $list_service = $this->Service_model->get_list(1);
-        $list_style   = $this->Style_model->get_list(1);
+        $all_room    = $this->Room_model->get_list(1);
+        $all_service = $this->Service_model->get_list(1);
+        $all_style   = $this->Style_model->get_list(1);
 
         $order = $this->input->post('order');
         $name        = $order['name'];
         $lastname    = $order['lastname'];
         $email       = $order['email'];
         $phone       = $order['phone'];
-        $id_style    = $order['style'];
+        $style       = $order['style'];
         $id_user     = 1; //TODO: fix tạm thời
         $create_time = date('Y-m-d H:i:s');
         $coupon      = $order['coupon'];
-        // VALIDATE TODO:
+        $list_job  = $order['job'];
 
-        $order_item_ok = [];
-        foreach ($order['order'] as $id_item => $item) {
-            $id_room     = $item['room'];
-            $id_service  = $item['service'];
-            $image       = $item['image'];
-            $requirement = $item['requirement'];
-            $attach      = @$item['attach']; // k bat buoc nhap attach nen de @
-            // VALIDATE TODO:
+        // VALIDATE
+        foreach ($list_job as $id_job => $job) {
+            $room         = $job['room'];
+            $service_list = $job['service'];
+            $image        = $job['image'];
+            $requirement  = $job['requirement'];
+            $attach       = @$job['attach'];      // k bat buoc nhap attach nen de @
 
             # check room, style
-            isset($list_room[$id_room])     ? '' : resError('error_room');
-            isset($list_style[$id_style])   ? '' : resError('error_style');
+            isset($all_room[$room])     ? '' : resError('error_room');
+            isset($all_style[$style])   ? '' : resError('error_style');
             # check service
-            empty($id_service) ? resError('empty_service') : '';
-            foreach ($id_service as $sv_id => $sv_price) {
-                isset($list_service[$sv_id]) ? '' : resError('isset_service');
-                $list_service[$sv_id]['price'] == 0 ? resError('empty_price') : '';
-                $list_service[$sv_id]['price'] != $sv_price ? resError('error_price') : '';
+            empty($service_list) ? resError('empty_service') : '';
+            foreach ($service_list as $id_service => $price) {
+                isset($all_service[$id_service]) ? '' : resError('isset_service');
+                $all_service[$id_service]['price'] == 0 ? resError('empty_price') : '';
+                $all_service[$id_service]['price'] != $price ? resError('error_price') : '';
             }
             # lưu ảnh image
             $copy_image = copy_image_from_file_manager_to_public_upload($image, date('Y'), date('m'));
             $copy_image['status'] ? '' : resError('error_image');
-           
+            $list_job[$id_job]['image_ok'] = $copy_image['basename'];
+
             # lưu ảnh attachments
             $attach_ok = [];
             foreach ($attach as $id_attach => $image_attach) {
@@ -99,24 +99,52 @@ class Order extends MY_Controller
                     resError('error_attach');
                 }
             }
-            // ok data
-            $order_item_ok[$id_item]['id_room']     = $id_room;
-            $order_item_ok[$id_item]['id_service']  = json_encode($id_service, JSON_FORCE_OBJECT);
-            $order_item_ok[$id_item]['image']       = $copy_image['basename'];
-            $order_item_ok[$id_item]['attach']      = json_encode($attach_ok, JSON_FORCE_OBJECT);
-            $order_item_ok[$id_item]['requirement'] = $requirement;
+            $list_job[$id_job]['attach_ok'] = $attach_ok;
         }
+        // END VALIDATE
 
-        if (count($order['order']) == 0 || count($order['order']) != count($order_item_ok)) {
-            resError('error_order_item');
-        } else {
-            $new_order = $this->Order_model->add($name, $lastname, $email, $phone, $id_style, $id_user, $create_time, $coupon, PAY_DANG_CHO, STATUS_CHUA_LAM);
+        // Tạo đơn vào tbl_order
+        $new_order = $this->Order_model->add_order($name, $lastname, $email, $phone, $create_time, $id_user, $coupon, PAY_DANG_CHO, STATUS_CHUA_LAM);
 
-            if ($new_order) {
-                foreach ($order_item_ok as $id_item => $it) {
-                    $new_order = $this->Order_model->add_item($new_order, $it['id_room'], $it['id_service'], $id_user, $it['image'], $it['attach'], $create_time, $id_user, $create_time, STATUS_CHUA_LAM);
+        $flag_error = false;
+        if ($new_order) {
+            // số lượng job của đơn lưu vào tbl_order_job
+            foreach ($list_job as $job) {
+
+                $new_order_job = $this->Order_model->add_order_job($new_order);
+
+                $room           = $job['room'];
+                $service_list   = $job['service'];
+                $image_ok       = $job['image_ok'];
+                $json_attach_ok = json_encode($job['attach_ok'], JSON_FORCE_OBJECT);
+                $requirement    = $job['requirement'];
+
+                if ($new_order_job) {
+                    // số lượng service cần làm cho mỗi job lưu vào tbl_order_job_service
+                    foreach ($service_list as $id_service => $price) {
+
+                        $new_order_job_service = $this->Order_model->add_order_job_service($new_order_job, $new_order, $id_service, $price, $room, $style, $image_ok, $json_attach_ok, $requirement, STATUS_CHUA_LAM, $create_time);
+
+                        if (!$new_order_job_service) {
+                            $flag_error = true;
+                            break;
+                        }
+                    }
+                } else {
+                    $flag_error = true;
+                    break;
                 }
             }
+
+            if ($flag_error) {
+                $this->Order_model->delete_order_job_service($new_order);
+                // Xóa ảnh của job, ảnh attach...TODO:
+                resError('Loi luu job hoac service job');
+            } else {
+                resSuccess('ok');
+            }
+        } else {
+            resError('Loi luu don');
         }
     }
 }

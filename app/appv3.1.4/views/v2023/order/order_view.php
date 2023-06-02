@@ -1,11 +1,11 @@
 <script>
-    // chi tiết 1 order
-    let ORDER = {};
-    ORDER.image = '';
-    ORDER.room = '';
-    ORDER.service = {};
-    ORDER.requirement = '';
-    ORDER.attach = {};
+    // chi tiết 1 JOB
+    let JOB = {};
+    JOB.image = '';
+    JOB.room = '';
+    JOB.service = {};
+    JOB.requirement = '';
+    JOB.attach = {};
 
     let STATE = {};
     // step 1
@@ -15,7 +15,7 @@
     STATE.phone = '';
 
     // step 2
-    STATE.order = {};
+    STATE.job = {};
     STATE.style = '';
 
     // step 3
@@ -99,20 +99,20 @@
         // step-2-next-3
         $("#step-2-next").click(function() {
             let error = '';
-            for (const [order_id, order_data] of Object.entries(STATE.order)) {
+            for (const [id_job, job] of Object.entries(STATE.job)) {
                 // room
-                if (order_data.room == '') {
-                    $(`#${order_id} .room`).addClass('is-invalid');
-                    error = `#${order_id} .room`;
+                if (job.room == '') {
+                    $(`#${id_job} .room`).addClass('is-invalid');
+                    error = `#${id_job} .room`;
                 } else {
-                    $(`#${order_id} .room`).remove('is-invalid');
+                    $(`#${id_job} .room`).remove('is-invalid');
                 }
                 // service
-                if (isEmpty(order_data.service)) {
-                    $(`#${order_id} .service-error`).show();
-                    error = `#${order_id} .service-error`;
+                if (isEmpty(job.service)) {
+                    $(`#${id_job} .service-error`).show();
+                    error = `#${id_job} .service-error`;
                 } else {
-                    $(`#${order_id} .service-error`).hide();
+                    $(`#${id_job} .service-error`).hide();
                 }
             }
 
@@ -126,10 +126,10 @@
                 let index = 1;
                 let price_html = '';
                 let total_price = 0;
-                for (const [order_id, order_data] of Object.entries(STATE.order)) {
+                for (const [id_job, job] of Object.entries(STATE.job)) {
 
                     let price = 0;
-                    for (const [sv_id, value] of Object.entries(order_data.service)) {
+                    for (const [sv_id, value] of Object.entries(job.service)) {
                         price = price + parseFloat(value);
                     }
                     price_html += `
@@ -202,15 +202,15 @@
         }
     })
 
-    // step2_remove_order
-    function step2_remove_order(order_id) {
+    // step2_remove_job
+    function step2_remove_job(job_id) {
 
         if (confirm("Are you sure you want to delete this photo?") == true) {
-            delete STATE.order[order_id];
-            let count_order = Object.keys(STATE.order).length;
+            delete STATE.job[job_id];
+            let count_job = Object.keys(STATE.job).length;
 
-            $(`#${order_id}`).remove();
-            if (count_order == 0) {
+            $(`#${job_id}`).remove();
+            if (count_job == 0) {
                 $('#step-2 .div_main_1').removeClass('d-none');
                 $('#step-2 .div_main_2').addClass('d-none');
                 $('#step-2 .div_main_3').addClass('d-none');
@@ -220,42 +220,42 @@
 
     }
 
-    // cb_upload_image_order
-    function cb_upload_image_order(link, target, name) {
-        let order_id = $(target).data('id');
+    // cb_upload_image_job
+    function cb_upload_image_job(link, target, name) {
+        let job_id = $(target).data('id');
         $(target + '_pre').attr('src', link);
-        STATE.order[order_id].image = link;
+        STATE.job[job_id].image = link;
     }
 
-    // cb_upload_image_order
+    // cb_upload_image_attach
     function cb_upload_attach(link, target, name) {
-        let order_id = $(target).data('id');
-        let attach_id = Date.now() + Object.keys(STATE.order[order_id].attach).length;
+        let job_id = $(target).data('id');
+        let attach_id = Date.now() + Object.keys(STATE.job[job_id].attach).length;
         let attach_html = `<div style="position:relative" class="mt-2">
             <img src="${link}"  style="width:50px;aspect-ratio: 1; object-fit: cover;" >
-            <i class="fa-solid fa-xmark" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this, ${order_id}, ${attach_id})"></i>
+            <i class="fa-solid fa-xmark" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
         </div>`;
-        $(`#${order_id}_attach_pre`).append(attach_html);
-        STATE.order[order_id].attach[attach_id] = link;
+        $(`#${job_id}_attach_pre`).append(attach_html);
+        STATE.job[job_id].attach[attach_id] = link;
     }
 
-    function remove_attach(e, order_id, attach_id) {
+    function remove_attach(e, job_id, attach_id) {
         if (confirm("Are you sure you want to delete this file?") == true) {
-            delete STATE.order[order_id].attach[attach_id];
+            delete STATE.job[job_id].attach[attach_id];
             $(e).parent().remove();
         }
     }
 
-    // add_order
-    function add_order() {
-        let order_id = Date.now();
-        let order_new = `<div class="border p-4 shadow mb-2 div_main_2" id="${order_id}">
+    // add_job
+    function add_job() {
+        let job_id = Date.now();
+        let job_new = `<div class="border p-4 shadow mb-2 div_main_2" id="${job_id}">
                 <div class="position-relative">
-                    <button type="button" class="btn_upload_image d-none" onclick="quanlt_upload(this);" data-callback="cb_upload_image_order" data-target="#image_${order_id}"></button>
-                    <input type="hidden" id="image_${order_id}" data-id="${order_id}"/>
-                    <img id="image_${order_id}_pre" class="img-fluid w-100" alt="">
+                    <button type="button" class="btn_upload_image d-none" onclick="quanlt_upload(this);" data-callback="cb_upload_image_job" data-target="#image_${job_id}"></button>
+                    <input type="hidden" id="image_${job_id}" data-id="${job_id}"/>
+                    <img id="image_${job_id}_pre" class="img-fluid w-100" alt="">
                     <div class="position-absolute" style="top:10px; right: 10px; cursor: pointer;">
-                        <i class="fa-solid fa-xmark fs-3" onclick="step2_remove_order(${order_id})"></i>
+                        <i class="fa-solid fa-xmark fs-3" onclick="step2_remove_job(${job_id})"></i>
                     </div>
                 </div>
 
@@ -263,7 +263,7 @@
 
                 <div class="my-3">
                     <label for="exampleFormControlInput1" class="form-label fw-bold">Room Type:</label>
-                    <select title="Please select room type." class="form-control room" onchange="STATE.order[${order_id}].room = this.value">
+                    <select title="Please select room type." class="form-control room" onchange="STATE.job[${job_id}].room = this.value">
                         <option value="">Select Room Type</option>
                         <?php foreach ($list_room as $id => $rm) { ?>
                             <option value="<?= $id ?>"><?= $rm['name'] ?></option>
@@ -282,10 +282,10 @@
                                 class="form-check-input" 
                                 type="checkbox" 
                                 name="service[]" 
-                                id="flexCheckDefault_${order_id}_<?= $id ?>" 
-                                onchange="add_or_remove_service(${order_id}, '<?= $id ?>', '<?= $sv['price'] ?>')"
+                                id="flexCheckDefault_${job_id}_<?= $id ?>" 
+                                onchange="add_or_remove_service(${job_id}, '<?= $id ?>', '<?= $sv['price'] ?>')"
                             >
-                            <label class="form-check-label" for="flexCheckDefault_${order_id}_<?= $id ?>">
+                            <label class="form-check-label" for="flexCheckDefault_${job_id}_<?= $id ?>">
                                 <?= $sv['name'] ?> - $<?= $sv['price'] ?> Per Photo
                             </label>
                             <i class="fa-solid fa-circle-info text-secondary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModalServices" data-name="<?= $sv['name'] ?>" data-src="<?= $sv['image_path'] ?>" data-sapo="<?= $sv['sapo'] ?>"></i>
@@ -300,40 +300,40 @@
                     <small>For example, your desired Collection ID from the <span class="link-color">Library</span>
                         (e.g.
                         CCBR10), your vision, etc.</small>
-                    <textarea class="form-control" onchange="STATE.order[${order_id}].requirement = $(this).val()"></textarea>
+                    <textarea class="form-control" onchange="STATE.job[${job_id}].requirement = $(this).val()"></textarea>
 
                     <div class="mb-3 mt-3">
-                        <button type="button" class="form-control form-control-sm" onclick="quanlt_upload(this);" data-callback="cb_upload_attach" data-target="#image_${order_id}" style="width: fit-content;">
+                        <button type="button" class="form-control form-control-sm" onclick="quanlt_upload(this);" data-callback="cb_upload_attach" data-target="#image_${job_id}" style="width: fit-content;">
                             <i class="fa-solid fa-paperclip"></i>
                             Attach Reference Files
                         </button>
 
-                        <div id="${order_id}_attach_pre" class="d-flex" style="gap:10px"></div>
+                        <div id="${job_id}_attach_pre" class="d-flex" style="gap:10px"></div>
 
                     </div>
                 </div>
             </div>`;
 
-        $('#list_order').append(order_new);
-        var ORDER_COPY = JSON.parse(JSON.stringify(ORDER))
-        STATE.order[order_id] = {
-            ...ORDER_COPY
+        $('#list_job').append(job_new);
+        var JOB_COPY = JSON.parse(JSON.stringify(JOB))
+        STATE.job[job_id] = {
+            ...JOB_COPY
         };
 
         // upload image luôn
-        $(`#${order_id} .btn_upload_image`).click();
+        $(`#${job_id} .btn_upload_image`).click();
     }
 
     // add_or_remove_service
-    function add_or_remove_service(order_id, service_id, price) {
-        let service = STATE.order[order_id].service;
+    function add_or_remove_service(job_id, service_id, price) {
+        let service = STATE.job[job_id].service;
         if (isEmpty(service[service_id])) {
             service[service_id] = price;
-            $(`#${order_id} .service-error`).hide();
+            $(`#${job_id} .service-error`).hide();
         } else {
             delete service[service_id];
             if (isEmpty(service)) {
-                $(`#${order_id} .service-error`).show();
+                $(`#${job_id} .service-error`).show();
             }
         }
     }

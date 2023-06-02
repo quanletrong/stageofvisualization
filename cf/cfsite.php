@@ -31,12 +31,12 @@ define('LINK_USER_SIGN_OUT', 'user/logout');
 define('LINK_USER_LOGIN', 'login');
 define('LINK_USER_REGISTER', 'dang-ky');
 
-define('PAY_DANG_CHO', 0);
-define('PAY_HOAN_THANH', 1);
+define('PAY_DANG_CHO', 0); // chưa thanh toán
+define('PAY_HOAN_THANH', 1); // đa thanh toán
 
 
-define('STATUS_CHUA_LAM', 0);
-define('STATUS_DA_GIAO', 1);
-define('STATUS_DANG_LAM', 2);
-define('STATUS_SUA_LAI', 3);
-define('STATUS_HOAN_THANH', 4);
+define('STATUS_CHUA_LAM', 0); // đơn chưa giao mới tạo
+define('STATUS_DA_GIAO', 1); // đơn đã giao cho designer
+define('STATUS_DANG_LAM', 2); // designer đang làm
+define('STATUS_SUA_LAI', 3); // đơn phải sửa lại
+define('STATUS_HOAN_THANH', 4); // đơn đã xong

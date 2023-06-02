@@ -5,17 +5,17 @@
         <div class="col-12 col-lg-6">
             <div class="border p-4 shadow div_main_1">
                 <div class="mb-3">
-                    <button type="button" class="btn btn-lg btn-danger w-100" id="button_upload_image_step_2" onclick="add_order()">Click or Drag and Drop Photos</button>
+                    <button type="button" class="btn btn-lg btn-danger w-100" id="button_upload_image_step_2" onclick="add_job()">Click or Drag and Drop Photos</button>
                 </div>
             </div>
 
-            <div id="list_order"></div>
+            <div id="list_job"></div>
 
             <!-- Want to Add More Photos to Your Order?  -->
             <div class="border p-4 mt-3 shadow d-none div_main_3">
                 <label for="" class="form-label fw-bold">Want to Add More Photos to Your Order?</label>
                 <div class="mb-3">
-                    <button type="button" class="btn btn-lg btn-dark text-light w-100 " onclick="add_order()">Add More Photos to Order</button>
+                    <button type="button" class="btn btn-lg btn-dark text-light w-100 " onclick="add_job()">Add More Photos to Order</button>
                 </div>
             </div>
 
