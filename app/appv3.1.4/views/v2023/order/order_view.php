@@ -25,11 +25,6 @@
     STATE.card_cvv = '';
     STATE.coupon = '';
 </script>
-<style>
-    .fa-xmark:hover {
-        color: red;
-    }
-</style>
 <div class="container-fluid" style="background-color: #fafafa;">
 
     <form id="form_order">

@@ -1,3 +1,4 @@
+
 @font-face {}
 body {
   font-size: 1rem;
@@ -71,3 +72,9 @@ a {
 .accordion .accordion-item .accordion-header button:focus, .accordion .accordion-item .accordion-header button:focus-visible {
   box-shadow: none;
 }
+
+/*  */
+.fa-xmark:hover {
+  color: red;
+}
+/*  */

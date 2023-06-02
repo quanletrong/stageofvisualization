@@ -2,24 +2,44 @@
     <center class="fw-bold mt-3" style="font-size: 2em;">Virtual Staging Library</center>
     <center class="fs-5 fw-light">See and shop from Stuccco's vast virtual staging design library</center>
 </div>
+<style>
+    .active-filter {}
 
+    .active-filter,
+    .btn-room-filter:hover,
+    .btn-style-filter:hover {
+        border-color: #ee1c25 !important;
+        color: #ee1c25
+    }
+
+    .fa-circle-chevron-right,
+    .fa-circle-chevron-left {
+        color: #d4d4d4;
+        cursor: pointer;
+        font-size: 40px;
+    }
+
+    .fa-circle-chevron-right:hover,
+    .fa-circle-chevron-left:hover {
+        color: #767676;
+    }
+</style>
 <div class="container-fluid sticky-top bg-white" id="filter-library" style="z-index: 1019;">
     <div class="container bg-white">
-        <div id="owl-filter-button" class="owl-carousel owl-theme mt-3 ">
+        <div id="owl-filter-room" class="owl-carousel owl-theme mt-3 ">
             <?php foreach ($room as $id => $rm) { ?>
-                <button class="btn btn-outline-secondary btn-sm text-uppercase rounded-0 fw-semibold btn-room-filter border border-2 border-secondary" onclick="$('.btn-room-filter').addClass('btn-outline-secondary').removeClass('btn-secondary');$(this).addClass('btn-secondary').removeClass('btn-outline-secondary'); filter()" data-room="<?= $id ?>" style="width: 190px;">
+                <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-room-filter border border-2 border-secondary" onclick="$('.btn-room-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(1)" data-room="<?= $id ?>" style="width: 140px; padding: 2px 0; font-size: 0.8rem; font-weight: 300 !important;">
                     <?= $rm['name'] ?>
                 </button>
             <?php } ?>
         </div>
-        <div id="owl-filter-radio" class="owl-carousel mt-3 d-flex pb-2" style="gap:20px; width: 100%;">
-
-            <button class="btn btn-outline-secondary btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-2 border-secondary" onclick="$('.btn-style-filter').addClass('btn-outline-secondary').removeClass('btn-secondary');$(this).addClass('btn-secondary').removeClass('btn-outline-secondary'); filter()" data-style="" style="width: 190px;">
+        <div id="owl-filter-style" class="owl-carousel mt-1 pb-2" style="gap:20px; width: 100%">
+            <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-2 border-secondary" onclick="$('.btn-style-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(2)" data-style="" style="width: 140px; padding: 0; font-size: 0.7rem; font-weight: 300 !important;">
                 Tất cả phong cách
             </button>
 
             <?php foreach ($style as $id => $st) { ?>
-                <button class="btn btn-outline-secondary btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-2 border-secondary" onclick="$('.btn-style-filter').addClass('btn-outline-secondary').removeClass('btn-secondary');$(this).addClass('btn-secondary').removeClass('btn-outline-secondary'); filter()" data-style="<?= $id ?>" style="width: 190px;">
+                <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-2 border-secondary" onclick="$('.btn-style-filter').removeClass('active-filter');$(this).addClass('active-filter');filter(2)" data-style="<?= $id ?>" style="width: 140px; padding: 0; font-size: 0.7rem;  font-weight: 300 !important;">
                     <?= $st['name'] ?>
                 </button>
             <?php } ?>
@@ -27,13 +47,13 @@
     </div>
 </div>
 
-<div class="container-fluid py-3">
+<div class="container-fluid">
     <div class="container">
-        <div class="row mt-3">
+        <div class="row mt-3" id="list_image">
 
             <?php foreach ($library as $id => $lb) { ?>
                 <div class="col-12 col-md-6 col-lg-3">
-                    <img src="<?= $lb['image_path'] ?>" class="w-100 image-library lazy shadow" style="aspect-ratio: 16/9; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-room="<?= $lb['id_room'] ?>" data-style="<?= $lb['id_style'] ?>" data-name="<?= $lb['name'] ?>">
+                    <img src="<?= $lb['image_path'] ?>" class="w-100 image-library lazy shadow" style="aspect-ratio: 16/9; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-room="<?= $lb['id_room'] ?>" data-style="<?= $lb['id_style'] ?>" data-name="<?= $lb['name'] ?>" onclick="curr_active = $(this).parent().data('index')">
                     <p class="text-center mt-2"><strong><?= $lb['name'] ?></strong></strong></p>
                 </div>
             <?php } ?>
@@ -55,7 +75,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <img src="" style="width: 100%; object-fit: cover; cursor: pointer;">
+                <div style="text-align: center;">
+                    <span onclick="back_image(this)"><i class="fa-solid fa-circle-chevron-left"></i></span>
+                    <img class="image" src="" style="object-fit: cover; cursor: pointer;">
+                    <span onclick="next_image(this)"><i class="fa-solid fa-circle-chevron-right"></i></span>
+                </div>
+
                 <center>
                     <h4 class="image-name mt-2"></h4>
                 </center>
@@ -96,7 +121,7 @@
         });
 
 
-        $("#owl-filter-button").owlCarousel({
+        $("#owl-filter-room").owlCarousel({
             autoplay: false,
             margin: 10,
             responsiveClass: true,
@@ -105,7 +130,7 @@
             autoWidth: true,
         });
 
-        $("#owl-filter-radio").owlCarousel({
+        $("#owl-filter-style").owlCarousel({
             autoplay: false,
             margin: 10,
             responsiveClass: true,
@@ -119,27 +144,67 @@
             var src = button.attr('src');
             var name = button.data('name');
             var modal = $(this);
+            var wh = window.innerHeight;
 
-            modal.find('.modal-body img').attr('src', src);
+            modal.find('.modal-body img').attr('src', src).css('height', (wh - 200) + 'px');
             modal.find('.modal-body .image-name').text(name);
         })
     });
 
+    var list_active = [];
+    var curr_active = [];
     filter();
 
-    function filter() {
-        let id_room = $('.btn-room-filter.btn-secondary').data('room');
-        let id_style = $('.btn-style-filter.btn-secondary').data('style');
+    function filter(type) {
+        list_active = [];
+        let id_room = $('.btn-room-filter.active-filter').data('room');
+        let id_style = '';
+        if (type == 1) {
+            $('.btn-style-filter').removeClass('active-filter');
+        } else {
+            id_style = $('.btn-style-filter.active-filter').data('style');
+        }
 
+        let index = 0;
         $('.image-library').each(function() {
             let image_room = $(this).data('room');
             let image_style = $(this).data('style');
 
             if ((id_room == undefined || id_room == '' || id_room == image_room) && (id_style == undefined || id_style == '' || id_style == image_style)) {
                 $(this).parent().show();
+                $(this).parent().data('index', index++)
+                let src = $(this).attr('src');
+                let name = $(this).data('name');
+                // list_active.push()
+                list_active = [...list_active, {
+                    'src': src,
+                    'name': name
+                }]
             } else {
                 $(this).parent().hide();
             }
         })
+
+        curr_active = 0;
+
+        scroll_to('#owl-filter-room');
+    }
+
+    function back_image(e) {
+        if (curr_active > 0) {
+            let back_image = list_active[curr_active - 1];
+            curr_active = curr_active - 1
+            $('#exampleModal .image').attr('src', back_image.src);
+            $('#exampleModal .image-name').text(back_image.name);
+        }
+    }
+
+    function next_image(e) {
+        if (curr_active + 1 < list_active.length) {
+            let next_image = list_active[curr_active + 1];
+            curr_active = curr_active + 1
+            $('#exampleModal .image').attr('src', next_image.src);
+            $('#exampleModal .image-name').text(next_image.name);
+        }
     }
 </script>
