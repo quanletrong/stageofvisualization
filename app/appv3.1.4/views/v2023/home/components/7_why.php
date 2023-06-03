@@ -46,7 +46,7 @@
             <a href="<?= site_url(LINK_ORDER) ?>" class="btn btn-danger btn-lg mt-2 px-4 text-white">Place order</a>
             <div class="mt-2">
                 Questions? Call
-                <a href="tel: 0987654321"><span class="link-color">1-833-788-2226</span></a>
+                <a href="tel: <?=$setting['phone']?>"><span class="link-color"><?=$setting['phone']?></span></a>
             </div>
         </div>
     </div>

@@ -22,6 +22,61 @@ class Setting extends MY_Controller
         $this->load->model('setting/Setting_model');
     }
 
+    function info()
+    {
+        $data = [];
+        if ($this->_session_role() != ADMIN) {
+            show_custom_error('Tài khoản không có quyền truy cập!');
+        }
+        $header = [
+            'title' => 'Thông tin website',
+            'header_page_css_js' => 'setting'
+        ];
+
+        if (isset($_POST['phone']) && isset($_POST['logo_ngang']) && isset($_POST['logo_vuong'])) {
+            $phone          = removeAllTags($this->input->post('phone'));
+            $email          = removeAllTags($this->input->post('email'));
+            $address        = removeAllTags($this->input->post('address'));
+            $link_facebook  = removeAllTags($this->input->post('link_facebook'));
+            $link_youtube   = removeAllTags($this->input->post('link_youtube'));
+            $link_instagram = removeAllTags($this->input->post('link_instagram'));
+            $link_linkedin  = removeAllTags($this->input->post('link_linkedin'));
+
+            $logo_vuong = removeAllTags($this->input->post('logo_vuong'));
+            $logo_ngang = removeAllTags($this->input->post('logo_ngang'));
+
+            if ($phone != '' && $logo_vuong != '' && $logo_ngang != '') {
+                $copy_vuong = copy_image_to_public_upload($logo_vuong, LOGO_FOLDER);
+                $copy_ngang = copy_image_to_public_upload($logo_ngang, LOGO_FOLDER);
+
+                if ($copy_vuong['status'] && $copy_ngang['status']) {
+                    $ngang_ok = $copy_ngang['basename'];
+                    $vuong_ok = $copy_vuong['basename'];
+
+                    $this->Setting_model->update_info($phone, $email, $address, $link_facebook, $link_youtube, $link_instagram, $link_linkedin, $ngang_ok, $vuong_ok);
+                    $this->session->set_flashdata('flsh_msg', 'OK');
+                } else {
+                    $this->session->set_flashdata('flsh_msg', 'Không lưu được logo');
+                }
+            } else {
+                $this->session->set_flashdata('flsh_msg', 'Thiếu dữ liệu code 2');
+            }
+
+            redirect('setting/info');
+        }
+        $setting = $this->Setting_model->get_setting();
+
+        // path anh slide
+        $setting['logo_ngang_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_ngang'];
+        $setting['logo_vuong_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_vuong'];
+
+        $data['setting'] = $setting;
+
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'setting/setting_info_view', $data);
+        $this->_loadFooter();
+    }
+
     function home()
     {
         $data = [];
@@ -281,7 +336,7 @@ class Setting extends MY_Controller
         $this->load->view($this->_template_f . 'setting/setting_refund_policy_view', $data);
         $this->_loadFooter();
     }
-    
+
     function termsofuse()
     {
         $data = [];

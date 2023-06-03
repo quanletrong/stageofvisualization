@@ -217,4 +217,23 @@ class Setting_model extends CI_Model
         return $data;
     }
 
+    function update_info($phone, $email, $address, $link_facebook, $link_youtube, $link_instagram, $link_linkedin, $logo_ngang, $logo_vuong)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "UPDATE tbl_setting SET phone=?, email=?, address=?, link_facebook=?, link_youtube=?, link_instagram=?, link_linkedin=?, logo_ngang=?, logo_vuong=? ;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$phone, $email, $address, $link_facebook, $link_youtube, $link_instagram, $link_linkedin, $logo_ngang, $logo_vuong])) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
 }

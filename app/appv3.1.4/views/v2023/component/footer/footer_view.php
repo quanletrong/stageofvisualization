@@ -5,7 +5,7 @@
     <div class="container py-5" id="footer">
         <div class="row">
             <div class="d-none d-lg-block col-12 col-lg-3 text-center">
-                <img src="images/logo-2.png" alt="" width="200">
+                <img src="<?= $setting['logo_vuong_path'] ?>" alt="" width="200">
             </div>
             <div class="col-12 col-lg-3">
                 <div data-bs-toggle="collapse" data-bs-target="#foote_virtual_staging" aria-expanded="false" aria-controls="foote_virtual_staging">
@@ -37,8 +37,8 @@
                 </div>
                 <div class="collapse collapse-horizontal show" id="foote_contact">
                     <div class="fw-light mb-2"><a href="<?= LINK_CONTACT ?>">Contact</a></div>
-                    <div class="fw-light mb-2"><a href="tel:0987654321">Call: 1-833-788-2226</a></div>
-                    <div class="fw-light mb-2"><a href="maito:contact@email.com">Email: info@stuccco.com</a></div>
+                    <div class="fw-light mb-2"><a href="tel:<?= $setting['phone'] ?>">Call: <?= $setting['phone'] ?></a></div>
+                    <div class="fw-light mb-2"><a href="maito:contact@email.com">Email: <?= $setting['email'] ?></a></div>
                 </div>
             </div>
         </div>
@@ -53,10 +53,13 @@
                     <div class="fs-small fw-light mt-3">© 2023 Stuccco, LLC. All rights reserved.</div>
                 </div>
                 <div class="d-flex" style="gap:20px">
-                    <i class="fa-brands fa-square-facebook fs-4"></i>
-                    <i class="fa-brands fa-square-instagram fs-4"></i>
-                    <i class="fa-brands fa-youtube fs-4"></i>
-                    <i class="fa-brands fa-linkedin fs-4"></i>
+                    <a href="<?= $setting['link_facebook'] ?>"><i class="fa-brands fa-square-facebook fs-4"></i></a>
+                    <a href="<?= $setting['link_instagram'] ?>"><i class="fa-brands fa-square-instagram fs-4"></i></a>
+                    <a href="<?= $setting['link_youtube'] ?>"><i class="fa-brands fa-youtube fs-4"></i></a>
+                    <a href="<?= $setting['link_linkedin'] ?>"><i class="fa-brands fa-linkedin fs-4"></i></a>
+
+
+
                 </div>
             </div>
 

@@ -52,7 +52,7 @@
         <a href="<?= LINK_ORDER ?>">
             <button class="btn btn-lg btn-danger mt-2 px-4">Place order</button>
         </a>
-        <div class="mt-2">Questions? Call <span class="link-color">1-833-788-2226</span></div>
+        <div class="mt-2">Questions? Call <a href="tel: <?=$setting['phone']?>"><span class="link-color"><?=$setting['phone']?></span></a></div>
     </center>
 
     <div class="row my-5">

@@ -11,6 +11,7 @@ class MY_Controller extends CI_Controller
     protected $_function = '';
     protected $_product_name = '';
     protected $_product_key = '';
+    protected $_settings = '';
 
     // list banner type: CPC, CPM
     protected $_bantype = NULL;
@@ -87,6 +88,13 @@ class MY_Controller extends CI_Controller
         // assign all common param to view
         $this->load->view($this->_template_f . 'preheader_view', $preHeader);
 
+
+        // load setting website
+        $this->load->model('setting/Setting_model');
+        $setting = $this->Setting_model->get_setting();
+        $setting['logo_ngang_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_ngang'];
+        $setting['logo_vuong_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_vuong'];
+        $this->_settings = $setting;
     }
 
     protected function _loadHeader($data = NULL, $menuTab = 0, $subMenuTab = 0, $loadHeader = TRUE)
@@ -101,6 +109,13 @@ class MY_Controller extends CI_Controller
         $header['loadHeader'] = $loadHeader;
         $header['menuTab'] = $menuTab;
         $header['subMenuTab'] = $subMenuTab;
+
+        // $this->load->model('setting/Setting_model');
+        // $setting = $this->Setting_model->get_setting();
+        // $setting['logo_ngang_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_ngang'];
+        // $setting['logo_vuong_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_vuong'];
+        $header['setting'] = $this->_settings;
+
         
         // for new skin
         // check load header css, js file by page hay ko
@@ -117,6 +132,7 @@ class MY_Controller extends CI_Controller
     protected function _loadFooter()
     {
         $footer = array();
+        $footer['setting'] = $this->_settings;
         $footer['is_login'] = $this->_islogin();
         $this->load->view($this->_template_f . 'footer_view', $footer );
     }

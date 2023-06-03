@@ -42,6 +42,7 @@ define('STATUS_SUA_LAI', 3); // đơn phải sửa lại
 define('STATUS_HOAN_THANH', 4); // đơn đã xong
 
 
+define('LOGO_FOLDER', 'logo'); // uploads/images/logo
 define('HOME_FOLDER', 'home'); // uploads/images/home
 define('SLIDE_FOLDER', 'home/slide'); // uploads/images/home/slide
 define('PARTNER_FOLDER', 'home/partner');  // uploads/images/home/partner
