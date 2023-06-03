@@ -50,15 +50,15 @@
 
                                     <?php $index = 1; ?>
                                     <?php foreach ($list_order as $id_order => $order) { ?>
-                                        <tr>
+                                        <tr class="text-<?=colorByStatusOrde($order['status'])?>">
                                             <td class="align-middle text-center">OID<?=$order['id_order']?></td>
                                             <td class="align-middle text-center">UID<?=$order['id_user']?></td>
                                             <td class="align-middle text-center"><span title="<?=$order['create_time']?>"><?=timeSince($order['create_time'])?> trước</span></td>
-                                            <td class="align-middle text-center">3D Floor Plan</td>
+                                            <td class="align-middle text-center"><?=$order['style']?></td>
                                             <td class="align-middle text-center"><?=$order['total']?></td>
                                             <td class="align-middle text-center">Pending</td>
                                             <td class="align-middle text-center">3h:15p</td>
-                                            <td class="align-middle text-center"><a href="order/detail/<?=$id_order?>">[VIEW JOB]</a></td>
+                                            <td class="align-middle text-center"><a href="order/detail/<?=$id_order?>" text-<?=colorByStatusOrde($order['status'])?>>[VIEW JOB]</a></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>

@@ -23,7 +23,7 @@ DEFINE('UPLOAD_FOLDER_PATH', 'uploads/');// folder nay can config write permissi
 define('SPREADSHEET_LIB_PATH', 'app/appv3.1.4/libraries/PhpSpreadsheet/vendor/autoload.php');
 
 // define folder for new skin
-define('PC_TEMPLATE_FOLDER', 'v2023/');
+define('TEMPLATE_FOLDER', 'v2023/');
 
 
 /* SMS config */

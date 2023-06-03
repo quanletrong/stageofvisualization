@@ -40,3 +40,6 @@ define('STATUS_DA_GIAO', 1); // đơn đã giao cho designer
 define('STATUS_DANG_LAM', 2); // designer đang làm
 define('STATUS_SUA_LAI', 3); // đơn phải sửa lại
 define('STATUS_HOAN_THANH', 4); // đơn đã xong
+
+
+define('SLIDE_FOLDER', 'home/slide'); 

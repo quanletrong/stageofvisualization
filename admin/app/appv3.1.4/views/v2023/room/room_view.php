@@ -40,7 +40,7 @@
                                     <tr>
                                         <th class="text-center" style="min-width: 50px; width: 50px;">STT</th>
                                         <th>Tên phòng</th>
-                                        <th style="min-width: 150px; width: 150px;">Bởi</th>
+                                        <th style="min-width: 150px; width: 150px;">Tạo bởi</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
                                         <th style="min-width: 70px; width: 70px;">Action</th>
                                     </tr>
@@ -54,21 +54,18 @@
 
                                             <td class="align-middle">
                                                 <strong><?= $item['username'] ?></strong><br>
-                                                Tạo: <?= date('H:i d/m/Y', strtotime($item['create_time'])) ?>
-                                                <?= strtotime($item['update_time']) > 0 ? 'Sửa:' . date('H:i d/m/Y', strtotime($item['update_time'])) : '' ?>
-
                                             </td>
                                             <td class="align-middle text-center">
                                                 <?php
                                                 if ($item['status'] === '1') {
-                                                    echo '<span class="badge bg-primary">Hiển thị</span>';
+                                                    echo '<span class="badge bg-success">ON</span>';
                                                 } else {
-                                                    echo '<span class="badge bg-warning">Ngừng hiển thị</span>';
+                                                    echo '<span class="badge bg-danger">OFF</span>';
                                                 }
                                                 ?>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <a href="#" class="btn btn-sm btn-primary w-100" data-toggle="modal" data-target="#modal-room" data-type="edit" data-room="<?= htmlentities(json_encode($item)) ?>">
+                                                <a href="#" class="btn btn-sm btn-danger w-100" data-toggle="modal" data-target="#modal-room" data-type="edit" data-room="<?= htmlentities(json_encode($item)) ?>">
                                                     Sửa
                                                 </a>
                                             </td>
@@ -79,7 +76,7 @@
                                     <tr>
                                     <th class="text-center" style="min-width: 50px; width: 50px;">STT</th>
                                         <th>Tên phòng</th>
-                                        <th style="min-width: 150px; width: 150px;">Bởi</th>
+                                        <th style="min-width: 150px; width: 150px;">Tạo bởi</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
                                         <th style="min-width: 70px; width: 70px;">Action</th>
                                     </tr>
@@ -122,16 +119,18 @@
                                 </div>
 
                                 <div class="mb-1">
-                                    <label>Có hiển thị ra ngoài trang người dùng không?</label>
+                                    <label>
+                                        Trạng thái phòng
+                                    </label>
                                 </div>
                                 <div class="form-group d-flex" style="gap:20px">
                                     <div class="custom-control custom-radio">
                                         <input class="custom-control-input" type="radio" id="status_1" name="status" value="1">
-                                        <label for="status_1" class="custom-control-label">Hiển thị</label>
+                                        <label for="status_1" class="custom-control-label">ON</label>
                                     </div>
                                     <div class="custom-control custom-radio">
                                         <input class="custom-control-input" type="radio" id="status_0" name="status" value="0">
-                                        <label for="status_0" class="custom-control-label">Ngừng hiển thị</label>
+                                        <label for="status_0" class="custom-control-label">OFF</label>
                                     </div>
                                 </div>
                             </div>

@@ -40,9 +40,9 @@
                                     <tr>
                                         <th class="text-center">STT</th>
                                         <th style="min-width: 200px; width: 200px;">Dịch vụ</th>
-                                        <th class="">Mô tả</th>
+                                        <th class="">Mô tả dịch vụ</th>
                                         <th class="text-center" style="min-width: 70px; width: 70px;">Trước/Sau</th>
-                                        <th class="" style="min-width: 70px; width: 70px;">Giá</th>
+                                        <th class="text-center" style="min-width: 70px; width: 70px;">Giá/ảnh $</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
                                         <th style="min-width: 70px; width: 70px;">Action</th>
                                     </tr>
@@ -55,14 +55,14 @@
                                             <td class="align-middle"><?= $item['name'] ?></td>
                                             <td class="align-middle"><?= $item['sapo'] ?></td>
                                             <td class="align-middle text-center"><img src='<?= $item['image_path'] ?>' width="100" class="rounded"></td>
-                                            <td class="align-middle"><?= $item['price'] ?></td>
+                                            <td class="align-middle text-center"><?= $item['price'] ?>$</td>
 
                                             <td class="align-middle text-center">
                                                 <?php
                                                 if ($item['status'] === '1') {
-                                                    echo '<span class="badge bg-primary">Hiển thị</span>';
+                                                    echo '<span class="badge bg-success">ON</span>';
                                                 } else {
-                                                    echo '<span class="badge bg-warning">Ngừng hiển thị</span>';
+                                                    echo '<span class="badge bg-danger">OFF</span>';
                                                 }
                                                 ?>
                                             </td>
@@ -78,9 +78,9 @@
                                     <tr>
                                         <th class="text-center">STT</th>
                                         <th>Dịch vụ</th>
-                                        <th class="">Mô tả</th>
+                                        <th class="">Mô tả dịch vụ</th>
                                         <th class="text-center">Trước/Sau</th>
-                                        <th class="">Giá</th>
+                                        <th class="text-center">Giá/ảnh $</th>
                                         <th class="text-center">Trạng thái</th>
                                         <th>Action</th>
                                     </tr>
@@ -107,8 +107,9 @@
     $(function() {
 
         $("#example1").DataTable({
+            "lengthChange": true,
+            "pageLength": 50,
             "responsive": true,
-            "lengthChange": false,
             "autoWidth": false,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');

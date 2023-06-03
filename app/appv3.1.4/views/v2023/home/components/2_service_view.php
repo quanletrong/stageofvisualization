@@ -1,4 +1,4 @@
-<div class="container-fluid border-bottom" style="background-color: #f9f9f9;">
+<div class="container-fluid border-bottom">
     <div class="container mt-4">
 
         <?php foreach ($service as $id => $it) { ?>

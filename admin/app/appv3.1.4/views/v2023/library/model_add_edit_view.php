@@ -76,7 +76,7 @@
                                                     <tr>
                                                         <td colspan="3" class="text-center">
                                                             <button type="button" class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_image_library" data-target="">
-                                                                <i class="fas fa-upload"></i> Upload ảnh
+                                                                <i class="fas fa-upload"></i> chọn ảnh
                                                             </button>
                                                         </td>
                                                     </tr>

@@ -218,13 +218,24 @@
 							</a>
 
 						</li>
+						<!-- QUẢN LÝ ĐƠN -->
+						<li class="nav-header">QUẢN LÝ ĐƠN</li>
+						<li class="nav-item">
+							<a href="order" class="nav-link">
+								<i class="nav-icon fas fa-th"></i>
+								<p>
+									Đơn
+									<!-- <i class="right fas fa-angle-left"></i> -->
+								</p>
+							</a>
+						</li>
 						<!-- QUẢN LÝ DANH MỤC -->
 						<li class="nav-header">QUẢN LÝ DANH MỤC</li>
 						<li class="nav-item">
 							<a href="service" class="nav-link">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
-									Dịch vụ
+									Dịch vụ thiết kế
 									<!-- <i class="right fas fa-angle-left"></i> -->
 								</p>
 							</a>
@@ -387,7 +398,7 @@
 				$('.nav-sidebar > .nav-item').each(function() {
 					let menu = $(this).find('a').attr('href');
 					if (menu == menu_current) {
-						// $(this).addClass('menu-open'); // mo menu
+						$(this).addClass('menu-open'); // mo menu
 						$(this).find('a').eq(0).addClass('active'); // active menu
 
 						$(this).find('ul.nav-treeview li').each(function() {

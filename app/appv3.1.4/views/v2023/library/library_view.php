@@ -3,8 +3,6 @@
     <center class="fs-5 fw-light">See and shop from Stuccco's vast virtual staging design library</center>
 </div>
 <style>
-    .active-filter {}
-
     .active-filter,
     .btn-room-filter:hover,
     .btn-style-filter:hover {
@@ -24,22 +22,22 @@
         color: #767676;
     }
 </style>
-<div class="container-fluid sticky-top bg-white" id="filter-library" style="z-index: 1019;">
-    <div class="container bg-white">
+<div class="container-fluid sticky-tope" id="filter-library" style="z-index: 1019;">
+    <div class="container">
         <div id="owl-filter-room" class="owl-carousel owl-theme mt-3 ">
             <?php foreach ($room as $id => $rm) { ?>
-                <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-room-filter border border-2 border-secondary" onclick="$('.btn-room-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(1)" data-room="<?= $id ?>" style="width: 140px; padding: 2px 0; font-size: 0.8rem; font-weight: 300 !important;">
+                <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-room-filter border border-2 border-secondary" onclick="$('.btn-room-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(1)" data-room="<?= $id ?>" style="width: 140px; padding: 2px 0; font-size: 0.8rem; font-weight: 500 !important;">
                     <?= $rm['name'] ?>
                 </button>
             <?php } ?>
         </div>
         <div id="owl-filter-style" class="owl-carousel mt-1 pb-2" style="gap:20px; width: 100%">
-            <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-2 border-secondary" onclick="$('.btn-style-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(2)" data-style="" style="width: 140px; padding: 0; font-size: 0.7rem; font-weight: 300 !important;">
+            <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-1 border-secondary" onclick="$('.btn-style-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(2)" data-style="" style="width: 140px; padding: 0; font-size: 0.7rem; font-weight: 500 !important;">
                 Tất cả phong cách
             </button>
 
             <?php foreach ($style as $id => $st) { ?>
-                <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-2 border-secondary" onclick="$('.btn-style-filter').removeClass('active-filter');$(this).addClass('active-filter');filter(2)" data-style="<?= $id ?>" style="width: 140px; padding: 0; font-size: 0.7rem;  font-weight: 300 !important;">
+                <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-1 border-secondary" onclick="$('.btn-style-filter').removeClass('active-filter');$(this).addClass('active-filter');filter(2)" data-style="<?= $id ?>" style="width: 140px; padding: 0; font-size: 0.7rem;  font-weight: 500 !important;">
                     <?= $st['name'] ?>
                 </button>
             <?php } ?>
@@ -75,10 +73,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div style="text-align: center;">
-                    <span onclick="back_image(this)"><i class="fa-solid fa-circle-chevron-left"></i></span>
+                <div style="display: flex; align-items: center; justify-content: center;gap: 10px">
+                    <div onclick="back_image(this)"><i class="fa-solid fa-circle-chevron-left"></i></div>
                     <img class="image" src="" style="object-fit: cover; cursor: pointer;">
-                    <span onclick="next_image(this)"><i class="fa-solid fa-circle-chevron-right"></i></span>
+                    <div onclick="next_image(this)"><i class="fa-solid fa-circle-chevron-right"></i></div>
                 </div>
 
                 <center>

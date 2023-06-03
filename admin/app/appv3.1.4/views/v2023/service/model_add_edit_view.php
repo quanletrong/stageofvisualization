@@ -23,18 +23,19 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="name">Giá dịch vụ</label>
-                                    <input type="text" class="form-control" id="price" name="price" placeholder="Ví dụ $39 Per Photo">
+                                    <label for="name">Giá mỗi ảnh $</label>
+                                    <input type="number" class="form-control" id="price" name="price" placeholder="">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="sapo">Mô tả dịch vụ</label>
+                                    <label for="sapo">Mô tả dịch vụ <small>Phần mô tả sẽ sử dụng trong phần tạo đơn</small></label>
+
                                     <textarea class="form-control" id="sapo" name="sapo" placeholder="Nhập mô tả dịch vụ" rows="4"></textarea>
-                                    <small>Phần mô tả sẽ sử dụng trong phần tạo đơn</small>
                                 </div>
 
                                 <div class="mb-1">
-                                    <label>Có hiển thị ra ngoài trang người dùng không?</label>
+                                    <label>Trạng thái dịch vụ <small>ON đang cung cấp - OFF ngừng cung cấp</small></label>
+
                                 </div>
 
                                 <div class="form-group d-flex" style="gap:20px">
@@ -43,28 +44,33 @@
                             </div>
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
-                                    <label>Ảnh trước và sau khi thiết kế</label>
+                                    <label>
+                                        Demo ảnh trước và sau khi thiết kế
+                                        <small>Ảnh sẽ dùng trong phần tạo đơn và bảng giá.</small>
+                                    </label>
+
                                     <div class="form-group">
                                         <button type="button" class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_image_service" data-target="#image">
-                                            <i class="fas fa-upload"></i> Upload ảnh
+                                            <i class="fas fa-upload"></i> Chọn ảnh
                                         </button>
                                         <input type="hidden" name="image" id="image">
                                         <span id="image-error" class="invalid-feedback" style="font-size: 80%; color: red;">
                                             Tin này cần tối thiểu 1 ảnh.
                                         </span>
                                     </div>
-                                    <small>Ảnh sẽ dùng trong phần tạo đơn và bảng giá.</small>
+
                                     <img src="" id="image_pre" class="rounded img-fluid w-100 shadow mb-3" />
                                 </div>
                             </div>
 
-                            <!-- Loại phòng -->
+                            <!-- danh sách ảnh -->
                             <div class="w-100">
                                 <input type="hidden" name="room" id="room" />
                                 <div id="room_div">
+                                    <small>Danh sách ảnh sẽ hiển thị ngoài trang chủ</small>
                                     <div class="card card-info">
                                         <div class="card-header">
-                                            <h3 class="card-title">Danh sách phòng</h3>
+                                            <h3 class="card-title">Danh sách ảnh của dịch vụ</h3>
 
                                             <div class="card-tools">
                                                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -73,10 +79,11 @@
                                             </div>
                                         </div>
                                         <div class="card-body p-0">
+
                                             <table class="table" id="table_add_room">
                                                 <thead>
                                                     <tr>
-                                                        <th class="w-50">Tên phòng</th>
+                                                        <th class="w-50">Tên ảnh</th>
                                                         <th class="text-center" width="150"></th>
                                                         <th class=""></th>
                                                     </tr>
@@ -98,7 +105,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Loại phòng -->
+                            <!-- /. danh sách ảnh -->
                         </div>
                     </div>
                     <!-- /.card-body -->
@@ -193,7 +200,7 @@
                 var service = button.data('service');
                 $('#frm_service input[name=action]').val('edit');
                 $('#frm_service input[name=id_service]').val(service.id_service);
-                modal.find('.modal-title').text(`Sửa thông tin - ${service.name}`);
+                modal.find('.modal-title').text(`Sửa dịch vụ - ${service.name}`);
                 modal.find('.modal-body #name').val(service.name);
                 modal.find('.modal-body #sapo').val(service.sapo);
                 modal.find('.modal-body #price').val(service.price);

@@ -32,7 +32,7 @@
 <?php $this->load->view('v2023/home/components/6_review.php'); ?>
 
 <!-- Your Happiness is Guaranteed -->
-<div class="container-fluid py-5" style="background-color: #edf1ee;">
+<div class="container-fluid py-5" style="background-color: #e1e7e2;">
     <div class="container">
         <div class="row">
             <div class="col-12 col-lg-6">

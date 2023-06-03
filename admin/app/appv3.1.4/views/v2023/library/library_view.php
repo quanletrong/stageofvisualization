@@ -68,7 +68,7 @@
 
                                     <!-- TÌM -->
                                     <div class="col-md-3 mb-3">
-                                        <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search"></i></button>
+                                        <button type="submit" class="btn btn-primary w-50"><i class="fas fa-search"></i></button>
                                     </div>
                                 </div>
                             </form>
@@ -92,14 +92,14 @@
                                             <td class="align-middle"><?= $item['name'] ?></td>
                                             <td class="align-middle"><?= $item['room_name'] ?></td>
                                             <td class="align-middle"><?= $item['style_name'] ?></td>
-                                            <td class="align-middle text-center"><img src='<?= $item['image_path'] ?>' width="100" class="rounded"></td>
+                                            <td class="align-middle text-center"><img data-src='<?= $item['image_path'] ?>' width="100" class="rounded lazy"></td>
 
                                             <td class="align-middle text-center">
                                                 <?php
                                                 if ($item['status'] === '1') {
-                                                    echo '<span class="badge bg-primary">Hiển thị</span>';
+                                                    echo '<span class="badge bg-success">ON</span>';
                                                 } else {
-                                                    echo '<span class="badge bg-warning">Ngừng hiển thị</span>';
+                                                    echo '<span class="badge bg-danger">OFF</span>';
                                                 }
                                                 ?>
                                             </td>
@@ -143,9 +143,12 @@
 <script>
     $(function() {
 
+        $('.lazy').lazy();
+        
         $("#example1").DataTable({
+            "lengthChange": true,
+            "pageLength": 50,
             "responsive": true,
-            "lengthChange": false,
             "autoWidth": false,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');

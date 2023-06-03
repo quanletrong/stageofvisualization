@@ -57,15 +57,17 @@ $route['translate_uri_dashes'] = FALSE;
 $route[LINK_ORDER]           = 'order/order/index';
 $route[LINK_ORDER.'/submit'] = 'order/order/submit';
 
+
 // upload
 $route['upload']      = 'upload/upload/index';
+
 $route[LINK_ABOUT]    = 'about/about/index';
 $route[LINK_CAREERS]  = 'careers/careers/index';
 $route[LINK_CONTACT]  = 'contact/contact/index';
 $route[LINK_POLICY]   = 'policy/policy/index';
 $route[LINK_TERMS]    = 'terms/terms/index';
 $route[LINK_REFUND]   = 'refund/refund/index';
-$route[LINK_HIW]      = 'hiw/hiw/index';
+$route[LINK_HIW]      = 'home/home/hiw';
 $route[LINK_PRICINGS] = 'pricing/pricing/index';
 $route[LINK_LIBRARY]  = 'library/library/index';
 

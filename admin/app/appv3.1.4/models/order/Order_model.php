@@ -17,6 +17,39 @@ class Order_model extends CI_Model
         $where .= $status !== '' ? " AND A.status =? " : "";
 
         $sql = "
+        SELECT A.*, COUNT(B.id_room) as total, C.name as style
+        FROM tbl_order as A
+        LEFT JOIN tbl_order_job as B ON A.id_order = B.id_order
+        LEFT JOIN tbl_style as C ON C.id_style = B.id_style
+        $where
+        GROUP BY B.id_room
+        ORDER BY A.status ASC, A.create_time ASC";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$status])) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[$row['id_order']] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function get_list_job_s($id_order)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $where = 'WHERE 1=1 ';
+        $where .= $id_order !== '' ? " AND A.id_order =? " : "";
+
+        $sql = "
         SELECT *, COUNT(B.id_order) as total
         FROM tbl_order as A
         LEFT JOIN tbl_order_job as B ON A.id_order = B.id_order

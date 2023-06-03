@@ -53,14 +53,14 @@
                                             <td class="align-middle text-center"><?= $index++ ?></td>
                                             <td class="align-middle"><?= $item['name'] ?></td>
                                             <td class="align-middle"><?= $item['sapo'] ?></td>
-                                            <td class="align-middle text-center"><img src='<?= $item['image_path'] ?>' width="100" class="rounded"></td>
+                                            <td class="align-middle text-center"><img src='<?= $item['image_path'] ?>' height="50" class="rounded"></td>
 
                                             <td class="align-middle text-center">
                                                 <?php
                                                 if ($item['status'] === '1') {
-                                                    echo '<span class="badge bg-primary">Hiển thị</span>';
+                                                    echo '<span class="badge bg-success">ON</span>';
                                                 } else {
-                                                    echo '<span class="badge bg-warning">Ngừng hiển thị</span>';
+                                                    echo '<span class="badge bg-danger">OFF</span>';
                                                 }
                                                 ?>
                                             </td>

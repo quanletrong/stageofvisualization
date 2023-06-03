@@ -26,7 +26,6 @@ class Order extends MY_Controller
         ];
 
         $room = $this->Room_model->get_list(1);
-        $room = $this->Service_model->get_list(1);
         $style = $this->Style_model->get_list(1);
         $library = $this->Library_model->get_list(1);
         $service = $this->Service_model->get_list(1);
@@ -91,10 +90,10 @@ class Order extends MY_Controller
                     $attach_ok[$id_attach] = $copy_attach['basename'];
                 } else {
                     #xóa ảnh chính vưa lưu
-                    @unlink(PUBLIC_UPLOAD_PATH . date('Y') . '/' . date('m') . '/' . $copy_image['basename']);
+                    @unlink($_SERVER["DOCUMENT_ROOT"] . '/' . PUBLIC_UPLOAD_PATH . date('Y') . '/' . date('m') . '/' . $copy_image['basename']);
                     #xóa ảnh attach vừa lưu
                     foreach ($attach_ok as $attach_image) {
-                        @unlink(PUBLIC_UPLOAD_PATH . date('Y') . '/' . date('m') . '/' . $attach_image);
+                        @unlink($_SERVER["DOCUMENT_ROOT"] . '/' . PUBLIC_UPLOAD_PATH . date('Y') . '/' . date('m') . '/' . $attach_image);
                     }
                     resError('error_attach');
                 }
