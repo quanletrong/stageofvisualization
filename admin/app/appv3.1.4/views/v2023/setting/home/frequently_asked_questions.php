@@ -85,8 +85,8 @@
         <div class="form-group" id="${asked_question_id}">
             <label>Câu hỏi</label>
             <span class="text-danger" style="cursor:pointer" onclick="delete ASKED_QUESTION[${asked_question_id}]; render_asked_question()">Xóa câu hỏi</span>
-            <input type="text" class="form-control mb-2" placeholder="Nhập câu hỏi" value="${asked}" onchange="ASKED_QUESTION[${asked_question_id}].asked = $(this).val()">
-            <textarea rows=3 class="form-control" placeholder="Nhập câu trả lời" onchange="ASKED_QUESTION[${asked_question_id}].question = $(this).val()">${question}</textarea>
+            <input type="text" class="form-control mb-2" placeholder="Nhập câu hỏi" value="${htmlEntities(asked)}" onchange="ASKED_QUESTION[${asked_question_id}].asked = $(this).val()">
+            <textarea rows=3 class="form-control" placeholder="Nhập câu trả lời" onchange="ASKED_QUESTION[${asked_question_id}].question = $(this).val()">${htmlEntities(question)}</textarea>
         </div>`;
 
             $('#list_asked_question').append(row_new);

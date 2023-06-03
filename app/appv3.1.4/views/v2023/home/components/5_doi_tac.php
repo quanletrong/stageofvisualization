@@ -6,42 +6,10 @@
     </center>
 
     <div class="row">
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-        <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
-        </div>
-
+        <?php foreach ($setting['partner'] as $partner) { ?>
+            <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
+                <img data-src="<?=$partner['image']?>" alt="<?=$partner['name']?>" title="<?=$partner['name']?>" class="img-fluid lazy" style="max-height: 90px;">
+            </div>
+        <?php } ?>
     </div>
 </div>

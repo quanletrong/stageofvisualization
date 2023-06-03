@@ -375,3 +375,7 @@ function toasts_danger (body='Có lỗi xảy ra', title='Thất bại', delay=1
         fade: true
     })
 }
+
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}

@@ -34,6 +34,8 @@
                     <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/frequently_asked_questions.php') ?>
 
                     <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/feedback.php') ?>
+
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/partner.php') ?>
                 </div>
             </div>
             <!-- /.row -->

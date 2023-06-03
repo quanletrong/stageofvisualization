@@ -290,7 +290,7 @@
 
             let row_new = `<tr id='${room_id}'>
                 <td class="align-middle">
-                    <input name="" class="form-control border-0" value="${ROOM[room_id].name}" onChange="ROOM[${room_id}].name = this.value">
+                    <input name="" class="form-control border-0" value="${htmlEntities(ROOM[room_id].name)}" onChange="ROOM[${room_id}].name = this.value">
                 </td>
                 <td class="align-middle">
                     <img src="${ROOM[room_id].image_path}" alt="" class="img-fluid" id="image_${room_id}_pre">

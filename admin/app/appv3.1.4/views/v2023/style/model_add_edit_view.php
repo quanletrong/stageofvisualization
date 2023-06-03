@@ -257,7 +257,7 @@
 
             let row_new = `<tr id='${slide_id}'>
                 <td class="align-middle">
-                    <input name="" class="form-control border-0" value="${SLIDE[slide_id].name}" onChange="SLIDE[${slide_id}].name = this.value">
+                    <input name="" class="form-control border-0" value="${htmlEntities(SLIDE[slide_id].name)}" onChange="SLIDE[${slide_id}].name = this.value">
                 </td>
                 <td class="align-middle">
                     <img src="${SLIDE[slide_id].image_path}" alt="" class="img-fluid" id="image_${slide_id}_pre">

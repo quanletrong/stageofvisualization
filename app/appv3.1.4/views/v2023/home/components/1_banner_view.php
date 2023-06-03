@@ -6,8 +6,8 @@
             <div class="position-relative" >
                 <img src="<?= $slide['image'] ?>" alt="" class="w-100 img-fluid">
                 <!-- <div></div> -->
-                <div class="bg-dark p-2 position-absolute text-light fs-5" style="top: 50%; left: 1rem;">BEFORE</div>
-                <div class="bg-dark p-2 position-absolute text-light fs-5" style="top: 50%; right: 1rem;">AFTER</div>
+                <div class="bg-dark p-md-2 position-absolute text-light fs-5" style="top: 50%; left: 1rem;">BEFORE</div>
+                <div class="bg-dark p-md-2 position-absolute text-light fs-5" style="top: 50%; right: 1rem;">AFTER</div>
             </div>
         <?php } ?>
 
@@ -19,7 +19,7 @@
     $(document).ready(function() {
         $("#owl-slide").owlCarousel({
             items: 1,
-            autoplay: true,
+            autoplay: false,
             margin: 10,
             responsiveClass: true,
             nav: false,

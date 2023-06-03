@@ -27,11 +27,19 @@ class Home extends MY_Controller
         $style = $this->Style_model->get_list(1);
 
         $setting = $this->Setting_model->get_setting();
+        //full path ảnh slide
         $home_slide = json_decode($setting['home_slide'], true);
         foreach ($home_slide as $id => $it) {
             $home_slide[$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . SLIDE_FOLDER . '/' . $it['image'];
         }
         $setting['home_slide'] = $home_slide;
+
+        //full path ảnh đối tác
+        $partner = json_decode($setting['partner'], true);
+        foreach ($partner as $id => $it) {
+            $partner[$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
+        }
+        $setting['partner'] = $partner;
 
         $data['service'] = $service;
         $data['style'] = $style;

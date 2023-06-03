@@ -122,4 +122,24 @@ class Setting_model extends CI_Model
         return $data;
     }
 
+    function update_partner($partner)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "UPDATE tbl_setting SET partner=? ;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$partner])) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+
 }

@@ -42,4 +42,5 @@ define('STATUS_SUA_LAI', 3); // đơn phải sửa lại
 define('STATUS_HOAN_THANH', 4); // đơn đã xong
 
 
-define('SLIDE_FOLDER', 'home/slide'); 
+define('SLIDE_FOLDER', 'home/slide'); // uploads/images/home/slide
+define('PARTNER_FOLDER', 'home/partner');  // uploads/images/home/partner

@@ -85,8 +85,8 @@
         <div class="form-group" id="${feedback_id}">
             <label>Đánh giá</label>
             <span class="text-danger" style="cursor:pointer" onclick="delete FEEDBACK[${feedback_id}]; render_feedback()">Xóa đánh giá</span>
-            <input type="text" class="form-control mb-2" placeholder="Tên người đánh giá" value="${user}" onchange="FEEDBACK[${feedback_id}].user = $(this).val()">
-            <textarea rows=3 class="form-control" placeholder="Nội dung đánh giá" onchange="FEEDBACK[${feedback_id}].content = $(this).val()">${content}</textarea>
+            <input type="text" class="form-control mb-2" placeholder="Tên người đánh giá" value="${htmlEntities(user)}" onchange="FEEDBACK[${feedback_id}].user = $(this).val()">
+            <textarea rows=3 class="form-control" placeholder="Nội dung đánh giá" onchange="FEEDBACK[${feedback_id}].content = $(this).val()">${htmlEntities(content)}</textarea>
         </div>`;
 
             $('#list_feedback').append(row_new);

@@ -34,11 +34,20 @@ class Setting extends MY_Controller
         ];
 
         $setting = $this->Setting_model->get_setting();
+        
+        // path anh slide
         $home_slide = json_decode($setting['home_slide'], true);
         foreach ($home_slide as $id => $it) {
             $home_slide[$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . SLIDE_FOLDER . '/' . $it['image'];
         }
         $setting['home_slide'] = json_encode($home_slide);
+
+        // path anh partner
+        $partner = json_decode($setting['partner'], true);
+        foreach ($partner as $id => $it) {
+            $partner[$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
+        }
+        $setting['partner'] = json_encode($partner);
         $data['setting'] = $setting;
 
 
@@ -138,6 +147,36 @@ class Setting extends MY_Controller
                 $this->session->set_flashdata('flsh_msg', 'Không được bỏ trống');
             }
            
+            redirect('setting/home');
+        }
+
+        // update partner
+        if ($action == 'partner') {
+            $str_partner = $this->input->post('partner');
+            $arr_partner = json_decode($str_partner, true);
+            if (empty($arr_partner)) {
+                $this->session->set_flashdata('flsh_msg', 'Có lỗi xảy ra!');
+            } else {
+                $ok_partner = [];
+                foreach ($arr_partner as $id => $partner) {
+                    $copy = copy_image_to_public_upload($partner['image'], PARTNER_FOLDER);
+                    if ($copy['status']) {
+                        $ok_partner[$id]['name'] = removeAllTags($partner['name']);
+                        $ok_partner[$id]['image'] = $copy['basename'];
+
+                        unlink($_SERVER["DOCUMENT_ROOT"] . parse_url($partner['image'], PHP_URL_PATH));
+                    } else {
+                        break;
+                    }
+                }
+
+                if (empty($ok_partner)) {
+                    $this->session->set_flashdata('flsh_msg', 'Có lỗi xảy ra!');
+                } else {
+                    $this->Setting_model->update_partner(json_encode($ok_partner));
+                    $this->session->set_flashdata('flsh_msg', 'OK');
+                }
+            }
             redirect('setting/home');
         }
     }

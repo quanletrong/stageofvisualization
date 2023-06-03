@@ -195,7 +195,7 @@
     function html_row_image(image_id) {
         let row_new = `<tr id='${image_id}'>
             <td class="align-middle">
-                <input name="" class="form-control border-0 input-name" value="${SLIDE[image_id].name}" onChange="SLIDE[${image_id}].name = this.value">
+                <input name="" class="form-control border-0 input-name" value="${htmlEntities(SLIDE[image_id].name)}" onChange="SLIDE[${image_id}].name = this.value">
             </td>
             <td class="align-middle text-center">
                 <img src="${SLIDE[image_id].image}" alt="" class="img-fluid w-50" id="image_${image_id}_pre">
