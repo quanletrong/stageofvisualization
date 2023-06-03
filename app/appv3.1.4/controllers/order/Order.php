@@ -111,35 +111,27 @@ class Order extends MY_Controller
             // số lượng job của đơn lưu vào tbl_order_job
             foreach ($list_job as $job) {
 
-                $new_order_job = $this->Order_model->add_order_job($new_order);
-
                 $room           = $job['room'];
                 $service_list   = $job['service'];
                 $image_ok       = $job['image_ok'];
                 $json_attach_ok = json_encode($job['attach_ok'], JSON_FORCE_OBJECT);
                 $requirement    = $job['requirement'];
 
-                if ($new_order_job) {
-                    // số lượng service cần làm cho mỗi job lưu vào tbl_order_job_service
-                    foreach ($service_list as $id_service => $price) {
+                foreach ($service_list as $id_service => $price) {
 
-                        $new_order_job_service = $this->Order_model->add_order_job_service($new_order_job, $new_order, $id_service, $price, $room, $style, $image_ok, $json_attach_ok, $requirement, STATUS_CHUA_LAM, $create_time);
+                    $new_order_job_service = $this->Order_model->add_order_job($new_order, $id_service, $price, $room, $style, $image_ok, $json_attach_ok, $requirement, STATUS_CHUA_LAM, $create_time);
 
-                        if (!$new_order_job_service) {
-                            $flag_error = true;
-                            break;
-                        }
+                    if (!$new_order_job_service) {
+                        $flag_error = true;
+                        break;
                     }
-                } else {
-                    $flag_error = true;
-                    break;
                 }
             }
 
             if ($flag_error) {
-                $this->Order_model->delete_order_job_service($new_order);
+                $this->Order_model->delete_order_and_job($new_order);
                 // Xóa ảnh của job, ảnh attach...TODO:
-                resError('Loi luu job hoac service job');
+                resError('Loi luu job');
             } else {
                 resSuccess('ok');
             }

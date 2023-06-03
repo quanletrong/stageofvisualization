@@ -28,14 +28,34 @@ class Order_model extends CI_Model
         return $new_id;
     }
 
-    function add_order_job($id_order)
+    // function add_order_job($id_order)
+    // {
+    //     $new_id = 0;
+    //     $iconn = $this->db->conn_id;
+    //     $sql = "INSERT INTO tbl_order_job (id_order) VALUES (?)";
+    //     $stmt = $iconn->prepare($sql);
+    //     if ($stmt) {
+    //         $param = [$id_order];
+
+    //         if ($stmt->execute($param)) {
+    //             $new_id = $iconn->lastInsertId();
+    //         } else {
+    //             var_dump($stmt->errorInfo());
+    //             die;
+    //         }
+    //     }
+    //     $stmt->closeCursor();
+    //     return $new_id;
+    // }
+
+    function add_order_job($id_order, $id_service, $price, $id_room, $id_style, $image, $attach, $requirement, $status, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_order_job (id_order) VALUES (?)";
+        $sql = "INSERT INTO tbl_order_job (id_order, id_service, price, id_room, id_style, image, attach, requirement, status, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_order];
+            $param = [$id_order, $id_service, $price, $id_room, $id_style, $image, $attach, $requirement, $status, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -48,33 +68,12 @@ class Order_model extends CI_Model
         return $new_id;
     }
 
-    function add_order_job_service($id_order_job, $id_order, $id_service, $price, $id_room, $id_style, $image, $attach, $requirement, $status, $create_time)
-    {
-        $new_id = 0;
-        $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_order_job_service (id_order_job, id_order, id_service, price, id_room, id_style, image, attach, requirement, status, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $iconn->prepare($sql);
-        if ($stmt) {
-            $param = [$id_order_job, $id_order, $id_service, $price, $id_room, $id_style, $image, $attach, $requirement, $status, $create_time];
-
-            if ($stmt->execute($param)) {
-                $new_id = $iconn->lastInsertId();
-            } else {
-                var_dump($stmt->errorInfo());
-                die;
-            }
-        }
-        $stmt->closeCursor();
-        return $new_id;
-    }
-
-    function delete_order_job_service($id_order)
+    function delete_order_and_job($id_order)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = "DELETE FROM tbl_order WHERE id_order= $id_order; ";
         $sql .= "DELETE FROM tbl_order_job WHERE id_order= $id_order; ";
-        $sql .= "DELETE FROM tbl_order_job_service WHERE id_order= $id_order; ";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute()) {
