@@ -59,7 +59,7 @@ class Setting extends MY_Controller
 
 
         $this->_loadHeader($header);
-        $this->load->view($this->_template_f . 'setting/setting_home_view', $data);
+        $this->load->view($this->_template_f . 'setting/home/setting_home_view', $data);
         $this->_loadFooter();
     }
 
@@ -214,5 +214,104 @@ class Setting extends MY_Controller
             }
             redirect('setting/home');
         }
+    }
+
+    function privacy_policy()
+    {
+        $data = [];
+        if ($this->_session_role() != ADMIN) {
+            show_custom_error('Tài khoản không có quyền truy cập!');
+        }
+        $header = [
+            'title' => 'Trang chính sách bảo mật',
+            'header_page_css_js' => 'setting'
+        ];
+
+        if (isset($_POST['privacy_policy'])) {
+            $privacy_policy = $this->input->post('privacy_policy', false);
+            $privacy_policy = (htmlentities(htmlspecialchars($privacy_policy)));  // render var_dump(html_entity_decode(htmlspecialchars_decode($maps)))
+
+            if ($privacy_policy != '') {
+                $this->Setting_model->update_privacy_policy($privacy_policy);
+                $this->session->set_flashdata('flsh_msg', 'OK');
+            } else {
+                $this->session->set_flashdata('flsh_msg', 'Thiếu dữ liệu');
+            }
+
+            redirect('setting/privacy_policy');
+        }
+
+        $setting = $this->Setting_model->get_setting();
+        $data['setting'] = $setting;
+
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'setting/setting_privacy_policy_view', $data);
+        $this->_loadFooter();
+    }
+
+    function refund_policy()
+    {
+        $data = [];
+        if ($this->_session_role() != ADMIN) {
+            show_custom_error('Tài khoản không có quyền truy cập!');
+        }
+        $header = [
+            'title' => 'Trang chính hoàn tiền',
+            'header_page_css_js' => 'setting'
+        ];
+
+        if (isset($_POST['refund_policy'])) {
+            $refund_policy = $this->input->post('refund_policy', false);
+            $refund_policy = (htmlentities(htmlspecialchars($refund_policy)));  // render var_dump(html_entity_decode(htmlspecialchars_decode($maps)))
+
+            if ($refund_policy != '') {
+                $this->Setting_model->update_refund_policy($refund_policy);
+                $this->session->set_flashdata('flsh_msg', 'OK');
+            } else {
+                $this->session->set_flashdata('flsh_msg', 'Thiếu dữ liệu');
+            }
+
+            redirect('setting/refund_policy');
+        }
+
+        $setting = $this->Setting_model->get_setting();
+        $data['setting'] = $setting;
+
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'setting/setting_refund_policy_view', $data);
+        $this->_loadFooter();
+    }
+    
+    function termsofuse()
+    {
+        $data = [];
+        if ($this->_session_role() != ADMIN) {
+            show_custom_error('Tài khoản không có quyền truy cập!');
+        }
+        $header = [
+            'title' => 'Trang chính hoàn tiền',
+            'header_page_css_js' => 'setting'
+        ];
+
+        if (isset($_POST['termsofuse'])) {
+            $termsofuse = $this->input->post('termsofuse', false);
+            $termsofuse = (htmlentities(htmlspecialchars($termsofuse)));  // render var_dump(html_entity_decode(htmlspecialchars_decode($maps)))
+
+            if ($termsofuse != '') {
+                $this->Setting_model->update_termsofuse($termsofuse);
+                $this->session->set_flashdata('flsh_msg', 'OK');
+            } else {
+                $this->session->set_flashdata('flsh_msg', 'Thiếu dữ liệu');
+            }
+
+            redirect('setting/termsofuse');
+        }
+
+        $setting = $this->Setting_model->get_setting();
+        $data['setting'] = $setting;
+
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'setting/setting_termsofuse_view', $data);
+        $this->_loadFooter();
     }
 }

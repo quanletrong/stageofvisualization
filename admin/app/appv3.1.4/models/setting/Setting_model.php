@@ -160,5 +160,61 @@ class Setting_model extends CI_Model
         return $data;
     }
 
+    function update_privacy_policy($privacy_policy)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "UPDATE tbl_setting SET privacy_policy=? ;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$privacy_policy])) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function update_refund_policy($refund_policy)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "UPDATE tbl_setting SET refund_policy=? ;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$refund_policy])) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function update_termsofuse($termsofuse)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "UPDATE tbl_setting SET termsofuse=? ;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$termsofuse])) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
 
 }

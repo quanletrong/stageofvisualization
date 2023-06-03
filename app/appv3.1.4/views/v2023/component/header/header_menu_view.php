@@ -17,12 +17,11 @@
                         <li><a class="dropdown-item" href="">Overview</a></li>
                         <li><a class="dropdown-item" href="<?=LINK_HIW?>">How It Works</a></li>
                         <li><a class="dropdown-item" href="<?=LINK_PRICINGS?>">Pricing</a></li>
-                        <li><a class="dropdown-item" href="<?=LINK_LIBRARY?>">Library</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">FEATURED LISTINGS</a>
+                    <a class="nav-link active" aria-current="page" href="<?=LINK_LIBRARY?>">LIBRARY</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?=LINK_ORDER?>">

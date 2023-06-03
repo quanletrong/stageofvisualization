@@ -11,7 +11,7 @@
     </div>
     <div class="card-body p-0">
         
-        <form id="form_home_slide" method="post" action="setting/submit_home/why_virtually_stage">
+        <form method="post" action="setting/submit_home/why_virtually_stage">
             <div style="display: flex; justify-content: flex-end;">
                 <button type="submit" class="btn btn-sm btn-danger m-1">Lưu lại</button>
             </div>
@@ -21,8 +21,6 @@
 </div>
 
 <script>
-    var SLIDE = <?= $setting['home_slide'] ?>;
-    render_slide();
     $(function() {
         tinymce.init({
             selector: '#content_why_virtually_stage',

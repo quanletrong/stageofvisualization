@@ -25,6 +25,9 @@
                 <div class="collapse collapse-horizontal show" id="foote_company">
                     <div class="fw-light mb-2"><a href="<?= LINK_ABOUT ?>">About</a></div>
                     <div class="fw-light mb-2"><a href="<?= LINK_CAREERS ?>">Careers</a></div>
+                    <div class="fw-light mb-2"><a href="<?= LINK_POLICY ?>">Privacy Policy</a></div>
+                    <div class="fw-light mb-2"><a href="<?= LINK_TERMS ?>">Terms of Use</a></div>
+                    <div class="fw-light mb-2"><a href="<?= LINK_REFUND ?>">Refund Policy</a></div>
                 </div>
             </div>
 
@@ -42,7 +45,7 @@
         <div class="mt-5">
             <div class="d-flex justify-content-between">
                 <div>
-                    <div class="d-flex" style="gap:20px">
+                    <div class="d-flex d-none" style="gap:20px">
                         <div class="fs-small fw-light"><a href="<?= LINK_POLICY ?>">Privacy Policy</a></div>
                         <div class="fs-small fw-light"><a href="<?= LINK_TERMS ?>">Terms of Use</a></div>
                         <div class="fs-small fw-light"><a href="<?= LINK_REFUND ?>">Refund Policy</a></div>

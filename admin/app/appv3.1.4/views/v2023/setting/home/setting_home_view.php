@@ -11,7 +11,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
-                        <li class="breadcrumb-item active">Danh sách đơn hàng</li>
+                        <li class="breadcrumb-item active">Cài đặt trang chủ</li>
                     </ol>
                 </div>
             </div>
@@ -23,20 +23,20 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
-                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/slide.php') ?>
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/inc/slide.php') ?>
 
-                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/why_virtually_stage_view.php') ?>
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/inc/why_virtually_stage_view.php') ?>
 
-                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/why_stuccco_virtual_staging.php') ?>
-                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/frequently_asked_questions.php') ?>
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/inc/why_stuccco_virtual_staging.php') ?>
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/inc/frequently_asked_questions.php') ?>
                 </div>
                 <div class="col-md-6">
                    
-                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/happiness_guaranteed.php') ?>
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/inc/happiness_guaranteed.php') ?>
 
-                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/feedback.php') ?>
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/inc/feedback.php') ?>
 
-                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/partner.php') ?>
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/inc/partner.php') ?>
                 </div>
             </div>
             <!-- /.row -->
