@@ -34,7 +34,7 @@ class Setting extends MY_Controller
         ];
 
         $setting = $this->Setting_model->get_setting();
-        
+
         // path anh slide
         $home_slide = json_decode($setting['home_slide'], true);
         foreach ($home_slide as $id => $it) {
@@ -48,7 +48,14 @@ class Setting extends MY_Controller
             $partner['images'][$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
         }
         $setting['partner'] = json_encode($partner);
+
+        // path happy_guaranteed
+        $happy_guaranteed = json_decode($setting['happy_guaranteed'], true);
+        $happy_guaranteed['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . HOME_FOLDER . '/' . @$happy_guaranteed['image'];
+        $data['happy_guaranteed'] = $happy_guaranteed;
+
         $data['setting'] = $setting;
+
 
 
         $this->_loadHeader($header);
@@ -98,13 +105,13 @@ class Setting extends MY_Controller
             $content_why_virtually_stage = $this->input->post('content_why_virtually_stage', false);
             $content_why_virtually_stage = (htmlentities(htmlspecialchars($content_why_virtually_stage)));  // render var_dump(html_entity_decode(htmlspecialchars_decode($maps)))
 
-            if($content_why_virtually_stage != '') {
+            if ($content_why_virtually_stage != '') {
                 $this->Setting_model->update_home_why_virtually($content_why_virtually_stage);
                 $this->session->set_flashdata('flsh_msg', 'OK');
             } else {
-                $this->session->set_flashdata('flsh_msg', 'Không được bỏ trống');
+                $this->session->set_flashdata('flsh_msg', 'Thiếu dữ liệu');
             }
-           
+
             redirect('setting/home');
         }
         // update why_virtually
@@ -112,13 +119,13 @@ class Setting extends MY_Controller
             $content_why_stageofvisualization = $this->input->post('content_why_stageofvisualization', false);
             $content_why_stageofvisualization = (htmlentities(htmlspecialchars($content_why_stageofvisualization)));  // render var_dump(html_entity_decode(htmlspecialchars_decode($maps)))
 
-            if($content_why_stageofvisualization != '') {
+            if ($content_why_stageofvisualization != '') {
                 $this->Setting_model->update_home_why_stageofvisualization($content_why_stageofvisualization);
                 $this->session->set_flashdata('flsh_msg', 'OK');
             } else {
-                $this->session->set_flashdata('flsh_msg', 'Không được bỏ trống');
+                $this->session->set_flashdata('flsh_msg', 'Thiếu dữ liệu');
             }
-           
+
             redirect('setting/home');
         }
 
@@ -126,27 +133,53 @@ class Setting extends MY_Controller
         if ($action == 'asked_question') {
             $asked_question = removeAllTags($this->input->post('asked_question'));
 
-            if($asked_question != '') {
+            if ($asked_question != '') {
                 $this->Setting_model->update_home_asked_question($asked_question);
                 $this->session->set_flashdata('flsh_msg', 'OK');
             } else {
-                $this->session->set_flashdata('flsh_msg', 'Không được bỏ trống');
+                $this->session->set_flashdata('flsh_msg', 'Thiếu dữ liệu');
             }
-           
+
             redirect('setting/home');
         }
 
-         // update feedback
-         if ($action == 'feedback') {
+        // update feedback
+        if ($action == 'feedback') {
             $feedback = removeAllTags($this->input->post('feedback'));
 
-            if($feedback != '') {
+            if ($feedback != '') {
                 $this->Setting_model->update_home_feedback($feedback);
                 $this->session->set_flashdata('flsh_msg', 'OK');
             } else {
-                $this->session->set_flashdata('flsh_msg', 'Không được bỏ trống');
+                $this->session->set_flashdata('flsh_msg', 'Thiếu dữ liệu');
             }
-           
+
+            redirect('setting/home');
+        }
+
+        // update happy_guaranteed
+        if ($action == 'happy_guaranteed') {
+            $title_happy = removeAllTags($this->input->post('title_happy'));
+            $sapo_happy = removeAllTags($this->input->post('sapo_happy'));
+            $image_happy = removeAllTags($this->input->post('image_happy'));
+
+            $happy_guaranteed['title'] = $title_happy;
+            $happy_guaranteed['sapo'] = $sapo_happy;
+            $happy_guaranteed['image'] = '';
+
+            if ($image_happy != '' && $title_happy != '' && $sapo_happy != '') {
+                $copy = copy_image_to_public_upload($image_happy, HOME_FOLDER);
+                if ($copy['status']) {
+                    $happy_guaranteed['image'] = $copy['basename'];
+                    $this->Setting_model->update_happy_guaranteed(json_encode($happy_guaranteed, JSON_FORCE_OBJECT));
+                    $this->session->set_flashdata('flsh_msg', 'OK');
+                } else {
+                    $this->session->set_flashdata('flsh_msg', 'Lỗi không lưu được ảnh');
+                }
+            } else {
+                $this->session->set_flashdata('flsh_msg', 'Thiếu dữ liệu');
+            }
+
             redirect('setting/home');
         }
 

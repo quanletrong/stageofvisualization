@@ -39,11 +39,16 @@ class Home extends MY_Controller
         foreach ($partner['images'] as $id => $it) {
             $partner['images'][$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
         }
+        // path happy_guaranteed
+        $happy_guaranteed = json_decode($setting['happy_guaranteed'], true);
+        $happy_guaranteed['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . HOME_FOLDER . '/' . @$happy_guaranteed['image'];
+        
 
         $data['service'] = $service;
         $data['style'] = $style;
         $data['setting'] = $setting;
         $data['partner'] = $partner;
+        $data['happy_guaranteed'] = $happy_guaranteed;
 
         $this->_loadHeader($header);
 

@@ -36,15 +36,11 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-lg-6">
-                <div class="fw-bold" style="font-size: 2em;">Your Happiness is Guaranteed</div>
-                <div class="mt-2 fs-5 fw-light" style="font-weight: 300; line-height: 1.5em;">
-                    If you want your virtually staged photos to be revised, send us a message at the bottom of your
-                    virtual staging order within 60 days of purchase and we will gladly revise your virtually staged
-                    photos free of charge until you are completely happy.
-                </div>
+                <div class="fw-bold" style="font-size: 2em;"><?=$happy_guaranteed['title']?></div>
+                <div class="mt-2 fs-5 fw-light" style="font-weight: 300; line-height: 1.5em;"><?=$happy_guaranteed['sapo']?></div>
             </div>
             <div class="col-12 col-lg-6 text-center">
-                <img src="images/happiness-guarantee.svg" alt="" width="250" height="250">
+                <img src="<?=$happy_guaranteed['image_path']?>" alt="" width="250" height="250">
             </div>
         </div>
     </div>

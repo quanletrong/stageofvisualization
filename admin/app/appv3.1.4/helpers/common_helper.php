@@ -824,7 +824,7 @@ function copy_image_from_file_manager_to_public_upload($url_fmng_image, $yearFol
     }
 }
 
-function copy_image_to_public_upload($url_fmng_image, $folder_str)
+function copy_image_to_public_upload($url_fmng_image, $folder_str='')
 {
     $imginfo = getImageSizeFromUrl($url_fmng_image);
     if (!empty($imginfo)) {

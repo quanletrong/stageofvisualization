@@ -28,10 +28,11 @@
                     <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/why_virtually_stage_view.php') ?>
 
                     <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/why_stuccco_virtual_staging.php') ?>
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/frequently_asked_questions.php') ?>
                 </div>
                 <div class="col-md-6">
-
-                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/frequently_asked_questions.php') ?>
+                   
+                    <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/happiness_guaranteed.php') ?>
 
                     <?php $this->load->view(TEMPLATE_FOLDER . 'setting/home/feedback.php') ?>
 

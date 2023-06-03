@@ -141,5 +141,24 @@ class Setting_model extends CI_Model
         return $data;
     }
 
+    function update_happy_guaranteed($happy_guaranteed)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "UPDATE tbl_setting SET happy_guaranteed=? ;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$happy_guaranteed])) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
 
 }
