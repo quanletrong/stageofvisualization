@@ -81,7 +81,8 @@
         PARTNER[partner_id].image = link;
         PARTNER[partner_id].name = name;
 
-        $(`#${partner_id} .input_name`).val(name);
+        $(`#${partner_id} .input-name`).val(name);
+
     }
 
     // <!-- xu lý thêm phong -->
@@ -96,6 +97,8 @@
             }
 
             render_partner();
+            $(`#${partner_id} .button-upload`).click(); // upload ảnh luôn
+
             $('#table_add_partner tbody tr').last().find('input').focus();
         } else {
             $('#table_add_partner tbody tr').last().find('input').focus();
@@ -107,7 +110,8 @@
 
         for (const partner_id in PARTNER) {
 
-            let row_new = `<tr id='${partner_id}'>
+            let row_new = `
+            <tr id='${partner_id}'>
                 <td class="align-middle">
                     <input name="" class="form-control border-0 input-name" value="${htmlEntities(PARTNER[partner_id].name)}" onChange="PARTNER[${partner_id}].name = this.value">
                 </td>
@@ -117,7 +121,7 @@
                 </td>
                 <td class="text-right py-0 align-middle">
                     <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_partner" data-target="#image_${partner_id}" >
+                        <button type="button" class="btn btn-warning button-upload" onclick="quanlt_upload(this)" data-callback="cb_upload_image_partner" data-target="#image_${partner_id}" >
                             <i class="fas fa-upload"></i>
                         </button>
                         <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>

@@ -80,7 +80,7 @@
         let slide_id = $(target).data('id');
         SLIDE[slide_id].image = link;
         SLIDE[slide_id].name = name;
-        $(`#${slide_id} .input_name`).val(name);
+        $(`#${slide_id} .input-name`).val(name);
     }
 
     // <!-- xu lý thêm phong -->
@@ -95,6 +95,8 @@
             }
 
             render_slide();
+            $(`#${partner_id} .button-upload`).click(); // upload ảnh luôn
+
             $('#table_add_slide tbody tr').last().find('input').focus();
         } else {
             $('#table_add_slide tbody tr').last().find('input').focus();
@@ -108,7 +110,7 @@
 
             let row_new = `<tr id='${slide_id}'>
                 <td class="align-middle">
-                    <input name="" class="form-control border-0 input_name" value="${htmlEntities(SLIDE[slide_id].name)}" onChange="SLIDE[${slide_id}].name = this.value">
+                    <input name="" class="form-control border-0 input-name" value="${htmlEntities(SLIDE[slide_id].name)}" onChange="SLIDE[${slide_id}].name = this.value">
                 </td>
                 <td class="align-middle">
                     <img src="${SLIDE[slide_id].image}" alt="" class="img-fluid" id="image_${slide_id}_pre">
@@ -116,7 +118,7 @@
                 </td>
                 <td class="text-right py-0 align-middle">
                     <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_slide" data-target="#image_${slide_id}" >
+                        <button type="button" class="btn btn-warning button-upload" onclick="quanlt_upload(this)" data-callback="cb_upload_image_slide" data-target="#image_${slide_id}" >
                             <i class="fas fa-upload"></i>
                         </button>
                         <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
