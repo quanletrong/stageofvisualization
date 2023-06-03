@@ -52,3 +52,9 @@
 
 <!-- Why Virtually Stage? -->
 <?php $this->load->view('v2023/home/components/7_why.php'); ?>
+<script>
+    $(document).ready(function() {
+
+        $('.lazy').lazy();
+    })
+</script>
