@@ -4,7 +4,7 @@
     <div id="owl-slide" class="owl-carousel owl-theme mt-3 ">
         <?php foreach ($setting['home_slide'] as $slide) { ?>
             <div class="position-relative" >
-                <img data-src="<?= $slide['image'] ?>" alt="" class="w-100 img-fluid lazy">
+                <img src="<?= $slide['image'] ?>" alt="" class="w-100 img-fluid">
                 <!-- <div></div> -->
                 <div class="bg-dark p-2 position-absolute text-light fs-5" style="top: 50%; left: 1rem;">BEFORE</div>
                 <div class="bg-dark p-2 position-absolute text-light fs-5" style="top: 50%; right: 1rem;">AFTER</div>
