@@ -7,40 +7,40 @@
 
     <div class="row">
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
         <div class="col-6 col-lg-3 mt-3 mb-3 text-center">
-            <img src="images/compass.webp" alt="" class="img-fluid" style="max-height: 68.67px;">
+            <img data-src="images/compass.webp" alt="" class="img-fluid lazy" style="max-height: 68.67px;">
         </div>
 
     </div>

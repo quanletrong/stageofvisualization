@@ -7,10 +7,10 @@
 
             <?php $room = json_decode($it['room'], true) ?>
             <?php if (empty($room)) { ?>
-                <img src="<?= $it['image_path'] ?>" alt="" class="w-100 img-fluid mt-3">
+                <img data-src="<?= $it['image_path'] ?>" alt="" class="w-100 img-fluid mt-3 lazy">
             <?php } else { ?>
                 <?php foreach ($room as $it_room) { ?>
-                    <img src="<?= $it_room['image_path'] ?>" alt="" class="w-100 img-fluid mt-3">
+                    <img data-src="<?= $it_room['image_path'] ?>" alt="" class="w-100 img-fluid mt-3 lazy">
                     <div class="mt-2 fs-5"><?= $it_room['name'] ?></div>
                 <?php } ?>
             <?php } ?>
