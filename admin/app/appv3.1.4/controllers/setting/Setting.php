@@ -44,8 +44,8 @@ class Setting extends MY_Controller
 
         // path anh partner
         $partner = json_decode($setting['partner'], true);
-        foreach ($partner as $id => $it) {
-            $partner[$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
+        foreach ($partner['images'] as $id => $it) {
+            $partner['images'][$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
         }
         $setting['partner'] = json_encode($partner);
         $data['setting'] = $setting;
@@ -154,15 +154,17 @@ class Setting extends MY_Controller
         if ($action == 'partner') {
             $str_partner = $this->input->post('partner');
             $arr_partner = json_decode($str_partner, true);
-            if (empty($arr_partner)) {
-                $this->session->set_flashdata('flsh_msg', 'Có lỗi xảy ra!');
+            if (empty($arr_partner) || !isset($arr_partner['title']) || $arr_partner['title'] == '' || empty($arr_partner['images'])) {
+                $this->session->set_flashdata('flsh_msg', 'Có lỗi dữ liệu!');
             } else {
                 $ok_partner = [];
-                foreach ($arr_partner as $id => $partner) {
+                $ok_partner['title'] = $arr_partner['title'];
+                $ok_partner['sapo'] = $arr_partner['sapo'];
+                foreach ($arr_partner['images'] as $id => $partner) {
                     $copy = copy_image_to_public_upload($partner['image'], PARTNER_FOLDER);
                     if ($copy['status']) {
-                        $ok_partner[$id]['name'] = removeAllTags($partner['name']);
-                        $ok_partner[$id]['image'] = $copy['basename'];
+                        $ok_partner['images'][$id]['name'] = removeAllTags($partner['name']);
+                        $ok_partner['images'][$id]['image'] = $copy['basename'];
 
                         unlink($_SERVER["DOCUMENT_ROOT"] . parse_url($partner['image'], PHP_URL_PATH));
                     } else {
@@ -170,7 +172,7 @@ class Setting extends MY_Controller
                     }
                 }
 
-                if (empty($ok_partner)) {
+                if (empty($ok_partner['images'])) {
                     $this->session->set_flashdata('flsh_msg', 'Có lỗi xảy ra!');
                 } else {
                     $this->Setting_model->update_partner(json_encode($ok_partner));

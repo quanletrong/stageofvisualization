@@ -36,14 +36,14 @@ class Home extends MY_Controller
 
         //full path ảnh đối tác
         $partner = json_decode($setting['partner'], true);
-        foreach ($partner as $id => $it) {
-            $partner[$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
+        foreach ($partner['images'] as $id => $it) {
+            $partner['images'][$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
         }
-        $setting['partner'] = $partner;
 
         $data['service'] = $service;
         $data['style'] = $style;
         $data['setting'] = $setting;
+        $data['partner'] = $partner;
 
         $this->_loadHeader($header);
 

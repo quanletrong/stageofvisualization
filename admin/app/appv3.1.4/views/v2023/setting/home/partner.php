@@ -1,4 +1,3 @@
-
 <div class="card card-info collapsed-card">
     <div class="card-header">
         <h3 class="card-title">Đối tác của chúng tôi</h3>
@@ -9,13 +8,21 @@
             </button>
         </div>
     </div>
-    <div class="card-body p-0">
+    <div class="card-body p-3">
         <form id="form_partner" method="post" action="setting/submit_home/partner">
-            <input type="hidden" name="partner"/>
+            <div class="form-group">
+                <label for="name">Tiêu đề hiển thị</label>
+                <input type="text" class="form-control title" placeholder="Nhập tiêu đề hiển thị" onchange="PARTNER.title = $(this).val()">
+            </div>
+            <div class="form-group">
+                <label for="name">Mô tả ngắn</label>
+                <input type="text" class="form-control sapo" placeholder="Nhập tiêu đề hiển thị" onchange="PARTNER.sapo = $(this).val()">
+            </div>
+            <input type="hidden" name="partner" />
             <table class="table" id="table_add_partner">
                 <thead>
                     <tr>
-                        <th class="w-50">Tên đối tác</th>
+                        <th class="w-50">Danh sách ảnh đối tác</th>
                         <th class="text-center" width="150"></th>
                         <th class="text-right">
                             <button type="button" onclick="add_partner()" class="btn btn-sm btn-primary w-25"><i class="fas fa-plus"></i></button>
@@ -40,7 +47,9 @@
     </div>
 </div>
 <script>
-    var PARTNER = <?=$setting['partner']?>;
+    var PARTNER = <?= $setting['partner'] ?>;
+    $("#form_partner .title").val(PARTNER.title);
+    $("#form_partner .sapo").val(PARTNER.sapo);
     render_partner();
     $(function() {
         $('#form_partner').validate({
@@ -78,8 +87,8 @@
     function cb_upload_image_partner(link, target, name) {
         $(`${target}_pre`).attr('src', link);
         let partner_id = $(target).data('id');
-        PARTNER[partner_id].image = link;
-        PARTNER[partner_id].name = name;
+        PARTNER.images[partner_id].image = link;
+        PARTNER.images[partner_id].name = name;
 
         $(`#${partner_id} .input-name`).val(name);
 
@@ -91,7 +100,7 @@
         if (row_last.find('input').val() != '' && row_last.find('img').attr('src') != '') {
             let partner_id = Date.now();
 
-            PARTNER[partner_id] = {
+            PARTNER.images[partner_id] = {
                 'name': '',
                 'image': ''
             }
@@ -108,15 +117,15 @@
     function render_partner() {
         $('#table_add_partner tbody').html('');
 
-        for (const partner_id in PARTNER) {
+        for (const partner_id in PARTNER.images) {
 
             let row_new = `
             <tr id='${partner_id}'>
                 <td class="align-middle">
-                    <input name="" class="form-control border-0 input-name" value="${htmlEntities(PARTNER[partner_id].name)}" onChange="PARTNER[${partner_id}].name = this.value">
+                    <input name="" class="form-control border-0 input-name" value="${htmlEntities(PARTNER.images[partner_id].name)}" onChange="PARTNER.images[${partner_id}].name = this.value">
                 </td>
                 <td class="align-middle">
-                    <img src="${PARTNER[partner_id].image}" alt="" class="img-fluid" id="image_${partner_id}_pre">
+                    <img src="${PARTNER.images[partner_id].image}" alt="" class="img-fluid" id="image_${partner_id}_pre">
                     <input type="hidden" id="image_${partner_id}" data-id="${partner_id}">
                 </td>
                 <td class="text-right py-0 align-middle">
@@ -125,7 +134,7 @@
                             <i class="fas fa-upload"></i>
                         </button>
                         <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
-                        <button type="button" class="btn btn-danger" onClick="delete PARTNER[${partner_id}]; $('#${partner_id}').remove()"><i class="fas fa-trash"></i></button>
+                        <button type="button" class="btn btn-danger" onClick="delete PARTNER.images[${partner_id}]; $('#${partner_id}').remove()"><i class="fas fa-trash"></i></button>
                     </div>
                 </td>
             </tr>`;
