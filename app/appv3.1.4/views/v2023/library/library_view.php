@@ -22,7 +22,7 @@
         color: #767676;
     }
 </style>
-<div class="container-fluid sticky-tope" id="filter-library" style="z-index: 1019;">
+<div class="container-fluid sticky-top" id="filter-library" style="z-index: 1019; background-color: #f0f0f0;">
     <div class="container">
         <div id="owl-filter-room" class="owl-carousel owl-theme mt-3 ">
             <?php foreach ($room as $id => $rm) { ?>
