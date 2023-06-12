@@ -64,7 +64,11 @@
 						var myXhr = $.ajaxSettings.xhr();
 						return myXhr;
 					},
+					beforeSend: function() {
+						$(quanlt_btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+					},
 					success: function(response) {
+						$(quanlt_btn_upload).html(quanlt_btn_upload_old);
 						callback_upload_image(quanlt_cb, response, quanlt_input_target)
 					},
 					data: formData,
@@ -77,10 +81,13 @@
 		})
 		var quanlt_cb;
 		var quanlt_input_target;
-
+		var quanlt_btn_upload;
+		var quanlt_btn_upload_old;
 		function quanlt_upload(e) {
 			quanlt_cb = $(e).data('callback');
 			quanlt_input_target = $(e).data('target');
+			quanlt_btn_upload = e
+			quanlt_btn_upload_old = $(e).html();
 
 			$('#quanlt_file_button').click();
 		}
