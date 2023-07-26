@@ -42,4 +42,20 @@ class Order extends MY_Controller {
         $this->load->view($this->_template_f . 'order/order_view', $data);
         $this->_loadFooter();
 	}
+
+    
+    function detail($id_order)
+    {
+        $data = [];
+
+        $header = [
+            'title' => 'Chi tiết đơn hàng',
+            'header_page_css_js' => 'order'
+        ];
+        $this->_loadHeader($header);
+
+        $this->load->view($this->_template_f . 'order/order_detail_view', $data);
+
+        $this->_loadFooter();
+    }
 }
