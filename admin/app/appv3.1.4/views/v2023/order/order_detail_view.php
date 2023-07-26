@@ -4,7 +4,7 @@
         box-shadow: 3px 2px 7px 0px #888888;
     }
 
-    #list-image-order .card-header {
+    .card-header {
         padding: 0.3rem 0.8rem;
     }
 
@@ -21,10 +21,27 @@
         padding: 5px;
         border-style: dotted;
         cursor: pointer;
+        max-width: 200px;
+        height: fit-content;
+    }
+
+    .btn-upfile div {
+        text-align: center;
+        font-size: 0.8rem;
     }
 
     .btn-upfile:hover {
         background-color: aliceblue;
+    }
+
+    .image-hover:hover .btn-upfile {
+        display: flex !important;
+        background-color: aliceblue;
+    }
+
+    .position-relative:hover i {
+        cursor: pointer;
+        color: red;
     }
 </style>
 <div class="content-wrapper">
@@ -77,25 +94,44 @@
                                             <div class="card card-primary shadow ">
                                                 <div class="card-header">
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <h3 class="card-title">ORIGINAL FILE(S)</h3>
+                                                        <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                                                            <div>ORIGINAL FILE(S)</div>
+                                                            <button class="btn btn-danger btn-sm">SAVE</button>
+                                                        </h3>
                                                     </div>
                                                 </div>
                                                 <div class="card-body">
-                                                    <div>
-                                                        <!-- <b>Original file</b> -->
-                                                        <img src="https://picsum.photos/320/180" alt="" width="100%">
+                                                    <div class="position-relative image-hover">
+                                                        <div class="btn-upfile rounded border shadow" style="position: absolute; display: none; left: 45%; top: 45%;">
+                                                            <i class="fas fa-upload"></i>
+                                                            <div>Upload file other</div>
+                                                        </div>
+                                                        <img src="https://picsum.photos/320/180" class="img-order-all" alt="" width="100%">
                                                     </div>
                                                     <div class="mt-3">
                                                         <b>Attach Reference Files</b>
                                                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            <div class="position-relative">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            </div>
+                                                            <div class="position-relative">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            </div>
+                                                            <div class="position-relative">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            </div>
                                                             <div class="btn-upfile rounded border shadow">
                                                                 <i class="fas fa-upload"></i>
-                                                                <div>Upload attach </div>
+                                                                <div>Upload file <br>attach reference</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -130,14 +166,30 @@
                                             <div class="card card-primary shadow">
                                                 <div class="card-header">
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <h3 class="card-title">COMPLETED FILE(S)</h3>
+                                                        <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                                                            <div>COMPLETED FILE(S)</div>
+                                                            <button class="btn btn-danger btn-sm">SAVE</button>
+                                                        </h3>
                                                     </div>
                                                 </div>
                                                 <div class="card-body">
                                                     <div>
                                                         <!-- <b>File</b> -->
                                                         <div class="d-flex flex-wrap" style="gap: 10px;">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="48%">
+
+                                                            <div class="position-relative" style="width: 48%;">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100%">
+                                                            </div>
+
+                                                            <div class="position-relative" style="width: 48%;">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100%">
+                                                            </div>
                                                             <div class="btn-upfile rounded border shadow">
                                                                 <i class="fas fa-upload"></i>
                                                                 <div>Upload file complete</div>
@@ -152,7 +204,10 @@
                                             <div class="card card-primary shadow">
                                                 <div class="card-header">
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <h3 class="card-title">REWORK 1</h3>
+                                                        <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                                                            <div>REWORK 1</div>
+                                                            <button class="btn btn-danger btn-sm">SAVE</button>
+                                                        </h3>
                                                     </div>
                                                 </div>
                                                 <div class="card-body">
@@ -160,25 +215,42 @@
                                                         <b>Requirements</b>
                                                         <textarea class="form-control " rows="5">Please use greyish wide plank hardwood flooring in rooms, dark gray tiles in bathrooms and light carpet in bedrooms.Use Scandinavian furniture design and white kitchen with dark gray countertops.</textarea>
                                                     </div>
-                                                    <div class="mt-1">
+                                                    <div class="mt-2">
                                                         <b>Attach Reference Files</b>
                                                         <div class="d-flex flex-wrap" style="gap:7px">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            <div class="position-relative">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            </div>
+
+                                                            <div class="position-relative">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            </div>
+
                                                             <div class="btn-upfile rounded border shadow">
                                                                 <i class="fas fa-upload"></i>
-                                                                <div>Upload attach</div>
+                                                                <div>Upload file <br>attach reference</div>
                                                             </div>
                                                         </div>
                                                     </div>
 
-                                                    <div class="mt-1">
-                                                        <b>File complete</b>
+                                                    <div class="mt-2">
+                                                        <b>File rework complete</b>
                                                         <div class="d-flex flex-wrap" style="gap: 10px;">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="48%">
+                                                            <div class="position-relative" style="width: 48%;">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100%">
+                                                            </div>
                                                             <div class="btn-upfile rounded border shadow">
                                                                 <i class="fas fa-upload"></i>
-                                                                <div>Upload file complete</div>
+                                                                <div>Upload file <br>rework complete</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -188,7 +260,10 @@
                                             <div class="card card-primary shadow">
                                                 <div class="card-header">
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <h3 class="card-title">REWORK 2</h3>
+                                                        <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                                                            <div>REWORK 1</div>
+                                                            <button class="btn btn-danger btn-sm">SAVE</button>
+                                                        </h3>
                                                     </div>
                                                 </div>
                                                 <div class="card-body">
@@ -196,25 +271,42 @@
                                                         <b>Requirements</b>
                                                         <textarea class="form-control " rows="5">Please use greyish wide plank hardwood flooring in rooms, dark gray tiles in bathrooms and light carpet in bedrooms.Use Scandinavian furniture design and white kitchen with dark gray countertops.</textarea>
                                                     </div>
-                                                    <div class="mt-1">
+                                                    <div class="mt-2">
                                                         <b>Attach Reference Files</b>
                                                         <div class="d-flex flex-wrap" style="gap:7px">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            <div class="position-relative">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            </div>
+
+                                                            <div class="position-relative">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100">
+                                                            </div>
+
                                                             <div class="btn-upfile rounded border shadow">
                                                                 <i class="fas fa-upload"></i>
-                                                                <div>Upload attach</div>
+                                                                <div>Upload file <br>attach reference</div>
                                                             </div>
                                                         </div>
                                                     </div>
 
-                                                    <div class="mt-1">
-                                                        <b>File complete</b>
+                                                    <div class="mt-2">
+                                                        <b>File rework complete</b>
                                                         <div class="d-flex flex-wrap" style="gap: 10px;">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="48%">
+                                                            <div class="position-relative" style="width: 48%;">
+                                                                <div class="position-absolute" style="right: 10px">
+                                                                    <i class="fas fa-times icon-delete-image"></i>
+                                                                </div>
+                                                                <img src="https://picsum.photos/320/180" alt="" width="100%">
+                                                            </div>
                                                             <div class="btn-upfile rounded border shadow">
                                                                 <i class="fas fa-upload"></i>
-                                                                <div>Upload file complete</div>
+                                                                <div>Upload file <br>rework complete</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -243,10 +335,80 @@
                     <div class="card card-primary">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h3 class="card-title">TEAM ACTION</h3>
+                                <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                                    <div>TEAM ACTION</div>
+                                    <button class="btn btn-danger btn-sm">SAVE</button>
+                                </h3>
                             </div>
                         </div>
                         <div class="card-body">
+                            <div>
+                                <b>Assign</b>
+                                <p>
+                                    <select class="select2" id="tag" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                        <option value="lequanltv" selected>lequanltv</option>
+                                        <option value="design1" selected>design1</option>
+                                        <option value="design2">design2</option>
+                                    </select>
+                                </p>
+
+                            </div>
+
+                            <div class="mt-3">
+                                <b>Countdown time</b>
+                                <p>
+                                <div style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">00:02:57:00</div>
+                                </p>
+                            </div>
+
+                            <div class="mt-3">
+                                <b>Job status</b>
+                                <div style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold; color: green;">Complete</div>
+                            </div>
+
+                            <div class="mt-3">
+                                <p><b style="color: orange;">CID: C123456</b></p>
+                                <p><b style="color: orange;">JID: J123456</b></p>
+                            </div>
+                            <hr>
+                            <div class="mt-3">
+                                <p><b style="color: orange;">3D Floor Plan: 1</b></p>
+                                <p><b style="color: orange;">VS: 2</b></p>
+                                <p><b style="color: orange;">VR: 1</b></p>
+                                <p><b style="color: orange;">TOTAL: [4]</b></p>
+                            </div>
+                            <hr>
+                            <div class="mt-3">
+                                <b>WORKING USER</b>
+                                <div class="mt-1">
+                                    <div style="color: red; font-weight: bold;">lequanltv</div>
+                                    <div class="d-flex">
+                                        <div class="w-75">3D Floor Plan</div>
+                                        <input class="w-25" type="number" min=1 value="1" style="font-weight: bold;">
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-75">VS</div>
+                                        <input class="w-25" type="number" min=1 value="1" style="font-weight: bold;">
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <div style="color: red; font-weight: bold;">design1</div>
+                                    <div class="d-flex">
+                                        <div class="w-75">VS</div>
+                                        <input class="w-25" type="number" min=1 value="1" style="font-weight: bold;">
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-75">VR</div>
+                                        <input class="w-25" type="number" min=1 value="1" style="font-weight: bold;">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <button class="w-100 btn btn-outline btn-success">ACCEPT</button>
+                            <button class="w-100 btn btn-outline btn-danger mt-3">DOES NOT ACCEPT</button>
+                            <b style="color: red;">Reason for not accepting?</b>
+                            <textarea class="form-control" rows="5"></textarea>
                         </div>
                     </div>
                 </div>
@@ -280,10 +442,25 @@
                     </div>
                 </div>
 
-                <div class="col-2">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="card-title">LỊCH SỬ</h3>
+                            </div>
 
+                        </div>
+                        <div class="card-body">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    })
+</script>
