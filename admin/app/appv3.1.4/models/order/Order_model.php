@@ -17,12 +17,10 @@ class Order_model extends CI_Model
         $where .= $status !== '' ? " AND A.status =? " : "";
 
         $sql = "
-        SELECT A.*, COUNT(B.id_room) as total, C.name as style
+        SELECT A.*, B.name as style
         FROM tbl_order as A
-        LEFT JOIN tbl_order_job as B ON A.id_order = B.id_order
-        LEFT JOIN tbl_style as C ON C.id_style = B.id_style
+        LEFT JOIN tbl_style as B ON A.id_style = B.id_style
         $where
-        GROUP BY B.id_room
         ORDER BY A.status ASC, A.create_time ASC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {

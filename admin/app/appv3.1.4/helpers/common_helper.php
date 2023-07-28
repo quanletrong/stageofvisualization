@@ -790,7 +790,7 @@ function copy_image_from_file_manager_to_public_upload($url_fmng_image, $yearFol
     $imginfo = getImageSizeFromUrl($url_fmng_image);
     if (!empty($imginfo)) {
 
-        $basename = generateRandomString(10).'-'.basename($url_fmng_image);
+        $basename = generateRandomString(10) . '-' . basename($url_fmng_image);
         $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
         // check year folder exists
         $localFolder = $DOCUMENT_ROOT . '/' . PUBLIC_UPLOAD_PATH . '/' . $yearFolder . '/';
@@ -824,12 +824,12 @@ function copy_image_from_file_manager_to_public_upload($url_fmng_image, $yearFol
     }
 }
 
-function copy_image_to_public_upload($url_fmng_image, $folder_str='')
+function copy_image_to_public_upload($url_fmng_image, $folder_str = '')
 {
     $imginfo = getImageSizeFromUrl($url_fmng_image);
     if (!empty($imginfo)) {
 
-        $basename = generateRandomString(10).'-'.basename($url_fmng_image);
+        $basename = generateRandomString(10) . '-' . basename($url_fmng_image);
         $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
 
         $folder_arr = explode('/', $folder_str);
@@ -837,16 +837,16 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str='')
         $RPUP = $DOCUMENT_ROOT . '/' . PUBLIC_UPLOAD_PATH . '/';
 
         $FULL_FOLDER = '';
-        foreach($folder_arr as $folder) {
+        foreach ($folder_arr as $folder) {
 
             $localFolder = $RPUP . $FULL_FOLDER . $folder . '/';
 
             if (!is_dir($localFolder)) {
                 $ckMkdirYear = mkdir($localFolder, 755);
-                if (!$ckMkdirYear) return ['status' => false, 'error' => 'CAN_NOT_MKDIR_'+$folder];
+                if (!$ckMkdirYear) return ['status' => false, 'error' => 'CAN_NOT_MKDIR_' + $folder];
             }
 
-            $FULL_FOLDER .= $folder . '/' ;
+            $FULL_FOLDER .= $folder . '/';
         }
 
         // check file exist
@@ -856,9 +856,8 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str='')
             $rdt = generateRandomString(10);
             $basename = $rdt . $basename;
             $dir_save = $RPUP . $FULL_FOLDER . $basename;
-
         }
-        
+
         //check move
         $chkCopy = copy($url_fmng_image, $dir_save);
         if (!$chkCopy) return ['status' => false, 'error' => 'CAN_NOT_MOVE_FILE'];
@@ -911,95 +910,139 @@ function create_slug($string)
 }
 
 
-function resError($error, $msg='', $show_status = true)
+function resError($error, $msg = '', $show_status = true)
 {
     # neu co show_status
     if ($show_status) {
-        if(ENVIRONMENT == 'development') {
-			$dbgt = debug_backtrace();
-			$line = $dbgt[0]['line'];
-			$file = $dbgt[0]['file'];
-			echo json_encode(['status' => 0, 'error' => $error, 'msg'=>$msg, 'line' => $line, 'file' => $file]);
-		} else {
-			echo json_encode(['status' => 0, 'error' => $error, 'msg'=>$msg]);
-		}
+        if (ENVIRONMENT == 'development') {
+            $dbgt = debug_backtrace();
+            $line = $dbgt[0]['line'];
+            $file = $dbgt[0]['file'];
+            echo json_encode(['status' => 0, 'error' => $error, 'msg' => $msg, 'line' => $line, 'file' => $file]);
+        } else {
+            echo json_encode(['status' => 0, 'error' => $error, 'msg' => $msg]);
+        }
     } else {
         # neu data la mang  thi echo json_encode
-        if(is_array($error)) {
+        if (is_array($error)) {
             echo json_encode($error);
-        } 
+        }
         # nguoc lai
         else {
             echo $error;
         }
-        
     }
-    
+
     dbClose();
     die();
 }
 
 // set response data
-function resSuccess($data, $msg='', $show_status = true)
+function resSuccess($data, $msg = '', $show_status = true)
 {
     # neu co show_status
     if ($show_status) {
 
-        if(ENVIRONMENT == 'development') {
-			$dbgt = debug_backtrace();
-			$line = $dbgt[0]['line'];
-			$file = $dbgt[0]['file'];
-			echo json_encode(['status' => 1, 'data' => $data, 'msg'=>$msg, 'line' => $line, 'file' => $file]);
-		} else {
-			echo json_encode(['status' => 1, 'data' => $data, 'msg'=>$msg]);
-		}
+        if (ENVIRONMENT == 'development') {
+            $dbgt = debug_backtrace();
+            $line = $dbgt[0]['line'];
+            $file = $dbgt[0]['file'];
+            echo json_encode(['status' => 1, 'data' => $data, 'msg' => $msg, 'line' => $line, 'file' => $file]);
+        } else {
+            echo json_encode(['status' => 1, 'data' => $data, 'msg' => $msg]);
+        }
     } else {
         # neu data la mang  thi echo json_encode
-        if(is_array($data)) {
+        if (is_array($data)) {
             echo json_encode($data);
-        } 
+        }
         # nguoc lai
         else {
             echo $data;
         }
-        
     }
-    
+
     dbClose();
     die();
 }
 
-function timeSince($date) {
+function timeSince($date)
+{
     $seconds = time() - strtotime($date);
     $interval = floor($seconds / 31536000);
     if ($interval >= 1) {
-      return $interval . " năm";
+        return $interval . " năm";
     }
     $interval = floor($seconds / 2592000);
     if ($interval >= 1) {
-      return $interval . " tháng";
+        return $interval . " tháng";
     }
     $interval = floor($seconds / 86400);
     if ($interval >= 1) {
-      return $interval . " ngày";
+        return $interval . " ngày";
     }
     $interval = floor($seconds / 3600);
     if ($interval >= 1) {
-      return $interval . " giờ";
+        return $interval . " giờ";
     }
     $interval = floor($seconds / 60);
     if ($interval >= 1) {
-      return $interval . " phút";
+        return $interval . " phút";
     }
     return floor($seconds) . " giây";
 }
 
-function colorByStatusOrde($status) {
-    if($status == STATUS_CHUA_LAM) {
+function colorByStatusOrde($status)
+{
+    if ($status == STATUS_CHUA_LAM) {
         return 'warning';
-    } else if($status == STATUS_HOAN_THANH){
+    } else if ($status == STATUS_HOAN_THANH) {
         return 'success';
     } else {
         return 'default';
     }
+}
+
+// status 1,2,3,4,5 thì vào đây
+function status_order($status, $role)
+{
+    $data = [];
+    if ($status == 1 && in_array($role, [ADMIN, SALE, USER])) {
+        $data['text'] = 'Pending';
+        $data['bg'] = 'deeppink';
+    } else if ($status == 2) {
+        $data['text'] = 'Inprogress';
+        $data['bg'] = 'deepskyblue';
+    } else if ($status == 3 && in_array($role, [ADMIN, SALE, USER])) {
+        $data['text'] = 'ERROR ORDER';
+        $data['bg'] = 'darkred';
+    } else if ($status == 4 && in_array($role, [ADMIN, SALE, CHECKER, DESIGNER])) {
+        $data['text'] = 'QC CHECK';
+        $data['bg'] = 'yellow';
+    } else if ($status == 5 && in_array($role, [ADMIN, SALE, CHECKER, DESIGNER])) {
+        $data['text'] = 'QC REWORK';
+        $data['bg'] = 'yellow';
+    }
+
+    return $data;
+}
+
+// status 6 thì vào đây(6 là done)
+// $time_limit = 86400 = 1 day
+function status_done_order($time_create, $time_design_done, $time_limit = 86400)
+{
+
+    $data = [];
+    $tsp_time_create = strtotime($time_create);
+    $tsp_time_design_done = strtotime($time_design_done);
+
+    if (($tsp_time_design_done - $tsp_time_create) > $time_limit) {
+        $data['text'] = 'DONE LATE';
+        $data['bg'] = 'darkred';
+    } else if (($tsp_time_design_done - $tsp_time_create) < $time_limit) {
+        $data['text'] = 'DONE';
+        $data['bg'] = 'darkgreen';
+    }
+
+    return $data;
 }
