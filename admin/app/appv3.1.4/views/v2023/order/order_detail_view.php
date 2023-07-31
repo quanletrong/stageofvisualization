@@ -348,7 +348,8 @@
                                     <select class="select2" id="tag" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
                                         <option value="lequanltv" selected>lequanltv</option>
                                         <option value="design1" selected>design1</option>
-                                        <option value="design2">design2</option>
+                                        <option value="design2" selected>design2</option>
+                                        <option value="design2" selected>design3</option>
                                     </select>
                                 </p>
 
@@ -358,6 +359,13 @@
                                 <b>Countdown time</b>
                                 <p>
                                 <div style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">00:02:57:00</div>
+                                </p>
+                            </div>
+
+                            <div class="mt-3">
+                                <b>Custom time (thêm thời gian cho đơn)</b>
+                                <p>
+                                    <input type="text" class="form-control" style="text-align: center; font-weight: bold;" value="00:02:57:00">
                                 </p>
                             </div>
 
@@ -379,28 +387,107 @@
                             </div>
                             <hr>
                             <div class="mt-3">
-                                <b>WORKING USER</b>
+                                <b>WORKING DESIGNER</b>
                                 <div class="mt-1">
-                                    <div style="color: red; font-weight: bold;">lequanltv</div>
                                     <div class="d-flex">
-                                        <div class="w-75">3D Floor Plan</div>
-                                        <input class="w-25" type="number" min=1 value="1" style="font-weight: bold;">
+                                        <div class="w-50" style="color: red; font-weight: bold;">IMAGE 1 (VR)</div>
+                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                            <option value="lequanltv" selected>lequanltv</option>
+                                            <option value="design1" selected>design1</option>
+                                            <option value="design2">design2</option>
+                                        </select>
                                     </div>
                                     <div class="d-flex mt-1">
-                                        <div class="w-75">VS</div>
-                                        <input class="w-25" type="number" min=1 value="1" style="font-weight: bold;">
+                                        <div class="w-50" style="color: red; font-weight: bold;">IMAGE 2 (VR)</div>
+                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                            <option value="lequanltv">lequanltv</option>
+                                            <option value="design1" selected>design1</option>
+                                            <option value="design2">design2</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">IMAGE 3 (VS)</div>
+                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                            <option value="lequanltv">lequanltv</option>
+                                            <option value="design1">design1</option>
+                                            <option value="design2" selected>design2</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">IMAGE 4 (3D)</div>
+                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                            <option value="lequanltv">lequanltv</option>
+                                            <option value="design1">design1</option>
+                                            <option value="design2" selected>design2</option>
+                                        </select>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="mt-3">
-                                    <div style="color: red; font-weight: bold;">design1</div>
-                                    <div class="d-flex">
-                                        <div class="w-75">VS</div>
-                                        <input class="w-25" type="number" min=1 value="1" style="font-weight: bold;">
+                            <div class="mt-3">
+                                <b>WORKING QC</b>
+                                <div class="mt-1">
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">IMAGE 1 (VR)</div>
+                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                            <option value="lequanltv" selected>QC1</option>
+                                            <option value="design1">QC2</option>
+                                            <option value="design2">QC3</option>
+                                        </select>
                                     </div>
                                     <div class="d-flex mt-1">
-                                        <div class="w-75">VR</div>
-                                        <input class="w-25" type="number" min=1 value="1" style="font-weight: bold;">
+                                        <div class="w-50" style="color: red; font-weight: bold;">IMAGE 2 (VR)</div>
+                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                            <option value="lequanltv" selected>QC1</option>
+                                            <option value="design1">QC2</option>
+                                            <option value="design2">QC3</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">IMAGE 3 (VS)</div>
+                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                            <option value="lequanltv">QC1</option>
+                                            <option value="design1" selected>QC2</option>
+                                            <option value="design2">QC3</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">IMAGE 4 (3D)</div>
+                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                            <option value="lequanltv">QC1</option>
+                                            <option value="design1" selected>QC2</option>
+                                            <option value="design2">QC3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <b>GIÁ CUSTOM (cộng thêm tiền cho đơn)</b>
+                                <div class="mt-1">
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">QC1</div>
+                                        <input class="form-control" value="1">
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">QC2</div>
+                                        <input class="form-control" value="1">
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">lequanltv</div>
+                                        <input class="form-control" value="1">
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">design1</div>
+                                        <input class="form-control" value="1">
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">design2</div>
+                                        <input class="form-control" value="1">
+                                    </div>
+                                    <div class="d-flex mt-1">
+                                        <div class="w-50" style="color: red; font-weight: bold;">design3</div>
+                                        <input class="form-control" value="2">
                                     </div>
                                 </div>
                             </div>
@@ -451,6 +538,244 @@
 
                         </div>
                         <div class="card-body">
+
+                            <div class="timeline">
+
+                                <!-- <div class="time-label">
+                                    <span class="bg-red">10 Feb. 2014</span>
+                                </div> -->
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">saler_1</a> thay đổi trạng thái từ <b>Pending</b> thành <b>QC CHECK</b></h3>
+                                    </div>
+                                </div>
+
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">QC_1</a> đã tham gia job</h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">QC_2</a> đã tham gia job</h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">QC_1</a> thay đổi trạng thái từ <b>QC CHECK</b> thành <b>Avaiabel</b></h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">QC_1</a> thay đổi từ <b>Avaiabel</b> thành <b>In Progress</b></h3>
+                                    </div>
+                                </div>                                
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">design1</a> đã tham gia job</h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">design2</a> đã tham gia job</h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">design3</a> đã tham gia job</h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">design1</a> đã tham gia job</h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">design1</a> đang xử lý Image 1(VR)</h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">design1</a> đang xử lý Image 2(VR)</h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">design2</a> đang xử lý Image 3(VS)</h3>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                        <h3 class="timeline-header"><a href="#">design2</a> đang xử lý Image 3(VS)</h3>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #4 Cập nhật bởi <span style="color: red;">design1</span> lúc <span style="color: red;">15:15 30-07-2023 </span>
+                                    <div>Trạng thái thay đổi từ <b>Avaiabel</b> thành <b>In Progress</b></div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #5 Cập nhật bởi <span style="color: red;">lequanltv</span> lúc <span style="color: red;">16:00 30-07-2023 </span>
+                                    <div>Image 1(VR) upload file complete</div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #6 Cập nhật bởi <span style="color: red;">design1</span> lúc <span style="color: red;">16:15 30-07-2023 </span>
+                                    <div>Image 2(VR) upload file complete</div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #7 Cập nhật bởi <span style="color: red;">design2</span> lúc <span style="color: red;">16:16 30-07-2023 </span>
+                                    <div>Image 3(VS) upload file complete</div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #8 Cập nhật bởi <span style="color: red;">design3</span> lúc <span style="color: red;">16:17 30-07-2023 </span>
+                                    <div>Image 4(3D) upload file complete</div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #9 Cập nhật bởi <span style="color: red;">design3</span> lúc <span style="color: red;">16:18 30-07-2023 </span>
+                                    <div>Trạng thái thay đổi từ <b>In Progress</b> thành <b>DONE</b></div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #10 Cập nhật bởi <span style="color: red;">QC1</span> lúc <span style="color: red;">16:30 30-07-2023 </span>
+                                    <div>Trạng thái thay đổi từ <b>DONE</b> thành <b>Delivered</b></div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #11 Cập nhật bởi <span style="color: red;">khach_hang_1</span> lúc <span style="color: red;">17:30 30-07-2023 </span>
+                                    <div>Trạng thái thay đổi từ <b>Delivered</b> thành <b>REWORK</b></div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #12 Cập nhật bởi <span style="color: red;">sale1</span> lúc <span style="color: red;">17:35 30-07-2023 </span>
+                                    <div>Trạng thái thay đổi từ <b>REWORK</b> thành <b>QC CHECK</b></div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #13 Cập nhật bởi <span style="color: red;">QC1</span> lúc <span style="color: red;">17:40 30-07-2023 </span>
+                                    <div>Trạng thái thay đổi từ <b>QC CHECK</b> thành <b>In Progress</b></div>
+                                    <div>Đã thêm <b>design4</b></div>
+                                    <div>Giá custom <b>design4</b> thay đổi từ 0 thành 1</div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #14 Cập nhật bởi <span style="color: red;">design4</span> lúc <span style="color: red;">18:45 30-07-2023 </span>
+                                    <div>Trạng thái thay đổi từ <b>In Progress</b> thành <b>DONE</b></div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #15 Cập nhật bởi <span style="color: red;">QC1</span> lúc <span style="color: red;">19:30 30-07-2023 </span>
+                                    <div>Trạng thái thay đổi từ <b>DONE</b> thành <b>Delivered</b></div>
+                                </div>
+
+                                <div class="mb-1" style="border-bottom: 1px solid #dedede;">
+                                    #16 Cập nhật bởi <span style="color: red;">khach_hang_1</span> lúc <span style="color: red;">20:30 30-07-2023 </span>
+                                    <div>Trạng thái thay đổi từ <b>DONE</b> thành <b>COMPLETE</b></div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-user bg-yellow"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 27 mins ago</span>
+                                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+                                        <div class="timeline-body">
+                                            Take me to your leader!
+                                            Switzerland is small and neutral!
+                                            We are more like Germany, ambitious and misunderstood!
+                                        </div>
+                                        <div class="timeline-footer">
+                                            <a class="btn btn-warning btn-sm">View comment</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="time-label">
+                                    <span class="bg-green">3 Jan. 2014</span>
+                                </div>
+
+
+                                <div>
+                                    <i class="fa fa-camera bg-purple"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>
+                                        <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
+                                        <div class="timeline-body">
+                                            <img src="https://placehold.it/150x100" alt="...">
+                                            <img src="https://placehold.it/150x100" alt="...">
+                                            <img src="https://placehold.it/150x100" alt="...">
+                                            <img src="https://placehold.it/150x100" alt="...">
+                                            <img src="https://placehold.it/150x100" alt="...">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div>
+                                    <i class="fas fa-video bg-maroon"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> 5 days ago</span>
+                                        <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
+                                        <div class="timeline-body">
+
+                                        </div>
+                                        <div class="timeline-footer">
+                                            <a href="#" class="btn btn-sm bg-maroon">See comments</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-clock bg-gray"></i>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
