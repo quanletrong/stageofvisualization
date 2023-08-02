@@ -107,7 +107,7 @@ class Order extends MY_Controller
 
         $flag_error = false;
         if ($new_order) {
-            // số lượng job của đơn lưu vào tbl_order_job
+            // số lượng job của đơn lưu vào tbl_job
             foreach ($list_job as $job) {
 
                 $room           = $job['room'];

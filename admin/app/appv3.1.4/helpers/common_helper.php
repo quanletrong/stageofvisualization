@@ -1046,3 +1046,13 @@ function status_done_order($time_create, $time_design_done, $time_limit = 86400)
 
     return $data;
 }
+
+function url_image($file_name, $folder){
+    $CI = &get_instance();
+    if ($CI->config->item('cf_upload_local') == '') {
+        $root_domain = 'https://datdonganh.vn/';
+    } else {
+        $root_domain = ROOT_DOMAIN;
+    }
+    return $root_domain . $folder . $file_name;
+}
