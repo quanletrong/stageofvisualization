@@ -17,7 +17,7 @@ include_once('cfsite.php');
 define('PUBLIC_UPLOAD_PATH', 'uploads/images/');
 
 //define upload folder
-DEFINE('UPLOAD_FOLDER_PATH', 'uploads/');// folder nay can config write permission tren server
+DEFINE('UPLOAD_FOLDER_PATH', 'uploads/'); // folder nay can config write permission tren server
 
 // PhpSpreadsheet library path
 define('SPREADSHEET_LIB_PATH', 'app/appv3.1.4/libraries/PhpSpreadsheet/vendor/autoload.php');
@@ -64,9 +64,28 @@ define('SESSION_CONFIG_TIME_EXPIRE', 28800);
 // ROLE
 define('ADMIN', '1');
 define('SALE', '2');
-define('USER', '3');
+define('QC', '3');
+define('EDITOR', '4');
+define('CUSTOMER', '5');
+
+//STATUS ORDER
+define('ORDER_PENDING', '1');    //hồng
+define('ORDER_QC_CHECK', '2');   //vàng
+define('ORDER_AVAIABLE', '3');   //vàng
+define('ORDER_PROGRESS', '4');   //xanh ngọc
+define('ORDER_DONE', '5');       //xanh lá
+define('ORDER_DELIVERED', '6');  //xanh lá
+define('ORDER_REWORK', '7');     //vàng
+define('ORDER_CANCLE', '8');     //đỏ
+define('ORDER_COMPLETE', '9');   //xanh lá
 
 // SERVICE
 define('SERVICE_RUN', 1);
 define('SERVICE_STOP', 0);
 
+// HỒNG ĐƠN MỚI (PENDING)
+// ĐỎ   ĐƠN CHẬM (DELIVERED >  hạn chót)
+// CAM  URGENT
+// VÀNG REWORK (đơn làm lại)
+// GREN DELIVERED <= hạn chót (đơn đúng hạn)
+// BLUE QCCHECK+AVAIABLE+PROGRESS+DONE => Đang xử lý

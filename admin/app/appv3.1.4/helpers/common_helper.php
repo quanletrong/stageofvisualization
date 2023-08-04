@@ -1003,51 +1003,97 @@ function colorByStatusOrde($status)
     }
 }
 
-// status 1,2,3,4,5 thì vào đây
-function status_order($status, $role)
+// ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_REWORK, ORDER_CANCLE
+function status_order($status)
 {
     $data = [];
-    if ($status == 1 && in_array($role, [ADMIN, SALE, USER])) {
-        $data['text'] = 'Pending';
+    if ($status == ORDER_PENDING) {
+        $data['text'] = 'PENDING';
         $data['bg'] = 'deeppink';
-    } else if ($status == 2) {
-        $data['text'] = 'Inprogress';
-        $data['bg'] = 'deepskyblue';
-    } else if ($status == 3 && in_array($role, [ADMIN, SALE, USER])) {
-        $data['text'] = 'ERROR ORDER';
-        $data['bg'] = 'darkred';
-    } else if ($status == 4 && in_array($role, [ADMIN, SALE, CHECKER, DESIGNER])) {
+    } else if ($status == ORDER_QC_CHECK) {
         $data['text'] = 'QC CHECK';
-        $data['bg'] = 'yellow';
-    } else if ($status == 5 && in_array($role, [ADMIN, SALE, CHECKER, DESIGNER])) {
-        $data['text'] = 'QC REWORK';
-        $data['bg'] = 'yellow';
+        $data['bg'] = '#ffc107';
+    } else if ($status == ORDER_AVAIABLE) {
+        $data['text'] = 'AVAIABLE';
+        $data['bg'] = '#ffeb3b';
+    } else if ($status == ORDER_PROGRESS) {
+        $data['text'] = 'IN PROGRESS';
+        $data['bg'] = 'deepskyblue';
+    } else if ($status == ORDER_REWORK) {
+        $data['text'] = 'REWORK';
+        $data['bg'] = 'orange';
+    } else if ($status == ORDER_CANCLE) {
+        $data['text'] = 'CANCLE';
+        $data['bg'] = 'darkred';
     }
 
     return $data;
 }
 
-// status 6 thì vào đây(6 là done)
-// $time_limit = 86400 = 1 day
-function status_done_order($time_create, $time_design_done, $time_limit = 86400)
+// DONE, DELIVERED, COMPLETE
+// $second_time_limit = 86400 = 1 day
+function status_late_order($status_text, $time_create_order, $time_done, $custom_time_second = 0, $second_time_limit = 86400)
 {
-
     $data = [];
-    $tsp_time_create = strtotime($time_create);
-    $tsp_time_design_done = strtotime($time_design_done);
+    $tsp_time_create_order = strtotime($time_create_order);
+    $tsp_time_done = strtotime($time_done);
 
-    if (($tsp_time_design_done - $tsp_time_create) > $time_limit) {
-        $data['text'] = 'DONE LATE';
+    // 13h 3/8/2023 - 12h 2/8/2023 = 25h => 25h < 24h + 2h => DONE LATE
+    // 13h 3/8/2023 - 12h 2/8/2023 - 2h  = 23h < 24h => DONE
+    $thoi_gian_lam = $tsp_time_done - $tsp_time_create_order;
+    $thoi_gian_gioi_han = $second_time_limit + $custom_time_second;
+    if ($thoi_gian_lam > $thoi_gian_gioi_han) {
+        $data['text'] = $status_text . ' LATE';
         $data['bg'] = 'darkred';
-    } else if (($tsp_time_design_done - $tsp_time_create) < $time_limit) {
-        $data['text'] = 'DONE';
+    } else {
+        $data['text'] = $status_text;
         $data['bg'] = 'darkgreen';
     }
-
     return $data;
 }
 
-function url_image($file_name, $folder){
+// đếm ngược thời gian hoàn thành đơn
+
+function count_down_time_order($order)
+{
+    $thoi_gian_hien_tai = time();
+    $thoi_gian_tao_don = strtotime($order['create_time']);
+    $thoi_gian_tra_don = strtotime($order['done_qc_time']);
+    $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
+    $cong_them_gio = $order['custom_time'];
+    $thoi_gian_toi_thieu = 86400;
+    $han_chot = $thoi_gian_tao_don + $cong_them_gio + $thoi_gian_toi_thieu;
+
+    $ket_qua = 0;
+    // đã hoàn thành đơn
+    if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
+
+        // đúng hạn thì hiển thị tổng thời gian làm (luôn dương)
+        if ($thoi_gian_tra_don <= $han_chot) {
+            $ket_qua = $thoi_gian_tra_don - $thoi_gian_tao_don;
+        }
+        // đúng hạn thì hiển thị tổng thời gian quá hạn (luôn âm)
+        else {
+            $ket_qua = $han_chot - $thoi_gian_tra_don;
+        }
+    } else {
+        $ket_qua = $han_chot - $thoi_gian_hien_tai;
+    }
+
+    $ket_qua_duong = $ket_qua < 0 ? $ket_qua * -1 : $ket_qua;
+    $ngay = floor($ket_qua_duong / 86400);
+    $gio = floor(($ket_qua_duong - $ngay * 86400) / 3600);
+    $phut = floor(($ket_qua_duong - $ngay * 86400 - $gio * 3600) / 60);
+    $giay = $ket_qua_duong - $ngay * 86400 - $gio * 3600 - $phut * 60;
+
+    if ($ngay > 0) {
+        return ($ket_qua < 0 ? "- " : '') . $ngay . 'd:' . $gio . 'h:' . $phut . 'm';
+    } else {
+        return ($ket_qua < 0 ? "- " : '') . $gio . 'h: ' . $phut . 'm:' . $giay . 's';
+    }
+}
+function url_image($file_name, $folder)
+{
     $CI = &get_instance();
     if ($CI->config->item('cf_upload_local') == '') {
         $root_domain = 'https://datdonganh.vn/';

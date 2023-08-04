@@ -82,3 +82,4 @@ $route[LINK_USER_TRANSACTIONS]  = 'user/user/transactions';
 // login
 $route[LINK_USER_LOGIN]         = 'login/login/index';
 $route[LINK_USER_LOGIN.'/auth'] = 'login/login/auth';
+$route[LINK_USER_LOGOUT]        = 'logout/logout/index';

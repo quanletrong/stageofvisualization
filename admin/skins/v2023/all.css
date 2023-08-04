@@ -2,3 +2,12 @@
     font-family: Lexend;
     src: url(fonts/Lexend_Deca/LexendDeca-VariableFont_wght.ttf);
 }
+
+
+/* table style */
+
+.table .thead-danger th {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #ffffff;
+}

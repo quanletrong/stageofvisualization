@@ -104,7 +104,7 @@
                                                                 <i class="fas fa-upload"></i>
                                                                 <div>Upload file other</div>
                                                             </div>
-                                                            <img src="<?= url_image($job['image'], 'uploads/images/2023/07/') ?>" class="img-order-all" alt="" width="100%">
+                                                            <img src="<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" class="img-order-all" alt="" width="100%">
                                                         </div>
                                                         <div class="mt-3">
                                                             <b>Attach Reference Files</b>
@@ -115,10 +115,10 @@
                                                                         <div class="position-absolute" style="right: 10px">
                                                                             <i class="fas fa-times icon-delete-image"></i>
                                                                         </div>
-                                                                        <img src="<?= url_image($item, 'uploads/images/2023/07/') ?>" alt="" width="100">
+                                                                        <img src="<?= url_image($item, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100">
                                                                     </div>
                                                                 <?php } ?>
-                                                                
+
                                                                 <div class="btn-upfile rounded border shadow">
                                                                     <i class="fas fa-upload"></i>
                                                                     <div>Upload file <br>attach reference</div>
@@ -129,21 +129,21 @@
                                                         <div class="mt-3">
                                                             <div class="d-flex">
                                                                 <div style="min-width: 130px; font-weight: bold;">Room Type</div>
-                                                                <div><?=$job['room']?></div>
+                                                                <div><?= $job['room'] ?></div>
                                                             </div>
                                                             <div class="d-flex">
                                                                 <div style="min-width: 130px; font-weight: bold;">Services</div>
-                                                                <div><?=$job['service']?> (<?=$job['type_service']?>)</div>
+                                                                <div><?= $job['service'] ?> (<?= $job['type_service'] ?>)</div>
                                                             </div>
                                                             <div class="d-flex">
                                                                 <div style="min-width: 130px; font-weight: bold;">Design Style</div>
-                                                                <div><?=$job['style']?></div>
+                                                                <div><?= $job['style'] ?></div>
                                                             </div>
                                                         </div>
 
                                                         <div class="mt-3">
                                                             <b>Requirements:</b>
-                                                            <textarea class="form-control" rows="5"><?=$job['requirement']?></textarea>
+                                                            <textarea class="form-control" rows="5"><?= $job['requirement'] ?></textarea>
                                                         </div>
 
                                                     </div>
@@ -246,62 +246,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div class="card card-primary shadow">
-                                                    <div class="card-header">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                                                                <div>REWORK 1</div>
-                                                                <button class="btn btn-danger btn-sm">SAVE</button>
-                                                            </h3>
-                                                        </div>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div>
-                                                            <b>Requirements</b>
-                                                            <textarea class="form-control " rows="5">Please use greyish wide plank hardwood flooring in rooms, dark gray tiles in bathrooms and light carpet in bedrooms.Use Scandinavian furniture design and white kitchen with dark gray countertops.</textarea>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <b>Attach Reference Files</b>
-                                                            <div class="d-flex flex-wrap" style="gap:7px">
-                                                                <div class="position-relative">
-                                                                    <div class="position-absolute" style="right: 10px">
-                                                                        <i class="fas fa-times icon-delete-image"></i>
-                                                                    </div>
-                                                                    <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                                </div>
-
-                                                                <div class="position-relative">
-                                                                    <div class="position-absolute" style="right: 10px">
-                                                                        <i class="fas fa-times icon-delete-image"></i>
-                                                                    </div>
-                                                                    <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                                </div>
-
-                                                                <div class="btn-upfile rounded border shadow">
-                                                                    <i class="fas fa-upload"></i>
-                                                                    <div>Upload file <br>attach reference</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="mt-2">
-                                                            <b>File rework complete</b>
-                                                            <div class="d-flex flex-wrap" style="gap: 10px;">
-                                                                <div class="position-relative" style="width: 48%;">
-                                                                    <div class="position-absolute" style="right: 10px">
-                                                                        <i class="fas fa-times icon-delete-image"></i>
-                                                                    </div>
-                                                                    <img src="https://picsum.photos/320/180" alt="" width="100%">
-                                                                </div>
-                                                                <div class="btn-upfile rounded border shadow">
-                                                                    <i class="fas fa-upload"></i>
-                                                                    <div>Upload file <br>rework complete</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 <!-- END CARD REWORK LIST-->
                                             </div>
                                         </div>
@@ -329,9 +273,10 @@
                                 <b>Assign</b>
                                 <p>
                                     <select class="select2" id="tag" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                                        <option value="design1" selected>design1</option>
-                                        <option value="design2" selected>design2</option>
-                                        <option value="design2" selected>design3</option>
+                                        <?php foreach ($all_qc_ed as $id_user => $user) { ?>
+                                            <?php $selected = isset($order['assign_user'][$id_user]) ? 'selected' : '' ?>
+                                            <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                                        <?php } ?>
                                     </select>
                                 </p>
 
@@ -340,7 +285,9 @@
                             <div class="mt-3">
                                 <b>Countdown time</b>
                                 <p>
-                                <div style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">00:02:57:00</div>
+                                <div style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
+                                    <?= count_down_time_order($order) ?>
+                                </div>
                                 </p>
                             </div>
 
@@ -353,89 +300,69 @@
 
                             <div class="mt-3">
                                 <b>Job status</b>
-                                <div style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold; color: green;">Complete</div>
+                                <?php
+                                    if ($order['status'] == ORDER_DONE) {
+                                        $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time']);
+                                    } else if ($order['status'] == ORDER_DELIVERED) {
+                                        $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                                    } else if ($order['status'] == ORDER_COMPLETE) {
+                                        $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                                    } else {
+                                        $s = status_order($order['status']);
+                                    }
+                                    ?>
+                                <button class="btn w-100" style="color:white; background-color: <?=@$s['bg']?>"><?=@$s['text']?></button>
                             </div>
 
                             <div class="mt-3">
-                                <p><b style="color: orange;">CID: C123456</b></p>
-                                <p><b style="color: orange;">JID: J123456</b></p>
+                                <p><b style="color: orange;">ID Customer: CID<?= $order['id_user'] ?></b></p>
+                                <p><b style="color: orange;">ID Order: OID<?= $order['id_order'] ?></b></p>
                             </div>
                             <hr>
                             <div class="mt-3">
-                                <p><b style="color: orange;">3D Floor Plan: 1</b></p>
-                                <p><b style="color: orange;">VS: 2</b></p>
-                                <p><b style="color: orange;">VR: 1</b></p>
-                                <p><b style="color: orange;">TOTAL: [4]</b></p>
+
+                                <?php foreach ($list_type_service as $type => $val) { ?>
+                                    <p><b style="color: orange;"><?= $type ?>: <?= count($val) ?></b></p>
+                                <?php } ?>
+                                <p><b style="color: orange;">TOTAL: [<?= $total_type_service ?>]</b></p>
                             </div>
                             <hr>
                             <div class="mt-3">
-                                <b>WORKING DESIGNER</b>
+                                <b>WORKING EDITOR</b>
                                 <div class="mt-1">
-                                    <div class="d-flex">
-                                        <div class="w-50" style="color: red;">IMAGE 1 (VR)</div>
-                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                                            <option value="design1" selected>design1</option>
-                                            <option value="design2">design2</option>
-                                        </select>
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">IMAGE 2 (VR)</div>
-                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                                            <option value="design1" selected>design1</option>
-                                            <option value="design2">design2</option>
-                                        </select>
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">IMAGE 3 (VS)</div>
-                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                                            <option value="design1">design1</option>
-                                            <option value="design2" selected>design2</option>
-                                        </select>
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">IMAGE 4 (3D)</div>
-                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                                            <option value="design1">design1</option>
-                                            <option value="design2" selected>design2</option>
-                                        </select>
-                                    </div>
+                                    <?php $i = 1; ?>
+                                    <?php foreach ($list_job as $id_job => $job) { ?>
+                                        <div class="d-flex mt-1">
+                                            <div class="w-50" style="color: red;">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
+                                            <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
+                                                <?php foreach ($all_qc_ed as $id_user => $user) { ?>
+                                                    <?php $selected = $job['id_ed'] == $id_user ? 'selected' : '' ?>
+                                                    <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    <?php } ?>
                                 </div>
                             </div>
 
                             <div class="mt-3">
                                 <b>WORKING QC</b>
                                 <div class="mt-1">
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">IMAGE 1 (VR)</div>
-                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                                            <option value="QC1" selected>QC1</option>
-                                            <option value="QC2">QC2</option>
-                                            <option value="QC3">QC3</option>
-                                        </select>
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">IMAGE 2 (VR)</div>
-                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                                            <option value="QC1" selected>QC1</option>
-                                            <option value="QC2">QC2</option>
-                                            <option value="QC3">QC3</option>
-                                        </select>
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">IMAGE 3 (VS)</div>
-                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                                            <option value="QC1">QC1</option>
-                                            <option value="QC2" selected>QC2</option>
-                                            <option value="QC3">QC3</option>
-                                        </select>
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">IMAGE 4 (3D)</div>
-                                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                                            <option value="QC1">QC1</option>
-                                            <option value="QC2" selected>QC2</option>
-                                            <option value="QC3">QC3</option>
-                                        </select>
+                                    <div class="mt-1">
+                                        <?php $i = 1; ?>
+                                        <?php foreach ($list_job as $id_job => $job) { ?>
+                                            <div class="d-flex mt-1">
+                                                <div class="w-50" style="color: red;">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
+                                                <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
+                                                    <?php foreach ($all_qc_ed as $id_user => $user) { ?>
+                                                        <?php if ($user['role'] == QC) { ?>
+                                                            <?php $selected = $job['id_qc'] == $id_user ? 'selected' : '' ?>
+                                                            <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                                                        <?php } ?>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
@@ -445,29 +372,15 @@
                                 <div class="mt-1">
                                     <div class="d-flex mt-1">
                                         <div class="w-50" style="color: red; font-weight: bold;">Tổng custom</div>
-                                        <input class="form-control" value="1">
+                                        <input class="form-control" value="<?= $order['custom'] ?>" style="color: red; font-weight: bold;">
                                     </div>
 
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">QC1</div>
-                                        <input class="form-control" value="1">
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">QC2</div>
-                                        <input class="form-control" value="1">
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">design1</div>
-                                        <input class="form-control" value="1">
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">design2</div>
-                                        <input class="form-control" value="1">
-                                    </div>
-                                    <div class="d-flex mt-1">
-                                        <div class="w-50" style="color: red;">design3</div>
-                                        <input class="form-control" value="2">
-                                    </div>
+                                    <?php foreach ($order['assign_user'] as $id_user) { ?>
+                                        <div class="d-flex mt-1">
+                                            <div class="w-50" style="color: red;"><?=$id_user?></div>
+                                            <input class="form-control" value="">
+                                        </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                             <hr>

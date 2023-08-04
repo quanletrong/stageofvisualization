@@ -8,7 +8,58 @@ class Order_model extends CI_Model
         parent::__construct();
     }
 
+    function get_info_order($id_order) {
+        $data = [];
+        $iconn = $this->db->conn_id;
+        $sql = "SELECT * FROM tbl_order WHERE id_order = ? LIMIT 1";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$id_order])) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
     function get_list($status = '')
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $where = 'WHERE 1=1 ';
+        $where .= $status !== '' ? " AND A.status =? " : "";
+
+        $sql = "
+        SELECT A.*, B.name as style
+        FROM tbl_order as A
+        LEFT JOIN tbl_style as B ON A.id_style = B.id_style
+        $where
+        GROUP BY A.status
+        ORDER BY A.status ASC, A.create_time ASC";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$status])) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[$row['id_order']] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    
+    function get_list_order_by_status($status = '')
     {
         $data = [];
         $iconn = $this->db->conn_id;

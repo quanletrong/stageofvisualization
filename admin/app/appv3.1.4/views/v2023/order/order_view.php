@@ -1,4 +1,6 @@
 <?php ?>
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -21,67 +23,76 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h3 class="card-title">Danh sách đơn hàng</h3>
-                            </div>
+            <!-- SMALL BOX -->
+            <?php
+            if ($role == ADMIN || $role == SALE) {
+                $this->load->view(TEMPLATE_FOLDER . 'order/inc/list/small_box_sale_admin_view.php');
+            } else if ($role == QC || $role == EDITOR) {
+                $this->load->view(TEMPLATE_FOLDER . 'order/inc/list/small_box_qc_ed_view.php');
+            }
+            ?>
 
-                        </div>
-                        <!-- /.card-header -->
-                        <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">JID</th>
-                                        <th class="text-center">CID</th>
-                                        <th class="text-center">DATE</th>
-                                        <th class="text-center">JOB TYPE</th>
-                                        <th class="text-center">TOTAL</th>
-                                        <th class="text-center">STATUS</th>
-                                        <th class="text-center">TIME</th>
-                                        <th class="text-center">ACTION</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+            <!-- BẢNG DỮ LIỆU -->
+            <table id="example1" class="table table-bordered table-striped">
+                <thead class="thead-danger">
+                    <tr>
+                        <th class="text-center">JID</th>
+                        <th class="text-center">CID</th>
+                        <th class="text-center">DATE</th>
+                        <th class="text-center">JOB TYPE</th>
+                        <th class="text-center">TOTAL</th>
+                        <th class="text-center">STATUS</th>
+                        <th class="text-center">TIME</th>
+                        <th class="text-center">TEAM EDITOR</th>
+                        <th class="text-center">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $index = 1; ?>
+                    <?php foreach ($list_order as $id_order => $order) { ?>
+                        <tr class="text-<?= colorByStatusOrde($order['status']) ?>">
+                            <td class="align-middle text-center">OID<?= $order['id_order'] ?></td>
+                            <td class="align-middle text-center">UID<?= $order['id_user'] ?></td>
+                            <td class="align-middle text-center"><span title="<?= $order['create_time'] ?>"><?= timeSince($order['create_time']) ?> trước</span></td>
+                            <td class="align-middle text-center">
+                                <?php foreach ($order['type_service'] as $key => $val) { ?>
+                                    <small class="badge badge-danger"><?= $key ?></small>
+                                <?php } ?>
+                            </td>
+                            <td class="align-middle text-center"><?= $order['total_job'] ?></td>
+                            <td class="align-middle text-center">
+                                <?php
+                                if ($order['status'] == ORDER_DONE) {
+                                    $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time']);
+                                } else if ($order['status'] == ORDER_DELIVERED) {
+                                    $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                                } else if ($order['status'] == ORDER_COMPLETE) {
+                                    $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                                } else {
+                                    $s = status_order($order['status']);
+                                }
+                                echo '<small class="badge" style="color:white;background-color: ' . @$s['bg'] . '">' . @$s['text'] . '</small>';
+                                ?>
+                            </td>
+                            <td class="align-middle text-center">
+                                <?php
 
+                                echo count_down_time_order($order);
 
-                                    <?php $index = 1; ?>
-                                    <?php foreach ($list_order as $id_order => $order) { ?>
-                                        <tr class="text-<?=colorByStatusOrde($order['status'])?>">
-                                            <td class="align-middle text-center">OID<?=$order['id_order']?></td>
-                                            <td class="align-middle text-center">UID<?=$order['id_user']?></td>
-                                            <td class="align-middle text-center"><span title="<?=$order['create_time']?>"><?=timeSince($order['create_time'])?> trước</span></td>
-                                            <td class="align-middle text-center"><?=$order['group_service']?></td>
-                                            <td class="align-middle text-center"><?=$order['total']?></td>
-                                            <td class="align-middle text-center">Pending</td>
-                                            <td class="align-middle text-center">3h:15p</td>
-                                            <td class="align-middle text-center"><a href="order/detail/<?=$id_order?>" text-<?=colorByStatusOrde($order['status'])?>>[VIEW JOB]</a></td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th class="text-center">JID</th>
-                                        <th class="text-center">CID</th>
-                                        <th class="text-center">DATE</th>
-                                        <th class="text-center">JOB TYPE</th>
-                                        <th class="text-center">TOTAL</th>
-                                        <th class="text-center">STATUS</th>
-                                        <th class="text-center">TIME</th>
-                                        <th class="text-center">ACTION</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                    <!-- /.card -->
-                </div>
-                <!-- /.col -->
-            </div>
+                                ?>
+                            </td>
+                            <td class="align-middle text-center" style="max-width: 350px;">
+                                <?php foreach ($order['list_editor'] as $id_editor => $editor) { ?>
+                                    <img src="<?= url_image($editor['avatar'], 'uploads/avatar/') ?>" title="<?= $editor['username'] . ' - ' . $editor['fullname'] ?>" alt="<?= $editor['username'] ?>" class="img-circle shadow" style="width: 36px; aspect-ratio: 1; object-fit: cover;">
+                                <?php } ?>
+
+                            </td>
+                            <td class="align-middle text-center"><a href="order/detail/<?= $id_order ?>" text-<?= colorByStatusOrde($order['status']) ?>>[VIEW JOB]</a></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
             <!-- /.row -->
         </div>
         <!-- /.container-fluid -->
@@ -98,7 +109,7 @@
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 </script>

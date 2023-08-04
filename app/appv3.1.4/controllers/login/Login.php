@@ -48,6 +48,7 @@ class Login extends MY_Controller{
             $this->session->set_userdata('role', $userInfo['role']);
             $this->session->set_userdata('phone', $userInfo['phonenumber']);
             $this->session->set_userdata('email', $userInfo['email']);
+            $this->session->set_userdata('fullname', $userInfo['fullname']);
    
             //Update login date TODO: có dùng
             // $this->Login_model->user_last_login_log($userInfo['user_id']);

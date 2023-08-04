@@ -25,10 +25,10 @@ define('LINK_USER_NOTICES', 'user/notices');
 define('LINK_USER_PROFILES', 'user/profiles');
 define('LINK_USER_SETTINGS', 'user/settings');
 define('LINK_USER_TRANSACTIONS', 'user/transactions');
-define('LINK_USER_LOGOUT', 'user/logout');
 define('LINK_USER_SIGN_IN', 'user/sign_in');
 define('LINK_USER_SIGN_OUT', 'user/logout');
 define('LINK_USER_LOGIN', 'login');
+define('LINK_USER_LOGOUT', 'logout');
 define('LINK_USER_REGISTER', 'dang-ky');
 
 define('PAY_DANG_CHO', 0); // chưa thanh toán
