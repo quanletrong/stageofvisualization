@@ -1066,7 +1066,12 @@ function count_down_time_order($order)
             $ket_qua = $han_chot - $thoi_gian_tra_don;
         }
     } else {
+
         $ket_qua = $han_chot - $thoi_gian_hien_tai;
+
+        //
+        $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
+        return "<script>count_down_time('$DMY_han_chot', 'cdt')</script>";
     }
 
     $ket_qua_duong = $ket_qua < 0 ? $ket_qua * -1 : $ket_qua;

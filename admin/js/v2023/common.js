@@ -358,13 +358,13 @@ function makeid(length) {
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
     }
     return result;
 }
 
-function toasts_danger (body='Có lỗi xảy ra', title='Thất bại', delay=10000, autohide=true, subtitle=''){
+function toasts_danger(body = 'Có lỗi xảy ra', title = 'Thất bại', delay = 10000, autohide = true, subtitle = '') {
     $(document).Toasts('create', {
         class: 'bg-danger',
         title: title,
@@ -378,4 +378,45 @@ function toasts_danger (body='Có lỗi xảy ra', title='Thất bại', delay=1
 
 function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function count_down_time(time, elId) {
+    console.log(time)
+    var countDownDate = new Date(time).getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // kiêm tra xem đã hết hạn chưa
+        let IS_EXPIRED = distance < 0 ? true : false;
+
+        // Time calculations for days, hours, minutes and seconds
+        let distance_abs = Math.abs(distance);
+
+        var days = Math.floor(distance_abs / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance_abs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance_abs % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance_abs % (1000 * 60)) / 1000);
+
+        // Display the result in the element with id="demo"
+        let ket_qua = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        if(IS_EXPIRED) {
+            document.getElementById(elId).innerHTML =  '<span style="color:red"> - '+ket_qua+'</span>';
+        } else {
+            document.getElementById(elId).innerHTML =  '<span style="color:green">'+ket_qua+'</span>';
+        }
+        
+
+        // If the count down is finished, write some text
+        // if (distance < 0) {
+        //     clearInterval(x);
+        //     document.getElementById(elId).innerHTML = "EXPIRED";
+        // }
+    }, 1000);
 }

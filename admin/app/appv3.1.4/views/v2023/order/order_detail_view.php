@@ -285,13 +285,13 @@
                             <div class="mt-3">
                                 <b>Countdown time</b>
                                 <p>
-                                <div style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
+                                <div id="cdt" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
                                     <?= count_down_time_order($order) ?>
                                 </div>
                                 </p>
                             </div>
 
-                            <div class="mt-3">
+                            <div class="mt-3 d-none">
                                 <b>Custom time (thêm thời gian cho đơn)</b>
                                 <p>
                                     <input type="text" class="form-control" style="text-align: center; font-weight: bold;" value="00:02:57:00">
@@ -301,17 +301,17 @@
                             <div class="mt-3">
                                 <b>Job status</b>
                                 <?php
-                                    if ($order['status'] == ORDER_DONE) {
-                                        $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time']);
-                                    } else if ($order['status'] == ORDER_DELIVERED) {
-                                        $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
-                                    } else if ($order['status'] == ORDER_COMPLETE) {
-                                        $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
-                                    } else {
-                                        $s = status_order($order['status']);
-                                    }
-                                    ?>
-                                <button class="btn w-100" style="color:white; background-color: <?=@$s['bg']?>"><?=@$s['text']?></button>
+                                if ($order['status'] == ORDER_DONE) {
+                                    $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time']);
+                                } else if ($order['status'] == ORDER_DELIVERED) {
+                                    $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                                } else if ($order['status'] == ORDER_COMPLETE) {
+                                    $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                                } else {
+                                    $s = status_order($order['status']);
+                                }
+                                ?>
+                                <button class="btn w-100" style="color:white; background-color: <?= @$s['bg'] ?>"><?= @$s['text'] ?></button>
                             </div>
 
                             <div class="mt-3">
@@ -377,7 +377,7 @@
 
                                     <?php foreach ($order['assign_user'] as $id_user) { ?>
                                         <div class="d-flex mt-1">
-                                            <div class="w-50" style="color: red;"><?=$id_user?></div>
+                                            <div class="w-50" style="color: red;"><?= $id_user ?></div>
                                             <input class="form-control" value="">
                                         </div>
                                     <?php } ?>
