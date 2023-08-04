@@ -1092,6 +1092,24 @@ function count_down_time_order($order)
         return ($ket_qua < 0 ? "- " : '') . $gio . 'h: ' . $phut . 'm:' . $giay . 's';
     }
 }
+
+function is_late_order($order)
+{
+    $thoi_gian_hien_tai = time();
+    $thoi_gian_tao_don = strtotime($order['create_time']);
+    $thoi_gian_tra_don = strtotime($order['done_qc_time']);
+    $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
+    $cong_them_gio = $order['custom_time'];
+    $thoi_gian_toi_thieu = 86400;
+    $han_chot = $thoi_gian_tao_don + $cong_them_gio + $thoi_gian_toi_thieu;
+
+    $ket_qua = 0;
+    
+    $ket_qua = $han_chot - $thoi_gian_hien_tai;
+
+    return $ket_qua < 0;
+}
+
 function url_image($file_name, $folder)
 {
     $CI = &get_instance();

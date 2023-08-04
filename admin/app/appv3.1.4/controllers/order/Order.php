@@ -52,12 +52,14 @@ class Order extends MY_Controller
                 break;
         }
 
+        $box = $this->Order_model->box_count($list_order);
+
+        $data['box'] = $box;
+        $data['list_order'] = $list_order;
         $header = [
             'title' => 'Quản lý đơn hàng',
             'header_page_css_js' => 'order'
         ];
-
-        $data['list_order'] = $list_order;
         $this->_loadHeader($header);
         $this->load->view($this->_template_f . 'order/order_view', $data);
         $this->_loadFooter();

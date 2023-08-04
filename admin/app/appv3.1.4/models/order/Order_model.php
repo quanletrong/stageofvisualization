@@ -235,4 +235,57 @@ class Order_model extends CI_Model
         return $data;
     }
     //  END LẤY DANH SÁCH ĐƠN THEO USER
+
+    function box_count($list_order) {
+        $box = [];
+        foreach ($list_order as $id_order => $order) {
+            $status = $order['status'];
+
+            if ($status == ORDER_PENDING) {
+                $box['pending'] = isset($box['pending']) ? $box['pending'] + 1 : 1;
+            }
+            if ($status == ORDER_REWORK) {
+                $box['rework'] = isset($box['rework']) ? $box['rework'] + 1 : 1;
+            }
+            if ($status == ORDER_COMPLETE) {
+                $box['complete'] = isset($box['complete']) ? $box['complete'] + 1 : 1;
+            }
+            if (in_array($status, [ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE])) {
+                $box['progress'] = isset($box['progress']) ? $box['progress'] + 1 : 1;
+            }
+
+            if (is_late_order($order)) {
+                $box['late'] = isset($box['late']) ? $box['late'] + 1 : 1;
+            }
+        }
+
+        return $box;
+    }
+
+    function box_for_qc_ed($list_order) {
+        $box = [];
+        foreach ($list_order as $id_order => $order) {
+            $status = $order['status'];
+
+            if (in_array($status, [ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE])) {
+                $box['progress'] = isset($box['progress']) ? $box['progress'] + 1 : 1;
+            }
+
+            if ($status == ORDER_REWORK) {
+                $box['rework'] = isset($box['rework']) ? $box['rework'] + 1 : 1;
+            }
+           
+            if ($status == ORDER_COMPLETE) {
+                $box['complete'] = isset($box['complete']) ? $box['complete'] + 1 : 1;
+            }
+
+            
+            if (is_late_order($order)) {
+                $box['late'] = isset($box['late']) ? $box['late'] + 1 : 1;
+            }
+
+        }
+
+        return $box;
+    }
 }
