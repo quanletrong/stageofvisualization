@@ -29,7 +29,7 @@ define('LINK_USER_SIGN_IN', 'user/sign_in');
 define('LINK_USER_SIGN_OUT', 'user/logout');
 define('LINK_USER_LOGIN', 'login');
 define('LINK_USER_LOGOUT', 'logout');
-define('LINK_USER_REGISTER', 'dang-ky');
+define('LINK_USER_REGISTER', 'register');
 
 define('PAY_DANG_CHO', 0); // chưa thanh toán
 define('PAY_HOAN_THANH', 1); // đa thanh toán

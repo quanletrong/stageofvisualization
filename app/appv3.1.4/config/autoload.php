@@ -58,7 +58,7 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('AntiXSS', 'session', 'myencrypt', 'database', 'myvietstring', 'EncryptData', 'JWT');
+$autoload['libraries'] = array('AntiXSS', 'session', 'myencrypt', 'database', 'myvietstring', 'EncryptData', 'JWT', 'PasswordHash');
 
 /*
 | -------------------------------------------------------------------

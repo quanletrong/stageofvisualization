@@ -59,6 +59,7 @@ class MY_Controller extends CI_Controller
         $preHeader['langcode_url'] = '';
         $preHeader['module_name']  = $this->_module;
         $preHeader['product_name'] = $this->_product_name;
+        $preHeader['isLogin']      = false;
 
         // set lang code for multi language url
         $arrLang = $this->config->item('lang_uri_abbr');

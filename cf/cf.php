@@ -15,6 +15,8 @@ DEFINE('LOGOUT_MOD', 'logout'); // define logout controller name
 include_once('cfsite.php');
 
 define('PUBLIC_UPLOAD_PATH', 'uploads/images/');
+define('TMP_UPLOAD_PATH', 'uploads/tmp/');
+define('FOLDER_AVATAR', 'uploads/avatar/');
 
 //define upload folder
 DEFINE('UPLOAD_FOLDER_PATH', 'uploads/'); // folder nay can config write permission tren server
@@ -89,3 +91,8 @@ define('SERVICE_STOP', 0);
 // VÀNG REWORK (đơn làm lại)
 // GREN DELIVERED <= hạn chót (đơn đúng hạn)
 // BLUE QCCHECK+AVAIABLE+PROGRESS+DONE => Đang xử lý
+
+
+//login google
+define("gg_ClientId", "654277741157-g3eecjl5a6nq1d3n55jdubasik12221u.apps.googleusercontent.com");
+define("gg_ClientSecret", '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');
