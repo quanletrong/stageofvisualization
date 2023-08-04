@@ -103,7 +103,8 @@ class Order extends MY_Controller
         // END VALIDATE
 
         // Tạo đơn vào tbl_order
-        $new_order = $this->Order_model->add_order($name, $lastname, $email, $phone, $create_time, $id_user, $coupon, PAY_DANG_CHO, STATUS_CHUA_LAM);
+        // TODO: tạm fix = PAY_HOAN_THANH, sau bổ sung paypal sẽ thay bằng PAY_DANG_CHO
+        $new_order = $this->Order_model->add_order($name, $lastname, $email, $phone, $create_time, $id_user, $coupon, PAY_HOAN_THANH, ORDER_PENDING);
 
         $flag_error = false;
         if ($new_order) {
@@ -118,7 +119,7 @@ class Order extends MY_Controller
 
                 foreach ($service_list as $id_service => $price) {
 
-                    $new_order_job_service = $this->Order_model->add_order_job($new_order, $id_service, $price, $room, $style, $image_ok, $json_attach_ok, $requirement, STATUS_CHUA_LAM, $create_time);
+                    $new_order_job_service = $this->Order_model->add_order_job($new_order, $id_service, $price, $room, $style, $image_ok, $json_attach_ok, $requirement, ORDER_PENDING, $create_time);
 
                     if (!$new_order_job_service) {
                         $flag_error = true;

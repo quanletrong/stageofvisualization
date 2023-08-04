@@ -992,17 +992,6 @@ function timeSince($date)
     return floor($seconds) . " giây";
 }
 
-function colorByStatusOrde($status)
-{
-    if ($status == STATUS_CHUA_LAM) {
-        return 'warning';
-    } else if ($status == STATUS_HOAN_THANH) {
-        return 'success';
-    } else {
-        return 'default';
-    }
-}
-
 // ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_REWORK, ORDER_CANCLE
 function status_order($status)
 {

@@ -50,7 +50,7 @@
                 <tbody>
                     <?php $index = 1; ?>
                     <?php foreach ($list_order as $id_order => $order) { ?>
-                        <tr class="text-<?= colorByStatusOrde($order['status']) ?>">
+                        <tr class="text-default">
                             <td class="align-middle text-center">OID<?= $order['id_order'] ?></td>
                             <td class="align-middle text-center">UID<?= $order['id_user'] ?></td>
                             <td class="align-middle text-center"><span title="<?= $order['create_time'] ?>"><?= timeSince($order['create_time']) ?> trước</span></td>
@@ -87,7 +87,7 @@
                                 <?php } ?>
 
                             </td>
-                            <td class="align-middle text-center"><a href="order/detail/<?= $id_order ?>" text-<?= colorByStatusOrde($order['status']) ?>>[VIEW JOB]</a></td>
+                            <td class="align-middle text-center"><a href="order/detail/<?= $id_order ?>">[VIEW JOB]</a></td>
                         </tr>
                     <?php } ?>
                 </tbody>
