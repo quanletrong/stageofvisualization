@@ -186,4 +186,25 @@ class Order extends MY_Controller
 
         $this->_loadFooter();
     }
+
+    function ajax_find_order()
+    {
+        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
+            // show_custom_error('Tài khoản không có quyền truy cập!');
+            resError('not_permit', 'Bạn không có quyền thực hiện.');
+        }
+
+        // tìm ra 1 order QC_CHECK gần nhất
+        if ($this->_session_role() == QC) {
+            $kq = $this->Order_model->tim_don_gan_nhat(ORDER_QC_CHECK);
+        } else if ($this->_session_role() == EDITOR) {
+            $kq = $this->Order_model->tim_don_gan_nhat(ORDER_AVAIABLE);
+        }
+
+        if (empty($kq)) {
+            resError('not_result', 'Không tìm thấy đơn. Hãy thử lại bạn nhé.');
+        } else {
+            resSuccess('ok', $kq['id_order']);
+        }
+    }
 }
