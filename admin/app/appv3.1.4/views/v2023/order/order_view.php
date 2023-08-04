@@ -43,7 +43,7 @@
                         <th class="text-center">TOTAL</th>
                         <th class="text-center">STATUS</th>
                         <th class="text-center">TIME</th>
-                        <th class="text-center">TEAM EDITOR</th>
+                        <th class="text-center">TEAM WORKING</th>
                         <th class="text-center">ACTION</th>
                     </tr>
                 </thead>
@@ -55,8 +55,8 @@
                             <td class="align-middle text-center">UID<?= $order['id_user'] ?></td>
                             <td class="align-middle text-center"><span title="<?= $order['create_time'] ?>"><?= timeSince($order['create_time']) ?> trước</span></td>
                             <td class="align-middle text-center">
-                                <?php foreach ($order['type_service'] as $key => $val) { ?>
-                                    <small class="badge badge-danger"><?= $key ?></small>
+                                <?php foreach ($order['type_service'] as $val) { ?>
+                                    <small class="badge badge-danger"><?= $val ?></small>
                                 <?php } ?>
                             </td>
                             <td class="align-middle text-center"><?= $order['total_job'] ?></td>
@@ -82,8 +82,8 @@
                                 ?>
                             </td>
                             <td class="align-middle text-center" style="max-width: 350px;">
-                                <?php foreach ($order['list_editor'] as $id_editor => $editor) { ?>
-                                    <img src="<?= url_image($editor['avatar'], 'uploads/avatar/') ?>" title="<?= $editor['username'] . ' - ' . $editor['fullname'] ?>" alt="<?= $editor['username'] ?>" class="img-circle shadow" style="width: 36px; aspect-ratio: 1; object-fit: cover;">
+                                <?php foreach ($order['team'] as $id_user => $user) { ?>
+                                    <img src="<?= url_image($user['avatar'], 'uploads/avatar/') ?>" title="<?= $user['username'] . ' - ' . $user['fullname'] ?>" alt="<?= $user['username'] ?>" class="img-circle shadow" style="width: 36px; aspect-ratio: 1; object-fit: cover;">
                                 <?php } ?>
 
                             </td>

@@ -37,44 +37,19 @@ class Order extends MY_Controller
         $uid = $this->_session_uid();
         switch ($role) {
             case ADMIN:
-                $list_order = $this->Order_model->get_list();
+                $list_order = $this->Order_model->get_list(); //lấy tất cả đơn
                 break;
             case SALE:
-                $list_order = $this->Order_model->get_list();
+                $list_order = $this->Order_model->get_list(); //lấy tất cả đơn
                 break;
             case QC:
-                $list_order = $this->Order_model->get_list(ORDER_QC_CHECK);
+                $list_order = $this->Order_model->get_list_order_by_id_user($uid);
                 break;
             case EDITOR:
-                $list_order = $this->Order_model->get_list(ORDER_AVAIABLE);
+                $list_order = $this->Order_model->get_list_order_by_id_user($uid);
                 break;
             default:
                 break;
-        }
-
-        foreach ($list_order as $id_order => $order) {
-
-            // tạo cột type_service
-            $list_job = $this->Job_model->get_list_job_by_id_order($id_order);
-            $list_type_service = [];
-            foreach ($list_job as $id_job => $job) {
-                $list_type_service[$job['type_service']][] = $job['id_job'];
-            }
-            $list_order[$id_order]['type_service'] = $list_type_service;
-
-            // tạo tổng job
-            $list_order[$id_order]['total_job'] = count($list_job);
-
-
-            // tạo cột danh sách user, cột tổng đơn.
-            $list_job_user = $this->Job_model->get_list_job_user_by_id_order($id_order);
-            $list_editor = [];
-            foreach ($list_job_user as $job_user) {
-                if ($job_user['type_job_user'] == 3 && !isset($list_editor[$job_user['id_user']])) {
-                    $list_editor[$job_user['id_user']] = $job_user;
-                }
-            }
-            $list_order[$id_order]['list_editor'] = $list_editor;
         }
 
         $header = [

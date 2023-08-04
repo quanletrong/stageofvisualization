@@ -13,7 +13,7 @@
     <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>65</h3>
+                <h3>1</h3>
                 <p>TOTAL EDIT IN PROGRESS</p>
             </div>
             <div class="icon">
@@ -26,7 +26,7 @@
     <div class="col-lg-3 col-6">
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3>0</h3>
                 <p>EDIT OVERDUE</p>
             </div>
             <div class="icon">
@@ -39,7 +39,7 @@
     <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>65</h3>
+                <h3>0</h3>
                 <p>TOTAL REWORK IN PROGRESS</p>
             </div>
             <div class="icon">
@@ -52,7 +52,7 @@
     <div class="col-lg-3 col-6">
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3>0</h3>
                 <p>REWORK OVERDUE</p>
             </div>
             <div class="icon">

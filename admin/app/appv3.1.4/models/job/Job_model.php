@@ -47,8 +47,8 @@ class Job_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
 
-        $sql = 
-        "SELECT *
+        $sql =
+            "SELECT *
         FROM tbl_job
         WHERE id_order= $id_order";
         $stmt = $iconn->prepare($sql);
@@ -73,8 +73,7 @@ class Job_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
 
-        $sql = 
-        "SELECT A.*, B.*
+        $sql = "SELECT A.*, B.*
         FROM tbl_job_user as A
         INNER JOIN tbl_user as B ON A.id_user = B.id_user
         WHERE id_order= $id_order";

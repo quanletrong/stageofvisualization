@@ -8,7 +8,7 @@
     <div class="col-lg-2 col-6">
         <div class="small-box" style="background-color: blueviolet;">
             <div class="inner">
-                <h3>44</h3>
+                <h3>0</h3>
                 <p>URGENT</p>
             </div>
             <div class="icon">
@@ -21,7 +21,7 @@
     <div class="col-lg-2 col-6">
         <div class="small-box" style="background-color: deeppink;">
             <div class="inner">
-                <h3>150</h3>
+                <h3>1</h3>
                 <p>PENDING</p>
             </div>
             <div class="icon">
@@ -35,7 +35,7 @@
 
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3>3</h3>
                 <p>LATE</p>
             </div>
             <div class="icon">
@@ -48,7 +48,7 @@
     <div class="col-lg-2 col-6">
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>65</h3>
+                <h3>0</h3>
                 <p>REWORK</p>
             </div>
             <div class="icon">
@@ -63,7 +63,7 @@
 
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>65</h3>
+                <h3>1</h3>
                 <p>COMPLETE</p>
             </div>
             <div class="icon">
@@ -77,7 +77,7 @@
 
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>65</h3>
+                <h3>1</h3>
                 <p>IN PROGRESS</p>
             </div>
             <div class="icon">
