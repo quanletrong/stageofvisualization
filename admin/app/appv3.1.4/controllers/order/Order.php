@@ -112,9 +112,10 @@ class Order extends MY_Controller
         empty($list_job) ? redirect(site_url('order', $this->_langcode)) : '';
 
         ## gán danh sách qc ed custom vào trong đơn
-        $order['id_qc']     = [];
-        $order['id_ed']     = [];
-        $order['id_custom'] = [];
+        $order['id_qc']       = [];
+        $order['id_ed']       = [];
+        $order['id_custom']   = [];
+        $order['assign_user'] = [];
         $list_job_user = $this->Job_model->get_list_job_user_by_id_order($id_order);
         foreach ($list_job_user as $id_job => $job_user) {
             $id_user  = $job_user['id_user'];

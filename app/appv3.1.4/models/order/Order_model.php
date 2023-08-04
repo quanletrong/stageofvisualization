@@ -8,14 +8,14 @@ class Order_model extends CI_Model
         parent::__construct();
     }
 
-    function add_order($name, $lastname, $email, $phone, $create_time, $id_user, $coupon, $pending_pay, $status)
+    function add_order($id_style, $create_time, $id_user, $coupon, $pending_pay, $status)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_order (name, lastname, email, phone, create_time, id_user, coupon, pending_pay, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_order (id_style, create_time, id_user, coupon, pending_pay, status) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $lastname, $email, $phone, $create_time, $id_user, $coupon, $pending_pay, $status];
+            $param = [$id_style, $create_time, $id_user, $coupon, $pending_pay, $status];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -28,14 +28,14 @@ class Order_model extends CI_Model
         return $new_id;
     }
 
-    function add_order_job($id_order, $id_service, $price, $id_room, $id_style, $image, $attach, $requirement, $status, $create_time)
+    function add_order_job($id_order, $id_service, $type_service, $price, $price_unit, $id_room, $id_style, $image, $attach, $requirement, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_job (id_order, id_service, price, id_room, id_style, image, attach, requirement, status, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_job (id_order, id_service, type_service, price, price_unit, id_room, id_style, image, attach, requirement, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_order, $id_service, $price, $id_room, $id_style, $image, $attach, $requirement, $status, $create_time];
+            $param = [$id_order, $id_service, $type_service, $price, $price_unit, $id_room, $id_style, $image, $attach, $requirement, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();

@@ -13,6 +13,7 @@ class Order extends MY_Controller
         $this->load->model('style/Style_model');
         $this->load->model('service/Service_model');
         $this->load->model('order/Order_model');
+        $this->load->model('login/Login_model');
     }
 
     function index()
@@ -35,6 +36,12 @@ class Order extends MY_Controller
         $data['list_style'] = $style;
         $data['list_library'] = $library;
 
+        $user_info = [];
+        if($this->_session_uname() != '') {
+            $user_info = $this->Login_model->get_user_info_by_username($this->_session_uname());
+        }
+        $data['user_info'] = $user_info;
+
         $this->_loadHeader($header);
 
         $this->load->view($this->_template_f . 'order/order_view', $data);
@@ -44,39 +51,34 @@ class Order extends MY_Controller
 
     function submit()
     {
+        // TODO: sale admin qc ed muốn tạo đơn có được không?
+
+        $this->_islogin() ? "" : resError('error_attach');
+
         $all_room    = $this->Room_model->get_list(1);
         $all_service = $this->Service_model->get_list(1);
         $all_style   = $this->Style_model->get_list(1);
 
         $order = $this->input->post('order');
-        $name        = $order['name'];
-        $lastname    = $order['lastname'];
-        $email       = $order['email'];
-        $phone       = $order['phone'];
         $style       = $order['style'];
-        $id_user     = 1; //TODO: fix tạm thời
+        $id_user     = $this->_session_uid();
         $create_time = date('Y-m-d H:i:s');
         $coupon      = $order['coupon'];
         $list_job  = $order['job'];
 
         // VALIDATE
         foreach ($list_job as $id_job => $job) {
-            $room         = $job['room'];
-            $service_list = $job['service'];
-            $image        = $job['image'];
-            $requirement  = $job['requirement'];
-            $attach       = @$job['attach'];      // k bat buoc nhap attach nen de @
+            $room        = $job['room'];
+            $service     = $job['service'];
+            $image       = $job['image'];
+            $requirement = $job['requirement'];
+            $attach      = @$job['attach'];      // k bat buoc nhap attach nen de @
 
-            # check room, style
-            isset($all_room[$room])     ? '' : resError('error_room');
-            isset($all_style[$style])   ? '' : resError('error_style');
-            # check service
-            empty($service_list) ? resError('empty_service') : '';
-            foreach ($service_list as $id_service => $price) {
-                isset($all_service[$id_service]) ? '' : resError('isset_service');
-                $all_service[$id_service]['price'] == 0 ? resError('empty_price') : '';
-                $all_service[$id_service]['price'] != $price ? resError('error_price') : '';
-            }
+            # check room, style, service
+            isset($all_room[$room])         ? '' : resError('error_room');
+            isset($all_style[$style])       ? '' : resError('error_style');
+            isset($all_service[$service])   ? '' : resError('error_service');
+            
             # lưu ảnh image
             $copy_image = copy_image_from_file_manager_to_public_upload($image, date('Y'), date('m'));
             $copy_image['status'] ? '' : resError('error_image');
@@ -103,8 +105,8 @@ class Order extends MY_Controller
         // END VALIDATE
 
         // Tạo đơn vào tbl_order
-        // TODO: tạm fix = PAY_HOAN_THANH, sau bổ sung paypal sẽ thay bằng PAY_DANG_CHO
-        $new_order = $this->Order_model->add_order($name, $lastname, $email, $phone, $create_time, $id_user, $coupon, PAY_HOAN_THANH, ORDER_PENDING);
+        // TODO: dòng bên dưới tạm fix PAY_HOAN_THANH, sau bổ sung paypal sẽ thay bằng PAY_DANG_CHO
+        $new_order = $this->Order_model->add_order($style, $create_time, $id_user, $coupon, PAY_HOAN_THANH, ORDER_PENDING);
 
         $flag_error = false;
         if ($new_order) {
@@ -112,19 +114,19 @@ class Order extends MY_Controller
             foreach ($list_job as $job) {
 
                 $room           = $job['room'];
-                $service_list   = $job['service'];
+                $service        = $job['service'];
+                $type_service   = $all_service[$service]['type_service'];
+                $price          = $all_service[$service]['price'];
+                $price_unit     = '2'; //TODO: 1 VND, 2 Đô, ...
                 $image_ok       = $job['image_ok'];
                 $json_attach_ok = json_encode($job['attach_ok'], JSON_FORCE_OBJECT);
                 $requirement    = $job['requirement'];
 
-                foreach ($service_list as $id_service => $price) {
+                $new_order_job_service = $this->Order_model->add_order_job($new_order, $service, $type_service, $price, $price_unit, $room, $style, $image_ok, $json_attach_ok, $requirement, $create_time);
 
-                    $new_order_job_service = $this->Order_model->add_order_job($new_order, $id_service, $price, $room, $style, $image_ok, $json_attach_ok, $requirement, ORDER_PENDING, $create_time);
-
-                    if (!$new_order_job_service) {
-                        $flag_error = true;
-                        break;
-                    }
+                if (!$new_order_job_service) {
+                    $flag_error = true;
+                    break;
                 }
             }
 

@@ -2,7 +2,7 @@
     <div class="fw-semibold fs-5 mb-3">STEP 2 OF 3: ADD PHOTOS </div>
 
     <div class="row">
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-7">
             <div class="border p-4 shadow div_main_1">
                 <div class="mb-3">
                     <button type="button" class="btn btn-lg btn-danger w-100" id="button_upload_image_step_2" onclick="add_job()">Click or Drag and Drop Photos</button>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- HELPFUL GUIDANCE -->
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-5">
             <div class="fw-semibold fs-5 mb-3 text-center">
                 HELPFUL GUIDANCE
             </div>

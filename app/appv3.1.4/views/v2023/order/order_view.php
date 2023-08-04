@@ -3,7 +3,8 @@
     let JOB = {};
     JOB.image = '';
     JOB.room = '';
-    JOB.service = {};
+    JOB.service = '';
+    JOB.price = '';
     JOB.requirement = '';
     JOB.attach = {};
 
@@ -83,17 +84,22 @@
 
         // step-1-next-2
         $("#step-1-next").click(function() {
-            if (STATE.name != '' && STATE.lastname != '' && STATE.email != '' && STATE.phone != '') {
-                $("#step-1").addClass('d-none');
-                $("#step-2").removeClass('d-none');
-                $("#step-3").addClass('d-none');
-                window.scrollTo(0, 0);
-            } else {
-                valid_order.element(`*[name="name"]`)
-                valid_order.element(`*[name="lastname"]`);
-                valid_order.element(`*[name="phone"]`);
-                valid_order.element(`*[name="email"]`);
-            }
+            $("#step-1").addClass('d-none');
+            $("#step-2").removeClass('d-none');
+            $("#step-3").addClass('d-none');
+            window.scrollTo(0, 0);
+
+            // if (STATE.name != '' && STATE.lastname != '' && STATE.email != '' && STATE.phone != '') {
+            //     $("#step-1").addClass('d-none');
+            //     $("#step-2").removeClass('d-none');
+            //     $("#step-3").addClass('d-none');
+            //     window.scrollTo(0, 0);
+            // } else {
+            //     valid_order.element(`*[name="name"]`)
+            //     valid_order.element(`*[name="lastname"]`);
+            //     valid_order.element(`*[name="phone"]`);
+            //     valid_order.element(`*[name="email"]`);
+            // }
         });
 
         // step-2-next-3
@@ -128,10 +134,9 @@
                 let total_price = 0;
                 for (const [id_job, job] of Object.entries(STATE.job)) {
 
-                    let price = 0;
-                    for (const [sv_id, value] of Object.entries(job.service)) {
-                        price = price + parseFloat(value);
-                    }
+                    let price = parseFloat(job.price);
+                    price = isNaN(price) ? 0 : price;
+                    
                     price_html += `
                     <div class="mb-2 d-flex justify-content-between">
                         <div>Photo ${index++}:</div>
@@ -280,8 +285,7 @@
                         <div class="form-check">
                             <input 
                                 class="form-check-input" 
-                                type="checkbox" 
-                                name="service[]" 
+                                type="radio"
                                 id="flexCheckDefault_${job_id}_<?= $id ?>" 
                                 onchange="add_or_remove_service(${job_id}, '<?= $id ?>', '<?= $sv['price'] ?>')"
                             >
@@ -326,15 +330,22 @@
 
     // add_or_remove_service
     function add_or_remove_service(job_id, service_id, price) {
-        let service = STATE.job[job_id].service;
-        if (isEmpty(service[service_id])) {
-            service[service_id] = price;
-            $(`#${job_id} .service-error`).hide();
-        } else {
-            delete service[service_id];
-            if (isEmpty(service)) {
-                $(`#${job_id} .service-error`).show();
-            }
-        }
+        console.log(job_id, service_id, price)
+
+        // RADIO
+        STATE.job[job_id].service = service_id;
+        STATE.job[job_id].price = price;
+
+        // CHECKBOX
+        // let service = STATE.job[job_id].service;
+        // if (isEmpty(service[service_id])) {
+        //     service[service_id] = price;
+        //     $(`#${job_id} .service-error`).hide();
+        // } else {
+        //     delete service[service_id];
+        //     if (isEmpty(service)) {
+        //         $(`#${job_id} .service-error`).show();
+        //     }
+        // }
     }
 </script>
