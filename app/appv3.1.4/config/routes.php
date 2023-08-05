@@ -72,13 +72,14 @@ $route[LINK_PRICINGS] = 'pricing/pricing/index';
 $route[LINK_LIBRARY]  = 'library/library/index';
 
 // usser
-$route[LINK_USER_SIGN_IN]       = 'user/user/login';
-$route[LINK_USER_SIGN_OUT]      = 'user/user/logout';
-$route[LINK_USER_ORDER]         = 'user/user/order';
-$route[LINK_USER_PROFILES]      = 'user/user/profiles';
-$route[LINK_USER_NOTICES]       = 'user/user/notices';
-$route[LINK_USER_SETTINGS]      = 'user/user/settings';
-$route[LINK_USER_TRANSACTIONS]  = 'user/user/transactions';
+$route[LINK_USER_SIGN_IN]      = 'user/user/login';
+$route[LINK_USER_SIGN_OUT]     = 'user/user/logout';
+$route[LINK_USER_ORDER]        = 'user/user/order';
+$route[LINK_USER_ORDER_DETAIL.'/(:num)'] = 'user/user/orderdetail/$1';
+$route[LINK_USER_PROFILES]     = 'user/user/profiles';
+$route[LINK_USER_NOTICES]      = 'user/user/notices';
+$route[LINK_USER_SETTINGS]     = 'user/user/settings';
+$route[LINK_USER_TRANSACTIONS] = 'user/user/transactions';
 
 // login
 $route[LINK_USER_LOGIN]               = 'login/login/index';

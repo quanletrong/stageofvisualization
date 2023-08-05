@@ -66,6 +66,7 @@ class Order extends MY_Controller
     }
 
 
+    //TODO: check quyên truy cập id_order
     function detail($id_order)
     {
         if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {

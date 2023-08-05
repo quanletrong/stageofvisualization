@@ -988,3 +988,15 @@ function resSuccess($data, $msg='', $show_status = true)
     dbClose();
     die();
 }
+
+
+function url_image($file_name, $folder)
+{
+    $CI = &get_instance();
+    if ($CI->config->item('cf_upload_local') == '') {
+        $root_domain = 'https://datdonganh.vn/';
+    } else {
+        $root_domain = ROOT_DOMAIN;
+    }
+    return $root_domain . $folder . $file_name;
+}

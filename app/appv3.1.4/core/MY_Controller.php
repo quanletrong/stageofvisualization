@@ -53,6 +53,7 @@ class MY_Controller extends CI_Controller
         $preHeader['langcode']     = $this->_langcode;
         $preHeader['langcodeid']   = $this->_langcode_id;
         $preHeader['template_f']   = $this->_template_f;
+        $preHeader['fullname']     = '';
         $preHeader['username']     = '';
         $preHeader['userid']       = 0;
         $preHeader['role']         = 0;
@@ -84,6 +85,7 @@ class MY_Controller extends CI_Controller
             $preHeader['username'] = $this->_session_uname();
             $preHeader['userid'] = $this->_session_uid();
             $preHeader['role'] = $this->_session_role();
+            $preHeader['fullname'] =  trim($this->session->userdata('fullname'));
         }
 
         // assign all common param to view

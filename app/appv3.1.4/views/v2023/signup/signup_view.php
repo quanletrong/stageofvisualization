@@ -1,0 +1,317 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+
+    <!-- <link rel="stylesheet" href="css/bootstrap.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <link href="https://mdbcdn.b-cdn.net/wp-content/themes/mdbootstrap4/docs-app/css/dist/mdb5/standard/core.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+
+
+</head>
+<style>
+    .input-group-ct {
+        background-color: #fff;
+        border-right: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        height: calc(2.66rem + 2px) !important;
+    }
+
+    .line-or-ct {
+        display: flex;
+        -webkit-box-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        align-items: center;
+        position: relative;
+        width: 100%;
+        height: 30px;
+    }
+
+    .line-ct {
+        width: 100%;
+        height: 1px;
+        background-color: rgb(242, 242, 242);
+    }
+
+    .or-ct {
+        position: absolute;
+        top: 0px;
+        left: calc(50% - 24px);
+        height: 24px;
+        width: 49px;
+        padding: 4px 8px;
+        background-color: rgb(255, 255, 255);
+    }
+
+    .or-ct div {
+        font-size: 13px;
+        line-height: 20px;
+        font-weight: 400;
+        color: rgb(153, 153, 153);
+    }
+
+    .btn-or-ct {
+        display: inline-block;
+        border-radius: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+        width: fit-content;
+        padding: 14px 0;
+        width: 180px;
+        opacity: 1;
+    }
+
+    .i-eye {
+        right: 10px;
+        top: 15px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .i-eye {
+        right: 10px;
+        top: 15px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .i-circle-xmark {
+        right: 10px;
+        top: 15px;
+        font-size: 14px;
+        color: red;
+    }
+</style>
+
+<body style="background-color: #eeeeee;">
+    <div class="container" style="position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+        <div class="card shadow mx-auto" style="width: 100%; max-width: 500px;">
+            <div class="card-body ">
+                <?php if ($info['success'] != "") { ?>
+                    <?php if ($info['success'] == "1") { ?>
+                        <div class="alert alert-success" role="alert">
+                            Bạn đã tạo tài khoản thành công, hãy vào <a href="<?php echo site_url(LINK_USER_LOGOUT); ?>">đây</a> để đăng nhập
+                        </div>
+                    <?php } else { ?>
+                        <div class="alert alert-danger" role="alert">
+                            Có lỗi xảy ra vui lòng tạo lại
+                        </div>
+                    <?php } ?>
+                <?php } ?>
+                <form id="frm-signup" method="post" action="<?php echo site_url(LINK_USER_REGISTER, $langcode) ?>">
+                    <h4 class="text-center text-danger">Tạo tài khoản</h4>
+
+                    <div class="input-group mt-3 mb-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text input-group-ct"><i class="fa-solid fa-user"></i></div>
+                        </div>
+                        <div class="form-outline position-relative">
+                            <input type="text" id="uname" name="uname" value="<?php echo $info["username"] ?>" class="form-control form-control-lg" required oninvalid="this.setCustomValidity('Hãy nhập tên tài khoản')" oninput="this.setCustomValidity('')" />
+                            <label class="form-label" for="uname" style="margin-left: 0px;">Tên tài khoản<span class="text-danger">*</span></label>
+                            <div class="form-notch">
+                                <div class="form-notch-leading" style="width: 9px;"></div>
+                                <div class="form-notch-middle" style="width: 88px;"></div>
+                                <div class="form-notch-trailing"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-3 mb-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text input-group-ct"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+                        <div class="form-outline position-relative">
+                            <input type="password" id="pword" name="pword" class="form-control form-control-lg" required />
+                            <label class="form-label" for="pword" style="margin-left: 0px;">Mật khẩu<span class="text-danger">*</span></label>
+                            <div class="form-notch">
+                                <div class="form-notch-leading" style="width: 9px;"></div>
+                                <div class="form-notch-middle" style="width: 68px;"></div>
+                                <div class="form-notch-trailing"></div>
+                            </div>
+                            <i class="fa-solid position-absolute i-eye  fa-eye-slash"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-3 mb-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text input-group-ct"><i class="fa-solid fa-lock"></i> </div>
+                        </div>
+                        <div class="form-outline position-relative">
+                            <input type="password" id="repword" name="repword" class="form-control form-control-lg" required oninvalid="this.setCustomValidity('Mật khẩu không khớp')" oninput="this.setCustomValidity('')">
+                            <label class="form-label" for="repword" style="margin-left: 0px;">Nhập lại mật khẩu<span class="text-danger">*</span></label>
+                            <div class="form-notch">
+                                <div class="form-notch-leading" style="width: 9px;"></div>
+                                <div class="form-notch-middle" style="width: 118px;"></div>
+                                <div class="form-notch-trailing"></div>
+                            </div>
+
+                            <i class="fa-solid position-absolute i-eye  fa-eye-slash"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-3 mb-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text input-group-ct"><i class="fa-solid fa-envelope"></i></div>
+                        </div>
+                        <div class="form-outline">
+                            <input type="email" id="email" name="email" value="<?php echo $info["email"] ?>" class="form-control form-control-lg" required oninvalid="this.setCustomValidity('Email không hợp lệ')" oninput="this.setCustomValidity('')" />
+                            <label class="form-label" for="email" style="margin-left: 0px;">Email<span class="text-danger">*</span></label>
+                            <div class="form-notch">
+                                <div class="form-notch-leading" style="width: 9px;"></div>
+                                <div class="form-notch-middle" style="width: 43px;"></div>
+                                <div class="form-notch-trailing"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-3 mb-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text input-group-ct"><i class="fa-solid fa-file-signature"></i></div>
+                        </div>
+                        <div class="form-outline">
+                            <input type="text" id="fullname" name="fullname" value="<?php echo $info["fullname"] ?>" class="form-control form-control-lg">
+                            <label class="form-label" for="fullname" style="margin-left: 0px;">Họ và tên</label>
+                            <div class="form-notch">
+                                <div class="form-notch-leading" style="width: 9px;"></div>
+                                <div class="form-notch-middle" style="width: 65px;"></div>
+                                <div class="form-notch-trailing"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-3 mb-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text input-group-ct"><i class="fa-solid fa-phone"></i></div>
+                        </div>
+                        <div class="form-outline">
+                            <input type="text" pattern="(\+84|0)\d{9,10}" value="<?php echo $info["phone"] ?>" id="phone" name="phone" class="form-control form-control-lg" oninvalid="this.setCustomValidity('Số điện thoại không hợp lệ')" oninput="this.setCustomValidity('')" />
+                            <label class="form-label" for="phone" style="margin-left: 0px;">Số điện thoại</label>
+                            <div class="form-notch">
+                                <div class="form-notch-leading" style="width: 9px;"></div>
+                                <div class="form-notch-middle" style="width: 85px;"></div>
+                                <div class="form-notch-trailing"></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex justify-content-center mt-3">
+                        <input type="submit" class="btn btn-danger w-100" value="Đăng ký">
+                    </div>
+
+                    <div class="line-or-ct mt-2">
+                        <div class="line-ct"></div>
+                        <div class="or-ct">
+                            <div type="tertiary" class="sc-crrsfI fmnTOX">Hoặc</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-around mt-1 mb-3">
+                        <a href="#" onclick="alert('chức năng đang phát triển')">
+                            <button type="button" class="btn btn-outline-primary btn-or-ct"><i class="fa-brands fa-facebook"></i> Facebook</button>
+                        </a>
+                        <a href="#<?php echo $loginUrlgg; ?>" onclick="alert('chức năng đang phát triển')">
+                            <button type="button" class="btn btn-outline-danger btn-or-ct"><i class="fa-brands fa-google"></i> Google</button>
+                        </a>
+                    </div>
+
+                    <div class="p-3 ps-4 d-flex justify-content-between">
+                        <small>
+                            <a href="<?= site_url() ?>" style="text-decoration: none;">
+                                ← Trang chủ
+                            </a>
+                        </small>
+                        <small>
+                            <!-- TODO: chức năng quên mật khẩu -->
+                            <a href="#<?= site_url('quen-mat-khau') ?>" style="text-decoration: none;" onclick="alert('chức năng đang phát triển')">
+                                Quên mật khẩu?
+                            </a>
+                        </small>
+                        <small>
+                            <a href="<?= site_url('login') ?>" style="text-decoration: none;">
+                                Đăng nhập →
+                            </a>
+                        </small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(function() {
+        $(".form-outline input").each(function() {
+            if ($(this).val() != "") {
+                $(this).addClass("active");
+            } else {
+                $(this).removeClass("active");
+            }
+        });
+
+        $(".form-outline input").on("keyup", function() {
+            if ($(this).val() != "") {
+                $(this).addClass("active");
+            } else {
+                $(this).removeClass("active");
+            }
+        });
+
+        $(".i-eye").on("click", function() {
+            if ($(this).hasClass("fa-eye-slash")) {
+                $(this).parent(".form-outline").find("input").attr("type", "text");
+                $(this).removeClass("fa-eye-slash");
+                $(this).addClass("fa-eye");
+            } else {
+                $(this).parent(".form-outline").find("input").attr("type", "password");
+                $(this).addClass("fa-eye-slash");
+                $(this).removeClass("fa-eye");
+            }
+        });
+    });
+
+
+
+    var password = document.getElementById("pword");
+    var confirm_password = document.getElementById("repword");
+
+    function validateRePassword() {
+        if (password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Mật khẩu không khớp");
+        } else {
+            confirm_password.setCustomValidity('');
+        }
+    }
+
+    function validatePassword() {
+        var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        if (password.value == "") {
+            password.setCustomValidity('Hãy nhập mật khẩu');
+        } else if (!reg_pass.test(password.value)) {
+            password.setCustomValidity("Mật khẩu phải chứa: Tối thiểu 8 ký tự ít nhất 1 chữ cái và 1 số");
+        } else {
+            password.setCustomValidity('');
+        }
+    }
+
+    password.onkeyup = validatePassword;
+    password.onfocus = validatePassword;
+    confirm_password.onkeyup = validateRePassword;
+</script>
+
+</html>

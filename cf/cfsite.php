@@ -21,6 +21,7 @@ define('LINK_TERMS', 'terms-of-use');
 define('LINK_REFUND', 'refund-policy');
 
 define('LINK_USER_ORDER', 'user/order');
+define('LINK_USER_ORDER_DETAIL', 'user/orderdetail');
 define('LINK_USER_NOTICES', 'user/notices');
 define('LINK_USER_PROFILES', 'user/profiles');
 define('LINK_USER_SETTINGS', 'user/settings');

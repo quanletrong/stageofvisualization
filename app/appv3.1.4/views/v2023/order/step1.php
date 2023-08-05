@@ -6,7 +6,10 @@
 
         <?php if (empty($user_info)) { ?>
             <div class="fw-bold">
-                Already Have An Account? <span class="link-color"> Sign In</span>.
+                Already Have An Account? 
+                <a href="login?url=<?=site_url('order')?>" class="link-color"class="link-color">Sign In</a> 
+                or
+                <a href="register?url=<?=site_url('order')?>" class="link-color"class="link-color">Register.</a>
             </div>
         <?php } else { ?>
             <div class="mb-3">

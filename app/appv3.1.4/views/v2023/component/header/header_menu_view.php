@@ -35,7 +35,7 @@
                 <?php if ($isLogin) { ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            ACCOUNT
+                            <?= $fullname ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <?php if ($role == ADMIN || $role == SALE || $role == QC || $role == EDITOR) { ?>
