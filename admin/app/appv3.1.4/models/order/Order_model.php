@@ -15,7 +15,13 @@ class Order_model extends CI_Model
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$id_order])) {
+                
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                // gán danh sách qc, ed, custom vào đơn
+                if(!empty($data)) {
+                    $data['team'] =  $this->_get_list_editor_by_id_order($data['id_order'], $iconn);
+                }
+                
             } else {
                 var_dump($stmt->errorInfo());
                 die;

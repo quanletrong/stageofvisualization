@@ -94,16 +94,18 @@
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                                                                 <div>ORIGINAL FILE(S)</div>
-                                                                <button class="btn btn-danger btn-sm">SAVE</button>
+                                                                <!-- TODO: TẠM ẨN -->
+                                                                <!-- <button class="btn btn-danger btn-sm">SAVE</button> -->
                                                             </h3>
                                                         </div>
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="position-relative image-hover">
-                                                            <div class="btn-upfile rounded border shadow" style="position: absolute; display: none; left: 45%; top: 45%;">
+                                                            <!-- TODO: TẠM ẨN -->
+                                                            <!-- <div class="btn-upfile rounded border shadow" style="position: absolute; display: none; left: 45%; top: 45%;">
                                                                 <i class="fas fa-upload"></i>
                                                                 <div>Upload file other</div>
-                                                            </div>
+                                                            </div> -->
                                                             <img src="<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" class="img-order-all" alt="" width="100%">
                                                         </div>
                                                         <div class="mt-3">
@@ -119,10 +121,11 @@
                                                                     </div>
                                                                 <?php } ?>
 
-                                                                <div class="btn-upfile rounded border shadow">
+                                                                <!-- TODO: TẠM ẨN -->
+                                                                <!-- <div class="btn-upfile rounded border shadow">
                                                                     <i class="fas fa-upload"></i>
                                                                     <div>Upload file <br>attach reference</div>
-                                                                </div>
+                                                                </div> -->
                                                             </div>
                                                         </div>
 
@@ -158,7 +161,8 @@
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                                                                 <div>COMPLETED FILE(S)</div>
-                                                                <button class="btn btn-danger btn-sm">SAVE</button>
+                                                                <!-- TODO: TẠM ẨN -->
+                                                                <!-- <button class="btn btn-danger btn-sm">SAVE</button> -->
                                                             </h3>
                                                         </div>
                                                     </div>
@@ -180,10 +184,11 @@
                                                                     </div>
                                                                     <img src="https://picsum.photos/320/180" alt="" width="100%">
                                                                 </div>
-                                                                <div class="btn-upfile rounded border shadow">
+                                                                <!-- TODO: TẠM ẨN -->
+                                                                <!-- <div class="btn-upfile rounded border shadow">
                                                                     <i class="fas fa-upload"></i>
                                                                     <div>Upload file complete</div>
-                                                                </div>
+                                                                </div> -->
 
                                                             </div>
                                                         </div>
@@ -196,7 +201,8 @@
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                                                                 <div>REWORK 1</div>
-                                                                <button class="btn btn-danger btn-sm">SAVE</button>
+                                                                <!-- TODO: TẠM ẨN -->
+                                                                <!-- <button class="btn btn-danger btn-sm">SAVE</button> -->
                                                             </h3>
                                                         </div>
                                                     </div>
@@ -222,10 +228,11 @@
                                                                     <img src="https://picsum.photos/320/180" alt="" width="100">
                                                                 </div>
 
-                                                                <div class="btn-upfile rounded border shadow">
+                                                                <!-- TODO: TẠM ẨN -->
+                                                                <!-- <div class="btn-upfile rounded border shadow">
                                                                     <i class="fas fa-upload"></i>
                                                                     <div>Upload file <br>attach reference</div>
-                                                                </div>
+                                                                </div> -->
                                                             </div>
                                                         </div>
 
@@ -238,10 +245,11 @@
                                                                     </div>
                                                                     <img src="https://picsum.photos/320/180" alt="" width="100%">
                                                                 </div>
-                                                                <div class="btn-upfile rounded border shadow">
+                                                                <!-- TODO: TẠM ẨN -->
+                                                                <!-- <div class="btn-upfile rounded border shadow">
                                                                     <i class="fas fa-upload"></i>
                                                                     <div>Upload file <br>rework complete</div>
-                                                                </div>
+                                                                </div> -->
                                                             </div>
                                                         </div>
                                                     </div>
@@ -264,7 +272,8 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                                     <div>TEAM ACTION</div>
-                                    <button class="btn btn-danger btn-sm">SAVE</button>
+                                    <!-- TODO: TẠM ẨN -->
+                                    <!-- <button class="btn btn-danger btn-sm">SAVE</button> -->
                                 </h3>
                             </div>
                         </div>
@@ -272,7 +281,8 @@
                             <div>
                                 <b>Assign</b>
                                 <p>
-                                    <select class="select2" id="tag" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                                    <!-- TODO: nhớ xóa disabled -->
+                                    <select disabled class="select2" id="tag" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
                                         <?php foreach ($all_qc_ed as $id_user => $user) { ?>
                                             <?php $selected = isset($order['assign_user'][$id_user]) ? 'selected' : '' ?>
                                             <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
@@ -291,6 +301,7 @@
                                 </p>
                             </div>
 
+                            <!-- TODO: TẠM ẨN -->
                             <div class="mt-3 d-none">
                                 <b>Custom time (thêm thời gian cho đơn)</b>
                                 <p>
@@ -331,10 +342,12 @@
                                 <b>WORKING EDITOR</b>
                                 <div class="mt-1">
                                     <?php $i = 1; ?>
+                                    <!-- TODO: tạm để sale, admin ko có quyền thêm xóa ED -->
+                                    <?php $disable = in_array($role, [ADMIN, SALE]) ? 'disabled' : ''; ?>
                                     <?php foreach ($list_job as $id_job => $job) { ?>
                                         <div class="d-flex mt-1">
                                             <div class="w-50" style="color: red;">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
-                                            <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
+                                            <select <?= $disable ?> class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
                                                 <?php foreach ($all_qc_ed as $id_user => $user) { ?>
                                                     <?php $selected = $job['id_ed'] == $id_user ? 'selected' : '' ?>
                                                     <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
@@ -350,10 +363,12 @@
                                 <div class="mt-1">
                                     <div class="mt-1">
                                         <?php $i = 1; ?>
+                                        <!-- TODO: tạm để sale, admin ko có quyền thêm xóa QC -->
+                                        <?php $disable = in_array($role, [ADMIN, SALE]) ? 'disabled' : ''; ?>
                                         <?php foreach ($list_job as $id_job => $job) { ?>
                                             <div class="d-flex mt-1">
                                                 <div class="w-50" style="color: red;">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
-                                                <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
+                                                <select <?= $disable ?> class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
                                                     <?php foreach ($all_qc_ed as $id_user => $user) { ?>
                                                         <?php if ($user['role'] == QC) { ?>
                                                             <?php $selected = $job['id_qc'] == $id_user ? 'selected' : '' ?>
@@ -370,24 +385,37 @@
                             <div class="mt-3">
                                 <b>GIÁ CUSTOM (cộng thêm tiền cho đơn)</b>
                                 <div class="mt-1">
+                                    <?php $disable = in_array($role, [QC, EDITOR]) ? 'disabled' : ''; ?>
                                     <div class="d-flex mt-1">
                                         <div class="w-50" style="color: red; font-weight: bold;">Tổng custom</div>
-                                        <input class="form-control" value="<?= $order['custom'] ?>" style="color: red; font-weight: bold;">
+                                        <input type="number" min="0" class="form-control" value="<?= $order['custom'] ?>" style="color: red; font-weight: bold;" <?= $disable ?>>
                                     </div>
 
+                                    <!-- TODO: tạm để AD SL không có quyên set -->
+                                    <?php $disable = in_array($role, [ADMIN, SALE]) ? 'disabled' : ''; ?>
                                     <?php foreach ($order['assign_user'] as $id_user) { ?>
                                         <div class="d-flex mt-1">
                                             <div class="w-50" style="color: red;"><?= $id_user ?></div>
-                                            <input class="form-control" value="">
+                                            <input class="form-control" value="" <?= $disable ?>>
                                         </div>
                                     <?php } ?>
                                 </div>
                             </div>
                             <hr>
-                            <button class="w-100 btn btn-outline btn-success">ACCEPT</button>
-                            <button class="w-100 btn btn-outline btn-danger mt-3">DOES NOT ACCEPT</button>
-                            <b style="color: red;">Reason for not accepting?</b>
-                            <textarea class="form-control" rows="5"></textarea>
+                            <!--  -->
+
+                            <?php $button = button_status_order($role, $order); ?>
+                            <?php if (!empty($button)) { ?>
+                                <div>Tôi đồng ý chuyển trạng thái đơn sang.</div>
+                                <button class="w-100 btn btn-outline btn-<?= $button['mau'] ?>" onclick="ajax_change_status_order(this, '<?= $order['id_order'] ?>', <?= $button['status'] ?>)"><?= $button['text'] ?></button>
+                            <?php } ?>
+
+                            <?php if ($order['status'] != ORDER_COMPLETE && ($role == ADMIN || $role == SALE)) { ?>
+                                <div class=" mt-3">Tôi yêu cầu hủy đơn này.</div>
+                                <button class="w-100 btn btn-outline btn-danger" onclick="alert('chức năng này đang phát triển')">CANCLE ORDER</button>
+                                <b style="color: red;">Reason for not accepting?</b>
+                                <textarea class="form-control" rows="5"></textarea>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -989,4 +1017,32 @@
     $(document).ready(function() {
         $('.select2').select2();
     })
+
+    function ajax_change_status_order(btn, id_order, new_status) {
+        let old_text = $(btn).html();
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+        $.ajax({
+            url: `order/ajax_change_status_order/${id_order}/${new_status}`,
+            type: "POST",
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                $(btn).html(old_text);
+                $(btn).prop("disabled", false);
+
+                if (kq.status) {
+                    toasts_success();
+                    location.reload();
+                } else {
+                    toasts_danger();
+
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
 </script>

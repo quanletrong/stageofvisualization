@@ -376,6 +376,18 @@ function toasts_danger(body = 'Có lỗi xảy ra', title = 'Thất bại', dela
     })
 }
 
+function toasts_success(body = '', title = 'Thành công', delay = 10000, autohide = true, subtitle = '') {
+    $(document).Toasts('create', {
+        class: 'bg-success',
+        title: title,
+        subtitle: '',
+        body: body,
+        delay: delay,
+        autohide: true,
+        fade: true
+    })
+}
+
 function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
@@ -406,12 +418,12 @@ function count_down_time(time, elId) {
 
         // Display the result in the element with id="demo"
         let ket_qua = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-        if(IS_EXPIRED) {
-            document.getElementById(elId).innerHTML =  '<span style="color:red"> - '+ket_qua+'</span>';
+        if (IS_EXPIRED) {
+            document.getElementById(elId).innerHTML = '<span style="color:red"> - ' + ket_qua + '</span>';
         } else {
-            document.getElementById(elId).innerHTML =  '<span style="color:green">'+ket_qua+'</span>';
+            document.getElementById(elId).innerHTML = '<span style="color:green">' + ket_qua + '</span>';
         }
-        
+
 
         // If the count down is finished, write some text
         // if (distance < 0) {

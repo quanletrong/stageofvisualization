@@ -1098,7 +1098,7 @@ function is_late_order($order)
     $han_chot = $thoi_gian_tao_don + $cong_them_gio + $thoi_gian_toi_thieu;
 
     $ket_qua = 0;
-    
+
     $ket_qua = $han_chot - $thoi_gian_hien_tai;
 
     return $ket_qua < 0;
@@ -1113,4 +1113,43 @@ function url_image($file_name, $folder)
         $root_domain = ROOT_DOMAIN;
     }
     return $root_domain . $folder . $file_name;
+}
+
+function button_status_order($role, $order)
+{
+    $new = [];
+    $status = $order['status'];
+
+    // PENDING
+    if ($status == ORDER_PENDING && ($role == SALE || $role == ADMIN)) {
+        $new = ['status' => ORDER_QC_CHECK, 'text' => 'QC CHECK', 'mau' => 'warning'];
+    }
+    // QC_CHECK 
+    else if ($status == ORDER_QC_CHECK && $role == QC) {
+        $new = ['status' => ORDER_AVAIABLE, 'text' => 'AVAIABLE', 'mau' => 'warning'];
+    }
+    // AVAIABLE 
+    else if ($status == ORDER_AVAIABLE) {
+    }
+    // PROGRESS 
+    else if ($status == ORDER_PROGRESS && $role == EDITOR) {
+        $new = ['status' => ORDER_DONE, 'text' => 'DONE', 'mau' => 'info'];
+    }
+    // DONE 
+    else if ($status == ORDER_DONE && $role == QC) {
+        $new = ['status' => ORDER_DELIVERED, 'text' => 'DELIVERED', 'mau' => 'success'];
+    }
+    // DELIVERED 
+    else if ($status == ORDER_DELIVERED && ($role == SALE || $role == ADMIN)) {
+        $new = ['status' => ORDER_REWORK, 'text' => 'REWORK', 'mau' => 'warning'];
+    }
+    // REWORK 
+    else if ($status == ORDER_REWORK && $role == EDITOR) {
+        $new = ['status' => ORDER_DONE, 'text' => 'DONE', 'mau' => 'info'];
+    }
+    // COMPLETE 
+    else if ($status == ORDER_COMPLETE) {
+    }
+
+    return $new;
 }

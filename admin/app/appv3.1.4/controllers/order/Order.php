@@ -86,21 +86,18 @@ class Order extends MY_Controller
         $order = $this->Order_model->get_info_order($id_order);
         empty($order) ? redirect(site_url('order', $this->_langcode)) : '';
 
+        ## check right access
         $status = $order['status'];
-
         switch ($role) {
             case ADMIN:
                 break;
             case SALE:
                 break;
             case QC:
-                if (!isset($list_user_in_order[$uid]) && $status != ORDER_QC_CHECK) {
-                    die('QC không có quyền truy cập');
-                }
                 break;
             case EDITOR:
-                if (!isset($list_user_in_order[$uid]) && $status != ORDER_AVAIABLE) {
-                    die('EDITOR không có quyền truy cập');
+                if (!isset($order['team'][$uid]) && $status != ORDER_AVAIABLE) {
+                    die('EDITOR này chưa tham gia đơn');
                 }
                 break;
             default:
@@ -208,5 +205,10 @@ class Order extends MY_Controller
         } else {
             resSuccess('ok', $kq['id_order']);
         }
+    }
+
+    function ajax_change_status_order($id_order, $new_status)
+    {
+        resSuccess('ok');
     }
 }
