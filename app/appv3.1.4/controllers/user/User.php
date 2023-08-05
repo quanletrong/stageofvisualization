@@ -52,6 +52,12 @@ class User extends MY_Controller
 
         $list_job = $this->Order_model->get_list_job_by_order($id_order);
 
+        ## danh sách VS VR 3D...
+        $list_type_service = [];
+        foreach ($list_job as $id_job => $job) {
+            $list_type_service[$job['type_service']][] = $job['id_job'];
+        }
+        $data['list_type_service']  = $list_type_service;
         $data['list_job'] = $list_job;
         $data['order'] = $order;
 

@@ -1,5 +1,12 @@
 <div class="container-fluid">
     <h1 class="fs-4 mt-3">MY ORDERS AND LISTINGS</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="<?=site_url('')?>"><i class="fa-solid fa-house"></i> Home</a></li>
+            <li class="breadcrumb-item active">My Order</li>
+        </ol>
+    </nav>
+
     <table class="table border table-striped table-hover">
         <thead>
             <tr>
