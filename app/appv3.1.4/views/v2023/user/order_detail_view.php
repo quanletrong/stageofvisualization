@@ -212,10 +212,12 @@
                         <p><b style="color: orange;">TOTAL: [<?= count($list_job) ?>]</b></p>
                     </div>
 
+                    <?php if($order['status'] == ORDER_DELIVERED) {?>
                     <div class="mt-3">
                         <p>If you agree with this file, then click COMPLETE!</p>
                         <button class=" btn btn-success w-100">COMPLETE</button>
                     </div>
+                    <?php } ?>
                     <!-- <div class="mt-3" onclick="alert('Chức năng đang phát triển')">
                         <img src="images/chat.png" class="w-100" style="border:  1px solid #eee;">
                     </div> -->
