@@ -209,6 +209,14 @@ class Order extends MY_Controller
 
     function ajax_change_status_order($id_order, $new_status)
     {
-        resSuccess('ok');
+        // check quyền thật cẩn thận
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+
+        $kq = $this->Order_model->update_status_order($id_order, $new_status);
+
+        resSuccess($kq);
     }
 }

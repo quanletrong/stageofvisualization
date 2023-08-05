@@ -8,20 +8,20 @@ class Order_model extends CI_Model
         parent::__construct();
     }
 
-    function get_info_order($id_order) {
+    function get_info_order($id_order)
+    {
         $data = [];
         $iconn = $this->db->conn_id;
         $sql = "SELECT * FROM tbl_order WHERE id_order = ? LIMIT 1";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$id_order])) {
-                
+
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 // gán danh sách qc, ed, custom vào đơn
-                if(!empty($data)) {
+                if (!empty($data)) {
                     $data['team'] =  $this->_get_list_editor_by_id_order($data['id_order'], $iconn);
                 }
-                
             } else {
                 var_dump($stmt->errorInfo());
                 die;
@@ -35,7 +35,7 @@ class Order_model extends CI_Model
     {
         $list_order = [];
         $iconn = $this->db->conn_id;
-        
+
         $sql = "SELECT A.*
         FROM tbl_order as A
         ORDER BY A.status ASC, A.create_time ASC";
@@ -56,7 +56,7 @@ class Order_model extends CI_Model
                         // gán danh sách qc, ed, custom vào đơn
                         $team = $this->_get_list_editor_by_id_order($row['id_order'], $iconn);
                         $row['team'] = $team;
-                        
+
                         $list_order[$row['id_order']] = $row;
                     }
                 }
@@ -70,7 +70,7 @@ class Order_model extends CI_Model
         return $list_order;
     }
 
-    
+
     function get_list_order_by_status($status = '')
     {
         $data = [];
@@ -105,7 +105,7 @@ class Order_model extends CI_Model
 
     /** 
      * LẤY DANH SÁCH ĐƠN THEO USER
-    */
+     */
     function get_list_order_by_id_user($id_user)
     {
         $list_id_order = [];
@@ -139,7 +139,7 @@ class Order_model extends CI_Model
                             // gán danh sách qc, ed, custom vào đơn
                             $team = $this->_get_list_editor_by_id_order($row['id_order'], $iconn);
                             $row['team'] = $team;
-                            
+
                             $list_order[$row['id_order']] = $row;
                         }
                     }
@@ -242,7 +242,8 @@ class Order_model extends CI_Model
     }
     //  END LẤY DANH SÁCH ĐƠN THEO USER
 
-    function box_count($list_order) {
+    function box_count($list_order)
+    {
         $box = [];
         foreach ($list_order as $id_order => $order) {
             $status = $order['status'];
@@ -268,7 +269,8 @@ class Order_model extends CI_Model
         return $box;
     }
 
-    function box_for_qc_ed($list_order) {
+    function box_for_qc_ed($list_order)
+    {
         $box = [];
         foreach ($list_order as $id_order => $order) {
             $status = $order['status'];
@@ -280,22 +282,22 @@ class Order_model extends CI_Model
             if ($status == ORDER_REWORK) {
                 $box['rework'] = isset($box['rework']) ? $box['rework'] + 1 : 1;
             }
-           
+
             if ($status == ORDER_COMPLETE) {
                 $box['complete'] = isset($box['complete']) ? $box['complete'] + 1 : 1;
             }
 
-            
+
             if (is_late_order($order)) {
                 $box['late'] = isset($box['late']) ? $box['late'] + 1 : 1;
             }
-
         }
 
         return $box;
     }
 
-    function tim_don_gan_nhat($status){
+    function tim_don_gan_nhat($status)
+    {
         $data = 0;
         $iconn = $this->db->conn_id;
 
@@ -310,5 +312,26 @@ class Order_model extends CI_Model
         }
         $stmt->closeCursor();
         return $data;
+    }
+
+    // TODO: chưa có lưu update_time bổ sung sau
+    function update_status_order($id_order, $new_status)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_order SET status=? WHERE id_order=?";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$new_status, $id_order];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
     }
 }
