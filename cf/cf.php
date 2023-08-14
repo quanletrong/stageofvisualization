@@ -80,6 +80,7 @@ define('ORDER_DELIVERED', '6');  //xanh lá
 define('ORDER_REWORK', '7');     //vàng
 define('ORDER_CANCLE', '8');     //đỏ
 define('ORDER_COMPLETE', '9');   //xanh lá
+define('ORDER_FIX', '10');      //đỏ
 
 // SERVICE
 define('SERVICE_RUN', 1);
