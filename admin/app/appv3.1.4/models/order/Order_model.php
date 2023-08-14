@@ -70,6 +70,48 @@ class Order_model extends CI_Model
         return $list_order;
     }
 
+    function get_list_for_qc($status = '')
+    {
+        $list_order = [];
+        $iconn = $this->db->conn_id;
+
+
+        $ORDER_PENDING = ORDER_PENDING;
+        $sql = "SELECT A.*
+        FROM tbl_order as A
+        WHERE A.status != $ORDER_PENDING 
+        ORDER BY A.status ASC, A.create_time ASC";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        // gán list type_service vào đơn
+                        $type_service = $this->_get_type_service_job_by_id_order($row['id_order'], $iconn);
+                        $row['type_service'] = $type_service;
+
+                        // gán total job vào đơn
+                        $total_job = $this->_get_total_job_by_id_order($row['id_order'], $iconn);
+                        $row['total_job'] = $total_job;
+
+                        // gán danh sách qc, ed, custom vào đơn
+                        $team = $this->_get_list_editor_by_id_order($row['id_order'], $iconn);
+                        $row['team'] = $team;
+
+                        $list_order[$row['id_order']] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $list_order;
+    }
+
 
     function get_list_order_by_status($status = '')
     {
@@ -323,6 +365,27 @@ class Order_model extends CI_Model
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             $param = [$new_status, $id_order];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    // TODO: chưa có lưu update_time bổ sung sau
+    function update_custom_order($id_order, $custom)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_order SET custom=? WHERE id_order=?";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$custom, $id_order];
 
             if ($stmt->execute($param)) {
                 $execute = true;

@@ -1004,16 +1004,28 @@ function status_order($status)
         $data['bg'] = '#ffc107';
     } else if ($status == ORDER_AVAIABLE) {
         $data['text'] = 'AVAIABLE';
-        $data['bg'] = '#ffeb3b';
+        $data['bg'] = '#ffc107';
     } else if ($status == ORDER_PROGRESS) {
         $data['text'] = 'IN PROGRESS';
         $data['bg'] = 'deepskyblue';
     } else if ($status == ORDER_REWORK) {
         $data['text'] = 'REWORK';
-        $data['bg'] = 'orange';
+        $data['bg'] = 'darkred';
     } else if ($status == ORDER_CANCLE) {
         $data['text'] = 'CANCLE';
         $data['bg'] = 'darkred';
+    } else if ($status == ORDER_FIX) {
+        $data['text'] = 'FIX';
+        $data['bg'] = 'darkred';
+    } else if ($status == ORDER_DONE) {
+        $data['text'] = 'DONE';
+        $data['bg'] = 'deepskyblue';
+    } else if ($status == ORDER_DELIVERED) {
+        $data['text'] = 'DELIVERED';
+        $data['bg'] = 'deepskyblue';
+    } else if ($status == ORDER_COMPLETE) {
+        $data['text'] = 'COMPLETE';
+        $data['bg'] = 'darkgreen';
     }
 
     return $data;
@@ -1045,6 +1057,7 @@ function status_late_order($status_text, $time_create_order, $time_done, $custom
 
 function count_down_time_order($order)
 {
+    $id_order = $order['id_order'];
     $thoi_gian_hien_tai = time();
     $thoi_gian_tao_don = strtotime($order['create_time']);
     $thoi_gian_tra_don = strtotime($order['done_qc_time']);
@@ -1071,7 +1084,7 @@ function count_down_time_order($order)
 
         //
         $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
-        return "<script>count_down_time('$DMY_han_chot', 'cdt')</script>";
+        return "<script>count_down_time('$DMY_han_chot', 'cdt_$id_order')</script>";
     }
 
     $ket_qua_duong = $ket_qua < 0 ? $ket_qua * -1 : $ket_qua;
@@ -1115,6 +1128,7 @@ function url_image($file_name, $folder)
     return $root_domain . $folder . $file_name;
 }
 
+//TODO: bỏ
 function button_status_order($role, $order)
 {
     $new = [];
@@ -1152,4 +1166,29 @@ function button_status_order($role, $order)
     }
 
     return $new;
+}
+
+function button_status_order_by_role($role)
+{
+    $data = [];
+    if ($role == SALE || $role == ADMIN) {
+        $data[ORDER_PENDING]   = status_order(ORDER_PENDING);
+        $data[ORDER_QC_CHECK]  = status_order(ORDER_QC_CHECK);
+        $data[ORDER_AVAIABLE]  = status_order(ORDER_AVAIABLE);
+        $data[ORDER_DONE]      = status_order(ORDER_DONE);
+        $data[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);
+        $data[ORDER_FIX]       = status_order(ORDER_FIX);
+        $data[ORDER_REWORK]    = status_order(ORDER_REWORK);
+        $data[ORDER_COMPLETE]  = status_order(ORDER_COMPLETE);
+    } else if ($role == QC) {
+        $data[ORDER_QC_CHECK]  = status_order(ORDER_QC_CHECK);
+        $data[ORDER_AVAIABLE]  = status_order(ORDER_AVAIABLE);
+        $data[ORDER_DONE]      = status_order(ORDER_DONE);
+        $data[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);
+        $data[ORDER_FIX]       = status_order(ORDER_FIX);
+    } else if ($role == EDITOR) {
+        $data[ORDER_DONE]      = status_order(ORDER_DONE);
+    }
+
+    return $data;
 }

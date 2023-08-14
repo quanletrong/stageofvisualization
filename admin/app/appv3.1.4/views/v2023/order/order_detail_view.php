@@ -294,11 +294,9 @@
 
                             <div class="mt-3">
                                 <b>Countdown time</b>
-                                <p>
-                                <div id="cdt" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
+                                <div id="cdt_<?= $order['id_order'] ?>" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
                                     <?= count_down_time_order($order) ?>
                                 </div>
-                                </p>
                             </div>
 
                             <!-- TODO: TẠM ẨN -->
@@ -310,7 +308,6 @@
                             </div>
 
                             <div class="mt-3">
-                                <b>Job status</b>
                                 <?php
                                 if ($order['status'] == ORDER_DONE) {
                                     $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time']);
@@ -321,8 +318,20 @@
                                 } else {
                                     $s = status_order($order['status']);
                                 }
+
+                                $list_status = button_status_order_by_role($role);
                                 ?>
-                                <button class="btn w-100" style="color:white; background-color: <?= @$s['bg'] ?>"><?= @$s['text'] ?></button>
+
+                                <div class="dropdown">
+                                    <button class="btn dropdown-toggle w-100" type="button" id="dropdownStatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white; background-color: <?= @$s['bg'] ?>">
+                                        <?= @$s['text'] ?>
+                                    </button>
+                                    <div class="dropdown-menu w-100 p-1" aria-labelledby="dropdownStatus">
+                                        <?php foreach ($list_status as $key => $status) { ?>
+                                            <button class="dropdown-item w-100 mb-1 text-center" href="#" style="color:white; background-color: <?= @$status['bg'] ?>;" onclick="ajax_change_status_order(this, '<?= $order['id_order'] ?>', '<?= $key ?>')"><?= $status['text'] ?></button>
+                                        <?php } ?>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="mt-3">
@@ -386,36 +395,25 @@
                                 <b>GIÁ CUSTOM (cộng thêm tiền cho đơn)</b>
                                 <div class="mt-1">
                                     <?php $disable = in_array($role, [QC, EDITOR]) ? 'disabled' : ''; ?>
-                                    <div class="d-flex mt-1">
+                                    <div class="d-flex mt-1" style="align-items: center;">
                                         <div class="w-50" style="color: red; font-weight: bold;">Tổng custom</div>
-                                        <input type="number" min="0" class="form-control" value="<?= $order['custom'] ?>" style="color: red; font-weight: bold;" <?= $disable ?>>
+                                        <div class="input-group">
+                                            <input id="textCustomOrder" type="number" min="0" class="form-control" value="<?= $order['custom'] ?>" <?= $disable ?> style="color: red; font-weight: bold;">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button" id="btnCustomOrder" <?= $disable ?> onclick="ajax_change_custom_order(this, '<?=$order['id_order']?>', $('#textCustomOrder').val())" style="width: 60px;">Save</button>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- TODO: tạm để AD SL không có quyên set -->
-                                    <?php $disable = in_array($role, [ADMIN, SALE]) ? 'disabled' : ''; ?>
                                     <?php foreach ($order['assign_user'] as $id_user) { ?>
                                         <div class="d-flex mt-1">
                                             <div class="w-50" style="color: red;"><?= $id_user ?></div>
-                                            <input class="form-control" value="" <?= $disable ?>>
+                                            <input class="form-control" value="">
                                         </div>
                                     <?php } ?>
                                 </div>
                             </div>
-                            <hr>
-                            <!--  -->
-
-                            <?php $button = button_status_order($role, $order); ?>
-                            <?php if (!empty($button)) { ?>
-                                <div>Tôi đồng ý chuyển trạng thái đơn sang.</div>
-                                <button class="w-100 btn btn-outline btn-<?= $button['mau'] ?>" onclick="ajax_change_status_order(this, '<?= $order['id_order'] ?>', <?= $button['status'] ?>)"><?= $button['text'] ?></button>
-                            <?php } ?>
-
-                            <?php if ($order['status'] != ORDER_COMPLETE && ($role == ADMIN || $role == SALE)) { ?>
-                                <div class=" mt-3">Tôi yêu cầu hủy đơn này.</div>
-                                <button class="w-100 btn btn-outline btn-danger" onclick="alert('chức năng này đang phát triển')">CANCLE ORDER</button>
-                                <b style="color: red;">Reason for not accepting?</b>
-                                <textarea class="form-control" rows="5"></textarea>
-                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -1019,25 +1017,59 @@
     })
 
     function ajax_change_status_order(btn, id_order, new_status) {
+        let new_text = $(btn).text();
+        let new_bg = $(btn).css('backgroundColor');
+        let old_text = $('#dropdownStatus').html();
+        if (confirm(`Bạn muốn đơn này chuyển sang ${ new_text}?`) == true) {
+
+            $('#dropdownStatus').html(' <i class="fas fa-sync fa-spin"></i>');
+            $('#dropdownStatus').prop("disabled", true);
+            $.ajax({
+                url: `order/ajax_change_status_order/${id_order}/${new_status}`,
+                type: "POST",
+                success: function(data, textStatus, jqXHR) {
+                    let kq = JSON.parse(data);
+
+                    if (kq.status) {
+
+                        toasts_success();
+                        $('#dropdownStatus').html(new_text);
+                        $('#dropdownStatus').css('backgroundColor', new_bg);
+                    } else {
+                        $('#dropdownStatus').html(old_text);
+                        toasts_danger();
+                    }
+
+                    $('#dropdownStatus').prop("disabled", false);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(data);
+                    alert('Error');
+                }
+            });
+        }
+    }
+
+    function ajax_change_custom_order(btn, id_order, custom) {
         let old_text = $(btn).html();
+
         $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
         $(btn).prop("disabled", true);
         $.ajax({
-            url: `order/ajax_change_status_order/${id_order}/${new_status}`,
+            url: `order/ajax_change_custom_order/${id_order}/${custom}`,
             type: "POST",
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
 
-                $(btn).html(old_text);
-                $(btn).prop("disabled", false);
-
                 if (kq.status) {
-                    toasts_success();
-                    location.reload();
+                    // thành công 
+                    toasts_success()
                 } else {
                     toasts_danger();
-
                 }
+
+                $(btn).html(old_text);
+                $(btn).prop("disabled", false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);

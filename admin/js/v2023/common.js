@@ -396,6 +396,9 @@ function count_down_time(time, elId) {
     console.log(time)
     var countDownDate = new Date(time).getTime();
 
+    //before
+    document.getElementById(elId).innerHTML = '<i class="fas fa-sync fa-spin"></i>';
+
     // Update the count down every 1 second
     var x = setInterval(function () {
 

@@ -53,7 +53,7 @@
                         <tr class="text-default">
                             <td class="align-middle text-center">OID<?= $order['id_order'] ?></td>
                             <td class="align-middle text-center">UID<?= $order['id_user'] ?></td>
-                            <td class="align-middle text-center"><span title="<?= $order['create_time'] ?>"><?= timeSince($order['create_time']) ?> trước</span></td>
+                            <td class="align-middle text-center"><span title="<?= timeSince ($order['create_time']) ?> trước"><?= $order['create_time'] ?> </span></td>
                             <td class="align-middle text-center">
                                 <?php foreach ($order['type_service'] as $val) { ?>
                                     <small class="badge badge-danger"><?= $val ?></small>
@@ -75,11 +75,8 @@
                                 ?>
                             </td>
                             <td class="align-middle text-center">
-                                <?php
+                                <span id="cdt_<?= $order['id_order']?>"><?= count_down_time_order($order) ?></span>
 
-                                echo count_down_time_order($order);
-
-                                ?>
                             </td>
                             <td class="align-middle text-center" style="max-width: 350px;">
                                 <?php foreach ($order['team'] as $id_user => $user) { ?>

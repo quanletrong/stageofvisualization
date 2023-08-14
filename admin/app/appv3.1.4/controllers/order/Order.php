@@ -43,7 +43,7 @@ class Order extends MY_Controller
                 $list_order = $this->Order_model->get_list(); //lấy tất cả đơn
                 break;
             case QC:
-                $list_order = $this->Order_model->get_list_order_by_id_user($uid);
+                $list_order = $this->Order_model->get_list_for_qc(); //lấy tất cả đơn
                 break;
             case EDITOR:
                 $list_order = $this->Order_model->get_list_order_by_id_user($uid);
@@ -217,6 +217,17 @@ class Order extends MY_Controller
 
         $kq = $this->Order_model->update_status_order($id_order, $new_status);
 
+        resSuccess($kq);
+    }
+
+    function ajax_change_custom_order($id_order, $custom)
+    {
+        // check quyền thật cẩn thận
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        $kq = $this->Order_model->update_custom_order($id_order, $custom);
         resSuccess($kq);
     }
 }

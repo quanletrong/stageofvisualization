@@ -5,7 +5,6 @@
 </style>
 
 <div class="d-flex mb-3" style="justify-content: space-between;">
-    <button class="btn btn-success" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()"><i class="far fa-play-circle"></i> START</button>
     <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance"> <i class="fas fa-wallet"></i> WITHDRAW BALANCE</button>
 </div>
 
@@ -13,7 +12,7 @@
     <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
             <div class="inner">
-                <h3><?= isset($box['late']) ? $box['progress'] : 0 ?></h3>
+                <h3><?= isset($box['progress']) ? $box['progress'] : 0 ?></h3>
                 <p>TOTAL PROGRESSING</p>
             </div>
             <div class="icon">
