@@ -22,10 +22,10 @@
         <!-- JOB CONTENT / TEAM ACTION -->
         <section>
             <div class="row">
-                <div class="col-12 col-lg-9" id="list-image-order">
+                <div class="col-12 col-lg-8" id="list-image-order">
                     <?php $this->load->view(TEMPLATE_FOLDER . 'order/detail/_job_content_view.php'); ?>
                 </div>
-                <div class="col-12 col-lg-3">
+                <div class="col-12 col-lg-4">
                     <?php $this->load->view(TEMPLATE_FOLDER . 'order/detail/_team_action_view.php'); ?>
                 </div>
             </div>

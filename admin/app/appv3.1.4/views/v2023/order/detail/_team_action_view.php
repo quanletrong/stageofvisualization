@@ -8,19 +8,6 @@
     </div>
     <div class="card-body">
         <div>
-            <b>Assign</b>
-            <p>
-                <select class="select2" id="tag" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                    <?php foreach ($all_qc_ed as $id_user => $user) { ?>
-                        <?php $selected = isset($order['assign_user'][$id_user]) ? 'selected' : '' ?>
-                        <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
-                    <?php } ?>
-                </select>
-            </p>
-
-        </div>
-
-        <div class="mt-3">
             <b>Countdown time</b>
             <div id="cdt_<?= $order['id_order'] ?>" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
                 <?= count_down_time_order($order) ?>
@@ -35,6 +22,7 @@
             </p>
         </div>
 
+        <!-- STATUS -->
         <div class="mt-3">
             <?php
             if ($order['status'] == ORDER_DONE) {
@@ -61,30 +49,41 @@
                 </div>
             </div>
         </div>
+        <hr>
+        <!-- END STATUS -->
 
         <div class="mt-3">
             <p><b style="color: orange;">ID Customer: CID<?= $order['id_user'] ?></b></p>
             <p><b style="color: orange;">ID Order: OID<?= $order['id_order'] ?></b></p>
         </div>
-        <hr>
-        <div class="mt-3">
 
+        <div class="mt-3">
             <?php foreach ($list_type_service as $type => $val) { ?>
                 <p><b style="color: orange;"><?= $type ?>: <?= count($val) ?></b></p>
             <?php } ?>
             <p><b style="color: orange;">TOTAL: [<?= $total_type_service ?>]</b></p>
         </div>
         <hr>
+
+        <!-- ASSIGN -->
+        <div class="mt-3">
+            <b>Assign</b>
+            <select class="select2" id="tag" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
+                <?php foreach ($all_qc_ed as $id_user => $user) { ?>
+                    <?php $selected = isset($order['assign_user'][$id_user]) ? 'selected' : '' ?>
+                    <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                <?php } ?>
+            </select>
+        </div>
+
         <div class="mt-3">
             <b>WORKING EDITOR</b>
             <div class="mt-1">
                 <?php $i = 1; ?>
-                <!-- TODO: tạm để sale, admin ko có quyền thêm xóa ED -->
-                <?php $disable = in_array($role, [ADMIN, SALE]) ? 'disabled' : ''; ?>
                 <?php foreach ($list_job as $id_job => $job) { ?>
-                    <div class="d-flex mt-1">
-                        <div class="w-50" style="color: red;">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
-                        <select <?= $disable ?> class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
+                    <div class="d-flex mt-1" style="align-items: center;">
+                        <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
+                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
                             <?php foreach ($all_qc_ed as $id_user => $user) { ?>
                                 <?php $selected = $job['id_ed'] == $id_user ? 'selected' : '' ?>
                                 <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
@@ -100,12 +99,10 @@
             <div class="mt-1">
                 <div class="mt-1">
                     <?php $i = 1; ?>
-                    <!-- TODO: tạm để sale, admin ko có quyền thêm xóa QC -->
-                    <?php $disable = in_array($role, [ADMIN, SALE]) ? 'disabled' : ''; ?>
                     <?php foreach ($list_job as $id_job => $job) { ?>
-                        <div class="d-flex mt-1">
-                            <div class="w-50" style="color: red;">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
-                            <select <?= $disable ?> class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
+                        <div class="d-flex mt-1" style="align-items: center;">
+                            <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
+                            <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
                                 <?php foreach ($all_qc_ed as $id_user => $user) { ?>
                                     <?php if ($user['role'] == QC) { ?>
                                         <?php $selected = $job['id_qc'] == $id_user ? 'selected' : '' ?>
@@ -124,7 +121,7 @@
             <div class="mt-1">
                 <?php $disable = in_array($role, [QC, EDITOR]) ? 'disabled' : ''; ?>
                 <div class="d-flex mt-1" style="align-items: center;">
-                    <div class="w-50" style="color: red; font-weight: bold;">Tổng custom</div>
+                    <div style="color: red; font-weight: bold; width: 150px;">Tổng custom</div>
                     <div class="input-group">
                         <input id="textCustomOrder" type="number" min="0" class="form-control" value="<?= $order['custom'] ?>" <?= $disable ?> style="color: red; font-weight: bold;">
                         <div class="input-group-append">
@@ -136,7 +133,7 @@
                 <!-- TODO: tạm để AD SL không có quyên set -->
                 <?php foreach ($order['assign_user'] as $id_user) { ?>
                     <div class="d-flex mt-1">
-                        <div class="w-50" style="color: red;"><?= $id_user ?></div>
+                        <div style="color: red; width: 150px;"><?= $id_user ?></div>
                         <input class="form-control" value="">
                     </div>
                 <?php } ?>
