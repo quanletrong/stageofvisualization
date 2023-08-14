@@ -376,7 +376,7 @@ function toasts_danger(body = 'Có lỗi xảy ra', title = 'Thất bại', dela
     })
 }
 
-function toasts_success(body = '', title = 'Thành công', delay = 10000, autohide = true, subtitle = '') {
+function toasts_success(body = '', title = 'Thành công', delay = 3000, autohide = true, subtitle = '') {
     $(document).Toasts('create', {
         class: 'bg-success',
         title: title,

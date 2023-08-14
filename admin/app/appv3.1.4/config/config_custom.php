@@ -14,7 +14,7 @@ define('MPDF_LIB_PATH', '../app/appv3.1.4/libraries/mpdf/');
 
 
 // khi day len server se config = rong
-//$config['cf_upload_local'] = 'uploads/images/';
+// $config['cf_upload_local'] = 'uploads/images/';
 $config['cf_upload_local'] = '';
 
 

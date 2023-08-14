@@ -82,7 +82,7 @@ class Order extends MY_Controller
         }
         $role = $this->_session_role();
         $uid = $this->_session_uid();
-        $list_qc_ed = $this->User_model->get_list_qc_editor();
+        $all_user_working = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
         $order = $this->Order_model->get_info_order($id_order);
         empty($order) ? redirect(site_url('order', $this->_langcode)) : '';
 
@@ -119,7 +119,7 @@ class Order extends MY_Controller
             $id_user  = $job_user['id_user'];
             $username = $job_user['username'];
             $id_job   = $job_user['id_job'];
-            $status   = $job_user['status'];
+            $status   = $job_user['job_user_status'];
 
             if ($status) {
                 if ($job_user['type_job_user'] == 2) {
@@ -169,9 +169,10 @@ class Order extends MY_Controller
         $data['order']              = $order;
         $data['list_job']           = $list_job;
         $data['role']               = $role;
+        $data['curr_uid']           = $uid;
         $data['list_type_service']  = $list_type_service;
         $data['total_type_service'] = count($list_job);
-        $data['all_qc_ed']          = $list_qc_ed;
+        $data['all_user_working']   = $all_user_working;
         $data['list_job_user']      = $list_job_user;
 
 
@@ -209,25 +210,62 @@ class Order extends MY_Controller
 
     function ajax_change_status_order($id_order, $new_status)
     {
-        // check quyền thật cẩn thận
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-
+        // TODO: check quyền thật cẩn thận
         $kq = $this->Order_model->update_status_order($id_order, $new_status);
 
+        // TODO: LOG
         resSuccess($kq);
     }
 
     function ajax_change_custom_order($id_order, $custom)
     {
-        // check quyền thật cẩn thận
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
+        // TODO: check quyền thật cẩn thận   
         $kq = $this->Order_model->update_custom_order($id_order, $custom);
+
+        // TODO: LOG
+        resSuccess($kq);
+    }
+
+    function ajax_assign_custom($id_order, $id_user)
+    {
+        // TODO: check right
+        // TODO: order tồn tại, order khác hoàn thành
+        // TODO: user tồn tại, đang active, role [admin sale qc ed]
+        // TODO: ADMIN SALE QC thêm dc tất cả tài khoàn. ED ko có quyền chức năng này
+
+        $id_job = 0; // vì assign custom
+        $type_job_user = 4; // vì assign custom
+        $status = 1;
+        $time_join = date('Y-m-d H:i:s');
+
+        // user đã tồn tại thì UPDATE status = 1
+        $da_ton_tai = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $type_job_user, $id_user);
+        if ($da_ton_tai) {
+            $kq = $this->Order_model->change_status_custom_to_job($status, $id_order, $id_job, $type_job_user, $id_user);
+            // TODO: LOG
+            resSuccess($kq);
+        }
+        // user chưa tồn tại thì INSERT bản ghi mới
+        else {
+            $kq = $this->Order_model->assign_custom_to_job($id_order, $id_job, $id_user, $type_job_user, $status, $time_join);
+            // TODO: LOG
+            resSuccess($kq);
+        }
+    }
+
+    // Bản chất xóa custom là đổi `status = 0`
+    function ajax_remove_custom($id_order, $id_user)
+    {
+        // TODO: check right
+        // TODO: order tồn tại, order khác hoàn thành
+        // TODO: ADMIN xóa all, SALE xóa QC ED, QC xóa ED, ED xóa chính ED
+
+        $status = 0; // remove
+        $id_job = 0;
+        $type_job_user = 4;
+        $kq = $this->Order_model->change_status_custom_to_job($status, $id_order, $id_job, $type_job_user, $id_user);
+
+        // TODO: LOG
         resSuccess($kq);
     }
 }

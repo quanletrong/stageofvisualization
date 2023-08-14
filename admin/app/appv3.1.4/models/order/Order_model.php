@@ -397,4 +397,66 @@ class Order_model extends CI_Model
         $stmt->closeCursor();
         return $execute;
     }
+
+    function assign_custom_to_job($id_order, $id_job, $id_user, $type_job_user, $status, $time_join)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT INTO tbl_job_user (id_order, id_job, id_user, type_job_user, status, time_join) VALUES (?, ?, ?, ?, ?, ?)";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_order, $id_job, $id_user, $type_job_user, $status, $time_join];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $type_job_user, $id_user) {
+        $data = false;
+        $iconn = $this->db->conn_id;
+        $sql = "SELECT * FROM tbl_job_user WHERE id_order=? AND id_job=? AND type_job_user=? AND id_user=? LIMIT 1";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$id_order, $id_job, $type_job_user, $id_user])) {
+
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                if (!empty($data)) {
+                    $data = true;
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        return $data;
+    }
+
+    function change_status_custom_to_job($status, $id_order, $id_job, $type_job_user, $id_user)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job_user SET status=? WHERE id_order=? AND id_job=? AND type_job_user=? AND id_user=?";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$status, $id_order, $id_job, $type_job_user, $id_user];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
 }

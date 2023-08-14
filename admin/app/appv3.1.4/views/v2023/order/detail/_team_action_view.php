@@ -65,26 +65,17 @@
         </div>
         <hr>
 
-        <!-- ASSIGN -->
-        <div class="mt-3">
-            <b>Assign</b>
-            <select class="select2" id="tag" name="tag[]" multiple="multiple" data-placeholder="Select design" style="width: 100%">
-                <?php foreach ($all_qc_ed as $id_user => $user) { ?>
-                    <?php $selected = isset($order['assign_user'][$id_user]) ? 'selected' : '' ?>
-                    <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
-                <?php } ?>
-            </select>
-        </div>
-
+        <!-- WORKING -->
         <div class="mt-3">
             <b>WORKING EDITOR</b>
+            <small onclick="alert('Mỗi ảnh cần có 1 EDITOR. ADMIN SALE hoặc QC có quyền gán EDITOR bất kỳ vào ảnh. EDITTOR có thể tự gán. ADMIN SALE hoặc QC có quyên xóa EDITOR nếu thấy EDITOR không phù hợp hoặc EDITOR đó làm quá chậm, EDITOR chỉ có quyền tự thêm hoặc tự xóa mình khỏi ảnh nếu không muốn làm nữa. Lưu ý 1: ADMIN SALE QC cũng có thể tự gán mình làm ảnh. Lưu ý 2: EDITOR đã bị xóa khỏi ảnh nếu muốn làm lại ')">[Mô tả]</small>
             <div class="mt-1">
                 <?php $i = 1; ?>
                 <?php foreach ($list_job as $id_job => $job) { ?>
                     <div class="d-flex mt-1" style="align-items: center;">
                         <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
                         <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
-                            <?php foreach ($all_qc_ed as $id_user => $user) { ?>
+                            <?php foreach ($all_user_working as $id_user => $user) { ?>
                                 <?php $selected = $job['id_ed'] == $id_user ? 'selected' : '' ?>
                                 <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
                             <?php } ?>
@@ -96,6 +87,7 @@
 
         <div class="mt-3">
             <b>WORKING QC</b>
+            <small onclick="alert('Chức năng gán người check ảnh, chức năng này giành cho Admin Sale QC, Editor chỉ có quyền xem')">[Mô tả]</small>
             <div class="mt-1">
                 <div class="mt-1">
                     <?php $i = 1; ?>
@@ -103,7 +95,7 @@
                         <div class="d-flex mt-1" style="align-items: center;">
                             <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
                             <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
-                                <?php foreach ($all_qc_ed as $id_user => $user) { ?>
+                                <?php foreach ($all_user_working as $id_user => $user) { ?>
                                     <?php if ($user['role'] == QC) { ?>
                                         <?php $selected = $job['id_qc'] == $id_user ? 'selected' : '' ?>
                                         <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
@@ -115,6 +107,23 @@
                 </div>
             </div>
         </div>
+
+        <div class="mt-3">
+            <b>WORKING CUSTOM</b> 
+            <small onclick="alert('Chức năng thêm người làm đơn, chức năng này giành cho Admin Sale QC, Editor chỉ có quyền xem')">[Mô tả]</small>
+            <div class="mt-1">
+                <?php $disabled = in_array($role, [EDITOR]) ? 'disabled' : '' ?>
+                <select class="select2" id="assignSelect2" name="tag[]" multiple="multiple" data-placeholder="Select custom user" style="width: 100%" <?=$disabled?> >
+                    <?php foreach ($all_user_working as $id_user => $user) { ?>
+                        <?php
+                        $selected = isset($order['custom_user'][$id_user]) ? 'selected' : '';
+                        ?>
+                        <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+        <!-- END WORKING -->
 
         <div class="mt-3">
             <b>GIÁ CUSTOM (cộng thêm tiền cho đơn)</b>
@@ -145,7 +154,67 @@
 <script>
     $(document).ready(function() {
         $('.select2').select2();
+
+        $('#assignSelect2').on('select2:select', function(e) {
+            let data = e.params.data;
+            let id_user = data.id;
+            // if($role ==)
+            let user_bi_xoa = $(`#assignSelect2 option[value="${id_user}"]`).attr('user_bi_xoa');
+            if(user_bi_xoa == 'xoa') {
+                alert(`${data.text} không thể thêm vào đơn này, do người kiểm duyệt đã xóa trước đó.`)
+            } else {
+                ajax_assign_select('<?= $order['id_order'] ?>', id_user)
+            }
+        });
+
+        $('#assignSelect2').on('select2:unselect', function(e) {
+            let data = e.params.data;
+            let id_user = data.id;
+            ajax_assign_unselect('<?= $order['id_order'] ?>', id_user)
+        });
     })
+
+    function ajax_assign_select(id_order, id_user) {
+        $.ajax({
+            url: `order/ajax_assign_custom/${id_order}/${id_user}`,
+            type: "POST",
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    toasts_success('Thêm thành công');
+                    location.reload();
+                } else {
+                    toasts_danger();
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_assign_unselect(id_order, id_user) {
+        $.ajax({
+            url: `order/ajax_remove_custom/${id_order}/${id_user}`,
+            type: "POST",
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    toasts_success('Xóa thành công');
+                    // location.reload();
+                } else {
+                    toasts_danger();
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
 
     function ajax_change_status_order(btn, id_order, new_status) {
         let new_text = $(btn).text();

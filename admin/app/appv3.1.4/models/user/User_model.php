@@ -8,14 +8,14 @@ class User_model extends CI_Model
         parent::__construct();
     }
 
-    function get_list_qc_editor()
+    function get_list_user_working($status, $role)
     {
         $data = [];
         $iconn = $this->db->conn_id;
         $sql = "
         SELECT *
         FROM tbl_user
-        WHERE status = 1 AND role IN (".QC.",".EDITOR.") ";
+        WHERE status = $status AND role IN ($role) ";
         
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
