@@ -26,9 +26,9 @@
             <!-- SMALL BOX -->
             <?php
             if ($role == ADMIN || $role == SALE) {
-                $this->load->view(TEMPLATE_FOLDER . 'order/inc/list/small_box_sale_admin_view.php');
+                $this->load->view(TEMPLATE_FOLDER . 'order/list/small_box_sale_admin_view.php');
             } else if ($role == QC || $role == EDITOR) {
-                $this->load->view(TEMPLATE_FOLDER . 'order/inc/list/small_box_qc_ed_view.php');
+                $this->load->view(TEMPLATE_FOLDER . 'order/list/small_box_qc_ed_view.php');
             }
             ?>
 

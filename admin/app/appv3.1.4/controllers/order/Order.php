@@ -61,7 +61,7 @@ class Order extends MY_Controller
             'header_page_css_js' => 'order'
         ];
         $this->_loadHeader($header);
-        $this->load->view($this->_template_f . 'order/order_view', $data);
+        $this->load->view($this->_template_f . 'order/list/order_view', $data);
         $this->_loadFooter();
     }
 
@@ -181,7 +181,7 @@ class Order extends MY_Controller
         ];
         $this->_loadHeader($header);
 
-        $this->load->view($this->_template_f . 'order/order_detail_view', $data);
+        $this->load->view($this->_template_f . 'order/detail/order_detail_view', $data);
 
         $this->_loadFooter();
     }
