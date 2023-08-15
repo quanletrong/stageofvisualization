@@ -1058,7 +1058,6 @@ function status_late_order($status_text, $time_create_order, $time_done, $custom
 function count_down_time_order($order)
 {
     $id_order = $order['id_order'];
-    $thoi_gian_hien_tai = time();
     $thoi_gian_tao_don = strtotime($order['create_time']);
     $thoi_gian_tra_don = strtotime($order['done_qc_time']);
     $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
@@ -1066,10 +1065,11 @@ function count_down_time_order($order)
     $thoi_gian_toi_thieu = 86400;
     $han_chot = $thoi_gian_tao_don + $cong_them_gio + $thoi_gian_toi_thieu;
 
-    $ket_qua = 0;
+
     // đã hoàn thành đơn
     if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
 
+        $ket_qua = 0;
         // đúng hạn thì hiển thị tổng thời gian làm (luôn dương)
         if ($thoi_gian_tra_don <= $han_chot) {
             $ket_qua = $thoi_gian_tra_don - $thoi_gian_tao_don;
@@ -1078,25 +1078,23 @@ function count_down_time_order($order)
         else {
             $ket_qua = $han_chot - $thoi_gian_tra_don;
         }
-    } else {
 
-        $ket_qua = $han_chot - $thoi_gian_hien_tai;
+        $ket_qua_duong = $ket_qua < 0 ? $ket_qua * -1 : $ket_qua;
+        $ngay = floor($ket_qua_duong / 86400);
+        $gio = floor(($ket_qua_duong - $ngay * 86400) / 3600);
+        $phut = floor(($ket_qua_duong - $ngay * 86400 - $gio * 3600) / 60);
+        $giay = $ket_qua_duong - $ngay * 86400 - $gio * 3600 - $phut * 60;
 
-        //
+        if ($ngay > 0) {
+            return ($ket_qua < 0 ? "- " : '') . $ngay . 'd:' . $gio . 'h:' . $phut . 'm';
+        } else {
+            return ($ket_qua < 0 ? "- " : '') . $gio . 'h: ' . $phut . 'm:' . $giay . 's';
+        }
+    } 
+    // chưa hoàn thành đơn
+    else {
         $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
         return "<script>count_down_time('$DMY_han_chot', 'cdt_$id_order')</script>";
-    }
-
-    $ket_qua_duong = $ket_qua < 0 ? $ket_qua * -1 : $ket_qua;
-    $ngay = floor($ket_qua_duong / 86400);
-    $gio = floor(($ket_qua_duong - $ngay * 86400) / 3600);
-    $phut = floor(($ket_qua_duong - $ngay * 86400 - $gio * 3600) / 60);
-    $giay = $ket_qua_duong - $ngay * 86400 - $gio * 3600 - $phut * 60;
-
-    if ($ngay > 0) {
-        return ($ket_qua < 0 ? "- " : '') . $ngay . 'd:' . $gio . 'h:' . $phut . 'm';
-    } else {
-        return ($ket_qua < 0 ? "- " : '') . $gio . 'h: ' . $phut . 'm:' . $giay . 's';
     }
 }
 

@@ -377,7 +377,66 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    // TODO: chưa có lưu update_time bổ sung sau
+    function luu_thoi_gian_kiem_tra_don($id_order, $thoi_gian_kiem_tra)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_order SET done_sale_time=? WHERE id_order=?";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$thoi_gian_kiem_tra, $id_order];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function luu_thoi_gian_lam_xong_don($id_order, $thoi_gian_lam_xong)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_order SET done_editor_time=? WHERE id_order=?";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$thoi_gian_lam_xong, $id_order];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function luu_thoi_gian_giao_hang($id_order, $thoi_gian_giao_hang)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_order SET done_qc_time=? WHERE id_order=?";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$thoi_gian_giao_hang, $id_order];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
     function update_custom_order($id_order, $custom)
     {
         $execute = false;

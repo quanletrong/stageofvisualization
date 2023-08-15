@@ -213,6 +213,24 @@ class Order extends MY_Controller
         // TODO: check quyền thật cẩn thận
         $kq = $this->Order_model->update_status_order($id_order, $new_status);
 
+        // lưu thời gian chuyển kiem tra don
+        if($new_status == ORDER_QC_CHECK) {
+            $thoi_gian_kiem_tra = date('Y-m-d H:i:s');
+            $this->Order_model->luu_thoi_gian_kiem_tra_don($id_order, $thoi_gian_kiem_tra);
+        }
+
+        // lưu thời gian lam xong don
+        if($new_status == ORDER_DONE) {
+            $thoi_gian_lam_xong = date('Y-m-d H:i:s');
+            $this->Order_model->luu_thoi_gian_lam_xong_don($id_order, $thoi_gian_lam_xong);
+        }
+
+        // lưu thời gian giao hàng
+        if($new_status == ORDER_DELIVERED) {
+            $thoi_gian_giao_hang = date('Y-m-d H:i:s');
+            $this->Order_model->luu_thoi_gian_giao_hang($id_order, $thoi_gian_giao_hang);
+        }
+
         // TODO: LOG
         resSuccess($kq);
     }
