@@ -18,6 +18,11 @@ class Order_model extends CI_Model
             if ($stmt->execute([$id_order])) {
 
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                // gán danh job
+                if (!empty($data)) {
+                    $data['job'] =  $this->_get_list_job_by_order($data['id_order'], $iconn);
+                }
+
                 // gán danh sách qc, ed, custom vào đơn
                 if (!empty($data)) {
                     $data['team'] =  $this->_get_list_editor_by_id_order($data['id_order'], $iconn);
@@ -282,6 +287,27 @@ class Order_model extends CI_Model
 
         return $data;
     }
+
+
+    function _get_list_job_by_order($id_odrer, $iconn)
+    {
+        $data = [];
+        $sql = "SELECT A.*
+        FROM tbl_job as A
+        WHERE id_order= $id_odrer";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $data[$row['id_job']] = $row;
+            }
+        } else {
+            var_dump($stmt->errorInfo());
+            die;
+        }
+
+        return $data;
+    }
     //  END LẤY DANH SÁCH ĐƠN THEO USER
 
     function box_count($list_order)
@@ -457,15 +483,15 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    function assign_custom_to_job($id_order, $id_job, $id_user, $type_job_user, $status, $time_join)
+    function add_job_user($id_order, $id_job, $id_user, $username, $type_service, $type_job_user, $status, $time_join)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_job_user (id_order, id_job, id_user, type_job_user, status, time_join) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_job_user (id_order, id_job, id_user, username, type_service, type_job_user, status, time_join) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_order, $id_job, $id_user, $type_job_user, $status, $time_join];
+            $param = [$id_order, $id_job, $id_user, $username, $type_service, $type_job_user, $status, $time_join];
 
             if ($stmt->execute($param)) {
                 $execute = true;
@@ -478,7 +504,8 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    function kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $type_job_user, $id_user) {
+    function kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $type_job_user, $id_user)
+    {
         $data = false;
         $iconn = $this->db->conn_id;
         $sql = "SELECT * FROM tbl_job_user WHERE id_order=? AND id_job=? AND type_job_user=? AND id_user=? LIMIT 1";
@@ -498,7 +525,7 @@ class Order_model extends CI_Model
         return $data;
     }
 
-    function change_status_custom_to_job($status, $id_order, $id_job, $type_job_user, $id_user)
+    function change_status_job_user($status, $id_order, $id_job, $type_job_user, $id_user)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
@@ -507,6 +534,27 @@ class Order_model extends CI_Model
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             $param = [$status, $id_order, $id_job, $type_job_user, $id_user];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function thay_doi_status_tat_ca_job_user($status, $id_order, $id_job, $type_job_user)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job_user SET status=? WHERE id_order=? AND id_job=? AND type_job_user=?";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$status, $id_order, $id_job, $type_job_user];
 
             if ($stmt->execute($param)) {
                 $execute = true;

@@ -94,10 +94,13 @@ class Order extends MY_Controller
             case SALE:
                 break;
             case QC:
+                if (!isset($order['team'][$uid]) && $status != ORDER_QC_CHECK) {
+                    die('Đơn không phù hợp với QC');
+                }
                 break;
             case EDITOR:
                 if (!isset($order['team'][$uid]) && $status != ORDER_AVAIABLE) {
-                    die('EDITOR này chưa tham gia đơn');
+                    die('Đơn không phù hợp với EDITOR');
                 }
                 break;
             default:
@@ -214,19 +217,19 @@ class Order extends MY_Controller
         $kq = $this->Order_model->update_status_order($id_order, $new_status);
 
         // lưu thời gian chuyển kiem tra don
-        if($new_status == ORDER_QC_CHECK) {
+        if ($new_status == ORDER_QC_CHECK) {
             $thoi_gian_kiem_tra = date('Y-m-d H:i:s');
             $this->Order_model->luu_thoi_gian_kiem_tra_don($id_order, $thoi_gian_kiem_tra);
         }
 
         // lưu thời gian lam xong don
-        if($new_status == ORDER_DONE) {
+        if ($new_status == ORDER_DONE) {
             $thoi_gian_lam_xong = date('Y-m-d H:i:s');
             $this->Order_model->luu_thoi_gian_lam_xong_don($id_order, $thoi_gian_lam_xong);
         }
 
         // lưu thời gian giao hàng
-        if($new_status == ORDER_DELIVERED) {
+        if ($new_status == ORDER_DELIVERED) {
             $thoi_gian_giao_hang = date('Y-m-d H:i:s');
             $this->Order_model->luu_thoi_gian_giao_hang($id_order, $thoi_gian_giao_hang);
         }
@@ -244,44 +247,122 @@ class Order extends MY_Controller
         resSuccess($kq);
     }
 
-    function ajax_assign_custom($id_order, $id_user)
+    function ajax_assign_job_user($working_type, $id_order, $id_job, $id_user)
     {
-        // TODO: check right
-        // TODO: order tồn tại, order khác hoàn thành
-        // TODO: user tồn tại, đang active, role [admin sale qc ed]
-        // TODO: ADMIN SALE QC thêm dc tất cả tài khoàn. ED ko có quyền chức năng này
+        $role    = $this->_session_role();
+        $cur_uid = $this->_session_uid();
 
-        $id_job = 0; // vì assign custom
-        $type_job_user = 4; // vì assign custom
+        $curr_user_info = $this->User_model->get_user_info_by_id($cur_uid);
+        $assign_info    = $this->User_model->get_user_info_by_id($id_user);
+        $info_order     = $this->Order_model->get_info_order($id_order);
+
+        # CHECK RIGHT
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+        $curr_user_info['status'] == 0              ? resError('Tài khoản đang bị khóa') : '';
+        empty($assign_info)                         ? resError('User được gán không tồn tại') : '';
+        $assign_info['status'] == 0                 ? resError('User được gán đang bị khóa') : '';
+        empty($info_order)                          ? resError('Đơn không tồn tại') : '';
+        $info_order['status'] == ORDER_DELIVERED    ? resError('Đơn hàng đã giao không được thay đổi người làm') : '';
+        $info_order['status'] == ORDER_COMPLETE     ? resError('Đơn hàng hoàn thành không được thay đổi người làm') : '';
+        $info_order['status'] == ORDER_CANCLE       ? resError('Đơn hàng đã hủy không được thay đổi người làm') : '';
+
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        // TODO:
+        if ($working_type == WORKING_EDITOR) {
+            !isset($info_order['job'][$id_job])     ? resError('IMAGE không tồn tại') : '';
+            $role == EDITOR && $cur_uid != $id_user ? resError('Bạn không có quyền gán những người đồng cấp') : '';
+            $info_order['status'] == ORDER_PENDING  ? resError('Đơn hàng PENDING không được thay đổi người làm') : '';
+            $info_order['status'] == ORDER_QC_CHECK ? resError('Đơn hàng QC CHECK không được thay đổi người làm') : '';
+
+            // TODO: job đang có editor hoạt động => báo lỗi
+        } else if ($working_type == WORKING_QC) {
+            !isset($info_order['job'][$id_job])         ? resError('IMAGE không tồn tại') : '';
+            $role == EDITOR                             ? resError('Tài khoản Editor không có quyền thực chức năng này.') : '';
+            $role == QC && $assign_info['role'] == QC   ? resError('Bạn không có quyền gán người đồng cấp') : '';
+            $role == QC && $assign_info['role'] == SALE ? resError('Bạn không có quyền gán người cấp cao hơn') : '';
+            $role == QC && $assign_info['role'] == ADMIN? resError('Bạn không có quyền gán người cấp cao hơn') : '';
+            // TODO: job đang có qc hoạt động => báo lỗi
+
+        } else if ($working_type == WORKING_CUSTOM) {
+            $id_job = 0; // mặc định
+            $isOther = $cur_uid != $id_user; // người gán và người đc gán khác nhau
+
+            $role == SALE && $assign_info['role'] == SALE && $isOther   ? resError('Bạn không có quyền gán người đồng cấp') : '';
+            $role == SALE && $assign_info['role'] == ADMIN              ? resError('Bạn không có quyền gán người cấp cao hơn') : '';
+            $role == QC && $assign_info['role'] == QC && $isOther       ? resError('Bạn không có quyền gán người đồng cấp') : '';
+            $role == QC && $assign_info['role'] == SALE                 ? resError('Bạn không có quyền gán người cấp cao hơn') : '';
+            $role == QC && $assign_info['role'] == ADMIN                ? resError('Bạn không có quyền gán người cấp cao hơn') : '';
+            $role == EDITOR                                             ? resError('Tài khoản Editor không có quyền thực chức năng này.') : '';
+            // TODO: job != 0 => báo lỗi
+        } else {
+            resError('Lỗi dữ liệu truyền vào. Hãy thử lại!');
+        }
+
+        # CHECK SAVE
         $status = 1;
         $time_join = date('Y-m-d H:i:s');
 
-        // user đã tồn tại thì UPDATE status = 1
-        $da_ton_tai = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $type_job_user, $id_user);
+        // WORKING_SALE, WORKING_QC, WORKING_EDITOR => thay đổi tất cả user trong job thành status = 0
+        if (in_array($working_type, [WORKING_SALE, WORKING_QC, WORKING_EDITOR])) {
+            $this->Order_model->thay_doi_status_tat_ca_job_user(0, $id_order, $id_job, $working_type);
+        }
+
+        // user gán đã tồn tại thì UPDATE status = 1
+        $da_ton_tai = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $working_type, $id_user);
         if ($da_ton_tai) {
-            $kq = $this->Order_model->change_status_custom_to_job($status, $id_order, $id_job, $type_job_user, $id_user);
+            $kq = $this->Order_model->change_status_job_user($status, $id_order, $id_job, $working_type, $id_user);
             // TODO: LOG
+
             resSuccess($kq);
         }
-        // user chưa tồn tại thì INSERT bản ghi mới
+        // user gán chưa tồn tại thì INSERT bản ghi mới
         else {
-            $kq = $this->Order_model->assign_custom_to_job($id_order, $id_job, $id_user, $type_job_user, $status, $time_join);
+            $type_service = @$info_order['job'][$id_job]['type_service'];
+            $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $assign_info['username'], $type_service, $working_type, $status, $time_join);
             // TODO: LOG
             resSuccess($kq);
         }
     }
 
     // Bản chất xóa custom là đổi `status = 0`
-    function ajax_remove_custom($id_order, $id_user)
+    function ajax_remove_job_user($working_type, $id_order, $id_job, $id_user)
     {
-        // TODO: check right
-        // TODO: order tồn tại, order khác hoàn thành
-        // TODO: ADMIN xóa all, SALE xóa QC ED, QC xóa ED, ED xóa chính ED
+
+        $role    = $this->_session_role();
+        $cur_uid = $this->_session_uid();
+
+        $curr_user_info = $this->User_model->get_user_info_by_id($cur_uid);
+        $assign_info    = $this->User_model->get_user_info_by_id($id_user);
+        $info_order     = $this->Order_model->get_info_order($id_order);
+
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+        $info_order['status'] == ORDER_DELIVERED    ? resError('Đơn hàng đã giao không được thay đổi người làm') : '';
+        $info_order['status'] == ORDER_COMPLETE     ? resError('Đơn hàng hoàn thành không được thay đổi người làm') : '';
+        $info_order['status'] == ORDER_CANCLE       ? resError('Đơn hàng đã hủy không thay được đổi người làm') : '';
+
+        if ($working_type == WORKING_EDITOR) {
+            $role == EDITOR && $cur_uid != $id_user     ? resError('Editor không có quyền xóa editor khác.') : '';
+        }
+
 
         $status = 0; // remove
         $id_job = 0;
         $type_job_user = 4;
-        $kq = $this->Order_model->change_status_custom_to_job($status, $id_order, $id_job, $type_job_user, $id_user);
+        $kq = $this->Order_model->change_status_job_user($status, $id_order, $id_job, $working_type, $id_user);
 
         // TODO: LOG
         resSuccess($kq);

@@ -36,10 +36,19 @@
             }
 
             $list_status = button_status_order_by_role($role);
+
+            $disable = '';
+            if ($role == QC) {
+                $disable = in_array($order['status'], [ORDER_PENDING, ORDER_COMPLETE]) ? 'disabled' : '';
+            }
+
+            if ($role == EDITOR) {
+                $disable = !in_array($order['status'], [ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK]) ? 'disabled' : '';
+            }
             ?>
 
             <div class="dropdown">
-                <button class="btn dropdown-toggle w-100" type="button" id="dropdownStatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white; background-color: <?= @$s['bg'] ?>">
+                <button class="btn dropdown-toggle w-100" type="button" id="dropdownStatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:white; background-color: <?= @$s['bg'] ?>" <?= $disable ?>>
                     <?= @$s['text'] ?>
                 </button>
                 <div class="dropdown-menu w-100 p-1" aria-labelledby="dropdownStatus">
@@ -68,18 +77,30 @@
         <!-- WORKING -->
         <div class="mt-3">
             <b>WORKING EDITOR</b>
-            <small onclick="alert('Mỗi ảnh cần có 1 EDITOR. ADMIN SALE hoặc QC có quyền gán EDITOR bất kỳ vào ảnh. EDITTOR có thể tự gán. ADMIN SALE hoặc QC có quyên xóa EDITOR nếu thấy EDITOR không phù hợp hoặc EDITOR đó làm quá chậm, EDITOR chỉ có quyền tự thêm hoặc tự xóa mình khỏi ảnh nếu không muốn làm nữa. Lưu ý 1: ADMIN SALE QC cũng có thể tự gán mình làm ảnh. Lưu ý 2: EDITOR đã bị xóa khỏi ảnh nếu muốn làm lại ')">[Mô tả]</small>
+            <small onclick="alert('')">[Mô tả]</small>
             <div class="mt-1">
                 <?php $i = 1; ?>
+                <?php $disabled_order = in_array($order['status'], [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE]) ? 'disabled' : '' ?>
+                <?php $disabled_role = in_array($role, [ADMIN, SALE, QC]) ? '' : 'disabled' ?>
                 <?php foreach ($list_job as $id_job => $job) { ?>
                     <div class="d-flex mt-1" style="align-items: center;">
                         <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
-                        <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
-                            <?php foreach ($all_user_working as $id_user => $user) { ?>
-                                <?php $selected = $job['id_ed'] == $id_user ? 'selected' : '' ?>
-                                <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                        <div class="d-flex w-100">
+                            <select class="assignWorkingED" multiple="multiple" data-working="<?= WORKING_EDITOR ?>" data-job="<?= $id_job ?>" data-placeholder="Select Editor" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
+                                <option value="">>Chọn Editor</option>
+                                <?php foreach ($all_user_working as $id_user => $user) { ?>
+                                    <?php $selected = $job['id_ed'] == $id_user ? 'selected' : '' ?>
+                                    <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                                <?php } ?>
+                            </select>
+                            <?php if ($disabled_order != 'disabled') { ?>
+                                <?php if ($job['id_ed'] == $curr_uid) { ?>
+                                    <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_remove_job_user('<?= WORKING_EDITOR ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Remove Me</button>
+                                <?php } else { ?>
+                                    <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_EDITOR ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Add Me</button>
+                                <?php } ?>
                             <?php } ?>
-                        </select>
+                        </div>
                     </div>
                 <?php } ?>
             </div>
@@ -87,21 +108,31 @@
 
         <div class="mt-3">
             <b>WORKING QC</b>
-            <small onclick="alert('Chức năng gán người check ảnh, chức năng này giành cho Admin Sale QC, Editor chỉ có quyền xem')">[Mô tả]</small>
+            <small onclick="alert('Chức năng gán QC không giành cho Editor')">[Mô tả]</small>
             <div class="mt-1">
                 <div class="mt-1">
                     <?php $i = 1; ?>
+                    <?php $disabled_order = in_array($order['status'], [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE]) ? 'disabled' : '' ?>
+                    <?php $disabled_role = in_array($role, [ADMIN, SALE, QC]) ? '' : 'disabled' ?>
                     <?php foreach ($list_job as $id_job => $job) { ?>
                         <div class="d-flex mt-1" style="align-items: center;">
                             <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
-                            <select class="select2" id="" name="tag[]" multiple="multiple" data-placeholder="Select Editor" style="width: 100%">
-                                <?php foreach ($all_user_working as $id_user => $user) { ?>
-                                    <?php if ($user['role'] == QC) { ?>
+                            <div class="d-flex w-100">
+                                <select class="assignWorkingQC" multiple="multiple" data-working="<?= WORKING_QC ?>" data-job="<?= $id_job ?>" data-placeholder="Select QC" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
+                                    <option value="">>Chọn QC</option>
+                                    <?php foreach ($all_user_working as $id_user => $user) { ?>
                                         <?php $selected = $job['id_qc'] == $id_user ? 'selected' : '' ?>
                                         <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
                                     <?php } ?>
+                                </select>
+                                <?php if ($disabled_order != 'disabled' && $disabled_role != 'disabled') { ?>
+                                    <?php if (isset($job['id_qc'][$curr_uid])) { ?>
+                                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_remove_job_user('<?= WORKING_QC ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Remove Me</button>
+                                    <?php } else { ?>
+                                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_QC ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Add Me</button>
+                                    <?php } ?>
                                 <?php } ?>
-                            </select>
+                            </div>
                         </div>
                     <?php } ?>
                 </div>
@@ -109,11 +140,12 @@
         </div>
 
         <div class="mt-3">
-            <b>WORKING CUSTOM</b> 
-            <small onclick="alert('Chức năng thêm người làm đơn, chức năng này giành cho Admin Sale QC, Editor chỉ có quyền xem')">[Mô tả]</small>
-            <div class="mt-1">
-                <?php $disabled = in_array($role, [EDITOR]) ? 'disabled' : '' ?>
-                <select class="select2" id="assignSelect2" name="tag[]" multiple="multiple" data-placeholder="Select custom user" style="width: 100%" <?=$disabled?> >
+            <b>WORKING CUSTOM</b>
+            <small onclick="alert('Chức năng gán CUSTOM user không giành cho Editor')">[Mô tả]</small>
+            <div class="mt-1 d-flex">
+                <?php $disabled_order = in_array($order['status'], [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE]) ? 'disabled' : '' ?>
+                <?php $disabled_role = in_array($role, [ADMIN, SALE, QC]) ? '' : 'disabled' ?>
+                <select class="assignWorkingCustom" multiple="multiple" data-working="<?= WORKING_CUSTOM ?>" data-job="0" data-placeholder="Select custom user" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
                     <?php foreach ($all_user_working as $id_user => $user) { ?>
                         <?php
                         $selected = isset($order['custom_user'][$id_user]) ? 'selected' : '';
@@ -121,6 +153,14 @@
                         <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
                     <?php } ?>
                 </select>
+                <?php if ($disabled_order != 'disabled' && $disabled_role != 'disabled') { ?>
+                    <?php if (isset($order['custom_user'][$curr_uid])) { ?>
+                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_remove_job_user('<?= WORKING_CUSTOM ?>','<?= $order['id_order'] ?>',0, '<?= $curr_uid ?>')">Remove Me</button>
+                    <?php } else { ?>
+                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_CUSTOM ?>','<?= $order['id_order'] ?>',0, '<?= $curr_uid ?>')">Add Me</button>
+                    <?php } ?>
+                <?php } ?>
+
             </div>
         </div>
         <!-- END WORKING -->
@@ -153,30 +193,44 @@
 
 <script>
     $(document).ready(function() {
-        $('.select2').select2();
+        $('.assignWorkingED, .assignWorkingQC').select2({
+            maximumSelectionLength: 1
+        });
+        $('.assignWorkingCustom').select2();
 
-        $('#assignSelect2').on('select2:select', function(e) {
+        $('.assignWorkingED, .assignWorkingQC, .assignWorkingCustom').on('select2:select', function(e) {
             let data = e.params.data;
             let id_user = data.id;
-            // if($role ==)
-            let user_bi_xoa = $(`#assignSelect2 option[value="${id_user}"]`).attr('user_bi_xoa');
-            if(user_bi_xoa == 'xoa') {
-                alert(`${data.text} không thể thêm vào đơn này, do người kiểm duyệt đã xóa trước đó.`)
-            } else {
-                ajax_assign_select('<?= $order['id_order'] ?>', id_user)
-            }
+            let working_type = $(this).data('working');
+            let id_job = $(this).data('job');
+            let seft = this;
+            ajax_assign_job_user(working_type, '<?= $order['id_order'] ?>', id_job, id_user)
+            setTimeout(function() {
+                $(seft).select2('close');
+            }, 0);
+
         });
 
-        $('#assignSelect2').on('select2:unselect', function(e) {
+        $('.assignWorkingED, .assignWorkingQC, .assignWorkingCustom').on('select2:unselect', function(e) {
             let data = e.params.data;
             let id_user = data.id;
-            ajax_assign_unselect('<?= $order['id_order'] ?>', id_user)
+            let working_type = $(this).data('working');
+            let id_job = $(this).data('job');
+            let seft = this;
+            ajax_remove_job_user(working_type, '<?= $order['id_order'] ?>', id_job, id_user)
+            setTimeout(function() {
+                $(seft).select2('close');
+            }, 0);
         });
+
+        // $(".js-programmatic-multi-set-val").on("click", function() {
+        //     $exampleMulti.val(["CA", "AL"]).trigger("change");
+        // });
     })
 
-    function ajax_assign_select(id_order, id_user) {
+    function ajax_assign_job_user(working_type, id_order, id_job, id_user) {
         $.ajax({
-            url: `order/ajax_assign_custom/${id_order}/${id_user}`,
+            url: `order/ajax_assign_job_user/${working_type}/${id_order}/${id_job}/${id_user}`,
             type: "POST",
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
@@ -185,7 +239,7 @@
                     toasts_success('Thêm thành công');
                     location.reload();
                 } else {
-                    toasts_danger();
+                    toasts_danger(kq.error);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -195,18 +249,18 @@
         });
     }
 
-    function ajax_assign_unselect(id_order, id_user) {
+    function ajax_remove_job_user(working_type, id_order, id_job, id_user) {
         $.ajax({
-            url: `order/ajax_remove_custom/${id_order}/${id_user}`,
+            url: `order/ajax_remove_job_user/${working_type}/${id_order}/${id_job}/${id_user}`,
             type: "POST",
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
                     toasts_success('Xóa thành công');
-                    // location.reload();
+                    location.reload();
                 } else {
-                    toasts_danger();
+                    toasts_danger(kq.error);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
