@@ -266,22 +266,6 @@ class Order extends MY_Controller
         $info_order['status'] == ORDER_COMPLETE     ? resError('Đơn hàng hoàn thành không được thay đổi người làm') : '';
         $info_order['status'] == ORDER_CANCLE       ? resError('Đơn hàng đã hủy không được thay đổi người làm') : '';
 
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
-        // TODO:
         if ($working_type == WORKING_EDITOR) {
             !isset($info_order['job'][$id_job])     ? resError('IMAGE không tồn tại') : '';
             $role == EDITOR && $cur_uid != $id_user ? resError('Bạn không có quyền gán những người đồng cấp') : '';

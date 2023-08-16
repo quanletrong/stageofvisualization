@@ -61,16 +61,17 @@
         <hr>
         <!-- END STATUS -->
 
-        <div class="mt-3">
-            <p><b style="color: orange;">ID Customer: CID<?= $order['id_user'] ?></b></p>
-            <p><b style="color: orange;">ID Order: OID<?= $order['id_order'] ?></b></p>
-        </div>
-
-        <div class="mt-3">
-            <?php foreach ($list_type_service as $type => $val) { ?>
-                <p><b style="color: orange;"><?= $type ?>: <?= count($val) ?></b></p>
-            <?php } ?>
-            <p><b style="color: orange;">TOTAL: [<?= $total_type_service ?>]</b></p>
+        <div class="mt-3 d-flex">
+            <div class="w-50">
+                <?php foreach ($list_type_service as $type => $val) { ?>
+                    <p><b style="color: orange;"><?= $type ?>: <?= count($val) ?></b></p>
+                <?php } ?>
+                <p><b style="color: orange;">TOTAL: [<?= $total_type_service ?>]</b></p>
+            </div>
+            <div class="w-50">
+                <p><b style="color: orange;">ID Customer: CID<?= $order['id_user'] ?></b></p>
+                <p><b style="color: orange;">ID Order: OID<?= $order['id_order'] ?></b></p>
+            </div>
         </div>
         <hr>
 
