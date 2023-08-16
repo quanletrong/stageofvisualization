@@ -86,6 +86,12 @@ define('ORDER_FIX', '10');      //đỏ
 define('SERVICE_RUN', 1);
 define('SERVICE_STOP', 0);
 
+// WORKING TYPE
+define('WORKING_SALE', 1);
+define('WORKING_QC', 2);
+define('WORKING_EDITOR', 3);
+define('WORKING_CUSTOM', 4);
+
 // HỒNG ĐƠN MỚI (PENDING)
 // ĐỎ   ĐƠN CHẬM (DELIVERED >  hạn chót)
 // CAM  URGENT
