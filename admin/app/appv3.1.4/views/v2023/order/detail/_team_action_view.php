@@ -63,10 +63,10 @@
 
         <div class="mt-3 d-flex">
             <div class="w-50">
-                <?php foreach ($list_type_service as $type => $val) { ?>
+                <?php foreach ($order['list_type_service'] as $type => $val) { ?>
                     <p><b style="color: orange;"><?= $type ?>: <?= count($val) ?></b></p>
                 <?php } ?>
-                <p><b style="color: orange;">TOTAL: [<?= $total_type_service ?>]</b></p>
+                <p><b style="color: orange;">TOTAL: [<?= $order['total_type_service'] ?>]</b></p>
             </div>
             <div class="w-50">
                 <p><b style="color: orange;">ID Customer: CID<?= $order['id_user'] ?></b></p>
@@ -83,22 +83,32 @@
                 <?php $i = 1; ?>
                 <?php $disabled_order = in_array($order['status'], [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE]) ? 'disabled' : '' ?>
                 <?php $disabled_role = in_array($role, [ADMIN, SALE, QC]) ? '' : 'disabled' ?>
-                <?php foreach ($list_job as $id_job => $job) { ?>
+                <?php foreach ($order['job'] as $id_job => $job) { ?>
                     <div class="d-flex mt-1" style="align-items: center;">
                         <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
                         <div class="d-flex w-100">
-                            <select class="assignWorkingED" multiple="multiple" data-working="<?= WORKING_EDITOR ?>" data-job="<?= $id_job ?>" data-placeholder="Select Editor" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
-                                <option value="">>Chọn Editor</option>
+                            <select class="assignWorkingED" multiple="multiple" data-working="<?= WORKING_EDITOR ?>" data-job="<?= $id_job ?>" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
                                 <?php foreach ($all_user_working as $id_user => $user) { ?>
-                                    <?php $selected = $job['id_ed'] == $id_user ? 'selected' : '' ?>
-                                    <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                                    <?php $selected_otp = isset($job['working_ed_active'][$id_user]) ? 'selected' : '' ?>
+                                    <?php
+                                    $disabled_opt = '';
+                                    if ($role == SALE && $user['role'] == ADMIN) {
+                                        $disabled_opt = 'disabled';
+                                    } else if ($role == QC && in_array($user['role'], [ADMIN, SALE])) {
+                                        $disabled_opt = 'disabled';
+                                    } else if ($role == EDITOR && in_array($user['role'], [ADMIN, SALE, QC])) {
+                                        $disabled_opt = 'disabled';
+                                    }
+                                    ?>
+
+                                    <option value="<?= $id_user ?>" <?= $selected_otp ?> <?= $disabled_opt ?>><?= $user['username'] ?></option>
                                 <?php } ?>
                             </select>
                             <?php if ($disabled_order != 'disabled') { ?>
-                                <?php if ($job['id_ed'] == $curr_uid) { ?>
+                                <?php if (isset($job['working_ed_active'][$curr_uid])) { ?>
                                     <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_remove_job_user('<?= WORKING_EDITOR ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Remove Me</button>
                                 <?php } else { ?>
-                                    <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_EDITOR ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Add Me</button>
+                                    <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_EDITOR ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')" <?= empty($job['working_ed_active']) ? '' : 'disabled' ?>>Add Me</button>
                                 <?php } ?>
                             <?php } ?>
                         </div>
@@ -115,22 +125,23 @@
                     <?php $i = 1; ?>
                     <?php $disabled_order = in_array($order['status'], [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE]) ? 'disabled' : '' ?>
                     <?php $disabled_role = in_array($role, [ADMIN, SALE, QC]) ? '' : 'disabled' ?>
-                    <?php foreach ($list_job as $id_job => $job) { ?>
+                    <?php foreach ($order['job'] as $id_job => $job) { ?>
                         <div class="d-flex mt-1" style="align-items: center;">
                             <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
                             <div class="d-flex w-100">
-                                <select class="assignWorkingQC" multiple="multiple" data-working="<?= WORKING_QC ?>" data-job="<?= $id_job ?>" data-placeholder="Select QC" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
-                                    <option value="">>Chọn QC</option>
+                                <select class="assignWorkingQC" multiple="multiple" data-working="<?= WORKING_QC ?>" data-job="<?= $id_job ?>" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
                                     <?php foreach ($all_user_working as $id_user => $user) { ?>
-                                        <?php $selected = $job['id_qc'] == $id_user ? 'selected' : '' ?>
-                                        <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                                        <?php if ($user['role'] != EDITOR) { ?>
+                                            <?php $selected = isset($job['working_qc_active'][$id_user]) ? 'selected' : '' ?>
+                                            <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                                        <?php } ?>
                                     <?php } ?>
                                 </select>
                                 <?php if ($disabled_order != 'disabled' && $disabled_role != 'disabled') { ?>
-                                    <?php if (isset($job['id_qc'][$curr_uid])) { ?>
+                                    <?php if (isset($job['working_qc_active'][$curr_uid])) { ?>
                                         <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_remove_job_user('<?= WORKING_QC ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Remove Me</button>
                                     <?php } else { ?>
-                                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_QC ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Add Me</button>
+                                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_QC ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')" <?= empty($job['working_qc_active']) ? '' : 'disabled' ?>>Add Me</button>
                                     <?php } ?>
                                 <?php } ?>
                             </div>
@@ -146,16 +157,16 @@
             <div class="mt-1 d-flex">
                 <?php $disabled_order = in_array($order['status'], [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE]) ? 'disabled' : '' ?>
                 <?php $disabled_role = in_array($role, [ADMIN, SALE, QC]) ? '' : 'disabled' ?>
-                <select class="assignWorkingCustom" multiple="multiple" data-working="<?= WORKING_CUSTOM ?>" data-job="0" data-placeholder="Select custom user" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
+                <select class="assignWorkingCustom" multiple="multiple" data-working="<?= WORKING_CUSTOM ?>" data-job="0" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
                     <?php foreach ($all_user_working as $id_user => $user) { ?>
                         <?php
-                        $selected = isset($order['custom_user'][$id_user]) ? 'selected' : '';
+                        $selected = isset($order['working_custom_active'][$id_user]) ? 'selected' : '';
                         ?>
                         <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
                     <?php } ?>
                 </select>
                 <?php if ($disabled_order != 'disabled' && $disabled_role != 'disabled') { ?>
-                    <?php if (isset($order['custom_user'][$curr_uid])) { ?>
+                    <?php if (isset($order['working_custom_active'][$curr_uid])) { ?>
                         <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_remove_job_user('<?= WORKING_CUSTOM ?>','<?= $order['id_order'] ?>',0, '<?= $curr_uid ?>')">Remove Me</button>
                     <?php } else { ?>
                         <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_CUSTOM ?>','<?= $order['id_order'] ?>',0, '<?= $curr_uid ?>')">Add Me</button>
@@ -175,20 +186,24 @@
                     <div class="input-group">
                         <input id="textCustomOrder" type="number" min="0" class="form-control" value="<?= $order['custom'] ?>" <?= $disable ?> style="color: red; font-weight: bold;">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" id="btnCustomOrder" <?= $disable ?> onclick="ajax_change_custom_order(this, '<?= $order['id_order'] ?>', $('#textCustomOrder').val())" style="width: 60px;">Save</button>
+                            <button class="btn btn-warning" type="button" id="btnCustomOrder" <?= $disable ?> onclick="ajax_change_custom_order(this, '<?= $order['id_order'] ?>', $('#textCustomOrder').val())" style="width: 60px;">Save</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- TODO: tạm để AD SL không có quyên set -->
-                <?php foreach ($order['assign_user'] as $id_user) { ?>
+                <?php foreach ($order['team'] as $id_user => $user) { ?>
                     <div class="d-flex mt-1">
-                        <div style="color: red; width: 150px;"><?= $id_user ?></div>
+                        <div style="color: red; width: 150px;"><?= $user['username'] ?></div>
                         <input class="form-control" value="">
                     </div>
                 <?php } ?>
             </div>
         </div>
+    </div>
+
+    <div class="overlay dark d-none" id="team_action_overlay">
+        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
     </div>
 </div>
 
@@ -230,6 +245,8 @@
     })
 
     function ajax_assign_job_user(working_type, id_order, id_job, id_user) {
+        $('#team_action_overlay').toggleClass('d-none');
+
         $.ajax({
             url: `order/ajax_assign_job_user/${working_type}/${id_order}/${id_job}/${id_user}`,
             type: "POST",
@@ -242,15 +259,19 @@
                 } else {
                     toasts_danger(kq.error);
                 }
+
+                $('#team_action_overlay').toggleClass('d-none');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
                 alert('Error');
+                $('#team_action_overlay').toggleClass('d-none');
             }
         });
     }
 
     function ajax_remove_job_user(working_type, id_order, id_job, id_user) {
+        $('#team_action_overlay').toggleClass('d-none');
         $.ajax({
             url: `order/ajax_remove_job_user/${working_type}/${id_order}/${id_job}/${id_user}`,
             type: "POST",
@@ -263,10 +284,12 @@
                 } else {
                     toasts_danger(kq.error);
                 }
+                $('#team_action_overlay').toggleClass('d-none');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
                 alert('Error');
+                $('#team_action_overlay').toggleClass('d-none');
             }
         });
     }

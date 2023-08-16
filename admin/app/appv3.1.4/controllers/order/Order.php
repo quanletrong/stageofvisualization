@@ -95,89 +95,23 @@ class Order extends MY_Controller
                 break;
             case QC:
                 if (!isset($order['team'][$uid]) && $status != ORDER_QC_CHECK) {
-                    die('Đơn không phù hợp với QC');
+                    die('Đơn này đang chờ SALE duyệt, QC chưa thể xem vào lúc này.');
                 }
                 break;
             case EDITOR:
                 if (!isset($order['team'][$uid]) && $status != ORDER_AVAIABLE) {
-                    die('Đơn không phù hợp với EDITOR');
+                    die('Đơn này đang chờ QC duyệt, ED chưa thể xem vào lúc này.');
                 }
                 break;
             default:
                 break;
         }
 
-
-        ## DANH SÁCH JOB
-        $list_job = $this->Job_model->get_list_job_by_order($id_order);
-        empty($list_job) ? redirect(site_url('order', $this->_langcode)) : '';
-
-        ## gán danh sách qc ed custom vào trong đơn
-        $order['id_qc']       = [];
-        $order['id_ed']       = [];
-        $order['id_custom']   = [];
-        $order['assign_user'] = [];
-        $list_job_user = $this->Job_model->get_list_job_user_by_id_order($id_order);
-        foreach ($list_job_user as $id_job => $job_user) {
-            $id_user  = $job_user['id_user'];
-            $username = $job_user['username'];
-            $id_job   = $job_user['id_job'];
-            $status   = $job_user['job_user_status'];
-
-            if ($status) {
-                if ($job_user['type_job_user'] == 2) {
-                    $order['qc_user'][$id_user] = $username;
-                }
-
-                if ($job_user['type_job_user'] == 3) {
-                    $order['ed_user'][$id_user] = $username;
-                }
-
-                if ($job_user['type_job_user'] == 4) {
-                    $order['custom_user'][$id_user] = $username;
-                }
-
-                $order['assign_user'][$id_user] = $username;
-            }
-        }
-
-        ## gắn id_qc, id_ed vào trong job
-        foreach ($list_job as $id_job => $job) {
-            $list_job[$id_job]['id_qc'] = '';
-            $list_job[$id_job]['id_ed'] = '';
-            foreach ($list_job_user as $job_user) {
-                $id_user       = $job_user['id_user'];
-                $status        = $job_user['status'];
-                $type_job_user = $job_user['type_job_user'];
-                // gán qc
-                if ($id_job == $job_user['id_job'] && $type_job_user == 2 && $status) {
-                    $list_job[$id_job]['id_qc'] = $id_user;
-                }
-
-                // gán ed
-                if ($id_job == $job_user['id_job'] && $type_job_user == 3 && $status) {
-                    $list_job[$id_job]['id_ed'] = $id_user;
-                }
-            }
-        }
-
-
-        ## danh sách VS VR 3D...
-        $list_type_service = [];
-        foreach ($list_job as $id_job => $job) {
-            $list_type_service[$job['type_service']][] = $job['id_job'];
-        }
-
         ## chung
         $data['order']              = $order;
-        $data['list_job']           = $list_job;
         $data['role']               = $role;
         $data['curr_uid']           = $uid;
-        $data['list_type_service']  = $list_type_service;
-        $data['total_type_service'] = count($list_job);
         $data['all_user_working']   = $all_user_working;
-        $data['list_job_user']      = $list_job_user;
-
 
         $header = [
             'title' => 'Chi tiết đơn hàng',
@@ -254,44 +188,49 @@ class Order extends MY_Controller
 
         $curr_user_info = $this->User_model->get_user_info_by_id($cur_uid);
         $assign_info    = $this->User_model->get_user_info_by_id($id_user);
-        $info_order     = $this->Order_model->get_info_order($id_order);
+        $order     = $this->Order_model->get_info_order($id_order);
 
         # CHECK RIGHT
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
         $curr_user_info['status'] == 0              ? resError('Tài khoản đang bị khóa') : '';
         empty($assign_info)                         ? resError('User được gán không tồn tại') : '';
         $assign_info['status'] == 0                 ? resError('User được gán đang bị khóa') : '';
-        empty($info_order)                          ? resError('Đơn không tồn tại') : '';
-        $info_order['status'] == ORDER_DELIVERED    ? resError('Đơn hàng đã giao không được thay đổi người làm') : '';
-        $info_order['status'] == ORDER_COMPLETE     ? resError('Đơn hàng hoàn thành không được thay đổi người làm') : '';
-        $info_order['status'] == ORDER_CANCLE       ? resError('Đơn hàng đã hủy không được thay đổi người làm') : '';
+        empty($order)                          ? resError('Đơn không tồn tại') : '';
+        $order['status'] == ORDER_DELIVERED    ? resError('Đơn hàng đã giao không được thay đổi người làm') : '';
+        $order['status'] == ORDER_COMPLETE     ? resError('Đơn hàng hoàn thành không được thay đổi người làm') : '';
+        $order['status'] == ORDER_CANCLE       ? resError('Đơn hàng đã hủy không được thay đổi người làm') : '';
+
+
+        // không được gán người đồng cấp (hack)
+        $role == ADMIN && $assign_info['role'] == ADMIN && $cur_uid != $id_user     ? resError('ADMIN không có quyền gán người cùng cấp') : '';
+        $role == SALE && $assign_info['role'] == SALE && $cur_uid != $id_user       ? resError('SALE không có quyền gán người cùng cấp') : '';
+        $role == QC && $assign_info['role'] == QC && $cur_uid != $id_user           ? resError('SALE không có quyền gán người cùng cấp') : '';
+        $role == EDITOR && $assign_info['role'] == EDITOR && $cur_uid != $id_user   ? resError('EDITOR không có quyền gán người cùng cấp') : '';
+
+        // không được gán người cấp cao hơn (hack)
+        $role == SALE && $assign_info['role']   == ADMIN    ? resError('SALE không có quyền gán người cấp ADMIN') : '';
+        $role == QC && $assign_info['role']     == ADMIN    ? resError('QC không có quyền gán người cấp ADMIN') : '';
+        $role == QC && $assign_info['role']     == SALE     ? resError('QC không có quyền gán người cấp SALE') : '';
+        $role == EDITOR && $assign_info['role'] == ADMIN    ? resError('ED không có quyền gán người cấp ADMIN') : '';
+        $role == EDITOR && $assign_info['role'] == SALE     ? resError('ED không có quyền gán người cấp SALE') : '';
+        $role == EDITOR && $assign_info['role'] == QC       ? resError('ED không có quyền gán người cấp QC') : '';
 
         if ($working_type == WORKING_EDITOR) {
-            !isset($info_order['job'][$id_job])     ? resError('IMAGE không tồn tại') : '';
-            $role == EDITOR && $cur_uid != $id_user ? resError('Bạn không có quyền gán những người đồng cấp') : '';
-            $info_order['status'] == ORDER_PENDING  ? resError('Đơn hàng PENDING không được thay đổi người làm') : '';
-            $info_order['status'] == ORDER_QC_CHECK ? resError('Đơn hàng QC CHECK không được thay đổi người làm') : '';
+            !isset($order['job'][$id_job])                          ? resError('IMAGE không tồn tại') : '';
+            $role == EDITOR && $order['status'] == ORDER_PENDING    ? resError('Không thể thêm ED khi đơn hàng đang PENDING') : '';
+            $role == EDITOR && $order['status'] == ORDER_QC_CHECK   ? resError('Không thể thêm ED khi đơn hàng đang QC CHECK') : '';
+            !empty($order['job'][$id_job]['working_ed_active'])     ? resError('Đã có người nhận làm IMAGE này') : '';
 
-            // TODO: job đang có editor hoạt động => báo lỗi
         } else if ($working_type == WORKING_QC) {
-            !isset($info_order['job'][$id_job])         ? resError('IMAGE không tồn tại') : '';
-            $role == EDITOR                             ? resError('Tài khoản Editor không có quyền thực chức năng này.') : '';
-            $role == QC && $assign_info['role'] == QC   ? resError('Bạn không có quyền gán người đồng cấp') : '';
-            $role == QC && $assign_info['role'] == SALE ? resError('Bạn không có quyền gán người cấp cao hơn') : '';
-            $role == QC && $assign_info['role'] == ADMIN? resError('Bạn không có quyền gán người cấp cao hơn') : '';
-            // TODO: job đang có qc hoạt động => báo lỗi
+            !isset($order['job'][$id_job]) ? resError('IMAGE không tồn tại') : '';
+            $role == EDITOR                                         ? resError('ED không có quyền thực chức năng này.') : '';
+            $assign_info['role'] == EDITOR                          ? resError('Không được gán tài khoản ED vào đây.') : '';
+            !empty($order['job'][$id_job]['working_qc_active'])     ? resError('Đã có người nhận làm IMAGE này') : '';
+
 
         } else if ($working_type == WORKING_CUSTOM) {
             $id_job = 0; // mặc định
-            $isOther = $cur_uid != $id_user; // người gán và người đc gán khác nhau
-
-            $role == SALE && $assign_info['role'] == SALE && $isOther   ? resError('Bạn không có quyền gán người đồng cấp') : '';
-            $role == SALE && $assign_info['role'] == ADMIN              ? resError('Bạn không có quyền gán người cấp cao hơn') : '';
-            $role == QC && $assign_info['role'] == QC && $isOther       ? resError('Bạn không có quyền gán người đồng cấp') : '';
-            $role == QC && $assign_info['role'] == SALE                 ? resError('Bạn không có quyền gán người cấp cao hơn') : '';
-            $role == QC && $assign_info['role'] == ADMIN                ? resError('Bạn không có quyền gán người cấp cao hơn') : '';
-            $role == EDITOR                                             ? resError('Tài khoản Editor không có quyền thực chức năng này.') : '';
-            // TODO: job != 0 => báo lỗi
+            $role == EDITOR ? resError('ED không có quyền thực chức năng này.') : '';
         } else {
             resError('Lỗi dữ liệu truyền vào. Hãy thử lại!');
         }
@@ -315,7 +254,7 @@ class Order extends MY_Controller
         }
         // user gán chưa tồn tại thì INSERT bản ghi mới
         else {
-            $type_service = @$info_order['job'][$id_job]['type_service'];
+            $type_service = @$order['job'][$id_job]['type_service'];
             $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $assign_info['username'], $type_service, $working_type, $status, $time_join);
             // TODO: LOG
             resSuccess($kq);

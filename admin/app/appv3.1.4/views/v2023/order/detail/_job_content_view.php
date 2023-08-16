@@ -50,7 +50,7 @@
         <ul class="nav nav-tabs" id="tab_job" role="tablist">
             <?php $active = 'active' ?>
             <?php $index = 1 ?>
-            <?php foreach ($list_job as $id_job => $job) { ?>
+            <?php foreach ($order['job'] as $id_job => $job) { ?>
                 <li class="nav-item">
                     <a class="nav-link <?= $active; ?>" id="tab_job_<?= $id_job ?>" data-toggle="pill" href="#tab_content_job_<?= $id_job ?>" role="tab" aria-controls="tab_content_job_<?= $id_job ?>" aria-selected="false">IMAGE <?= $index++ ?> (<?= $job['type_service'] ?>)</a>
                 </li>
@@ -61,7 +61,7 @@
     <div class="card-body">
         <div class="tab-content" id="tab_content_job">
             <?php $active = 'active show' ?>
-            <?php foreach ($list_job as $id_job => $job) { ?>
+            <?php foreach ($order['job'] as $id_job => $job) { ?>
                 <div class="tab-pane fade <?= $active; ?>" id="tab_content_job_<?= $id_job ?>" role="tabpanel" aria-labelledby="tab_job_<?= $id_job ?>">
                     <div class="row">
                         <div class="col-12 col-lg-6">

@@ -370,9 +370,12 @@ function toasts_danger(body = 'Có lỗi xảy ra', title = 'Thất bại', dela
         title: title,
         subtitle: '',
         body: body,
-        delay: delay,
-        autohide: true,
-        fade: true
+        // delay: delay,
+        // autohide: true,
+        fade: true,
+        afterHidden: function () {
+            alert('xxx')
+        }
     })
 }
 
