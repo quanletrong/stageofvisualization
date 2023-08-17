@@ -21,8 +21,16 @@ class Order_model extends CI_Model
                 if (!empty($data)) {
                     $list_job = $this->_get_list_job_by_order($data['id_order'], $iconn);
                     $data['job'] = $list_job;
-                    $data['total_type_service'] = 0;
-                    $data['list_type_service'] = [];
+                    $data['total_type_service']    = 0;
+                    $data['list_type_service']     = [];
+                    $data['list_type_service']     = [];
+                    $data['working_custom_active'] = [];
+                    $data['working_custom_block']  = [];
+                    $data['working_ed_active']     = [];
+                    $data['working_ed_block']      = [];
+                    $data['working_qc_active']     = [];
+                    $data['working_qc_block']      = [];
+
                     foreach ($data['job'] as $id_job => $job) {
                         // gán working ed
                         $data['job'][$id_job]['working_ed_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_EDITOR, $iconn);
@@ -34,7 +42,20 @@ class Order_model extends CI_Model
 
                         // gán working custom
                         $data['working_custom_active'] = $this->_get_list_job_user_by_job($id_order, 0, 1, WORKING_CUSTOM, $iconn);
-                        $data['working_custom_block'] = $this->_get_list_job_user_by_job($id_order, 0, 0, WORKING_CUSTOM, $iconn);
+                        $data['working_custom_block']  = $this->_get_list_job_user_by_job($id_order, 0, 0, WORKING_CUSTOM, $iconn);
+
+                        if (!empty($data['job'][$id_job]['working_ed_active'])) {
+                            $data['working_ed_active'][]   = $data['job'][$id_job]['working_ed_active'];
+                        }
+                        if (!empty($data['job'][$id_job]['working_ed_block'])) {
+                            $data['working_ed_block'][]   = $data['job'][$id_job]['working_ed_block'];
+                        }
+                        if (!empty($data['job'][$id_job]['working_qc_active'])) {
+                            $data['working_qc_active'][]   = $data['job'][$id_job]['working_qc_active'];
+                        }
+                        if (!empty($data['job'][$id_job]['working_qc_block'])) {
+                            $data['working_qc_block'][]   = $data['job'][$id_job]['working_qc_block'];
+                        }
 
                         // gán type_service to order
                         $data['list_type_service'][$job['type_service']][] = $id_job;
@@ -418,7 +439,7 @@ class Order_model extends CI_Model
         $data = 0;
         $iconn = $this->db->conn_id;
 
-        $sql = "SELECT * FROM tbl_order WHERE status = $status LIMIT 1";
+        $sql = "SELECT * FROM tbl_order WHERE status = $status ORDER BY id_order DESC LIMIT 1";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt->execute()) {

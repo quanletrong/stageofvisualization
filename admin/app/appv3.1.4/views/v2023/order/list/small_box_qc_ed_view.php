@@ -5,6 +5,9 @@
 </style>
 
 <div class="d-flex mb-3" style="justify-content: space-between;">
+    <?php if ($role == EDITOR) { ?>
+        <button class="btn btn-success" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()"> <i class="fas fa-wallet"></i> START</button>
+    <?php } ?>
     <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance"> <i class="fas fa-wallet"></i> WITHDRAW BALANCE</button>
 </div>
 
@@ -121,7 +124,7 @@
 <script>
     function ajax_find_order() {
         $('#modal-start .modal-body').html(' <i class="fas fa-2x fa-sync fa-spin"></i>');
-       
+
         setTimeout(() => {
             $.ajax({
                 url: 'order/ajax_find_order',

@@ -95,12 +95,12 @@ class Order extends MY_Controller
                 break;
             case QC:
                 if (!isset($order['team'][$uid]) && $status != ORDER_QC_CHECK) {
-                    die('Đơn này đang chờ SALE duyệt, QC chưa thể xem vào lúc này.');
+                    die('Bạn không phải thành viên trong đơn hàng này.');
                 }
                 break;
             case EDITOR:
                 if (!isset($order['team'][$uid]) && $status != ORDER_AVAIABLE) {
-                    die('Đơn này đang chờ QC duyệt, ED chưa thể xem vào lúc này.');
+                    die('Bạn không phải thành viên trong đơn hàng này.');
                 }
                 break;
             default:
@@ -147,7 +147,50 @@ class Order extends MY_Controller
 
     function ajax_change_status_order($id_order, $new_status)
     {
-        // TODO: check quyền thật cẩn thận
+        $role    = $this->_session_role();
+        $cur_uid = $this->_session_uid();
+
+        $order                = $this->Order_model->get_info_order($id_order);
+        $allow_status_by_role = button_status_order_by_role($role);
+
+        empty($order)                               ? resError('Đơn không tồn tại') : '';
+        !isset($allow_status_by_role[$new_status])  ? resError('Trạng thái chuyển không phù hợp') : '';
+
+        $cur_status            = $order['status'];
+        $num_working_qc_active = count($order['working_qc_active']);
+        $num_working_ed_active = count($order['working_ed_active']);
+
+        if ($new_status == ORDER_PENDING) {
+        }
+        if ($new_status == ORDER_QC_CHECK) {
+        }
+        if ($new_status == ORDER_AVAIABLE) {
+            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái AVAIABLE') : '';
+        }
+        if ($new_status == ORDER_DONE) {
+            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái DONE') : '';
+            $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái DONE') : '';
+        }
+        if ($new_status == ORDER_DELIVERED) {
+            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái DELIVERED') : '';
+            $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái DELIVERED') : '';
+        }
+        if ($new_status == ORDER_FIX) {
+            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái FIX') : '';
+            $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái FIX') : '';
+        }
+        if ($new_status == ORDER_REWORK) {
+            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái REWORK') : '';
+            $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái REWORK') : '';
+        }
+        if ($new_status == ORDER_CANCLE) {
+        }
+        if ($new_status == ORDER_COMPLETE) {
+            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái COMPLETE') : '';
+            $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái COMPLETE') : '';
+        }
+
+        // save
         $kq = $this->Order_model->update_status_order($id_order, $new_status);
 
         // lưu thời gian chuyển kiem tra don
@@ -220,14 +263,12 @@ class Order extends MY_Controller
             $role == EDITOR && $order['status'] == ORDER_PENDING    ? resError('Không thể thêm ED khi đơn hàng đang PENDING') : '';
             $role == EDITOR && $order['status'] == ORDER_QC_CHECK   ? resError('Không thể thêm ED khi đơn hàng đang QC CHECK') : '';
             !empty($order['job'][$id_job]['working_ed_active'])     ? resError('Đã có người nhận làm IMAGE này') : '';
-
+            
         } else if ($working_type == WORKING_QC) {
             !isset($order['job'][$id_job]) ? resError('IMAGE không tồn tại') : '';
             $role == EDITOR                                         ? resError('ED không có quyền thực chức năng này.') : '';
             $assign_info['role'] == EDITOR                          ? resError('Không được gán tài khoản ED vào đây.') : '';
             !empty($order['job'][$id_job]['working_qc_active'])     ? resError('Đã có người nhận làm IMAGE này') : '';
-
-
         } else if ($working_type == WORKING_CUSTOM) {
             $id_job = 0; // mặc định
             $role == EDITOR ? resError('ED không có quyền thực chức năng này.') : '';
@@ -244,6 +285,10 @@ class Order extends MY_Controller
             $this->Order_model->thay_doi_status_tat_ca_job_user(0, $id_order, $id_job, $working_type);
         }
 
+        //TODO: chưa chặt chẽ
+        if($working_type == WORKING_EDITOR) {
+            $this->Order_model->update_status_order($id_order, ORDER_PROGRESS);
+        }
         // user gán đã tồn tại thì UPDATE status = 1
         $da_ton_tai = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $working_type, $id_user);
         if ($da_ton_tai) {

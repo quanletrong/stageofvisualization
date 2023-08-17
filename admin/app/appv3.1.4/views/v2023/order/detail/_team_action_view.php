@@ -36,15 +36,7 @@
             }
 
             $list_status = button_status_order_by_role($role);
-
-            $disable = '';
-            if ($role == QC) {
-                $disable = in_array($order['status'], [ORDER_PENDING, ORDER_COMPLETE]) ? 'disabled' : '';
-            }
-
-            if ($role == EDITOR) {
-                $disable = !in_array($order['status'], [ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK]) ? 'disabled' : '';
-            }
+            $disable     = allow_show_button_status_order_by_role($role, $order['status']) ? '' : 'disabled';
             ?>
 
             <div class="dropdown">
@@ -76,6 +68,40 @@
         <hr>
 
         <!-- WORKING -->
+        <div class="mt-3">
+            <b>WORKING QC</b>
+            <small onclick="alert('Chức năng gán QC không giành cho Editor')">[Mô tả]</small>
+            <div class="mt-1">
+                <div class="mt-1">
+                    <?php $i = 1; ?>
+                    <?php $disabled_order = in_array($order['status'], [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE]) ? 'disabled' : '' ?>
+                    <?php $disabled_role = in_array($role, [ADMIN, SALE, QC]) ? '' : 'disabled' ?>
+                    <?php foreach ($order['job'] as $id_job => $job) { ?>
+                        <div class="d-flex mt-1" style="align-items: center;">
+                            <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
+                            <div class="d-flex w-100">
+                                <select class="assignWorkingQC" multiple="multiple" data-working="<?= WORKING_QC ?>" data-job="<?= $id_job ?>" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
+                                    <?php foreach ($all_user_working as $id_user => $user) { ?>
+                                        <?php if ($user['role'] != EDITOR) { ?>
+                                            <?php $selected = isset($job['working_qc_active'][$id_user]) ? 'selected' : '' ?>
+                                            <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
+                                        <?php } ?>
+                                    <?php } ?>
+                                </select>
+                                <?php if ($disabled_order != 'disabled' && $disabled_role != 'disabled') { ?>
+                                    <?php if (isset($job['working_qc_active'][$curr_uid])) { ?>
+                                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_remove_job_user('<?= WORKING_QC ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Remove Me</button>
+                                    <?php } else { ?>
+                                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_QC ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')" <?= empty($job['working_qc_active']) ? '' : 'disabled' ?>>Add Me</button>
+                                    <?php } ?>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
         <div class="mt-3">
             <b>WORKING EDITOR</b>
             <small onclick="alert('')">[Mô tả]</small>
@@ -114,40 +140,6 @@
                         </div>
                     </div>
                 <?php } ?>
-            </div>
-        </div>
-
-        <div class="mt-3">
-            <b>WORKING QC</b>
-            <small onclick="alert('Chức năng gán QC không giành cho Editor')">[Mô tả]</small>
-            <div class="mt-1">
-                <div class="mt-1">
-                    <?php $i = 1; ?>
-                    <?php $disabled_order = in_array($order['status'], [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE]) ? 'disabled' : '' ?>
-                    <?php $disabled_role = in_array($role, [ADMIN, SALE, QC]) ? '' : 'disabled' ?>
-                    <?php foreach ($order['job'] as $id_job => $job) { ?>
-                        <div class="d-flex mt-1" style="align-items: center;">
-                            <div style="color: red; width:150px">IMAGE <?= $i++ ?> (<?= $job['type_service'] ?>)</div>
-                            <div class="d-flex w-100">
-                                <select class="assignWorkingQC" multiple="multiple" data-working="<?= WORKING_QC ?>" data-job="<?= $id_job ?>" style="width: 100%" <?= $disabled_order ?> <?= $disabled_role ?>>
-                                    <?php foreach ($all_user_working as $id_user => $user) { ?>
-                                        <?php if ($user['role'] != EDITOR) { ?>
-                                            <?php $selected = isset($job['working_qc_active'][$id_user]) ? 'selected' : '' ?>
-                                            <option value="<?= $id_user ?>" <?= $selected ?>><?= $user['username'] ?></option>
-                                        <?php } ?>
-                                    <?php } ?>
-                                </select>
-                                <?php if ($disabled_order != 'disabled' && $disabled_role != 'disabled') { ?>
-                                    <?php if (isset($job['working_qc_active'][$curr_uid])) { ?>
-                                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_remove_job_user('<?= WORKING_QC ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')">Remove Me</button>
-                                    <?php } else { ?>
-                                        <button class="btn btn-warning ml-1" style="width: 150px;" onclick="ajax_assign_job_user('<?= WORKING_QC ?>','<?= $order['id_order'] ?>', '<?= $id_job ?>', '<?= $curr_uid ?>')" <?= empty($job['working_qc_active']) ? '' : 'disabled' ?>>Add Me</button>
-                                    <?php } ?>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div>
             </div>
         </div>
 
@@ -315,7 +307,7 @@
                         $('#dropdownStatus').css('backgroundColor', new_bg);
                     } else {
                         $('#dropdownStatus').html(old_text);
-                        toasts_danger();
+                        toasts_danger(`${kq.error}`);
                     }
 
                     $('#dropdownStatus').prop("disabled", false);

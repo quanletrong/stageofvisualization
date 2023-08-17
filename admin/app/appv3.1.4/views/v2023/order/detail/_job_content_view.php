@@ -143,7 +143,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div>
+                                    <div class="d-none">
                                         <!-- <b>File</b> -->
                                         <div class="d-flex flex-wrap" style="gap: 10px;">
 
@@ -168,11 +168,13 @@
 
                                         </div>
                                     </div>
+                                    <button class="btn btn-warning">Upload file complete</button>
                                 </div>
                             </div>
 
                             <!-- CARD REWORK LIST-->
-                            <div class="card card-primary shadow">
+                            <!-- TODO: TẠM ẨN -->
+                            <div class="card card-primary shadow d-none">
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">

@@ -1090,7 +1090,7 @@ function count_down_time_order($order)
         } else {
             return ($ket_qua < 0 ? "- " : '') . $gio . 'h: ' . $phut . 'm:' . $giay . 's';
         }
-    } 
+    }
     // chưa hoàn thành đơn
     else {
         $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
@@ -1177,6 +1177,7 @@ function button_status_order_by_role($role)
         $data[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);
         $data[ORDER_FIX]       = status_order(ORDER_FIX);
         $data[ORDER_REWORK]    = status_order(ORDER_REWORK);
+        $data[ORDER_CANCLE]    = status_order(ORDER_CANCLE);
         $data[ORDER_COMPLETE]  = status_order(ORDER_COMPLETE);
     } else if ($role == QC) {
         $data[ORDER_QC_CHECK]  = status_order(ORDER_QC_CHECK);
@@ -1189,4 +1190,19 @@ function button_status_order_by_role($role)
     }
 
     return $data;
+}
+
+function allow_show_button_status_order_by_role($role, $status)
+{
+    if ($role == SALE || $role == ADMIN) {
+        return true;
+    }
+    if ($role == QC) {
+        return in_array($status, [ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_DELIVERED, ORDER_FIX, ORDER_REWORK]);
+    }
+    if ($role == EDITOR) {
+        return in_array($status, [ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK]);
+    }
+    // không có rule phù hợp
+    return false;
 }
