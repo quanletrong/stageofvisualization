@@ -229,49 +229,51 @@ class Order extends MY_Controller
         $role    = $this->_session_role();
         $cur_uid = $this->_session_uid();
 
-        $curr_user_info = $this->User_model->get_user_info_by_id($cur_uid);
-        $assign_info    = $this->User_model->get_user_info_by_id($id_user);
-        $order     = $this->Order_model->get_info_order($id_order);
+        $curr_uinfo = $this->User_model->get_user_info_by_id($cur_uid);
+        $as_uinfo   = $this->User_model->get_user_info_by_id($id_user);
+        $order      = $this->Order_model->get_info_order($id_order);
 
         # CHECK RIGHT
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-        $curr_user_info['status'] == 0              ? resError('Tài khoản đang bị khóa') : '';
-        empty($assign_info)                         ? resError('User được gán không tồn tại') : '';
-        $assign_info['status'] == 0                 ? resError('User được gán đang bị khóa') : '';
-        empty($order)                          ? resError('Đơn không tồn tại') : '';
+        !in_array      ($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này'): '';
+        $curr_uinfo['status'] == 0  ? resError('Tài khoản đang bị khóa') : '';
+        $as_uinfo             == [] ? resError('User được gán không tồn tại') : '';
+        $as_uinfo ['status']  == 0  ? resError('User được gán đang bị khóa') : '';
+        $order                == [] ? resError('Đơn không tồn tại') : '';
+
+        // không được gán người khi đơn đã giao, đã hoàn thành, đã hủy
         $order['status'] == ORDER_DELIVERED    ? resError('Đơn hàng đã giao không được thay đổi người làm') : '';
         $order['status'] == ORDER_COMPLETE     ? resError('Đơn hàng hoàn thành không được thay đổi người làm') : '';
         $order['status'] == ORDER_CANCLE       ? resError('Đơn hàng đã hủy không được thay đổi người làm') : '';
 
 
         // không được gán người đồng cấp (hack)
-        $role == ADMIN && $assign_info['role'] == ADMIN && $cur_uid != $id_user     ? resError('ADMIN không có quyền gán người cùng cấp') : '';
-        $role == SALE && $assign_info['role'] == SALE && $cur_uid != $id_user       ? resError('SALE không có quyền gán người cùng cấp') : '';
-        $role == QC && $assign_info['role'] == QC && $cur_uid != $id_user           ? resError('SALE không có quyền gán người cùng cấp') : '';
-        $role == EDITOR && $assign_info['role'] == EDITOR && $cur_uid != $id_user   ? resError('EDITOR không có quyền gán người cùng cấp') : '';
+        $role == ADMIN && $as_uinfo['role']  == ADMIN && $cur_uid  != $id_user   ? resError('ADMIN không có quyền gán người cùng cấp') : '';
+        $role == SALE && $as_uinfo['role']   == SALE && $cur_uid   != $id_user   ? resError('SALE không có quyền gán người cùng cấp') : '';
+        $role == QC && $as_uinfo['role']     == QC && $cur_uid     != $id_user   ? resError('QC không có quyền gán người cùng cấp') : '';
+        $role == EDITOR && $as_uinfo['role'] == EDITOR && $cur_uid != $id_user   ? resError('EDITOR không có quyền gán người cùng cấp') : '';
 
         // không được gán người cấp cao hơn (hack)
-        $role == SALE && $assign_info['role']   == ADMIN    ? resError('SALE không có quyền gán người cấp ADMIN') : '';
-        $role == QC && $assign_info['role']     == ADMIN    ? resError('QC không có quyền gán người cấp ADMIN') : '';
-        $role == QC && $assign_info['role']     == SALE     ? resError('QC không có quyền gán người cấp SALE') : '';
-        $role == EDITOR && $assign_info['role'] == ADMIN    ? resError('ED không có quyền gán người cấp ADMIN') : '';
-        $role == EDITOR && $assign_info['role'] == SALE     ? resError('ED không có quyền gán người cấp SALE') : '';
-        $role == EDITOR && $assign_info['role'] == QC       ? resError('ED không có quyền gán người cấp QC') : '';
+        $role == SALE && $as_uinfo['role']   == ADMIN    ? resError('SALE không có quyền gán người cấp ADMIN') : '';
+        $role == QC && $as_uinfo['role']     == ADMIN    ? resError('QC không có quyền gán người cấp ADMIN') : '';
+        $role == QC && $as_uinfo['role']     == SALE     ? resError('QC không có quyền gán người cấp SALE') : '';
+        $role == EDITOR && $as_uinfo['role'] == ADMIN    ? resError('ED không có quyền gán người cấp ADMIN') : '';
+        $role == EDITOR && $as_uinfo['role'] == SALE     ? resError('ED không có quyền gán người cấp SALE') : '';
+        $role == EDITOR && $as_uinfo['role'] == QC       ? resError('ED không có quyền gán người cấp QC') : '';
 
+        // working_type
         if ($working_type == WORKING_EDITOR) {
+            $role == EDITOR && $order['status'] == ORDER_PENDING    ? resError('ED không thể tham gia vào đơn hàng đang PENDING') : '';
+            $role == EDITOR && $order['status'] == ORDER_QC_CHECK   ? resError('ED không thể tham gia vào đơn hàng đang QC CHECK') : '';
             !isset($order['job'][$id_job])                          ? resError('IMAGE không tồn tại') : '';
-            $role == EDITOR && $order['status'] == ORDER_PENDING    ? resError('Không thể thêm ED khi đơn hàng đang PENDING') : '';
-            $role == EDITOR && $order['status'] == ORDER_QC_CHECK   ? resError('Không thể thêm ED khi đơn hàng đang QC CHECK') : '';
             !empty($order['job'][$id_job]['working_ed_active'])     ? resError('Đã có người nhận làm IMAGE này') : '';
-            
         } else if ($working_type == WORKING_QC) {
-            !isset($order['job'][$id_job]) ? resError('IMAGE không tồn tại') : '';
-            $role == EDITOR                                         ? resError('ED không có quyền thực chức năng này.') : '';
-            $assign_info['role'] == EDITOR                          ? resError('Không được gán tài khoản ED vào đây.') : '';
+            $role == EDITOR                                         ? resError('ED không có quyền thực hiện chức năng này.') : '';
+            $as_uinfo['role'] == EDITOR                          ? resError('Không được gán tài khoản ED vào đây.') : '';
+            !isset($order['job'][$id_job])                          ? resError('IMAGE không tồn tại') : '';
             !empty($order['job'][$id_job]['working_qc_active'])     ? resError('Đã có người nhận làm IMAGE này') : '';
         } else if ($working_type == WORKING_CUSTOM) {
             $id_job = 0; // mặc định
-            $role == EDITOR ? resError('ED không có quyền thực chức năng này.') : '';
+            $role == EDITOR ? resError('ED không có quyền thực hiện chức năng này.') : '';
         } else {
             resError('Lỗi dữ liệu truyền vào. Hãy thử lại!');
         }
@@ -285,10 +287,11 @@ class Order extends MY_Controller
             $this->Order_model->thay_doi_status_tat_ca_job_user(0, $id_order, $id_job, $working_type);
         }
 
-        //TODO: chưa chặt chẽ
-        if($working_type == WORKING_EDITOR) {
+        // chuyển đơn về ORDER_PROGRESS
+        if ($working_type == WORKING_EDITOR) {
             $this->Order_model->update_status_order($id_order, ORDER_PROGRESS);
         }
+
         // user gán đã tồn tại thì UPDATE status = 1
         $da_ton_tai = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $working_type, $id_user);
         if ($da_ton_tai) {
@@ -300,7 +303,7 @@ class Order extends MY_Controller
         // user gán chưa tồn tại thì INSERT bản ghi mới
         else {
             $type_service = @$order['job'][$id_job]['type_service'];
-            $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $assign_info['username'], $type_service, $working_type, $status, $time_join);
+            $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $type_service, $working_type, $status, $time_join);
             // TODO: LOG
             resSuccess($kq);
         }
@@ -313,23 +316,56 @@ class Order extends MY_Controller
         $role    = $this->_session_role();
         $cur_uid = $this->_session_uid();
 
-        $curr_user_info = $this->User_model->get_user_info_by_id($cur_uid);
-        $assign_info    = $this->User_model->get_user_info_by_id($id_user);
-        $info_order     = $this->Order_model->get_info_order($id_order);
+        $curr_uinfo = $this->User_model->get_user_info_by_id($cur_uid);
+        $as_uinfo   = $this->User_model->get_user_info_by_id($id_user);
+        $order      = $this->Order_model->get_info_order($id_order);
 
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-        $info_order['status'] == ORDER_DELIVERED    ? resError('Đơn hàng đã giao không được thay đổi người làm') : '';
-        $info_order['status'] == ORDER_COMPLETE     ? resError('Đơn hàng hoàn thành không được thay đổi người làm') : '';
-        $info_order['status'] == ORDER_CANCLE       ? resError('Đơn hàng đã hủy không thay được đổi người làm') : '';
+        // chỉ admin, sale, qc, ed mới được vào đây
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản của bạn không có quyền thực hiện chức năng này')        : '';
+        $curr_uinfo['status'] == 0                  ? resError('Tài khoản của bạn đang bị khóa') : '';
+        $as_uinfo             == []                 ? resError('User được xóa không tồn tại') : '';
+        $order                == []                 ? resError('Đơn không tồn tại') : '';
 
-        if ($working_type == WORKING_EDITOR) {
-            $role == EDITOR && $cur_uid != $id_user     ? resError('Editor không có quyền xóa editor khác.') : '';
+        // không được xóa người khi đơn đã giao, đã hoàn thành, đã hủy
+        $order['status'] == ORDER_DELIVERED    ? resError('Đơn hàng đã giao không được thay đổi người làm') : '';
+        $order['status'] == ORDER_COMPLETE     ? resError('Đơn hàng hoàn thành không được thay đổi người làm') : '';
+        $order['status'] == ORDER_CANCLE       ? resError('Đơn hàng đã hủy không thay được đổi người làm') : '';
+
+        // không được xóa người đồng cấp (hack)
+        $role == ADMIN && $as_uinfo['role']  == ADMIN && $cur_uid  != $id_user   ? resError('ADMIN không có quyền xóa người cùng cấp') : '';
+        $role == SALE && $as_uinfo['role']   == SALE && $cur_uid   != $id_user   ? resError('SALE không có quyền xóa người cùng cấp') : '';
+        $role == QC && $as_uinfo['role']     == QC && $cur_uid     != $id_user   ? resError('QC không có quyền xóa người cùng cấp') : '';
+        $role == EDITOR && $as_uinfo['role'] == EDITOR && $cur_uid != $id_user   ? resError('EDITOR không có quyền xóa người cùng cấp') : '';
+
+        // không được xóa người cấp cao hơn (hack)
+        $role == SALE && $as_uinfo['role']   == ADMIN    ? resError('SALE không có quyền xóa người cấp ADMIN') : '';
+        $role == QC && $as_uinfo['role']     == ADMIN    ? resError('QC không có quyền xóa người cấp ADMIN') : '';
+        $role == QC && $as_uinfo['role']     == SALE     ? resError('QC không có quyền xóa người cấp SALE') : '';
+        $role == EDITOR && $as_uinfo['role'] == ADMIN    ? resError('ED không có quyền xóa người cấp ADMIN') : '';
+        $role == EDITOR && $as_uinfo['role'] == SALE     ? resError('ED không có quyền xóa người cấp SALE') : '';
+        $role == EDITOR && $as_uinfo['role'] == QC       ? resError('ED không có quyền xóa người cấp QC') : '';
+
+        $working_qc_active = $order['job'][$id_job]['working_qc_active'];
+        $working_ed_active = $order['job'][$id_job]['working_ed_active'];
+
+        // WORKING_QC
+        if ($working_type == WORKING_QC) {
+            $role == EDITOR                                     ? resError('ED không có quyền thực hiện chức năng này.') : '';
+            $role == QC && !isset($working_qc_active[$cur_uid]) ? resError('Bạn chưa được gán vào IMAGE này') : '';
+        }
+        // WORKING_EDITOR
+        else if ($working_type == WORKING_EDITOR) {
+            $role == EDITOR && !isset($working_ed_active[$cur_uid])  ? resError('Bạn chưa được gán vào IMAGE này') : '';
+        }
+        // WORKING_CUSTOM
+        else if ($working_type == WORKING_CUSTOM) {
+            $role == EDITOR  ? resError('ED không có quyền thực hiện chức năng này.') : '';
+            $id_job = 0;
+        } else {
+            resError('Lỗi dữ liệu truyền vào. Hãy thử lại!');
         }
 
-
-        $status = 0; // remove
-        $id_job = 0;
-        $type_job_user = 4;
+        $status = 0;
         $kq = $this->Order_model->change_status_job_user($status, $id_order, $id_job, $working_type, $id_user);
 
         // TODO: LOG
