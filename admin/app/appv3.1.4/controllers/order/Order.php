@@ -85,7 +85,7 @@ class Order extends MY_Controller
         $all_user_working = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
         $order = $this->Order_model->get_info_order($id_order);
         empty($order) ? redirect(site_url('order', $this->_langcode)) : '';
-        var_dump($order);die;
+        // var_dump($order);die;
 
         ## check right access
         $status = $order['status'];
