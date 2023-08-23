@@ -183,11 +183,15 @@
                     </div>
                 </div>
 
-                <!-- TODO: tạm để AD SL không có quyên set -->
-                <?php foreach ($order['team'] as $id_user => $user) { ?>
+                <?php foreach ($order['working_custom_active'] as $id_user => $user) { ?>
                     <div class="d-flex mt-1">
                         <div style="color: red; width: 150px;"><?= $user['username'] ?></div>
-                        <input class="form-control" value="">
+                        <div class="input-group">
+                            <input type="number" min="0" class="form-control" value="<?= $user['custom'] ?>" id="textCustomOrder_<?=$id_user?>">
+                            <div class="input-group-append">
+                                <button class="btn btn-warning" type="button" id="btnCustomOrder" <?= $disable ?> onclick="ajax_change_custom_order_for_user(this, '<?= $order['id_order'] ?>', $('#textCustomOrder_<?=$id_user?>').val(), '<?=$id_user?>')" style="width: 60px;">Save</button>
+                            </div>
+                        </div>
                     </div>
                 <?php } ?>
             </div>
@@ -247,7 +251,7 @@
 
                 if (kq.status) {
                     toasts_success('Thêm thành công');
-                    location.reload();
+                    // location.reload();
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -332,10 +336,36 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    // thành công 
                     toasts_success()
                 } else {
-                    toasts_danger();
+                    toasts_danger(kq.error);
+                }
+
+                $(btn).html(old_text);
+                $(btn).prop("disabled", false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_change_custom_order_for_user(btn, id_order, custom, id_user) {
+        let old_text = $(btn).html();
+
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+        $.ajax({
+            url: `order/ajax_change_custom_order_for_user/${id_order}/${custom}/${id_user}`,
+            type: "POST",
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    toasts_success()
+                } else {
+                    toasts_danger(kq.error);
                 }
 
                 $(btn).html(old_text);

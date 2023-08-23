@@ -215,15 +215,6 @@ class Order extends MY_Controller
         resSuccess($kq);
     }
 
-    function ajax_change_custom_order($id_order, $custom)
-    {
-        // TODO: check quyền thật cẩn thận   
-        $kq = $this->Order_model->update_custom_order($id_order, $custom);
-
-        // TODO: LOG
-        resSuccess($kq);
-    }
-
     function ajax_assign_job_user($working_type, $id_order, $id_job, $id_user)
     {
         $role    = $this->_session_role();
@@ -234,10 +225,10 @@ class Order extends MY_Controller
         $order      = $this->Order_model->get_info_order($id_order);
 
         # CHECK RIGHT
-        !in_array      ($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này'): '';
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
         $curr_uinfo['status'] == 0  ? resError('Tài khoản đang bị khóa') : '';
         $as_uinfo             == [] ? resError('User được gán không tồn tại') : '';
-        $as_uinfo ['status']  == 0  ? resError('User được gán đang bị khóa') : '';
+        $as_uinfo['status']  == 0  ? resError('User được gán đang bị khóa') : '';
         $order                == [] ? resError('Đơn không tồn tại') : '';
 
         // không được gán người khi đơn đã giao, đã hoàn thành, đã hủy
@@ -267,10 +258,10 @@ class Order extends MY_Controller
             !isset($order['job'][$id_job])                          ? resError('IMAGE không tồn tại') : '';
             !empty($order['job'][$id_job]['working_ed_active'])     ? resError('Đã có người nhận làm IMAGE này') : '';
         } else if ($working_type == WORKING_QC) {
-            $role == EDITOR                                         ? resError('ED không có quyền thực hiện chức năng này.') : '';
-            $as_uinfo['role'] == EDITOR                          ? resError('Không được gán tài khoản ED vào đây.') : '';
-            !isset($order['job'][$id_job])                          ? resError('IMAGE không tồn tại') : '';
-            !empty($order['job'][$id_job]['working_qc_active'])     ? resError('Đã có người nhận làm IMAGE này') : '';
+            $role == EDITOR                                     ? resError('ED không có quyền thực hiện chức năng này.') : '';
+            $as_uinfo['role'] == EDITOR                         ? resError('Không được gán tài khoản ED vào đây.') : '';
+            !isset($order['job'][$id_job])                      ? resError('IMAGE không tồn tại') : '';
+            !empty($order['job'][$id_job]['working_qc_active']) ? resError('Đã có người nhận làm IMAGE này') : '';
         } else if ($working_type == WORKING_CUSTOM) {
             $id_job = 0; // mặc định
             $role == EDITOR ? resError('ED không có quyền thực hiện chức năng này.') : '';
@@ -292,18 +283,27 @@ class Order extends MY_Controller
             $this->Order_model->update_status_order($id_order, ORDER_PROGRESS);
         }
 
+        // cập nhật vào custom
+        $da_ton_tai_custom = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, 0, WORKING_CUSTOM, $id_user);
+        if ($da_ton_tai_custom) {
+            $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $id_user);
+        } else {
+            $this->Order_model->add_job_user($id_order, 0, $id_user, $as_uinfo['username'], '', WORKING_CUSTOM, $status, $time_join);
+        }
+
         // user gán đã tồn tại thì UPDATE status = 1
         $da_ton_tai = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $working_type, $id_user);
         if ($da_ton_tai) {
             $kq = $this->Order_model->change_status_job_user($status, $id_order, $id_job, $working_type, $id_user);
-            // TODO: LOG
 
+            // TODO: LOG
             resSuccess($kq);
         }
         // user gán chưa tồn tại thì INSERT bản ghi mới
         else {
             $type_service = @$order['job'][$id_job]['type_service'];
             $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $type_service, $working_type, $status, $time_join);
+
             // TODO: LOG
             resSuccess($kq);
         }
@@ -345,16 +345,17 @@ class Order extends MY_Controller
         $role == EDITOR && $as_uinfo['role'] == SALE     ? resError('ED không có quyền xóa người cấp SALE') : '';
         $role == EDITOR && $as_uinfo['role'] == QC       ? resError('ED không có quyền xóa người cấp QC') : '';
 
-        $working_qc_active = $order['job'][$id_job]['working_qc_active'];
-        $working_ed_active = $order['job'][$id_job]['working_ed_active'];
 
         // WORKING_QC
         if ($working_type == WORKING_QC) {
+            $working_qc_active = $order['job'][$id_job]['working_qc_active'];
+
             $role == EDITOR                                     ? resError('ED không có quyền thực hiện chức năng này.') : '';
             $role == QC && !isset($working_qc_active[$cur_uid]) ? resError('Bạn chưa được gán vào IMAGE này') : '';
         }
         // WORKING_EDITOR
         else if ($working_type == WORKING_EDITOR) {
+            $working_ed_active = $order['job'][$id_job]['working_ed_active'];
             $role == EDITOR && !isset($working_ed_active[$cur_uid])  ? resError('Bạn chưa được gán vào IMAGE này') : '';
         }
         // WORKING_CUSTOM
@@ -365,8 +366,56 @@ class Order extends MY_Controller
             resError('Lỗi dữ liệu truyền vào. Hãy thử lại!');
         }
 
+        // cấp nhật giá custom về 0 (nếu có)
+        if ($working_type == WORKING_CUSTOM) {
+            $custom = 0;
+            $this->Order_model->update_custom_order_for_user($id_order, $custom, $id_user);
+        }
+
         $status = 0;
         $kq = $this->Order_model->change_status_job_user($status, $id_order, $id_job, $working_type, $id_user);
+
+        // TODO: LOG
+        resSuccess($kq);
+    }
+
+    function ajax_change_custom_order($id_order, $custom)
+    {
+        $role    = $this->_session_role();
+        $cur_uid = $this->_session_uid();
+        $order   = $this->Order_model->get_info_order($id_order);
+
+        $order == []                        ? resError('Đơn không tồn tại') : '';
+        !in_array($role, [ADMIN, SALE])    ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+        !is_numeric($custom) || $custom < 0 ? resError('Tổng custom không hợp lệ') : '';
+
+        $kq = $this->Order_model->update_custom_order($id_order, $custom);
+
+        // TODO: LOG
+        resSuccess($kq);
+    }
+
+    function ajax_change_custom_order_for_user($id_order, $custom, $id_user)
+    {
+        $role    = $this->_session_role();
+        $cur_uid = $this->_session_uid();
+        $order   = $this->Order_model->get_info_order($id_order);
+
+        $order == []                        ? resError('Đơn không tồn tại') : '';
+        !in_array($role, [ADMIN, SALE])    ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+        !is_numeric($custom) || $custom < 0 ? resError('Tổng custom không hợp lệ') : '';
+
+
+        $order['working_custom_active'][$id_user]['custom'] = $custom;
+        $num_custom_used = 0;
+        foreach ($order['working_custom_active'] as $u) {
+            $num_custom_used += $u['custom'];
+        }
+        if($num_custom_used > $order['custom']) {
+            resError('Đã vượt quá tổng custom');
+        }
+
+        $kq = $this->Order_model->update_custom_order_for_user($id_order, $custom, $id_user);
 
         // TODO: LOG
         resSuccess($kq);

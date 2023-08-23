@@ -30,6 +30,7 @@ class Order_model extends CI_Model
                     $data['working_ed_block']      = [];
                     $data['working_qc_active']     = [];
                     $data['working_qc_block']      = [];
+                    $data['total_custom_used']     = 0; // số lượng custom đã dùng trong đơn
 
                     foreach ($data['job'] as $id_job => $job) {
                         // gán working ed
@@ -40,9 +41,6 @@ class Order_model extends CI_Model
                         $data['job'][$id_job]['working_qc_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_QC, $iconn);
                         $data['job'][$id_job]['working_qc_block']  = $this->_get_list_job_user_by_job($id_order, $id_job, 0, WORKING_QC, $iconn);
 
-                        // gán working custom
-                        $data['working_custom_active'] = $this->_get_list_job_user_by_job($id_order, 0, 1, WORKING_CUSTOM, $iconn);
-                        $data['working_custom_block']  = $this->_get_list_job_user_by_job($id_order, 0, 0, WORKING_CUSTOM, $iconn);
 
                         if (!empty($data['job'][$id_job]['working_ed_active'])) {
                             $data['working_ed_active'][]   = $data['job'][$id_job]['working_ed_active'];
@@ -60,6 +58,13 @@ class Order_model extends CI_Model
                         // gán type_service to order
                         $data['list_type_service'][$job['type_service']][] = $id_job;
                         $data['total_type_service'] += 1;
+                    }
+
+                    // gán working custom
+                    $data['working_custom_active'] = $this->_get_list_job_user_by_job($id_order, 0, 1, WORKING_CUSTOM, $iconn);
+                    $data['working_custom_block']  = $this->_get_list_job_user_by_job($id_order, 0, 0, WORKING_CUSTOM, $iconn);
+                    foreach($data['working_custom_active'] as $custom_active) {
+                        $data['total_custom_used'] += $custom_active['custom'];
                     }
                 }
 
@@ -541,6 +546,26 @@ class Order_model extends CI_Model
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             $param = [$custom, $id_order];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function update_custom_order_for_user($id_order, $custom, $id_user)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job_user SET custom=? WHERE id_order=? AND id_job = 0 AND id_user=?";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$custom, $id_order, $id_user];
 
             if ($stmt->execute($param)) {
                 $execute = true;
