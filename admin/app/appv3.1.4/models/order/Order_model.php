@@ -439,12 +439,12 @@ class Order_model extends CI_Model
         return $box;
     }
 
-    function tim_don_gan_nhat($status)
+    function tim_don_gan_nhat_cho_ed()
     {
         $data = 0;
         $iconn = $this->db->conn_id;
-
-        $sql = "SELECT * FROM tbl_order WHERE status = $status ORDER BY id_order DESC LIMIT 1";
+        $trang_thai = implode(',',[ORDER_AVAIABLE, ORDER_PROGRESS]);
+        $sql = "SELECT * FROM tbl_order WHERE `status` IN ($trang_thai) ORDER BY id_order ASC LIMIT 1";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt->execute()) {

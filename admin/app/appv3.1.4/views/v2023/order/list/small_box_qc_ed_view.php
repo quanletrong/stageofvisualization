@@ -114,7 +114,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" onclick="ajax_find_order()">Try again!</button>
-                <a class="btn btn-primary btn-link-join" href="" style="display: none;" target="_blank">JOIN</a>
+                <button class="btn btn-primary btn-link-join" href="" style="display: none;" onclick="ajax_ed_join_order()">JOIN</button>
             </div>
         </div>
     </div>
@@ -134,7 +134,7 @@
 
                     if (kq.status) {
                         $('#modal-start .modal-body').html('Đã tìm thấy đơn hàng mới.');
-                        $('#modal-start .btn-link-join').attr('href', 'order/detail/' + kq.msg)
+                        $('#modal-start .btn-link-join').attr('onclick', `ajax_ed_join_order(this, ${kq.msg})`)
                         $('#modal-start .btn-link-join').show();
                     } else {
                         $('#modal-start .modal-body').html('Không tìm thấy đơn hàng vào lúc này vui lòng bấm thử lại!');
@@ -149,5 +149,33 @@
             });
         }, 2000);
 
+    }
+
+    function ajax_ed_join_order(btn, id_order) {
+        let old_text = $(btn).html();
+
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+        $.ajax({
+            url: `order/ajax_ed_join_order/${id_order}`,
+            type: "POST",
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    toasts_success();
+                    window.location.href = `order/detail/${id_order}`;
+                } else {
+                    toasts_danger(kq.error);
+                }
+
+                $(btn).html(old_text);
+                $(btn).prop("disabled", false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
     }
 </script>

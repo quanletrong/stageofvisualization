@@ -187,7 +187,7 @@
                     <div class="d-flex mt-1">
                         <div style="color: red; width: 150px;"><?= $user['username'] ?></div>
                         <div class="input-group">
-                            <input type="number" min="0" class="form-control" value="<?= $user['custom'] ?>" id="textCustomOrder_<?=$id_user?>">
+                            <input type="number" min="0" class="form-control" value="<?= $user['custom'] ?>" id="textCustomOrder_<?=$id_user?>" <?= $disable ?>>
                             <div class="input-group-append">
                                 <button class="btn btn-warning" type="button" id="btnCustomOrder" <?= $disable ?> onclick="ajax_change_custom_order_for_user(this, '<?= $order['id_order'] ?>', $('#textCustomOrder_<?=$id_user?>').val(), '<?=$id_user?>')" style="width: 60px;">Save</button>
                             </div>
@@ -251,7 +251,7 @@
 
                 if (kq.status) {
                     toasts_success('Thêm thành công');
-                    // location.reload();
+                    location.reload();
                 } else {
                     toasts_danger(kq.error);
                 }

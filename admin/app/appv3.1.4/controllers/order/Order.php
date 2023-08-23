@@ -85,6 +85,7 @@ class Order extends MY_Controller
         $all_user_working = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
         $order = $this->Order_model->get_info_order($id_order);
         empty($order) ? redirect(site_url('order', $this->_langcode)) : '';
+        var_dump($order);die;
 
         ## check right access
         $status = $order['status'];
@@ -127,16 +128,11 @@ class Order extends MY_Controller
     function ajax_find_order()
     {
         if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            // show_custom_error('Tài khoản không có quyền truy cập!');
             resError('not_permit', 'Bạn không có quyền thực hiện.');
         }
 
         // tìm ra 1 order QC_CHECK gần nhất
-        if ($this->_session_role() == QC) {
-            $kq = $this->Order_model->tim_don_gan_nhat(ORDER_QC_CHECK);
-        } else if ($this->_session_role() == EDITOR) {
-            $kq = $this->Order_model->tim_don_gan_nhat(ORDER_AVAIABLE);
-        }
+        $kq = $this->Order_model->tim_don_gan_nhat_cho_ed();
 
         if (empty($kq)) {
             resError('not_result', 'Không tìm thấy đơn. Hãy thử lại bạn nhé.');
@@ -411,7 +407,7 @@ class Order extends MY_Controller
         foreach ($order['working_custom_active'] as $u) {
             $num_custom_used += $u['custom'];
         }
-        if($num_custom_used > $order['custom']) {
+        if ($num_custom_used > $order['custom']) {
             resError('Đã vượt quá tổng custom');
         }
 
@@ -419,5 +415,53 @@ class Order extends MY_Controller
 
         // TODO: LOG
         resSuccess($kq);
+    }
+
+    function ajax_ed_join_order($id_order)
+    {
+        $role      = $this->_session_role();
+        $cur_uid   = $this->_session_uid();
+        $cur_uname = $this->_session_uname();;
+        $order     = $this->Order_model->get_info_order($id_order);
+
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $order == [] ? resError('Đơn không tồn tại') : '';
+
+        // kiểm tra đơn có hợp lệ không
+        $list_job_no_ed = [];
+        foreach ($order['job'] as $id_job => $job) {
+            if ($job['working_ed_active'] == []) {
+                $list_job_no_ed[$id_job] = $id_job;
+            }
+        }
+
+        if ($list_job_no_ed == []) {
+            resError('Đơn không hợp lệ');
+        }
+
+        # SAVE
+        // cập nhật vào custom
+        $status = 1;
+        $time_join = date('Y-m-d H:i:s');
+
+        // add user vào custom
+        $da_ton_tai_custom = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, 0, WORKING_CUSTOM, $cur_uid);
+        if ($da_ton_tai_custom) {
+            $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $cur_uid);
+        } else {
+            $this->Order_model->add_job_user($id_order, 0, $cur_uid, $cur_uname, '', WORKING_CUSTOM, $status, $time_join);
+        }
+
+        // add user vào job
+        foreach ($list_job_no_ed as $id_job_no_ed) {
+            $type_service = @$order['job'][$id_job]['type_service'];
+            $this->Order_model->add_job_user($id_order, $id_job_no_ed, $cur_uid, $cur_uname, $type_service, WORKING_EDITOR, $status, $time_join);
+        }
+
+        // chuyển trạng thái đơn về đang xử lý sau khi add user xong
+        $this->Order_model->update_status_order($id_order, ORDER_PROGRESS);
+
+        resSuccess('Join thành công');
     }
 }
