@@ -464,4 +464,40 @@ class Order extends MY_Controller
 
         resSuccess('Join thành công');
     }
+
+    function ajax_change_code_order() {
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $id_order = $this->input->post('id_order');
+        $code    = $this->input->post('code');
+        $code = removeAllTags($code);
+        $code = str_replace(' ', '_', $code);
+
+        $order         = $this->Order_model->get_info_order($id_order);
+        $infoOrderCode = $this->Order_model->get_order_info_by_code($code);
+
+        $order == []            ? resError('Đơn hàng không tồn tại') : '';
+        $infoOrderCode != []    ? resError('Code Order đã tồn tại') : '';
+
+        $this->Order_model->update_code_order($id_order, $code);
+        resSuccess('Thành công');
+    }
+
+    function ajax_change_custom_time() {
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $second   = $this->input->post('second');
+        $id_order = $this->input->post('id_order');
+
+        is_numeric($second) && $second >=0 ? '' : resError('Thời gian không hợp lệ');
+
+        $order = $this->Order_model->get_info_order($id_order);
+        $order == [] ? resError('Đơn hàng không tồn tại') : '';
+
+        //TODO: THIẾU GHI LOG
+        $this->Order_model->update_custom_time_order($id_order, $second);
+        resSuccess('Thành công');
+    }
 }

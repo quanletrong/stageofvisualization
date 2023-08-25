@@ -420,7 +420,7 @@ function count_down_time(time, elId) {
         var seconds = Math.floor((distance_abs % (1000 * 60)) / 1000);
 
         // Display the result in the element with id="demo"
-        let ket_qua = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
         if (IS_EXPIRED) {
             document.getElementById(elId).innerHTML = '<span style="color:red"> - ' + ket_qua + '</span>';
         } else {

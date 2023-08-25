@@ -1086,9 +1086,9 @@ function count_down_time_order($order)
         $giay = $ket_qua_duong - $ngay * 86400 - $gio * 3600 - $phut * 60;
 
         if ($ngay > 0) {
-            return ($ket_qua < 0 ? "- " : '') . $ngay . 'd:' . $gio . 'h:' . $phut . 'm';
+            return ($ket_qua < 0 ? "- " : '') . $ngay . ' ngày : ' . $gio . ' giờ : ' . $phut . ' phút';
         } else {
-            return ($ket_qua < 0 ? "- " : '') . $gio . 'h: ' . $phut . 'm:' . $giay . 's';
+            return ($ket_qua < 0 ? "- " : '') . $gio . ' giờ : ' . $phut . ' phút :' . $giay . ' giây';
         }
     }
     // chưa hoàn thành đơn

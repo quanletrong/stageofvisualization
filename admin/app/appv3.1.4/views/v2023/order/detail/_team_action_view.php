@@ -1,3 +1,20 @@
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    #box_custom_time * {
+        border-radius: 0;
+    }
+</style>
 <div class="card card-primary">
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">
@@ -14,11 +31,29 @@
             </div>
         </div>
 
-        <!-- TODO: TẠM ẨN -->
-        <div class="mt-3 d-none">
+        <div class="mt-3">
             <b>Custom time (thêm thời gian cho đơn)</b>
             <p>
-                <input type="text" class="form-control" style="text-align: center; font-weight: bold;" value="00:02:57:00">
+            <div class="d-flex" id="box_custom_time">
+                <?php $disable = in_array($role, [ADMIN, SALE]) ? '' : 'disabled'; ?>
+                <div style="position: relative; width: 25%;">
+                    <input type="number" min=0 class="form-control" id="dCustom" value="" <?= $disable ?>>
+                    <span style="position: absolute; top:6px; right:6px">Ngày</span>
+                </div>
+                <div style="position: relative; width: 25%;">
+                    <input type="number" min=0 class="form-control" id="hCustom" value="" <?= $disable ?>>
+                    <span style="position: absolute; top:6px; right:6px">Giờ</span>
+                </div>
+                <div style="position: relative; width: 25%;">
+                    <input type="number" min=0 class="form-control" id="mCustom" value="" <?= $disable ?>>
+                    <span style="position: absolute; top:6px; right:6px">Phút</span>
+                </div>
+                <div style="position: relative; display: none;">
+                    <input type="number" min=0 class="form-control" id="sCustom" value="" <?= $disable ?>>
+                    <span style="position: absolute; top:6px; right:6px">Giây</span>
+                </div>
+                <button class="btn btn-warning" type="button" <?= $disable ?> onclick="ajax_change_custom_time(this, <?= $order['id_order'] ?>)" style="width: 25%;">Save</button>
+            </div>
             </p>
         </div>
 
@@ -53,16 +88,32 @@
         <hr>
         <!-- END STATUS -->
 
-        <div class="mt-3 d-flex">
-            <div class="w-50">
-                <?php foreach ($order['list_type_service'] as $type => $val) { ?>
-                    <p><b style="color: orange;"><?= $type ?>: <?= count($val) ?></b></p>
-                <?php } ?>
-                <p><b style="color: orange;">TOTAL: [<?= $order['total_type_service'] ?>]</b></p>
+        <div class="mt-3">
+            <?php foreach ($order['list_type_service'] as $type => $val) { ?>
+                <p><b style="color: orange;"><?= $type ?>: <?= count($val) ?></b></p>
+            <?php } ?>
+            <p><b style="color: orange;">TOTAL: [<?= $order['total_type_service'] ?>]</b></p>
+
+            <div class="d-flex mt-1" style="align-items: center;">
+                <div style="color: red; width:150px">#ID Customer</div>
+                <div class="input-group">
+                    <?php $disable = in_array($role, [ADMIN, SALE]) ? '' : 'disabled'; ?>
+                    <input id="textCodeUser" class="form-control" value="<?= htmlentities($order['code_user']) ?>" <?= $disable ?> style="color: red; font-weight: bold;">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button" <?= $disable ?> onclick="ajax_change_code_user(this, <?= $order['id_user'] ?>)" style="width: 60px;">Save</button>
+                    </div>
+                </div>
             </div>
-            <div class="w-50">
-                <p><b style="color: orange;">ID Customer: CID<?= $order['id_user'] ?></b></p>
-                <p><b style="color: orange;">ID Order: OID<?= $order['id_order'] ?></b></p>
+
+            <div class="d-flex mt-1" style="align-items: center;">
+                <div style="color: red; width:150px">#ID Order</div>
+                <div class="input-group">
+                    <?php $disable = in_array($role, [ADMIN, SALE]) ? '' : 'disabled'; ?>
+                    <input id="textCodeOrder" class="form-control" value="<?= htmlentities($order['code_order']) ?>" <?= $disable ?> style="color: red; font-weight: bold;">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning" type="button" <?= $disable ?> onclick="ajax_change_code_order(this, <?= $order['id_order'] ?>)" style="width: 60px;">Save</button>
+                    </div>
+                </div>
             </div>
         </div>
         <hr>
@@ -178,7 +229,7 @@
                     <div class="input-group">
                         <input id="textCustomOrder" type="number" min="0" class="form-control" value="<?= $order['custom'] ?>" <?= $disable ?> style="color: red; font-weight: bold;">
                         <div class="input-group-append">
-                            <button class="btn btn-warning" type="button" id="btnCustomOrder" <?= $disable ?> onclick="ajax_change_custom_order(this, '<?= $order['id_order'] ?>', $('#textCustomOrder').val())" style="width: 60px;">Save</button>
+                            <button class="btn btn-warning" type="button" <?= $disable ?> onclick="ajax_change_custom_order(this, '<?= $order['id_order'] ?>', $('#textCustomOrder').val())" style="width: 60px;">Save</button>
                         </div>
                     </div>
                 </div>
@@ -187,9 +238,9 @@
                     <div class="d-flex mt-1">
                         <div style="color: red; width: 150px;"><?= $user['username'] ?></div>
                         <div class="input-group">
-                            <input type="number" min="0" class="form-control" value="<?= $user['custom'] ?>" id="textCustomOrder_<?=$id_user?>" <?= $disable ?>>
+                            <input type="number" min="0" class="form-control" value="<?= $user['custom'] ?>" id="textCustomOrder_<?= $id_user ?>" <?= $disable ?>>
                             <div class="input-group-append">
-                                <button class="btn btn-warning" type="button" id="btnCustomOrder" <?= $disable ?> onclick="ajax_change_custom_order_for_user(this, '<?= $order['id_order'] ?>', $('#textCustomOrder_<?=$id_user?>').val(), '<?=$id_user?>')" style="width: 60px;">Save</button>
+                                <button class="btn btn-warning" type="button" <?= $disable ?> onclick="ajax_change_custom_order_for_user(this, '<?= $order['id_order'] ?>', $('#textCustomOrder_<?= $id_user ?>').val(), '<?= $id_user ?>')" style="width: 60px;">Save</button>
                             </div>
                         </div>
                     </div>
@@ -369,6 +420,149 @@
                 }
 
                 $(btn).html(old_text);
+                $(btn).prop("disabled", false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_change_code_user(btn, id_user) {
+        let old_text = $(btn).html();
+
+        let code = $('#textCodeUser').val();
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+        $.ajax({
+            url: `user/ajax_change_code_user`,
+            type: "POST",
+            data: {
+                id_user,
+                code
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    toasts_success()
+                } else {
+                    toasts_danger(kq.error);
+                }
+
+                $(btn).html(old_text);
+                $(btn).prop("disabled", false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_change_code_order(btn, id_order) {
+        let old_text = $(btn).html();
+
+        let code = $('#textCodeOrder').val();
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+        $.ajax({
+            url: `order/ajax_change_code_order`,
+            type: "POST",
+            data: {
+                id_order,
+                code
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    toasts_success()
+                } else {
+                    toasts_danger(kq.error);
+                }
+
+                $(btn).html(old_text);
+                $(btn).prop("disabled", false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    // CUSTOM TIME 
+    function addCustom(date, day, hours, minus, second) {
+        const dayToAdd = day * 24 * 60 * 60 * 1000;
+        const hoursToAdd = hours * 60 * 60 * 1000;
+        const minusToAdd = minus * 60 * 1000;
+        const secondoAdd = second * 1000;
+        date.setTime(date.getTime() + dayToAdd + hoursToAdd + minusToAdd + secondoAdd);
+        return date;
+    }
+    let start = new Date('2023-08-30 01:30:00');
+    console.log(start)
+    let newDate1 = addCustom(start, 0, 1, 10, 30);
+    console.log(newDate1); // 2022-05-15T19:00:00.000Z
+
+    // count_down_time('$DMY_han_chot', 'cdt_$id_order')
+
+    secondsToDhms(<?= $order['custom_time'] ?>);
+
+    function secondsToDhms(seconds) {
+        seconds = Number(seconds);
+        var d = Math.floor(seconds / (3600 * 24));
+        var h = Math.floor(seconds % (3600 * 24) / 3600);
+        var m = Math.floor(seconds % 3600 / 60);
+        var s = Math.floor(seconds % 60);
+
+        $('#dCustom').val(d);
+        $('#hCustom').val(h);
+        $('#mCustom').val(m);
+        $('#sCustom').val(s);
+        let data = {
+            d,
+            h,
+            m,
+            s
+        }
+        return data;
+    }
+
+    function ajax_change_custom_time(btn, id_order) {
+        let dCustom = $('#dCustom').val();
+        let hCustom = $('#hCustom').val();
+        let mCustom = $('#mCustom').val();
+        let sCustom = $('#sCustom').val();
+
+        let dToSecond = dCustom * 24 * 60 * 60;
+        let hToSecond = hCustom * 60 * 60;
+        let mToSecond = mCustom * 60;
+        let sToSecond = sCustom * 1;
+
+        let second = dToSecond + hToSecond + mToSecond + sToSecond;
+
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+        $.ajax({
+            url: `order/ajax_change_custom_time`,
+            type: "POST",
+            data: {
+                id_order,
+                second
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    toasts_success()
+                    location.reload();
+                } else {
+                    toasts_danger(kq.error);
+                }
+
                 $(btn).prop("disabled", false);
             },
             error: function(jqXHR, textStatus, errorThrown) {

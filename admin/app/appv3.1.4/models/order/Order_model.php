@@ -12,7 +12,9 @@ class Order_model extends CI_Model
     {
         $data = [];
         $iconn = $this->db->conn_id;
-        $sql = "SELECT * FROM tbl_order WHERE id_order = ? LIMIT 1";
+        $sql = "SELECT A.*, B.code_user FROM tbl_order A
+        INNER JOIN tbl_user B ON A.id_user = B.id_user
+        WHERE A.id_order = ? LIMIT 1";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$id_order])) {
@@ -691,5 +693,66 @@ class Order_model extends CI_Model
 
         $stmt->closeCursor();
         return $data;
+    }
+
+    function get_order_info_by_code($code)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+        $sql = "SELECT * FROM tbl_order WHERE code_order = ? LIMIT 1";
+        
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$code])) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function update_code_order($id_order, $code)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_order SET code_order=? WHERE id_order=? LIMIT 1";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$code, $id_order];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function update_custom_time_order($id_order, $second)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_order SET custom_time=? WHERE id_order=? LIMIT 1";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$second, $id_order];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
     }
 }
