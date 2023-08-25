@@ -40,7 +40,7 @@
                         <th class="text-center">CID</th>
                         <th class="text-center">DATE</th>
                         <th class="text-center">JOB TYPE</th>
-                        <th class="text-center">TOTAL</th>
+                        <th class="text-center">IMAGE</th>
                         <th class="text-center">STATUS</th>
                         <th class="text-center">TIME</th>
                         <th class="text-center">TEAM WORKING</th>

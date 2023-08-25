@@ -8,6 +8,14 @@
     <div class="col-lg-2 col-6">
         <div class="info-box">
             <div class="info-box-content">
+                <span class="info-box-text">TOTAL IMAGE AVAIABLE</span>
+                <span class="info-box-number"><?= isset($box['image_avaiable']) ? $box['image_avaiable'] : 0 ?></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-6">
+        <div class="info-box">
+            <div class="info-box-content">
                 <span class="info-box-text">TOTAL URGENT</span>
                 <span class="info-box-number">0</span>
             </div>
@@ -46,15 +54,6 @@
             <div class="info-box-content">
                 <span class="info-box-text">TOTAL PROGRESSING</span>
                 <span class="info-box-number"><?= isset($box['progress']) ? $box['progress'] : 0 ?></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-2 col-6">
-        <div class="info-box">
-            <div class="info-box-content">
-                <span class="info-box-text">TOTAL COMPLETE</span>
-                <span class="info-box-number"><?= isset($box['complete']) ? $box['complete'] : 0 ?></span>
             </div>
         </div>
     </div>

@@ -63,7 +63,7 @@ class Order_model extends CI_Model
                     // gán working custom
                     $data['working_custom_active'] = $this->_get_list_job_user_by_job($id_order, 0, 1, WORKING_CUSTOM, $iconn);
                     $data['working_custom_block']  = $this->_get_list_job_user_by_job($id_order, 0, 0, WORKING_CUSTOM, $iconn);
-                    foreach($data['working_custom_active'] as $custom_active) {
+                    foreach ($data['working_custom_active'] as $custom_active) {
                         $data['total_custom_used'] += $custom_active['custom'];
                     }
                 }
@@ -408,6 +408,9 @@ class Order_model extends CI_Model
                 $box['late'] = isset($box['late']) ? $box['late'] + 1 : 1;
             }
         }
+                
+        $list_image_avaiable = $this->danh_sach_image_avaiable();
+        $box['image_avaiable'] = count($list_image_avaiable);
 
         return $box;
     }
@@ -443,7 +446,7 @@ class Order_model extends CI_Model
     {
         $data = 0;
         $iconn = $this->db->conn_id;
-        $trang_thai = implode(',',[ORDER_AVAIABLE, ORDER_PROGRESS]);
+        $trang_thai = implode(',', [ORDER_AVAIABLE, ORDER_PROGRESS]);
         $sql = "SELECT * FROM tbl_order WHERE `status` IN ($trang_thai) ORDER BY id_order ASC LIMIT 1";
 
         $stmt = $iconn->prepare($sql);
@@ -660,5 +663,33 @@ class Order_model extends CI_Model
         }
         $stmt->closeCursor();
         return $execute;
+    }
+
+    function danh_sach_image_avaiable()
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+        $sql = "SELECT A.* 
+        FROM `tbl_job` A
+        WHERE A.id_order IN (SELECT B.id_order FROM tbl_order B WHERE B.status IN (?,?,?))
+        AND A.id_job NOT IN (SELECT C.id_job FROM tbl_job_user C WHERE C.id_job = A.id_job AND C.type_job_user = ? AND C.status = 1)";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, WORKING_EDITOR])) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        
+                        $data[$row['id_job']] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
     }
 }
