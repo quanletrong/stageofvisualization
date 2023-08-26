@@ -185,7 +185,10 @@
                 <div class="card-body">
                     <div class="mt-3">
                         <?php
-                        if ($order['status'] == ORDER_DELIVERED) {
+                        if ($order['status'] == ORDER_PENDING) {
+                            echo '<button class=" btn w-100" style="color:white;background-color: deeppink" >PENDING</button>';
+                            echo '<p>Đơn hàng của bạn đang đợi duyệt!</p>';
+                        } else if ($order['status'] == ORDER_DELIVERED) {
                             echo '<button class=" btn btn-info w-100">DELIVERED</button>';
                             echo '<p>Đơn hàng của bạn đã được giao. Vui lòng kiểm tra lại!</p>';
                         } else if ($order['status'] == ORDER_COMPLETE) {

@@ -31,7 +31,9 @@
                     <td><?= $order['total_job'] ?></td>
                     <td>
                         <?php
-                        if ($order['status'] == ORDER_DELIVERED) {
+                        if ($order['status'] == ORDER_PENDING) {
+                            echo '<small class="badge" style="color:white;background-color: deeppink">PENDING</small>';
+                        }else if ($order['status'] == ORDER_DELIVERED) {
                             echo '<small class="badge bg-info">DELIVERED</small>';
                         } else if ($order['status'] == ORDER_COMPLETE) {
                             echo '<small class="badge bg-success">COMPLETE</small>';
