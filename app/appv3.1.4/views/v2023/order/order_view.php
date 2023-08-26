@@ -136,7 +136,7 @@
 
                     let price = parseFloat(job.price);
                     price = isNaN(price) ? 0 : price;
-                    
+
                     price_html += `
                     <div class="mb-2 d-flex justify-content-between">
                         <div>Photo ${index++}:</div>
@@ -330,22 +330,15 @@
 
     // add_or_remove_service
     function add_or_remove_service(job_id, service_id, price) {
-        console.log(job_id, service_id, price)
-
         // RADIO
         STATE.job[job_id].service = service_id;
         STATE.job[job_id].price = price;
 
-        // CHECKBOX
-        // let service = STATE.job[job_id].service;
-        // if (isEmpty(service[service_id])) {
-        //     service[service_id] = price;
-        //     $(`#${job_id} .service-error`).hide();
-        // } else {
-        //     delete service[service_id];
-        //     if (isEmpty(service)) {
-        //         $(`#${job_id} .service-error`).show();
-        //     }
-        // }
+        // UNCHECKED CÁC SERVICE KHÁC
+        $(`#flexCheckDefault_${job_id}_${service_id}`)
+            .parent()
+            .siblings('.form-check')
+            .find('.form-check-input')
+            .prop('checked', false)
     }
 </script>
