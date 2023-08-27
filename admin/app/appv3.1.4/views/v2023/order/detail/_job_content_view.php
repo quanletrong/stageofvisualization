@@ -133,7 +133,7 @@
                                         <b>Requirements:</b>
                                         <textarea class="form-control requirement_job" rows="5" id="requirement_job_<?= $id_job ?>"><?= $job['requirement'] ?></textarea>
                                         <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                                            <button class="btn btn-sm btn-danger mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)">Save</button>
+                                            <button class="btn btn-sm btn-danger mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)" style="width: 100px;">Save</button>
                                         <?php } ?>
                                     </div>
 
