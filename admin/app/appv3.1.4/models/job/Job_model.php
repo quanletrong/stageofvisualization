@@ -93,4 +93,89 @@ class Job_model extends CI_Model
         $stmt->closeCursor();
         return $data;
     }
+
+    function get_info_job_by_id($id_job)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT A.* FROM tbl_job as A WHERE id_job= ?";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$id_job])) {
+                if ($stmt->rowCount() > 0) {
+
+                    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if (!empty($data)) {
+                    }
+
+                    $data['year'] = date('Y', strtotime($data['create_time']));
+                    $data['month'] = date('m', strtotime($data['create_time']));
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function update_image_job($id_job, $image){
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job SET image=? WHERE id_job=? LIMIT 1";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$image, $id_job];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+    function update_attach_job($id_job, $attach){
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job SET attach=? WHERE id_job=? LIMIT 1";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$attach, $id_job];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+    function update_requirement_job($id_job, $requirement){
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job SET requirement=? WHERE id_job=? LIMIT 1";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$requirement, $id_job];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
 }

@@ -12,31 +12,25 @@
         padding: 0.5rem 0.8rem;
     }
 
-    .btn-upfile {
-        display: flex;
-        justify-items: center;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+    .btn-upfile,
+    .btn-download {
         padding: 5px;
         border-style: dotted;
         cursor: pointer;
         max-width: 200px;
         height: fit-content;
+        background: aliceblue;
     }
 
-    .btn-upfile div {
-        text-align: center;
-        font-size: 0.8rem;
+    .btn-upfile:hover,
+    .btn-download:hover {
+        background-color: white;
     }
 
-    .btn-upfile:hover {
-        background-color: aliceblue;
-    }
-
-    .image-hover:hover .btn-upfile {
+    .image-hover:hover .position-btn {
         display: flex !important;
-        background-color: aliceblue;
+        justify-content: center;
+        align-items: center;
     }
 
     .position-relative:hover i {
@@ -70,38 +64,53 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                                             <div>ORIGINAL FILE(S)</div>
-                                            <!-- TODO: TẠM ẨN -->
-                                            <!-- <button class="btn btn-danger btn-sm">SAVE</button> -->
                                         </h3>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="position-relative image-hover">
-                                        <!-- TODO: TẠM ẨN -->
-                                        <!-- <div class="btn-upfile rounded border shadow" style="position: absolute; display: none; left: 45%; top: 45%;">
-                                                                <i class="fas fa-upload"></i>
-                                                                <div>Upload file other</div>
-                                                            </div> -->
-                                        <img src="<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" class="img-order-all" alt="" width="100%">
+
+                                        <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                                            <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                                                <div class="btn-upfile rounded border shadow" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_main_file" data-target="#main_file_<?= $id_job ?>">
+                                                    <i class="fas fa-upload"></i>
+                                                </div>
+                                            <?php } ?>
+
+                                            <div class="btn-download rounded border shadow" onclick="downloadURI('<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>', '<?= $job['image'] ?>')">
+                                                <i class="fas fa-download"></i>
+                                            </div>
+                                        </div>
+
+
+
+                                        <img src="<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
                                     </div>
                                     <div class="mt-3">
                                         <b>Attach Reference Files</b>
                                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                             <?php $list_attach = json_decode($job['attach'], true); ?>
                                             <?php foreach ($list_attach as $key => $item) { ?>
-                                                <div class="position-relative">
-                                                    <div class="position-absolute" style="right: 10px">
+                                                <div class="position-relative image-hover">
+                                                    <div class="position-absolute d-none" style="right: 10px">
                                                         <i class="fas fa-times icon-delete-image"></i>
                                                     </div>
-                                                    <img src="<?= url_image($item, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100">
+
+                                                    <div class="position-btn" style="position: absolute; display: none; top: 20%; width:100%; gap:10px">
+                                                        <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                                                            <div class="btn-upfile rounded border shadow" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_attach_file" data-target="#attach_file_<?= $key ?>">
+                                                                <i class="fas fa-upload"></i>
+                                                            </div>
+                                                        <?php } ?>
+
+                                                        <div class="btn-download rounded border shadow" onclick="downloadURI('<?= url_image($item, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>', '<?= $item ?>')">
+                                                            <i class="fas fa-download"></i>
+                                                        </div>
+                                                    </div>
+
+                                                    <img src="<?= url_image($item, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="aspect-ratio: 4/3; object-fit: cover;">
                                                 </div>
                                             <?php } ?>
-
-                                            <!-- TODO: TẠM ẨN -->
-                                            <!-- <div class="btn-upfile rounded border shadow">
-                                                                    <i class="fas fa-upload"></i>
-                                                                    <div>Upload file <br>attach reference</div>
-                                                                </div> -->
                                         </div>
                                     </div>
 
@@ -122,7 +131,10 @@
 
                                     <div class="mt-3">
                                         <b>Requirements:</b>
-                                        <textarea class="form-control" rows="5"><?= $job['requirement'] ?></textarea>
+                                        <textarea class="form-control requirement_job" rows="5" id="requirement_job_<?= $id_job ?>"><?= $job['requirement'] ?></textarea>
+                                        <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                                            <button class="btn btn-sm btn-danger mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)">Save</button>
+                                        <?php } ?>
                                     </div>
 
                                 </div>
@@ -241,3 +253,120 @@
         </div>
     </div>
 </div>
+
+<script>
+    function cb_upload_edit_main_file(link, target, file_name) {
+
+        let id_job = $(target).data('id');
+
+        $(target).attr('src', link);
+        ajax_edit_main_file(id_job, link)
+    }
+
+    function ajax_edit_main_file(id_job, url_image) {
+
+        $.ajax({
+            url: `order/ajax_edit_main_file`,
+            type: "POST",
+            data: {
+                id_job,
+                url_image
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+
+                } else {
+                    toasts_danger(kq.error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function cb_upload_edit_attach_file(link, target, file_name) {
+
+        let id_job = $(target).data('id-job');
+        let id_attach = $(target).data('id-attach');
+
+        $(target).attr('src', link);
+        ajax_edit_attach_file(id_job, id_attach, link)
+    }
+
+    function ajax_edit_attach_file(id_job, id_attach, url_image) {
+
+        $.ajax({
+            url: `order/ajax_edit_attach_file`,
+            type: "POST",
+            data: {
+                id_job,
+                id_attach,
+                url_image
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+
+                } else {
+                    toasts_danger(kq.error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_update_requirement(btn, id_job) {
+
+        let requirement = $('#requirement_job_' + id_job).val();
+
+        if (requirement.length == 0) {
+            alert('Dữ liệu không được bỏ trống');
+            return;
+        }
+
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+
+        $.ajax({
+            url: `order/ajax_update_requirement`,
+            type: "POST",
+            data: {
+                id_job,
+                requirement
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+
+                } else {
+                    toasts_danger(kq.error);
+                }
+                $(btn).html('Save');
+                $(btn).prop("disabled", false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function downloadURI(uri, name) {
+        var link = document.createElement("a");
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        delete link;
+    }
+</script>

@@ -465,7 +465,8 @@ class Order extends MY_Controller
         resSuccess('Join thành công');
     }
 
-    function ajax_change_code_order() {
+    function ajax_change_code_order()
+    {
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
@@ -484,14 +485,15 @@ class Order extends MY_Controller
         resSuccess('Thành công');
     }
 
-    function ajax_change_custom_time() {
+    function ajax_change_custom_time()
+    {
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $second   = $this->input->post('second');
         $id_order = $this->input->post('id_order');
 
-        is_numeric($second) && $second >=0 ? '' : resError('Thời gian không hợp lệ');
+        is_numeric($second) && $second >= 0 ? '' : resError('Thời gian không hợp lệ');
 
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn hàng không tồn tại') : '';
@@ -500,4 +502,82 @@ class Order extends MY_Controller
         $this->Order_model->update_custom_time_order($id_order, $second);
         resSuccess('Thành công');
     }
+
+    function ajax_edit_main_file()
+    {
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $url_image = $this->input->post('url_image');
+        $id_job    = $this->input->post('id_job');
+
+        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        $parse = parse_url($url_image);
+        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        !$copy['status'] ? resError($copy['error']) : '';
+
+        //TODO: THIẾU GHI LOG
+        $this->Job_model->update_image_job($id_job, $copy['basename']);
+        resSuccess('Thành công');
+    }
+
+    function ajax_edit_attach_file()
+    {
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $url_image = $this->input->post('url_image');
+        $id_job    = $this->input->post('id_job');
+        $id_attach = $this->input->post('id_attach');
+
+        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        $attachs = json_decode($info['attach'], true);
+        !isset($attachs[$id_attach]) ? resError('Attach không tồn tại') : '';
+
+        $parse = parse_url($url_image);
+        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        !$copy['status'] ? resError($copy['error']) : '';
+
+        //TODO: THIẾU GHI LOG
+        $attachs[$id_attach] = $copy['basename'];
+        $this->Job_model->update_attach_job($id_job, json_encode($attachs));
+        resSuccess('Thành công');
+    }
+
+    function ajax_update_requirement()
+    {
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $id_job    = $this->input->post('id_job');
+        $requirement = removeAllTags($this->input->post('requirement'));
+
+        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
+        !strlen($requirement) ? resError('Requirement không được bỏ trống') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        //TODO: THIẾU GHI LOG
+        $this->Job_model->update_requirement_job($id_job, $requirement);
+        resSuccess('Thành công');
+    }
+
+    // "IBIwagffYH-Hq6Jq-755x1-son-du-nguyen-khe.jpeg"
 }
