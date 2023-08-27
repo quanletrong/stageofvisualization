@@ -133,7 +133,7 @@
                                         <b>Requirements:</b>
                                         <textarea class="form-control requirement_job" rows="5" id="requirement_job_<?= $id_job ?>"><?= $job['requirement'] ?></textarea>
                                         <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                                            <button class="btn btn-sm btn-danger mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)" style="width: 100px;">Save</button>
+                                            <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)" style="width: 100px;">Save</button>
                                         <?php } ?>
                                     </div>
 
@@ -153,7 +153,9 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <!-- <?php //if($job['file_complete'] != '' && $job['file_complete'] != null ){?> -->
+                                    <?php if($job['file_complete'] != '' && $job['file_complete'] != null ){?>
+                                        <?php } ?>
+                                    <div>
                                         <div class="d-flex flex-wrap" style="gap: 10px;">
 
                                             <div class="position-relative" style="width: 48%;">
@@ -171,8 +173,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <?php //} ?> -->
-                                    <button class="btn btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_file_complete" data-target="#file_comptele_<?= $id_job ?>">Upload file complete</button>
+                                   
+                                    <button class="btn btn-warning w-100 mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_file_complete" data-target="#file_comptele_<?= $id_job ?>">Upload file complete</button>
                                 </div>
                             </div>
 
