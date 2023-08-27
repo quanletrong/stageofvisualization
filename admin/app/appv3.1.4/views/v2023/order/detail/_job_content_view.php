@@ -149,14 +149,11 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                                             <div>COMPLETED FILE(S)</div>
-                                            <!-- TODO: TẠM ẨN -->
-                                            <!-- <button class="btn btn-danger btn-sm">SAVE</button> -->
                                         </h3>
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="d-none">
-                                        <!-- <b>File</b> -->
+                                    <!-- <?php //if($job['file_complete'] != '' && $job['file_complete'] != null ){?> -->
                                         <div class="d-flex flex-wrap" style="gap: 10px;">
 
                                             <div class="position-relative" style="width: 48%;">
@@ -172,15 +169,10 @@
                                                 </div>
                                                 <img src="https://picsum.photos/320/180" alt="" width="100%">
                                             </div>
-                                            <!-- TODO: TẠM ẨN -->
-                                            <!-- <div class="btn-upfile rounded border shadow">
-                                                                    <i class="fas fa-upload"></i>
-                                                                    <div>Upload file complete</div>
-                                                                </div> -->
-
                                         </div>
                                     </div>
-                                    <button class="btn btn-warning">Upload file complete</button>
+                                    <!-- <?php //} ?> -->
+                                    <button class="btn btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_file_complete" data-target="#file_comptele_<?= $id_job ?>">Upload file complete</button>
                                 </div>
                             </div>
 
