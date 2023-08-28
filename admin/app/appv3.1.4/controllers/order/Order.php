@@ -538,7 +538,8 @@ class Order extends MY_Controller
         $id_job    = $this->input->post('id_job');
         $id_attach = $this->input->post('id_attach');
 
-        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
+        !isIdNumber($id_job)    ? resError('IMGAE không hợp lệ')    : '';
+        !isIdNumber($id_attach) ? resError('ID ATTACH không hợp lệ'): '';
 
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
@@ -579,5 +580,82 @@ class Order extends MY_Controller
         resSuccess('Thành công');
     }
 
-    // "IBIwagffYH-Hq6Jq-755x1-son-du-nguyen-khe.jpeg"
+    function ajax_add_file_complete() {
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $url_image = $this->input->post('url_image');
+        $id_job    = $this->input->post('id_job');
+
+        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        $parse = parse_url($url_image);
+        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        !$copy['status'] ? resError($copy['error']) : '';
+
+        //TODO: THIẾU GHI LOG
+        $id_file_complete = time();
+        $info['file_complete'][$id_file_complete] = $copy['basename'];
+        $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+        resSuccess($id_file_complete);
+    }
+
+    function ajax_edit_file_complete() {
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $url_image   = $this->input->post('url_image');
+        $id_job      = $this->input->post('id_job');
+        $id_complete = $this->input->post('id_complete');
+
+        !isIdNumber($id_job)        ? resError('IMGAE không hợp lệ')      : '';
+        !isIdNumber($id_complete)   ? resError('ID COMPLETE không hợp lệ'): '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        !isset($info['file_complete'][$id_complete]) ? resError('ID COMPLETE không tồn tại') : '';
+
+        $parse = parse_url($url_image);
+        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        !$copy['status'] ? resError($copy['error']) : '';
+
+        //TODO: THIẾU GHI LOG
+        $info['file_complete'][$id_complete] = $copy['basename'];
+        $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+        resSuccess($id_complete);
+    }
+
+    function ajax_delete_file_complete() {
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $id_job    = $this->input->post('id_job');
+        $id_complete = $this->input->post('id_complete');
+
+        !isIdNumber($id_job)        ? resError('IMGAE không hợp lệ')           : '';
+        !isIdNumber($id_complete)   ? resError('ID FILE COMPLETE không hợp lệ'): '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        !isset($info['file_complete'][$id_complete]) ? resError('ID FILE COMPLETE không tồn tại'): '';
+
+        unset($info['file_complete'][$id_complete]); // xóa
+
+        //TODO: THIẾU GHI LOG
+        $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+        resSuccess($id_complete);
+    }
 }

@@ -355,6 +355,7 @@ class Order_model extends CI_Model
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $row['year'] = date('Y', strtotime($row['create_time']));
                         $row['month'] = date('m', strtotime($row['create_time']));
+                        $row['file_complete'] = $row['file_complete'] == null ? [] : json_decode($row['file_complete'], true);
                         $data[$row['id_job']] = $row;
                     }
                 }

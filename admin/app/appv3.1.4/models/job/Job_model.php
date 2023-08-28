@@ -111,6 +111,7 @@ class Job_model extends CI_Model
 
                     $data['year'] = date('Y', strtotime($data['create_time']));
                     $data['month'] = date('m', strtotime($data['create_time']));
+                    $data['file_complete'] = $data['file_complete'] == null ? [] : json_decode($data['file_complete'], true);
                 }
             } else {
                 var_dump($stmt->errorInfo());
@@ -140,6 +141,7 @@ class Job_model extends CI_Model
         $stmt->closeCursor();
         return $execute;
     }
+    
     function update_attach_job($id_job, $attach){
         $execute = false;
         $iconn = $this->db->conn_id;
@@ -159,6 +161,27 @@ class Job_model extends CI_Model
         $stmt->closeCursor();
         return $execute;
     }
+
+    function update_file_complete_job($id_job, $file_complete){
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job SET file_complete=? WHERE id_job=? LIMIT 1";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$file_complete, $id_job];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
     function update_requirement_job($id_job, $requirement){
         $execute = false;
         $iconn = $this->db->conn_id;

@@ -12,21 +12,6 @@
         padding: 0.5rem 0.8rem;
     }
 
-    .btn-upfile,
-    .btn-download {
-        padding: 5px;
-        border-style: dotted;
-        cursor: pointer;
-        max-width: 200px;
-        height: fit-content;
-        background: aliceblue;
-    }
-
-    .btn-upfile:hover,
-    .btn-download:hover {
-        background-color: white;
-    }
-
     .image-hover:hover .position-btn {
         display: flex !important;
         justify-content: center;
@@ -69,22 +54,19 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="position-relative image-hover">
-
                                         <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
                                             <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                                                <div class="btn-upfile rounded border shadow" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_main_file" data-target="#main_file_<?= $id_job ?>">
+                                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_main_file" data-target="#main_file_<?= $id_job ?>">
                                                     <i class="fas fa-upload"></i>
-                                                </div>
+                                                </button>
                                             <?php } ?>
 
-                                            <div class="btn-download rounded border shadow" onclick="downloadURI('<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>', '<?= $job['image'] ?>')">
+                                            <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($job['image'], 'uploads/images/' . $job['year'] . '/' . $job['month'] . '/') ?>', '<?= $job['image'] ?>')">
                                                 <i class="fas fa-download"></i>
-                                            </div>
+                                            </button>
                                         </div>
 
-
-
-                                        <img src="<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
+                                        <img src="<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>" style="aspect-ratio: 4/3; object-fit: cover;">
                                     </div>
                                     <div class="mt-3">
                                         <b>Attach Reference Files</b>
@@ -98,14 +80,14 @@
 
                                                     <div class="position-btn" style="position: absolute; display: none; top: 20%; width:100%; gap:10px">
                                                         <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                                                            <div class="btn-upfile rounded border shadow" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_attach_file" data-target="#attach_file_<?= $key ?>">
+                                                            <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_attach_file" data-target="#attach_file_<?= $key ?>">
                                                                 <i class="fas fa-upload"></i>
-                                                            </div>
+                                                            </button>
                                                         <?php } ?>
 
-                                                        <div class="btn-download rounded border shadow" onclick="downloadURI('<?= url_image($item, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>', '<?= $item ?>')">
+                                                        <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($item, 'uploads/images/' . $job['year'] . '/' . $job['month'] . '/') ?>', '<?= $item ?>')">
                                                             <i class="fas fa-download"></i>
-                                                        </div>
+                                                        </button>
                                                     </div>
 
                                                     <img src="<?= url_image($item, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="aspect-ratio: 4/3; object-fit: cover;">
@@ -153,28 +135,30 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <?php if($job['file_complete'] != '' && $job['file_complete'] != null ){?>
+                                    <div id="list_complete_<?= $id_job ?>" data-id-job="<?= $id_job ?>" class="d-flex flex-wrap" style="gap: 10px;">
+                                        <?php foreach ($job['file_complete'] as $key => $file) { ?>
+                                            <div class="position-relative image-hover" style="width: 48%;" id="file_complete_<?= $key ?>">
+
+                                                <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                                                    <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_<?= $key ?>">
+                                                        <i class="fas fa-upload"></i>
+                                                    </button>
+
+                                                    <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($job['image'], 'uploads/images/' . $job['year'] . '/' . $job['month'] . '/') ?>', '<?= $job['image'] ?>')">
+                                                        <i class="fas fa-download"></i>
+                                                    </button>
+
+                                                    <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete(this, <?= $id_job ?>,<?= $key ?>)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+
+                                                <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                                            </div>
                                         <?php } ?>
-                                    <div>
-                                        <div class="d-flex flex-wrap" style="gap: 10px;">
-
-                                            <div class="position-relative" style="width: 48%;">
-                                                <div class="position-absolute" style="right: 10px">
-                                                    <i class="fas fa-times icon-delete-image"></i>
-                                                </div>
-                                                <img src="https://picsum.photos/320/180" alt="" width="100%">
-                                            </div>
-
-                                            <div class="position-relative" style="width: 48%;">
-                                                <div class="position-absolute" style="right: 10px">
-                                                    <i class="fas fa-times icon-delete-image"></i>
-                                                </div>
-                                                <img src="https://picsum.photos/320/180" alt="" width="100%">
-                                            </div>
-                                        </div>
                                     </div>
-                                   
-                                    <button class="btn btn-warning w-100 mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_file_complete" data-target="#file_comptele_<?= $id_job ?>">Upload file complete</button>
+
+                                    <button class="btn btn-warning w-100 mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_complete" data-target="#list_complete_<?= $id_job ?>"> <i class="fas fa-upload"></i> Upload file complete</button>
                                 </div>
                             </div>
 
@@ -249,15 +233,12 @@
 </div>
 
 <script>
-    function cb_upload_edit_main_file(link, target, file_name) {
+    function cb_upload_edit_main_file(url_image, target, file_name) {
 
         let id_job = $(target).data('id');
 
-        $(target).attr('src', link);
-        ajax_edit_main_file(id_job, link)
-    }
-
-    function ajax_edit_main_file(id_job, url_image) {
+        $(target).attr('src', url_image);
+        ajax_edit_main_file(id_job, url_image)
 
         $.ajax({
             url: `order/ajax_edit_main_file`,
@@ -282,16 +263,13 @@
         });
     }
 
-    function cb_upload_edit_attach_file(link, target, file_name) {
+    function cb_upload_edit_attach_file(url_image, target, file_name) {
 
         let id_job = $(target).data('id-job');
         let id_attach = $(target).data('id-attach');
 
-        $(target).attr('src', link);
-        ajax_edit_attach_file(id_job, id_attach, link)
-    }
-
-    function ajax_edit_attach_file(id_job, id_attach, url_image) {
+        $(target).attr('src', url_image);
+        ajax_edit_attach_file(id_job, id_attach, url_image)
 
         $.ajax({
             url: `order/ajax_edit_attach_file`,
@@ -362,5 +340,113 @@
         link.click();
         document.body.removeChild(link);
         delete link;
+    }
+
+    function cb_upload_add_file_complete(url_image, target, file_name) {
+
+        let id_job = $(target).data('id-job');
+        $.ajax({
+            url: `order/ajax_add_file_complete`,
+            type: "POST",
+            data: {
+                id_job,
+                url_image
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    let id_file_complete = kq.data;
+                    let html = `
+                        <div class="position-relative image-hover" style="width: 48%;" id="file_complete_${id_file_complete}">
+                            <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_${id_file_complete}">
+                                    <i class="fas fa-upload"></i>
+                                </button>
+
+                                <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+
+                                <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete(this, ${id_job}, ${id_file_complete})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <img id="img_complete_${id_file_complete}" data-id-job="${id_job}" data-id-complete="${id_file_complete}" src="${url_image}" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                        </div>`;
+                    $(target).append(html)
+                } else {
+                    toasts_danger(kq.error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function cb_upload_edit_file_complete(url_image, target, file_name) {
+
+        let id_job = $(target).data('id-job');
+        let id_complete = $(target).data('id-complete');
+        console.log(id_job, id_complete)
+        $.ajax({
+            url: `order/ajax_edit_file_complete`,
+            type: "POST",
+            data: {
+                id_job,
+                id_complete,
+                url_image
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    $(target).attr('src', url_image)
+                    $(target)
+                        .siblings('.position-btn')
+                        .find('.fa-download')
+                        .parent()
+                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`)
+
+                } else {
+                    toasts_danger(kq.error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_delete_file_complete(btn, id_job, id_complete) {
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+
+        $.ajax({
+            url: `order/ajax_delete_file_complete`,
+            type: "POST",
+            data: {
+                id_job,
+                id_complete
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+
+                } else {
+                    toasts_danger(kq.error);
+                }
+                $(`#file_complete_${id_complete}`).remove();
+                $(btn).prop("disabled", false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
     }
 </script>
