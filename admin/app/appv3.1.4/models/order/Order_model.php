@@ -88,8 +88,9 @@ class Order_model extends CI_Model
         $list_order = [];
         $iconn = $this->db->conn_id;
 
-        $sql = "SELECT A.*
+        $sql = "SELECT A.*, B.code_user as code_user
         FROM tbl_order as A
+        INNER JOIN tbl_user B ON A.id_user = B.id_user 
         ORDER BY A.status ASC, A.create_time ASC";
 
         $stmt = $iconn->prepare($sql);
@@ -129,8 +130,9 @@ class Order_model extends CI_Model
 
 
         $ORDER_PENDING = ORDER_PENDING;
-        $sql = "SELECT A.*
+        $sql = "SELECT A.*, B.code_user as code_user
         FROM tbl_order as A
+        INNER JOIN tbl_user B ON A.id_user = B.id_user 
         WHERE A.status != $ORDER_PENDING 
         ORDER BY A.status ASC, A.create_time ASC";
 
@@ -212,8 +214,9 @@ class Order_model extends CI_Model
         // lấy list info order theo list id_order
         if (!empty($list_id_order)) {
             $str_id_order = implode(',', $list_id_order);
-            $sql = "SELECT A.*
+            $sql = "SELECT A.*, B.code_user as code_user
             FROM tbl_order as A
+            INNER JOIN tbl_user B ON A.id_user = B.id_user 
             WHERE id_order IN ($str_id_order)
             ORDER BY A.status ASC, A.create_time ASC";
 

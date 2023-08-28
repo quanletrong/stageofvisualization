@@ -51,8 +51,8 @@
                     <?php $index = 1; ?>
                     <?php foreach ($list_order as $id_order => $order) { ?>
                         <tr class="text-default">
-                            <td class="align-middle text-center">OID<?= $order['id_order'] ?></td>
-                            <td class="align-middle text-center">UID<?= $order['id_user'] ?></td>
+                            <td class="align-middle text-center"><?= $order['code_order'] == '' ? 'OID'.$order['id_order'] : $order['code_order'] ?></td>
+                            <td class="align-middle text-center"><?= $order['code_user'] == '' ? 'UID'.$order['id_user'] :  $order['code_user'] ?></td>
                             <td class="align-middle text-center"><span title="<?= timeSince ($order['create_time']) ?> trước"><?= $order['create_time'] ?> </span></td>
                             <td class="align-middle text-center">
                                 <?php foreach ($order['type_service'] as $val) { ?>
