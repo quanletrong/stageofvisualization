@@ -127,17 +127,25 @@ class Order extends MY_Controller
 
     function ajax_find_order()
     {
+        $cur_uid = $this->_session_uid();
+
         if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
             resError('not_permit', 'Bạn không có quyền thực hiện.');
         }
+        $curr_uinfo = $this->User_model->get_user_info_by_id($cur_uid);
+        $curr_uinfo['status'] == '-1' ? resError('Tài khoản của bạn đang bị khóa') : '';
 
-        // tìm ra 1 order QC_CHECK gần nhất
-        $kq = $this->Order_model->tim_don_gan_nhat_cho_ed();
+        $danh_sach_image_avaiable = $this->Order_model->danh_sach_image_avaiable();
 
-        if (empty($kq)) {
+        if (empty($danh_sach_image_avaiable)) {
             resError('not_result', 'Không tìm thấy đơn. Hãy thử lại bạn nhé.');
         } else {
-            resSuccess('ok', $kq['id_order']);
+
+            // lấy ra đơn đầu tiên 
+            $first_image = array_key_first($danh_sach_image_avaiable);
+            $first_order = $danh_sach_image_avaiable[$first_image]['id_order'];
+
+            resSuccess('ok', $first_order);
         }
     }
 
@@ -419,14 +427,15 @@ class Order extends MY_Controller
 
     function ajax_ed_join_order($id_order)
     {
-        $role      = $this->_session_role();
-        $cur_uid   = $this->_session_uid();
-        $cur_uname = $this->_session_uname();;
-        $order     = $this->Order_model->get_info_order($id_order);
+        $role       = $this->_session_role();
+        $cur_uid    = $this->_session_uid();
+        $cur_uname  = $this->_session_uname();;
+        $curr_uinfo = $this->User_model->get_user_info_by_id($cur_uid);
+        $order      = $this->Order_model->get_info_order($id_order);
 
+        $order == []                                ? resError('Đơn không tồn tại') : '';
+        $curr_uinfo['status'] == '-1'               ? resError('Tài khoản của bạn đang bị khóa') : '';
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
-        $order == [] ? resError('Đơn không tồn tại') : '';
 
         // kiểm tra đơn có hợp lệ không
         $list_job_no_ed = [];
@@ -581,6 +590,7 @@ class Order extends MY_Controller
     }
 
     function ajax_add_file_complete() {
+        $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
@@ -591,6 +601,12 @@ class Order extends MY_Controller
 
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        $order = $this->$this->Order_model->get_info_order($info['id_order']);
+
+        if($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
 
         $parse = parse_url($url_image);
         !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
@@ -608,6 +624,7 @@ class Order extends MY_Controller
     }
 
     function ajax_edit_file_complete() {
+        $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
@@ -620,6 +637,10 @@ class Order extends MY_Controller
 
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        if($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
 
         !isset($info['file_complete'][$id_complete]) ? resError('ID COMPLETE không tồn tại') : '';
 
@@ -638,6 +659,7 @@ class Order extends MY_Controller
     }
 
     function ajax_delete_file_complete() {
+        $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
@@ -649,6 +671,10 @@ class Order extends MY_Controller
 
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        if($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
 
         !isset($info['file_complete'][$id_complete]) ? resError('ID FILE COMPLETE không tồn tại'): '';
 
