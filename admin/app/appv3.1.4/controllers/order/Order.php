@@ -514,7 +514,8 @@ class Order extends MY_Controller
 
     function ajax_edit_main_file()
     {
-        $role = $this->_session_role();
+        $cur_uid = $this->_session_uid();
+        $role    = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $url_image = $this->input->post('url_image');
@@ -524,6 +525,11 @@ class Order extends MY_Controller
 
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        $order = $this->Order_model->get_info_order($info['id_order']);
+        if ($role == QC) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
 
         $parse = parse_url($url_image);
         !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
@@ -540,6 +546,208 @@ class Order extends MY_Controller
 
     function ajax_edit_attach_file()
     {
+        $cur_uid = $this->_session_uid();
+        $role    = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $url_image = $this->input->post('url_image');
+        $id_job    = $this->input->post('id_job');
+        $id_attach = $this->input->post('id_attach');
+
+        !isIdNumber($id_job)    ? resError('IMGAE không hợp lệ')    : '';
+        !isIdNumber($id_attach) ? resError('ID ATTACH không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        $order = $this->Order_model->get_info_order($info['id_order']);
+        if ($role == QC) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        $attachs = json_decode($info['attach'], true);
+        !isset($attachs[$id_attach]) ? resError('Attach không tồn tại') : '';
+
+        $parse = parse_url($url_image);
+        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        !$copy['status'] ? resError($copy['error']) : '';
+
+        //TODO: THIẾU GHI LOG
+        $attachs[$id_attach] = $copy['basename'];
+        $this->Job_model->update_attach_job($id_job, json_encode($attachs));
+        resSuccess('Thành công');
+    }
+
+    function ajax_update_requirement()
+    {
+        $cur_uid = $this->_session_uid();
+        $role    = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $id_job    = $this->input->post('id_job');
+        $requirement = removeAllTags($this->input->post('requirement'));
+
+        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
+        !strlen($requirement) ? resError('Requirement không được bỏ trống') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        $order = $this->Order_model->get_info_order($info['id_order']);
+        if ($role == QC) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        //TODO: THIẾU GHI LOG
+        $this->Job_model->update_requirement_job($id_job, $requirement);
+        resSuccess('Thành công');
+    }
+
+    function ajax_add_file_complete()
+    {
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $url_image = $this->input->post('url_image');
+        $id_job    = $this->input->post('id_job');
+
+        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        $order = $this->Order_model->get_info_order($info['id_order']);
+
+        if ($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        $parse = parse_url($url_image);
+        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        !$copy['status'] ? resError($copy['error']) : '';
+
+        //TODO: THIẾU GHI LOG
+        $id_file_complete = time();
+        $info['file_complete'][$id_file_complete] = $copy['basename'];
+        $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+        resSuccess($id_file_complete);
+    }
+
+    function ajax_edit_file_complete()
+    {
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $url_image   = $this->input->post('url_image');
+        $id_job      = $this->input->post('id_job');
+        $id_complete = $this->input->post('id_complete');
+
+        !isIdNumber($id_job)        ? resError('IMGAE không hợp lệ')      : '';
+        !isIdNumber($id_complete)   ? resError('ID COMPLETE không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        if ($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        !isset($info['file_complete'][$id_complete]) ? resError('ID COMPLETE không tồn tại') : '';
+
+        $parse = parse_url($url_image);
+        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        !$copy['status'] ? resError($copy['error']) : '';
+
+        //TODO: THIẾU GHI LOG
+        $info['file_complete'][$id_complete] = $copy['basename'];
+        $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+        resSuccess($id_complete);
+    }
+
+    function ajax_delete_file_complete()
+    {
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $id_job    = $this->input->post('id_job');
+        $id_complete = $this->input->post('id_complete');
+
+        !isIdNumber($id_job)        ? resError('IMGAE không hợp lệ')           : '';
+        !isIdNumber($id_complete)   ? resError('ID FILE COMPLETE không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('IMAGE không tồn tại') : '';
+
+        if ($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        !isset($info['file_complete'][$id_complete]) ? resError('ID FILE COMPLETE không tồn tại') : '';
+
+        unset($info['file_complete'][$id_complete]); // xóa
+
+        //TODO: THIẾU GHI LOG
+        $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+        resSuccess($id_complete);
+    }
+
+    // REWORK
+    function ajax_add_rework($id_job)
+    {
+
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $note   = $this->input->post('note');
+        $attach = $this->input->post('attach');
+
+        $note = removeAllTags($note);
+
+        !isIdNumber($id_job)    ? resError('IMGAE không hợp lệ') : '';
+
+        $job = $this->Job_model->get_info_job_by_id($id_job);
+        $job == [] ? resError('IMAGE không tồn tại') : '';
+
+        $note == ''             ? resError('Hãy nhập mô tả') : '';
+        !is_array($attach)      ? resError('Attach không hợp lệ') : '';
+
+        $db_attach = [];
+        foreach ($attach as $i => $url_image) {
+            $parse = parse_url($url_image);
+            !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+            $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+            !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+            $copy = copy_image_from_file_manager_to_public_upload($url_image, $job['year'], $job['month']);
+            !$copy['status'] ? resError($copy['error']) : '';
+            $id_attach = time() + $i;
+            $db_attach[$id_attach] = $copy['basename'];
+        }
+
+        $exc = $this->Job_model->add_rework($job['id_order'], $id_job, json_encode($db_attach), $note, $cur_uid);
+
+        $exc ? resSuccess('ok') : resError('Không lưu được vào lúc này, vui lòng thử lại');
+    }
+
+    // TODO: mới copy code
+    function ajax_edit_attach_file_rework()
+    {
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
@@ -548,7 +756,7 @@ class Order extends MY_Controller
         $id_attach = $this->input->post('id_attach');
 
         !isIdNumber($id_job)    ? resError('IMGAE không hợp lệ')    : '';
-        !isIdNumber($id_attach) ? resError('ID ATTACH không hợp lệ'): '';
+        !isIdNumber($id_attach) ? resError('ID ATTACH không hợp lệ') : '';
 
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
@@ -570,7 +778,8 @@ class Order extends MY_Controller
         resSuccess('Thành công');
     }
 
-    function ajax_update_requirement()
+    // TODO: mới copy code
+    function ajax_update_requirement_rework()
     {
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
@@ -589,7 +798,9 @@ class Order extends MY_Controller
         resSuccess('Thành công');
     }
 
-    function ajax_add_file_complete() {
+    // TODO: mới copy code
+    function ajax_add_file_complete_rework()
+    {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
@@ -602,9 +813,9 @@ class Order extends MY_Controller
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
 
-        $order = $this->$this->Order_model->get_info_order($info['id_order']);
+        $order = $this->Order_model->get_info_order($info['id_order']);
 
-        if($role == QC || $role == EDITOR) {
+        if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
@@ -623,42 +834,47 @@ class Order extends MY_Controller
         resSuccess($id_file_complete);
     }
 
-    function ajax_edit_file_complete() {
+    function ajax_edit_file_complete_rework()
+    {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
-        $url_image   = $this->input->post('url_image');
-        $id_job      = $this->input->post('id_job');
-        $id_complete = $this->input->post('id_complete');
+        $url_image          = $this->input->post('url_image');
+        $id_rework          = $this->input->post('id_rework');
+        $id_complete_rework = $this->input->post('id_complete_rework');
 
-        !isIdNumber($id_job)        ? resError('IMGAE không hợp lệ')      : '';
-        !isIdNumber($id_complete)   ? resError('ID COMPLETE không hợp lệ'): '';
+        !isIdNumber($id_rework)             ? resError('Rework không hợp lệ')      : '';
+        !isIdNumber($id_complete_rework)    ? resError('ID COMPLETE không hợp lệ') : '';
 
-        $info = $this->Job_model->get_info_job_by_id($id_job);
-        $info == [] ? resError('IMAGE không tồn tại') : '';
+        $rework = $this->Job_model->get_info_rework_by_id($id_rework);
+        $rework == [] ? resError('Rework không tồn tại') : '';
 
-        if($role == QC || $role == EDITOR) {
+        $order = $this->Order_model->get_info_order($rework['id_order']);
+
+        if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
-        !isset($info['file_complete'][$id_complete]) ? resError('ID COMPLETE không tồn tại') : '';
+        !isset($rework['file_complete'][$id_complete_rework]) ? resError('ID COMPLETE không tồn tại') : '';
 
         $parse = parse_url($url_image);
         !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        $copy = copy_image_from_file_manager_to_public_upload($url_image, $rework['year'], $rework['month']);
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
-        $info['file_complete'][$id_complete] = $copy['basename'];
-        $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
-        resSuccess($id_complete);
+        $rework['file_complete'][$id_complete_rework] = $copy['basename'];
+        $this->Job_model->update_file_complete_rework($id_rework, json_encode($rework['file_complete']));
+        resSuccess($id_complete_rework);
     }
 
-    function ajax_delete_file_complete() {
+    // TODO: mới copy code
+    function ajax_delete_file_complete_rework()
+    {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
@@ -667,16 +883,16 @@ class Order extends MY_Controller
         $id_complete = $this->input->post('id_complete');
 
         !isIdNumber($id_job)        ? resError('IMGAE không hợp lệ')           : '';
-        !isIdNumber($id_complete)   ? resError('ID FILE COMPLETE không hợp lệ'): '';
+        !isIdNumber($id_complete)   ? resError('ID FILE COMPLETE không hợp lệ') : '';
 
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
 
-        if($role == QC || $role == EDITOR) {
+        if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
-        !isset($info['file_complete'][$id_complete]) ? resError('ID FILE COMPLETE không tồn tại'): '';
+        !isset($info['file_complete'][$id_complete]) ? resError('ID FILE COMPLETE không tồn tại') : '';
 
         unset($info['file_complete'][$id_complete]); // xóa
 

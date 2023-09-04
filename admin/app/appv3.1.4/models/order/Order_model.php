@@ -43,6 +43,8 @@ class Order_model extends CI_Model
                         $data['job'][$id_job]['working_qc_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_QC, $iconn);
                         $data['job'][$id_job]['working_qc_block']  = $this->_get_list_job_user_by_job($id_order, $id_job, 0, WORKING_QC, $iconn);
 
+                        // gán rework
+                        $data['job'][$id_job]['rework']  = $this->_get_list_rework_user_by_job($id_job, $iconn);
 
                         if (!empty($data['job'][$id_job]['working_ed_active'])) {
                             $data['working_ed_active'][]   = $data['job'][$id_job]['working_ed_active'];
@@ -391,6 +393,28 @@ class Order_model extends CI_Model
     }
     //  END LẤY DANH SÁCH ĐƠN THEO USER
 
+    // DANH SÁCH REWORK CỦA JOB
+    function _get_list_rework_user_by_job($id_job, $iconn)
+    {
+        $data = [];
+        $sql = "SELECT * FROM tbl_job_rework  WHERE id_job = $id_job ";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $row['attach'] = json_decode($row['attach'], true);
+                $row['file_complete'] = json_decode($row['file_complete'], true);
+                $data[$row['id_job_rework']] = $row;
+            }
+        } else {
+            var_dump($stmt->errorInfo());
+            die;
+        }
+
+        return $data;
+    }
+    // END DANH SÁCH REWORK CỦA JOB
+
     function box_count($list_order)
     {
         $box = [];
@@ -414,7 +438,7 @@ class Order_model extends CI_Model
                 $box['late'] = isset($box['late']) ? $box['late'] + 1 : 1;
             }
         }
-                
+
         $list_image_avaiable = $this->danh_sach_image_avaiable();
         $box['image_avaiable'] = count($list_image_avaiable);
 
@@ -686,7 +710,7 @@ class Order_model extends CI_Model
             if ($stmt->execute([ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, WORKING_EDITOR])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        
+
                         $data[$row['id_job']] = $row;
                     }
                 }
@@ -705,7 +729,7 @@ class Order_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
         $sql = "SELECT * FROM tbl_order WHERE code_order = ? LIMIT 1";
-        
+
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$code])) {

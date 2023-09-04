@@ -122,6 +122,36 @@ class Job_model extends CI_Model
         return $data;
     }
 
+    function get_info_rework_by_id($id_rework)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT A.*, B.create_time FROM tbl_job_rework as A 
+        INNER JOIN tbl_job as B ON A.id_job = B.id_job
+        WHERE id_job_rework = ?";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$id_rework])) {
+                if ($stmt->rowCount() > 0) {
+
+                    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if (!empty($data)) {
+                    }
+
+                    $data['year'] = date('Y', strtotime($data['create_time']));
+                    $data['month'] = date('m', strtotime($data['create_time']));
+                    $data['file_complete'] = $data['file_complete'] == null ? [] : json_decode($data['file_complete'], true);
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
     function update_image_job($id_job, $image){
         $execute = false;
         $iconn = $this->db->conn_id;
@@ -182,6 +212,26 @@ class Job_model extends CI_Model
         return $execute;
     }
 
+    function update_file_complete_rework($id_rework, $file_complete){
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job_rework SET file_complete=? WHERE id_job_rework=? LIMIT 1";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$file_complete, $id_rework];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
     function update_requirement_job($id_job, $requirement){
         $execute = false;
         $iconn = $this->db->conn_id;
@@ -190,6 +240,27 @@ class Job_model extends CI_Model
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             $param = [$requirement, $id_job];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function add_rework($id_order, $id_job, $attach, $note, $id_user)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT INTO tbl_job_rework (id_order, id_job, attach, note, id_user) VALUES (?, ?, ?, ?, ?)";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_order, $id_job, $attach, $note, $id_user];
 
             if ($stmt->execute($param)) {
                 $execute = true;

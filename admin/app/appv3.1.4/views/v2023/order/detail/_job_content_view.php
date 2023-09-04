@@ -144,7 +144,7 @@
                                                         <i class="fas fa-upload"></i>
                                                     </button>
 
-                                                    <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($job['image'], 'uploads/images/' . $job['year'] . '/' . $job['month'] . '/') ?>', '<?= $job['image'] ?>')">
+                                                    <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, 'uploads/images/' . $job['year'] . '/' . $job['month'] . '/') ?>', '<?= $file ?>')">
                                                         <i class="fas fa-download"></i>
                                                     </button>
 
@@ -163,66 +163,12 @@
                             </div>
 
                             <!-- CARD REWORK LIST-->
-                            <!-- TODO: TẠM ẨN -->
-                            <div class="card card-primary shadow d-none">
-                                <div class="card-header">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                                            <div>REWORK 1</div>
-                                            <!-- TODO: TẠM ẨN -->
-                                            <!-- <button class="btn btn-danger btn-sm">SAVE</button> -->
-                                        </h3>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div>
-                                        <b>Requirements</b>
-                                        <textarea class="form-control " rows="5">Please use greyish wide plank hardwood flooring in rooms, dark gray tiles in bathrooms and light carpet in bedrooms.Use Scandinavian furniture design and white kitchen with dark gray countertops.</textarea>
-                                    </div>
-                                    <div class="mt-2">
-                                        <b>Attach Reference Files</b>
-                                        <div class="d-flex flex-wrap" style="gap:7px">
-                                            <div class="position-relative">
-                                                <div class="position-absolute" style="right: 10px">
-                                                    <i class="fas fa-times icon-delete-image"></i>
-                                                </div>
-                                                <img src="https://picsum.photos/320/180" alt="" width="100">
-                                            </div>
-
-                                            <div class="position-relative">
-                                                <div class="position-absolute" style="right: 10px">
-                                                    <i class="fas fa-times icon-delete-image"></i>
-                                                </div>
-                                                <img src="https://picsum.photos/320/180" alt="" width="100">
-                                            </div>
-
-                                            <!-- TODO: TẠM ẨN -->
-                                            <!-- <div class="btn-upfile rounded border shadow">
-                                                                    <i class="fas fa-upload"></i>
-                                                                    <div>Upload file <br>attach reference</div>
-                                                                </div> -->
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <b>File rework complete</b>
-                                        <div class="d-flex flex-wrap" style="gap: 10px;">
-                                            <div class="position-relative" style="width: 48%;">
-                                                <div class="position-absolute" style="right: 10px">
-                                                    <i class="fas fa-times icon-delete-image"></i>
-                                                </div>
-                                                <img src="https://picsum.photos/320/180" alt="" width="100%">
-                                            </div>
-                                            <!-- TODO: TẠM ẨN -->
-                                            <!-- <div class="btn-upfile rounded border shadow">
-                                                                    <i class="fas fa-upload"></i>
-                                                                    <div>Upload file <br>rework complete</div>
-                                                                </div> -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END CARD REWORK LIST-->
+                            <?php
+                            $data['id_order'] = $order['id_order'];
+                            $data['id_job']   = $id_job;
+                            $data['job']      = $job;
+                            $this->load->view(TEMPLATE_FOLDER . 'order/detail/_job_content_rework_view.php', $data); ?>
+                            <!-- CARD REWORK LIST-->
                         </div>
                     </div>
                 </div>
