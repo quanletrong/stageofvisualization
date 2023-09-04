@@ -1033,7 +1033,7 @@ function status_order($status)
 
 // DONE, DELIVERED, COMPLETE
 // $second_time_limit = 86400 = 1 day
-function status_late_order($status_text, $time_create_order, $time_done, $custom_time_second = 0, $second_time_limit = 86400)
+function status_late_order($status_text, $time_create_order, $time_done, $custom_time_second = 0, $second_time_limit = MIN_TIME_WORKING)
 {
     $data = [];
     $tsp_time_create_order = strtotime($time_create_order);
@@ -1062,8 +1062,7 @@ function count_down_time_order($order)
     $thoi_gian_tra_don = strtotime($order['done_qc_time']);
     $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
     $cong_them_gio = $order['custom_time'];
-    $thoi_gian_toi_thieu = 86400;
-    $han_chot = $thoi_gian_tao_don + $cong_them_gio + $thoi_gian_toi_thieu;
+    $han_chot = $thoi_gian_tao_don + $cong_them_gio + MIN_TIME_WORKING;
 
 
     // đã hoàn thành đơn
@@ -1105,8 +1104,7 @@ function is_late_order($order)
     $thoi_gian_tra_don = strtotime($order['done_qc_time']);
     $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
     $cong_them_gio = $order['custom_time'];
-    $thoi_gian_toi_thieu = 86400;
-    $han_chot = $thoi_gian_tao_don + $cong_them_gio + $thoi_gian_toi_thieu;
+    $han_chot = $thoi_gian_tao_don + $cong_them_gio + MIN_TIME_WORKING;
 
     $ket_qua = 0;
 

@@ -24,8 +24,23 @@
         </div>
     </div>
     <div class="card-body">
+        <?php if (in_array($role, [ADMIN, SALE])) { ?>
+            <div class="mb-3">
+                <b>Realtime</b>
+                <small onclick="alert('Thời gian còn lại tính từ khi tạo đơn')">[Mô tả]</small>
+                <?php
+                $real_time = $order;
+                $real_time['id_order'] = 'real_time';
+                $real_time['custom_time'] = 0;
+                ?>
+                <div id="cdt_<?= $real_time['id_order'] ?>" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
+                    <?= count_down_time_order($real_time) ?>
+                </div>
+            </div>
+        <?php } ?>
         <div>
             <b>Countdown time</b>
+            <small onclick="alert('Thời gian còn lại sau khi cộng thời gian custom')">[Mô tả]</small>
             <div id="cdt_<?= $order['id_order'] ?>" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
                 <?= count_down_time_order($order) ?>
             </div>
