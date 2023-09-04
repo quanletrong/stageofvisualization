@@ -798,7 +798,6 @@ class Order extends MY_Controller
         resSuccess('Thành công');
     }
 
-    // TODO: mới copy code
     function ajax_add_file_complete_rework()
     {
         $cur_uid = $this->_session_uid();
@@ -806,12 +805,12 @@ class Order extends MY_Controller
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $url_image = $this->input->post('url_image');
-        $id_job    = $this->input->post('id_job');
+        $id_rework    = $this->input->post('id_rework');
 
-        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
+        !isIdNumber($id_rework) ? resError('Rework không hợp lệ') : '';
 
-        $info = $this->Job_model->get_info_job_by_id($id_job);
-        $info == [] ? resError('IMAGE không tồn tại') : '';
+        $info = $this->Job_model->get_info_rework_by_id($id_rework);
+        $info == [] ? resError('Rework không tồn tại') : '';
 
         $order = $this->Order_model->get_info_order($info['id_order']);
 
@@ -830,7 +829,7 @@ class Order extends MY_Controller
         //TODO: THIẾU GHI LOG
         $id_file_complete = time();
         $info['file_complete'][$id_file_complete] = $copy['basename'];
-        $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+        $this->Job_model->update_file_complete_rework($id_rework, json_encode($info['file_complete']));
         resSuccess($id_file_complete);
     }
 
@@ -872,21 +871,20 @@ class Order extends MY_Controller
         resSuccess($id_complete_rework);
     }
 
-    // TODO: mới copy code
     function ajax_delete_file_complete_rework()
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
-        $id_job    = $this->input->post('id_job');
+        $id_rework    = $this->input->post('id_rework');
         $id_complete = $this->input->post('id_complete');
 
-        !isIdNumber($id_job)        ? resError('IMGAE không hợp lệ')           : '';
+        !isIdNumber($id_rework)     ? resError('Rework không hợp lệ')           : '';
         !isIdNumber($id_complete)   ? resError('ID FILE COMPLETE không hợp lệ') : '';
 
-        $info = $this->Job_model->get_info_job_by_id($id_job);
-        $info == [] ? resError('IMAGE không tồn tại') : '';
+        $info = $this->Job_model->get_info_rework_by_id($id_rework);
+        $info == [] ? resError('Rework không tồn tại') : '';
 
         if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
@@ -897,7 +895,7 @@ class Order extends MY_Controller
         unset($info['file_complete'][$id_complete]); // xóa
 
         //TODO: THIẾU GHI LOG
-        $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+        $this->Job_model->update_file_complete_rework($id_rework, json_encode($info['file_complete']));
         resSuccess($id_complete);
     }
 }

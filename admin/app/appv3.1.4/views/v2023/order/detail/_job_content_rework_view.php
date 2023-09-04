@@ -138,14 +138,14 @@
 
     })
 
-    function cb_upload_add_file_complete(url_image, target, file_name) {
+    function cb_upload_add_file_complete_rework(url_image, target, file_name) {
 
-        let id_job = $(target).data('id-job');
+        let id_rework = $(target).data('id-rework');
         $.ajax({
-            url: `order/ajax_add_file_complete`,
+            url: `order/ajax_add_file_complete_rework`,
             type: "POST",
             data: {
-                id_job,
+                id_rework,
                 url_image
             },
             success: function(data, textStatus, jqXHR) {
@@ -154,9 +154,9 @@
                 if (kq.status) {
                     let id_file_complete = kq.data;
                     let html = `
-                <div class="position-relative image-hover" style="width: 48%;" id="file_complete_${id_file_complete}">
+                <div class="position-relative image-hover" style="width: 48%;" id="file_complete_rework_${id_file_complete}">
                     <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
-                        <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_${id_file_complete}">
+                        <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_${id_file_complete}">
                             <i class="fas fa-upload"></i>
                         </button>
 
@@ -164,11 +164,11 @@
                             <i class="fas fa-download"></i>
                         </button>
 
-                        <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete(this, ${id_job}, ${id_file_complete})">
+                        <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete_rework(this, ${id_rework}, ${id_file_complete})">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
-                    <img id="img_complete_${id_file_complete}" data-id-job="${id_job}" data-id-complete="${id_file_complete}" src="${url_image}" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                    <img id="img_complete_rework_${id_file_complete}" data-id-rework="${id_rework}" data-id-complete-rework="${id_file_complete}" src="${url_image}" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
                 </div>`;
                     $(target).append(html)
                 } else {
@@ -216,15 +216,15 @@
         });
     }
 
-    function ajax_delete_file_complete_rework(btn, id_job, id_complete) {
+    function ajax_delete_file_complete_rework(btn, id_rework, id_complete) {
         $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
         $(btn).prop("disabled", true);
 
         $.ajax({
-            url: `order/ajax_delete_file_complete`,
+            url: `order/ajax_delete_file_complete_rework`,
             type: "POST",
             data: {
-                id_job,
+                id_rework,
                 id_complete
             },
             success: function(data, textStatus, jqXHR) {
@@ -235,7 +235,7 @@
                 } else {
                     toasts_danger(kq.error);
                 }
-                $(`#file_complete_${id_complete}`).remove();
+                $(`#file_complete_rework_${id_complete}`).remove();
                 $(btn).prop("disabled", false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
