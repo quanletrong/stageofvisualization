@@ -30,18 +30,23 @@ class Order_model extends CI_Model
                     $data['working_custom_block']  = [];
                     $data['working_ed_active']     = [];
                     $data['working_ed_block']      = [];
-                    $data['working_qc_active']     = [];
-                    $data['working_qc_block']      = [];
-                    $data['total_custom_used']     = 0; // số lượng custom đã dùng trong đơn
+                    $data['working_qc_in_active']  = [];
+                    $data['working_qc_out_active'] = [];
+                    $data['working_qc_in_block']   = [];
+                    $data['working_qc_out_block']  = [];
+                    $data['total_custom_used']     = 0;   // số lượng custom đã dùng trong đơn
 
                     foreach ($data['job'] as $id_job => $job) {
                         // gán working ed
                         $data['job'][$id_job]['working_ed_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_EDITOR, $iconn);
                         $data['job'][$id_job]['working_ed_block']  = $this->_get_list_job_user_by_job($id_order, $id_job, 0, WORKING_EDITOR, $iconn);
 
-                        // gán working qc
-                        $data['job'][$id_job]['working_qc_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_QC, $iconn);
-                        $data['job'][$id_job]['working_qc_block']  = $this->_get_list_job_user_by_job($id_order, $id_job, 0, WORKING_QC, $iconn);
+                        // gán working qc in
+                        $data['job'][$id_job]['working_qc_in_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_QC_IN, $iconn);
+                        $data['job'][$id_job]['working_qc_in_block']  = $this->_get_list_job_user_by_job($id_order, $id_job, 0, WORKING_QC_IN, $iconn);
+                        // gán working qc out
+                        $data['job'][$id_job]['working_qc_out_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_QC_OUT, $iconn);
+                        $data['job'][$id_job]['working_qc_out_block']  = $this->_get_list_job_user_by_job($id_order, $id_job, 0, WORKING_QC_OUT, $iconn);
 
                         // gán rework
                         $data['job'][$id_job]['rework']  = $this->_get_list_rework_user_by_job($id_job, $iconn);
@@ -52,11 +57,17 @@ class Order_model extends CI_Model
                         if (!empty($data['job'][$id_job]['working_ed_block'])) {
                             $data['working_ed_block'][]   = $data['job'][$id_job]['working_ed_block'];
                         }
-                        if (!empty($data['job'][$id_job]['working_qc_active'])) {
-                            $data['working_qc_active'][]   = $data['job'][$id_job]['working_qc_active'];
+                        if (!empty($data['job'][$id_job]['working_qc_in_active'])) {
+                            $data['working_qc_in_active'][]   = $data['job'][$id_job]['working_qc_in_active'];
                         }
-                        if (!empty($data['job'][$id_job]['working_qc_block'])) {
-                            $data['working_qc_block'][]   = $data['job'][$id_job]['working_qc_block'];
+                        if (!empty($data['job'][$id_job]['working_qc_out_active'])) {
+                            $data['working_qc_out_active'][]   = $data['job'][$id_job]['working_qc_out_active'];
+                        }
+                        if (!empty($data['job'][$id_job]['working_qc_in_block'])) {
+                            $data['working_qc_in_block'][]   = $data['job'][$id_job]['working_qc_in_block'];
+                        }
+                        if (!empty($data['job'][$id_job]['working_qc_out_block'])) {
+                            $data['working_qc_out_block'][]   = $data['job'][$id_job]['working_qc_out_block'];
                         }
 
                         // gán type_service to order
@@ -324,7 +335,7 @@ class Order_model extends CI_Model
         $sql = "SELECT B.id_user, B.username, B.fullname, B.avatar
         FROM tbl_job_user as A
         INNER JOIN tbl_user as B ON A.id_user = B.id_user
-        WHERE id_order= $id_odrer AND type_job_user IN (2,3,4) AND A.status = 1";
+        WHERE id_order= $id_odrer AND type_job_user IN (2,3,4,5) AND A.status = 1";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt->execute()) {

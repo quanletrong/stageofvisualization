@@ -161,7 +161,7 @@ class Order extends MY_Controller
         !isset($allow_status_by_role[$new_status])  ? resError('Trạng thái chuyển không phù hợp') : '';
 
         $cur_status            = $order['status'];
-        $num_working_qc_active = count($order['working_qc_active']);
+        $num_working_qc_in_active = count($order['working_qc_in_active']);
         $num_working_ed_active = count($order['working_ed_active']);
 
         if ($new_status == ORDER_PENDING) {
@@ -169,28 +169,28 @@ class Order extends MY_Controller
         if ($new_status == ORDER_QC_CHECK) {
         }
         if ($new_status == ORDER_AVAIABLE) {
-            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái AVAIABLE') : '';
+            $num_working_qc_in_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái AVAIABLE') : '';
         }
         if ($new_status == ORDER_DONE) {
-            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái DONE') : '';
+            $num_working_qc_in_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái DONE') : '';
             $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái DONE') : '';
         }
         if ($new_status == ORDER_DELIVERED) {
-            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái DELIVERED') : '';
+            $num_working_qc_in_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái DELIVERED') : '';
             $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái DELIVERED') : '';
         }
         if ($new_status == ORDER_FIX) {
-            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái FIX') : '';
+            $num_working_qc_in_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái FIX') : '';
             $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái FIX') : '';
         }
         if ($new_status == ORDER_REWORK) {
-            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái REWORK') : '';
+            $num_working_qc_in_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái REWORK') : '';
             $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái REWORK') : '';
         }
         if ($new_status == ORDER_CANCLE) {
         }
         if ($new_status == ORDER_COMPLETE) {
-            $num_working_qc_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái COMPLETE') : '';
+            $num_working_qc_in_active == 0 ? resError('Hãy nhập WORKING QC trước khi chuyển trạng thái COMPLETE') : '';
             $num_working_ed_active == 0 ? resError('Hãy nhập WORKING ED trước khi chuyển trạng thái COMPLETE') : '';
         }
 
@@ -261,11 +261,16 @@ class Order extends MY_Controller
             $role == EDITOR && $order['status'] == ORDER_QC_CHECK   ? resError('ED không thể tham gia vào đơn hàng đang QC CHECK') : '';
             !isset($order['job'][$id_job])                          ? resError('IMAGE không tồn tại') : '';
             !empty($order['job'][$id_job]['working_ed_active'])     ? resError('Đã có người nhận làm IMAGE này') : '';
-        } else if ($working_type == WORKING_QC) {
+        } else if ($working_type == WORKING_QC_IN) {
             $role == EDITOR                                     ? resError('ED không có quyền thực hiện chức năng này.') : '';
             $as_uinfo['role'] == EDITOR                         ? resError('Không được gán tài khoản ED vào đây.') : '';
             !isset($order['job'][$id_job])                      ? resError('IMAGE không tồn tại') : '';
-            !empty($order['job'][$id_job]['working_qc_active']) ? resError('Đã có người nhận làm IMAGE này') : '';
+            !empty($order['job'][$id_job]['working_qc_in_active']) ? resError('Đã có người nhận làm IMAGE này') : '';
+        } else if ($working_type == WORKING_QC_OUT) {
+            $role == EDITOR                                     ? resError('ED không có quyền thực hiện chức năng này.') : '';
+            $as_uinfo['role'] == EDITOR                         ? resError('Không được gán tài khoản ED vào đây.') : '';
+            !isset($order['job'][$id_job])                      ? resError('IMAGE không tồn tại') : '';
+            !empty($order['job'][$id_job]['working_qc_out_active']) ? resError('Đã có người nhận làm IMAGE này') : '';
         } else if ($working_type == WORKING_CUSTOM) {
             $id_job = 0; // mặc định
             $role == EDITOR ? resError('ED không có quyền thực hiện chức năng này.') : '';
@@ -277,8 +282,8 @@ class Order extends MY_Controller
         $status = 1;
         $time_join = date('Y-m-d H:i:s');
 
-        // WORKING_SALE, WORKING_QC, WORKING_EDITOR => thay đổi tất cả user trong job thành status = 0
-        if (in_array($working_type, [WORKING_SALE, WORKING_QC, WORKING_EDITOR])) {
+        // WORKING_SALE, WORKING_QC_IN, WORKING_QC_OUT, WORKING_EDITOR => thay đổi tất cả user trong job thành status = 0
+        if (in_array($working_type, [WORKING_SALE, WORKING_QC_IN, WORKING_QC_OUT, WORKING_EDITOR])) {
             $this->Order_model->thay_doi_status_tat_ca_job_user(0, $id_order, $id_job, $working_type);
         }
 
@@ -350,13 +355,22 @@ class Order extends MY_Controller
         $role == EDITOR && $as_uinfo['role'] == QC       ? resError('ED không có quyền xóa người cấp QC') : '';
 
 
-        // WORKING_QC
-        if ($working_type == WORKING_QC) {
-            $working_qc_active = $order['job'][$id_job]['working_qc_active'];
+        // WORKING_QC_IN
+        if ($working_type == WORKING_QC_IN) {
+            $working_qc_in_active = $order['job'][$id_job]['working_qc_in_active'];
 
-            $role == EDITOR                                     ? resError('ED không có quyền thực hiện chức năng này.') : '';
-            $role == QC && !isset($working_qc_active[$cur_uid]) ? resError('Bạn chưa được gán vào IMAGE này') : '';
+            $role == EDITOR                                         ? resError('ED không có quyền thực hiện chức năng này.') : '';
+            $role == QC && !isset($working_qc_in_active[$cur_uid])  ? resError('Bạn chưa được gán vào IMAGE này') : '';
         }
+
+        // WORKING_QC_OUT
+        if ($working_type == WORKING_QC_OUT) {
+            $working_qc_in_active = $order['job'][$id_job]['working_qc_out_active'];
+
+            $role == EDITOR                                         ? resError('ED không có quyền thực hiện chức năng này.') : '';
+            $role == QC && !isset($working_qc_out_active[$cur_uid]) ? resError('Bạn chưa được gán vào IMAGE này') : '';
+        }
+
         // WORKING_EDITOR
         else if ($working_type == WORKING_EDITOR) {
             $working_ed_active = $order['job'][$id_job]['working_ed_active'];

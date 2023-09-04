@@ -88,7 +88,8 @@ define('SERVICE_STOP', 0);
 
 // WORKING TYPE
 define('WORKING_SALE', 1);
-define('WORKING_QC', 2);
+define('WORKING_QC_IN', 2);
+define('WORKING_QC_OUT', 5);
 define('WORKING_EDITOR', 3);
 define('WORKING_CUSTOM', 4);
 
