@@ -252,6 +252,26 @@ class Job_model extends CI_Model
         return $execute;
     }
 
+    function update_requirement_rework($id_rework, $note){
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job_rework SET note=? WHERE id_job_rework=? LIMIT 1";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$note, $id_rework];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
     function add_rework($id_order, $id_job, $attach, $note, $id_user)
     {
         $execute = false;

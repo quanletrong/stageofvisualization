@@ -781,20 +781,27 @@ class Order extends MY_Controller
     // TODO: mới copy code
     function ajax_update_requirement_rework()
     {
+        $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
-        $id_job    = $this->input->post('id_job');
+        $id_rework    = $this->input->post('id_rework');
         $requirement = removeAllTags($this->input->post('requirement'));
 
-        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
+        !isIdNumber($id_rework) ? resError('Rework không hợp lệ') : '';
         !strlen($requirement) ? resError('Requirement không được bỏ trống') : '';
 
-        $info = $this->Job_model->get_info_job_by_id($id_job);
-        $info == [] ? resError('IMAGE không tồn tại') : '';
+        $info = $this->Job_model->get_info_rework_by_id($id_rework);
+        $info == [] ? resError('Rework không tồn tại') : '';
+
+        $order = $this->Order_model->get_info_order($info['id_order']);
+
+        if ($role == QC ) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
 
         //TODO: THIẾU GHI LOG
-        $this->Job_model->update_requirement_job($id_job, $requirement);
+        $this->Job_model->update_requirement_rework($id_rework, $requirement);
         resSuccess('Thành công');
     }
 
