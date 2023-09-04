@@ -393,25 +393,17 @@ function htmlEntities(str) {
 }
 
 function count_down_time(time, elId) {
-    console.log(time)
-    var countDownDate = new Date(time).getTime();
-
+    
     //before
     document.getElementById(elId).innerHTML = '<i class="fas fa-sync fa-spin"></i>';
 
-    // Update the count down every 1 second
+    var countDownDate = new Date(time).getTime();
     var x = setInterval(function () {
-
-        // Get today's date and time
         var now = new Date().getTime();
-
-        // Find the distance between now and the count down date
         var distance = countDownDate - now;
 
         // kiêm tra xem đã hết hạn chưa
         let IS_EXPIRED = distance < 0 ? true : false;
-
-        // Time calculations for days, hours, minutes and seconds
         let distance_abs = Math.abs(distance);
 
         var days = Math.floor(distance_abs / (1000 * 60 * 60 * 24));
@@ -419,19 +411,37 @@ function count_down_time(time, elId) {
         var minutes = Math.floor((distance_abs % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance_abs % (1000 * 60)) / 1000);
 
-        // Display the result in the element with id="demo"
         let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
         if (IS_EXPIRED) {
             document.getElementById(elId).innerHTML = '<span style="color:red"> - ' + ket_qua + '</span>';
         } else {
             document.getElementById(elId).innerHTML = '<span style="color:green">' + ket_qua + '</span>';
         }
-
-
-        // If the count down is finished, write some text
-        // if (distance < 0) {
-        //     clearInterval(x);
-        //     document.getElementById(elId).innerHTML = "EXPIRED";
-        // }
     }, 1000);
+}
+
+function no_count_down_time(time, timeDone, elId) {
+
+    //before
+    document.getElementById(elId).innerHTML = '<i class="fas fa-sync fa-spin"></i>';
+
+    var countDownDate = new Date(time).getTime();
+    var timeDoneDate = new Date(timeDone).getTime();
+    var distance = countDownDate - timeDoneDate;
+
+    // kiêm tra xem đã hết hạn chưa
+    let IS_EXPIRED = distance < 0 ? true : false;
+    let distance_abs = Math.abs(distance);
+
+    var days = Math.floor(distance_abs / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance_abs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance_abs % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance_abs % (1000 * 60)) / 1000);
+
+    let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
+    if (IS_EXPIRED) {
+        document.getElementById(elId).innerHTML = '<span style="color:red"> - ' + ket_qua + '</span>';
+    } else {
+        document.getElementById(elId).innerHTML = '<span style="color:green">' + ket_qua + '</span>';
+    }
 }

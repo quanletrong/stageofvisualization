@@ -1068,27 +1068,33 @@ function count_down_time_order($order)
     // đã hoàn thành đơn
     if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
 
-        $ket_qua = 0;
-        // đúng hạn thì hiển thị tổng thời gian làm (luôn dương)
-        if ($thoi_gian_tra_don <= $han_chot) {
-            $ket_qua = $thoi_gian_tra_don - $thoi_gian_tao_don;
-        }
-        // đúng hạn thì hiển thị tổng thời gian quá hạn (luôn âm)
-        else {
-            $ket_qua = $han_chot - $thoi_gian_tra_don;
-        }
+        // $ket_qua = 0;
+        // // đúng hạn thì hiển thị tổng thời gian làm (luôn dương)
+        // if ($thoi_gian_tra_don <= $han_chot) {
+        //     $ket_qua = $thoi_gian_tra_don - $thoi_gian_tao_don;
+        // }
+        // // đúng hạn thì hiển thị tổng thời gian quá hạn (luôn âm)
+        // else {
+        //     $ket_qua = $han_chot - $thoi_gian_tra_don;
+        // }
 
-        $ket_qua_duong = $ket_qua < 0 ? $ket_qua * -1 : $ket_qua;
-        $ngay = floor($ket_qua_duong / 86400);
-        $gio = floor(($ket_qua_duong - $ngay * 86400) / 3600);
-        $phut = floor(($ket_qua_duong - $ngay * 86400 - $gio * 3600) / 60);
-        $giay = $ket_qua_duong - $ngay * 86400 - $gio * 3600 - $phut * 60;
+        // $ket_qua_duong = $ket_qua < 0 ? $ket_qua * -1 : $ket_qua;
+        // $ngay = floor($ket_qua_duong / 86400);
+        // $gio = floor(($ket_qua_duong - $ngay * 86400) / 3600);
+        // $phut = floor(($ket_qua_duong - $ngay * 86400 - $gio * 3600) / 60);
+        // $giay = $ket_qua_duong - $ngay * 86400 - $gio * 3600 - $phut * 60;
 
-        if ($ngay > 0) {
-            return ($ket_qua < 0 ? "- " : '') . $ngay . ' ngày : ' . $gio . ' giờ : ' . $phut . ' phút';
-        } else {
-            return ($ket_qua < 0 ? "- " : '') . $gio . ' giờ : ' . $phut . ' phút :' . $giay . ' giây';
-        }
+        // if ($ngay > 0) {
+        //     return ($ket_qua < 0 ? "- " : '') . $ngay . ' ngày : ' . $gio . ' giờ : ' . $phut . ' phút';
+        // } else {
+        //     return ($ket_qua < 0 ? "- " : '') . $gio . ' giờ : ' . $phut . ' phút :' . $giay . ' giây';
+        // }
+
+        // $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
+
+        $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
+        $DMY_thoi_gian_tra_don = date('Y-m-d H:i:s', $thoi_gian_tra_don);
+        return "<script>no_count_down_time('$DMY_han_chot', '$DMY_thoi_gian_tra_don', 'cdt_$id_order')</script>";
     }
     // chưa hoàn thành đơn
     else {

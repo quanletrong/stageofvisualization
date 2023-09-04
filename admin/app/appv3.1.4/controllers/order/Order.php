@@ -149,6 +149,7 @@ class Order extends MY_Controller
         }
     }
 
+    //TODO: check kỹ lại quyền
     function ajax_change_status_order($id_order, $new_status)
     {
         $role    = $this->_session_role();
@@ -161,6 +162,10 @@ class Order extends MY_Controller
         !isset($allow_status_by_role[$new_status])  ? resError('Trạng thái chuyển không phù hợp') : '';
 
         $cur_status            = $order['status'];
+        if($cur_status == $new_status) {
+            resSuccess('ok');
+        }
+
         $num_working_qc_in_active = count($order['working_qc_in_active']);
         $num_working_ed_active = count($order['working_ed_active']);
 
@@ -210,7 +215,7 @@ class Order extends MY_Controller
         }
 
         // lưu thời gian giao hàng
-        if ($new_status == ORDER_DELIVERED) {
+        if ($new_status == ORDER_DELIVERED || $new_status == ORDER_COMPLETE) {
             $thoi_gian_giao_hang = date('Y-m-d H:i:s');
             $this->Order_model->luu_thoi_gian_giao_hang($id_order, $thoi_gian_giao_hang);
         }

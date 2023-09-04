@@ -27,14 +27,11 @@
         <?php if (in_array($role, [ADMIN, SALE])) { ?>
             <div class="mb-3">
                 <b>Realtime</b>
-                <small onclick="alert('Thời gian còn lại tính từ khi tạo đơn')">[Mô tả]</small>
-                <?php
-                $real_time = $order;
-                $real_time['id_order'] = 'real_time';
-                $real_time['custom_time'] = 0;
-                ?>
-                <div id="cdt_<?= $real_time['id_order'] ?>" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
-                    <?= count_down_time_order($real_time) ?>
+                <small onclick="alert('Thời gian từ lúc tạo đơn')">[Mô tả]</small>
+                <div id="cdt_real_time" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
+                    <script>
+                        count_down_time('<?= $order['create_time'] ?>', 'cdt_real_time')
+                    </script>
                 </div>
             </div>
         <?php } ?>
@@ -407,6 +404,7 @@
                         toasts_success();
                         $('#dropdownStatus').html(new_text);
                         $('#dropdownStatus').css('backgroundColor', new_bg);
+                        location.reload()
                     } else {
                         $('#dropdownStatus').html(old_text);
                         toasts_danger(`${kq.error}`);
