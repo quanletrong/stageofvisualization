@@ -47,7 +47,7 @@
             </div>
             <div class="mt-2">
                 <b>Attach Reference Files</b>
-                <div class="mt-2 d-flex flex-wrap" style="gap:7px">
+                <div id="list_attach_rework_<?= $id_rework ?>" data-id-rework="<?= $id_rework ?>" class="mt-2 d-flex flex-wrap" style="gap:7px">
                     <?php foreach ($rework['attach'] as $id_attach => $url_attach) { ?>
                         <div class="position-relative image-hover" style="width: 30%;" id="file_attach_<?= $id_attach ?>">
 
@@ -60,18 +60,18 @@
                                     <i class="fas fa-download"></i>
                                 </button>
 
-                                <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete(this, 13,<?= $id_attach ?>)">
+                                <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_attach_rework(this, <?= $id_rework ?>, <?= $id_attach ?>)">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
 
-                            <img id="img_attach_<?= $id_attach ?>" data-id-attach="<?= $id_attach ?>" data-id-complete="<?= $id_attach ?>" src="<?= $url_attach ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                            <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
                         </div>
                     <?php } ?>
                 </div>
 
                 <div class="mt-2 d-flex flex-wrap" style="gap:7px">
-                    <button class="btn btn-warning btn-sm mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_complete" data-target="#list_complete_13"> <i class="fas fa-paperclip"></i> Upload attach file</button>
+                    <button class="btn btn-warning btn-sm mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_rework" data-target="#list_attach_rework_<?= $id_rework ?>"> <i class="fas fa-paperclip"></i> Upload attach file</button>
                 </div>
             </div>
 
@@ -329,12 +329,11 @@
 
     // ATTACH REWORK
 
-    // TODO: Implement
     function cb_upload_add_file_attach_rework(url_image, target, file_name) {
 
         let id_rework = $(target).data('id-rework');
         $.ajax({
-            url: `order/ajax_add_file_complete_rework`,
+            url: `order/ajax_add_file_attach_rework`,
             type: "POST",
             data: {
                 id_rework,
@@ -344,24 +343,24 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    let id_file_complete = kq.data;
+                    let id_attach = kq.data;
                     let html = `
-        <div class="position-relative image-hover" style="width: 48%;" id="file_complete_rework_${id_file_complete}">
-            <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
-                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_${id_file_complete}">
-                    <i class="fas fa-upload"></i>
-                </button>
+                        <div class="position-relative image-hover" style="width: 30%;" id="file_attach_${id_attach}">
+                            <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_attach_rework" data-target="#img_attach_${id_attach}">
+                                    <i class="fas fa-upload"></i>
+                                </button>
 
-                <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')">
-                    <i class="fas fa-download"></i>
-                </button>
+                                <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')">
+                                    <i class="fas fa-download"></i>
+                                </button>
 
-                <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete_rework(this, ${id_rework}, ${id_file_complete})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <img id="img_complete_rework_${id_file_complete}" data-id-rework="${id_rework}" data-id-complete-rework="${id_file_complete}" src="${url_image}" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
-        </div>`;
+                                <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_attach_rework(this, ${id_rework}, ${id_attach})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <img id="img_attach_${id_attach}" data-id-rework="${id_rework}" data-id-attach="${id_attach}" src="${url_image}" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                        </div>`;
                     $(target).append(html)
                 } else {
                     toasts_danger(kq.error);
@@ -377,13 +376,13 @@
     function cb_upload_edit_file_attach_rework(url_image, target, file_name) {
 
         let id_attach = $(target).data('id-attach');
-        let id_complete = $(target).data('id-complete-rework');
+        let id_rework = $(target).data('id-rework');
         $.ajax({
             url: `order/ajax_edit_file_attach_rework`,
             type: "POST",
             data: {
                 id_attach,
-                id_complete,
+                id_rework,
                 url_image
             },
             success: function(data, textStatus, jqXHR) {
@@ -428,6 +427,35 @@
                     toasts_danger(kq.error);
                 }
                 $(`#file_complete_rework_${id_complete}`).remove();
+                $(btn).prop("disabled", false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_delete_file_attach_rework(btn, id_rework, id_attach) {
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+
+        $.ajax({
+            url: `order/ajax_delete_file_attach_rework`,
+            type: "POST",
+            data: {
+                id_rework,
+                id_attach
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+
+                } else {
+                    toasts_danger(kq.error);
+                }
+                $(`#file_attach_${id_attach}`).remove();
                 $(btn).prop("disabled", false);
             },
             error: function(jqXHR, textStatus, errorThrown) {

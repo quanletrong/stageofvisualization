@@ -142,6 +142,7 @@ class Job_model extends CI_Model
                     $data['year'] = date('Y', strtotime($data['create_time']));
                     $data['month'] = date('m', strtotime($data['create_time']));
                     $data['file_complete'] = $data['file_complete'] == null ? [] : json_decode($data['file_complete'], true);
+                    $data['attach'] = $data['attach'] == null ? [] : json_decode($data['attach'], true);
                 }
             } else {
                 var_dump($stmt->errorInfo());
@@ -216,6 +217,26 @@ class Job_model extends CI_Model
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = "UPDATE tbl_job_rework SET file_complete=? WHERE id_job_rework=? LIMIT 1";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$file_complete, $id_rework];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function update_file_attach_rework($id_rework, $file_complete){
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job_rework SET attach=? WHERE id_job_rework=? LIMIT 1";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {

@@ -768,24 +768,25 @@ class Order extends MY_Controller
         $exc ? resSuccess('ok') : resError('Không lưu được vào lúc này, vui lòng thử lại');
     }
 
-    // TODO: mới copy code
-    function ajax_edit_attach_file_rework()
+    function ajax_add_file_attach_rework()
     {
+        $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $url_image = $this->input->post('url_image');
-        $id_job    = $this->input->post('id_job');
-        $id_attach = $this->input->post('id_attach');
+        $id_rework = $this->input->post('id_rework');
 
-        !isIdNumber($id_job)    ? resError('IMGAE không hợp lệ')    : '';
-        !isIdNumber($id_attach) ? resError('ID ATTACH không hợp lệ') : '';
+        !isIdNumber($id_rework) ? resError('Rework không hợp lệ') : '';
 
-        $info = $this->Job_model->get_info_job_by_id($id_job);
-        $info == [] ? resError('IMAGE không tồn tại') : '';
+        $info = $this->Job_model->get_info_rework_by_id($id_rework);
+        $info == [] ? resError('Rework không tồn tại') : '';
 
-        $attachs = json_decode($info['attach'], true);
-        !isset($attachs[$id_attach]) ? resError('Attach không tồn tại') : '';
+        $order = $this->Order_model->get_info_order($info['id_order']);
+
+        if ($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
 
         $parse = parse_url($url_image);
         !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
@@ -796,9 +797,77 @@ class Order extends MY_Controller
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
-        $attachs[$id_attach] = $copy['basename'];
-        $this->Job_model->update_attach_job($id_job, json_encode($attachs));
-        resSuccess('Thành công');
+        $id_attach = time();
+        $info['attach'][$id_attach] = $copy['basename'];
+        $this->Job_model->update_file_attach_rework($id_rework, json_encode($info['attach']));
+        resSuccess($id_attach);
+    }
+
+    function ajax_edit_file_attach_rework()
+    {
+        
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $url_image = $this->input->post('url_image');
+        $id_rework = $this->input->post('id_rework');
+        $id_attach = $this->input->post('id_attach');
+
+        !isIdNumber($id_rework) ? resError('Rework không hợp lệ')      : '';
+        !isIdNumber($id_attach) ? resError('ID attach không hợp lệ') : '';
+
+        $rework = $this->Job_model->get_info_rework_by_id($id_rework);
+        $rework == [] ? resError('Rework không tồn tại') : '';
+
+        $order = $this->Order_model->get_info_order($rework['id_order']);
+
+        if ($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        !isset($rework['attach'][$id_attach]) ? resError('ID attach không tồn tại') : '';
+
+        $parse = parse_url($url_image);
+        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+        $copy = copy_image_from_file_manager_to_public_upload($url_image, $rework['year'], $rework['month']);
+        !$copy['status'] ? resError($copy['error']) : '';
+
+        //TODO: THIẾU GHI LOG
+        $rework['attach'][$id_attach] = $copy['basename'];
+        $this->Job_model->update_file_attach_rework($id_rework, json_encode($rework['attach']));
+        resSuccess($id_attach);
+    }
+
+    function ajax_delete_file_attach_rework()
+    {
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $id_rework    = $this->input->post('id_rework');
+        $id_attach = $this->input->post('id_attach');
+
+        !isIdNumber($id_rework) ? resError('Rework không hợp lệ')           : '';
+        !isIdNumber($id_attach) ? resError('ID FILE COMPLETE không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_rework_by_id($id_rework);
+        $info == [] ? resError('Rework không tồn tại') : '';
+
+        if ($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        !isset($info['attach'][$id_attach]) ? resError('ID FILE COMPLETE không tồn tại') : '';
+
+        unset($info['attach'][$id_attach]); // xóa
+
+        //TODO: THIẾU GHI LOG
+        $this->Job_model->update_file_attach_rework($id_rework, json_encode($info['attach']));
+        resSuccess($id_attach);
     }
 
     // TODO: mới copy code
@@ -835,7 +904,7 @@ class Order extends MY_Controller
         !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $url_image = $this->input->post('url_image');
-        $id_rework    = $this->input->post('id_rework');
+        $id_rework = $this->input->post('id_rework');
 
         !isIdNumber($id_rework) ? resError('Rework không hợp lệ') : '';
 
