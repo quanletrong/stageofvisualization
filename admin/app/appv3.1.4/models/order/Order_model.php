@@ -413,8 +413,8 @@ class Order_model extends CI_Model
         $stmt = $iconn->prepare($sql);
         if ($stmt->execute()) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $row['attach'] = json_decode($row['attach'], true);
-                $row['file_complete'] = json_decode($row['file_complete'], true);
+                $row['attach']               = $row['attach']        == null ? [] : json_decode($row['attach'], true);
+                $row['file_complete']        = $row['file_complete'] == null ? [] : json_decode($row['file_complete'], true);
                 $data[$row['id_job_rework']] = $row;
             }
         } else {

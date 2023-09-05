@@ -1,15 +1,15 @@
 <!-- LIST REWORK ĐÃ TẠO -->
+<?php $i = 1 ?>
 <?php foreach ($job['rework'] as $id_rework => $rework) { ?>
-    <div class="card card-primary shadow">
-        <!-- collapsed-card -->
+    <div class="card card-primary shadow collapsed-card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                    <div>REWORK</div>
+                    <div>REWORK <?= $i++ ?></div>
                 </h3>
                 <div class="card-tools m-0 d-flex">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                        <i class="fas fa-minus"></i>
+                        <i class="fas fa-plus"></i>
                     </button>
 
                     <button type="button" class="btn btn-tool" data-card-widget="remove">
@@ -90,36 +90,20 @@
             <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                 <div><i class="fas fa-plus"></i> NEW REWORK</div>
             </h3>
-            <!-- <div class="card-tools m-0 d-flex">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                </button>
-
-                <button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div> -->
         </div>
 
     </div>
     <div class="card-body">
-        <div>
+        <div class="mt-2">
+            <b>Attach Reference Files</b>
+            <div id="list_attach_rework_<?= $id_job ?>" class="mt-1 d-flex flex-wrap" style="gap:7px"></div>
+            <div class="mt-1 d-flex flex-wrap" style="gap:7px">
+                <button class="btn btn-warning btn-sm mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_new_rework" data-target="#list_attach_rework_<?= $id_job ?>"> <i class="fas fa-paperclip"></i> Upload attach file</button>
+            </div>
+        </div>
+        <div class="mt-2">
             <b>Requirements</b>
             <textarea class="txt_note_rework_add form-control" rows="5"></textarea>
-        </div>
-        <div class="mt-2 d-flex flex-wrap" style="gap:7px">
-            <button class="btn btn-warning btn-sm mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_complete" data-target="#list_complete_13"> <i class="fas fa-paperclip"></i> Upload attach file</button>
-        </div>
-        <div class="attach_files d-flex" style="gap:10px">
-            <div style="position:relative" class="mt-2">
-                <img src="http://stageofvisualization.local/uploads/tmp/lFpTM-300x250-1.jpg" style="width:50px;aspect-ratio: 1; object-fit: cover;">
-                <i class="fas fa-times" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this)"></i>
-            </div>
-
-            <div style="position:relative" class="mt-2">
-                <img src="http://stageofvisualization.local/uploads/tmp/lFpTM-300x250-1.jpg" style="width:50px;aspect-ratio: 1; object-fit: cover;">
-                <i class="fas fa-times" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this)"></i>
-            </div>
         </div>
         <div class="mt-2 text-center">
             <button class="btn btn-warning btn-sm mt-2" onclick="ajax_add_rework(this, '<?= $id_job ?>')" style="width: 100px;">save</button>
@@ -141,8 +125,8 @@
     function ajax_add_rework(btn, id_job) {
         let note = $(`#card_new_rework_${id_job} .txt_note_rework_add`).val();
         let attach = [];
-        $(`#card_new_rework_${id_job} .attach_files div`).each(function(index) {
-            let src = $(this).find('img').attr('src');
+        $(`#card_new_rework_${id_job} .img_attach`).each(function(index) {
+            let src = $(this).attr('src');
             attach.push(src);
         });
 
@@ -180,6 +164,22 @@
         });
     }
 
+    function cb_upload_add_file_attach_new_rework(url_image, target, file_name) {
+        let id_attach = Date.now();
+
+        let html = `
+        <div class="position-relative image-hover" style="width: 30%;" id="file_attach_${id_attach}">
+            <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                <button class="btn btn-sm btn-warning" onclick="remove_attach('#file_attach_${id_attach}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <img id="img_attach_${id_attach}" src="${url_image}" class="img_attach" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+        </div>`;
+        $(target).append(html)
+    }
+
+    // ===========
     function ajax_update_requirement_rework(btn, id_rework) {
 
         let requirement = $('#requirement_rework_' + id_rework).val();
@@ -467,7 +467,7 @@
 
     function remove_attach(e) {
         if (confirm("Are you sure you want to delete this file?") == true) {
-            $(e).parent().remove();
+            $(e).remove();
         }
     }
     // END ATTACH REWORK
