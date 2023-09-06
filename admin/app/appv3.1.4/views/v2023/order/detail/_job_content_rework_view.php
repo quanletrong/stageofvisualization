@@ -52,17 +52,20 @@
                         <div class="position-relative image-hover" style="width: 30%;" id="file_attach_<?= $id_attach ?>">
 
                             <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
-                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_attach_rework" data-target="#img_attach_<?= $id_attach ?>">
-                                    <i class="fas fa-upload"></i>
-                                </button>
 
                                 <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= $url_attach ?>', '<?= $url_attach ?>')">
                                     <i class="fas fa-download"></i>
                                 </button>
 
-                                <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_attach_rework(this, <?= $id_rework ?>, <?= $id_attach ?>)">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                                    <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_attach_rework" data-target="#img_attach_<?= $id_attach ?>">
+                                        <i class="fas fa-upload"></i>
+                                    </button>
+
+                                    <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_attach_rework(this, <?= $id_rework ?>, <?= $id_attach ?>)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                <?php } ?>
                             </div>
 
                             <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
@@ -70,16 +73,20 @@
                     <?php } ?>
                 </div>
 
-                <div class="mt-2 d-flex flex-wrap" style="gap:7px">
-                    <button class="btn btn-warning btn-sm mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_rework" data-target="#list_attach_rework_<?= $id_rework ?>"> <i class="fas fa-paperclip"></i> Upload attach file</button>
-                </div>
+                <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                    <div class="mt-2 d-flex flex-wrap" style="gap:7px">
+                        <button class="btn btn-warning btn-sm mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_rework" data-target="#list_attach_rework_<?= $id_rework ?>"> <i class="fas fa-paperclip"></i> Upload attach file</button>
+                    </div>
+                <?php } ?>
             </div>
 
             <div class="mt-2">
                 <b>Requirements</b>
                 <textarea class="form-control" id="requirement_rework_<?= $id_rework ?>" rows="5"><?= $rework['note'] ?></textarea>
             </div>
-            <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement_rework(this, <?= $id_rework ?>)" style="width: 100px;">Save</button>
+            <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement_rework(this, <?= $id_rework ?>)" style="width: 100px;">Save</button>
+            <?php } ?>
         </div>
     </div>
 <?php } ?>
@@ -113,9 +120,11 @@
 </div>
 
 <!-- END CARD REWORK LIST-->
-<div class="mt-2">
-    <button class="btn btn-warning w-100 mt-2" onclick="$('#card_new_rework_<?= $id_job ?>').removeClass('d-none');"> <i class="fas fa-plus"></i> New Rework</button>
-</div>
+<?php if (in_array($role, [ADMIN, SALE])) { ?>
+    <div class="mt-2">
+        <button class="btn btn-warning w-100 mt-2" onclick="$('#card_new_rework_<?= $id_job ?>').removeClass('d-none');"> <i class="fas fa-plus"></i> New Rework</button>
+    </div>
+<?php } ?>
 
 <script>
     $(document).ready(function() {
