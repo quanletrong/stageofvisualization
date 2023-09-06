@@ -184,7 +184,6 @@
         let id_job = $(target).data('id');
 
         $(target).attr('src', url_image);
-        ajax_edit_main_file(id_job, url_image)
 
         $.ajax({
             url: `order/ajax_edit_main_file`,
@@ -215,7 +214,6 @@
         let id_attach = $(target).data('id-attach');
 
         $(target).attr('src', url_image);
-        ajax_edit_attach_file(id_job, id_attach, url_image)
 
         $.ajax({
             url: `order/ajax_edit_attach_file`,

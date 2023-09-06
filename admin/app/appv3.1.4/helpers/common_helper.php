@@ -1184,6 +1184,7 @@ function button_status_order_by_role($role)
         $data[ORDER_CANCLE]    = status_order(ORDER_CANCLE);
         $data[ORDER_COMPLETE]  = status_order(ORDER_COMPLETE);
     } else if ($role == QC) {
+        $data[ORDER_PENDING]   = status_order(ORDER_PENDING);
         $data[ORDER_QC_CHECK]  = status_order(ORDER_QC_CHECK);
         $data[ORDER_AVAIABLE]  = status_order(ORDER_AVAIABLE);
         $data[ORDER_DONE]      = status_order(ORDER_DONE);
@@ -1202,7 +1203,7 @@ function allow_show_button_status_order_by_role($role, $status)
         return true;
     }
     if ($role == QC) {
-        return in_array($status, [ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_DELIVERED, ORDER_FIX, ORDER_REWORK]);
+        return in_array($status, [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_DELIVERED, ORDER_FIX, ORDER_REWORK]);
     }
     if ($role == EDITOR) {
         return in_array($status, [ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK]);

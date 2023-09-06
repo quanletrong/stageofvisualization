@@ -136,18 +136,25 @@ class Order_model extends CI_Model
         return $list_order;
     }
 
-    function get_list_for_qc($status = '')
+    function get_list_for_qc($id_user, $status = '')
     {
         $list_order = [];
         $iconn = $this->db->conn_id;
-
+        // lấy list id order theo user từ bảng `tbl_job_user`
+        $list_id_order = $this->_get_list_id_order_by_user_id($id_user, $iconn);
+        $str_id_order = implode(',', $list_id_order);
 
         $ORDER_PENDING = ORDER_PENDING;
         $sql = "SELECT A.*, B.code_user as code_user
         FROM tbl_order as A
         INNER JOIN tbl_user B ON A.id_user = B.id_user 
-        WHERE A.status != $ORDER_PENDING 
-        ORDER BY A.status ASC, A.create_time ASC";
+        WHERE A.status != $ORDER_PENDING ";
+
+        if($str_id_order != '') {
+            $sql .= " OR A.id_order IN ($str_id_order) ";
+        }
+        
+        $sql .= " ORDER BY A.status ASC, A.create_time ASC";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -269,7 +276,7 @@ class Order_model extends CI_Model
         // lấy list id order theo user từ bảng `tbl_job_user`
         $sql = "SELECT A.id_order
         FROM tbl_job_user as A
-        WHERE id_user= $id_user
+        WHERE A.id_user= $id_user AND A.status = 1
         GROUP BY A.id_order";
 
         $stmt = $iconn->prepare($sql);
