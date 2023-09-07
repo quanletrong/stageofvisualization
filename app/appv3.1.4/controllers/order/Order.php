@@ -67,6 +67,13 @@ class Order extends MY_Controller
         $list_job  = $order['job'];
 
         // VALIDATE
+        # check style
+        if(isIdNumber($style)) {
+            isset($all_style[$style]) ? '' : resError('error_style');
+        }
+        
+        $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) .'@'.$this->_session_uname();
+
         foreach ($list_job as $id_job => $job) {
             $room        = $job['room'];
             $service     = $job['service'];
@@ -74,29 +81,23 @@ class Order extends MY_Controller
             $requirement = $job['requirement'];
             $attach      = @$job['attach'];      // k bat buoc nhap attach nen de @
 
-            # check room, style, service
+            # check room, service
             isset($all_room[$room])         ? '' : resError('error_room');
-            isset($all_style[$style])       ? '' : resError('error_style');
             isset($all_service[$service])   ? '' : resError('error_service');
-            
+
             # lưu ảnh image
-            $copy_image = copy_image_from_file_manager_to_public_upload($image, date('Y'), date('m'));
+            $copy_image = copy_image_to_public_upload($image, $FDR_ORDER);
             $copy_image['status'] ? '' : resError('error_image');
             $list_job[$id_job]['image_ok'] = $copy_image['basename'];
 
             # lưu ảnh attachments
             $attach_ok = [];
             foreach ($attach as $id_attach => $image_attach) {
-                $copy_attach = copy_image_from_file_manager_to_public_upload($image_attach, date('Y'), date('m'));
+                $copy_attach = copy_image_to_public_upload($image_attach, $FDR_ORDER);
                 if ($copy_attach['status']) {
                     $attach_ok[$id_attach] = $copy_attach['basename'];
                 } else {
-                    #xóa ảnh chính vưa lưu
-                    @unlink($_SERVER["DOCUMENT_ROOT"] . '/' . PUBLIC_UPLOAD_PATH . date('Y') . '/' . date('m') . '/' . $copy_image['basename']);
-                    #xóa ảnh attach vừa lưu
-                    foreach ($attach_ok as $attach_image) {
-                        @unlink($_SERVER["DOCUMENT_ROOT"] . '/' . PUBLIC_UPLOAD_PATH . date('Y') . '/' . date('m') . '/' . $attach_image);
-                    }
+                    deleteDirectory($FDR_ORDER);
                     resError('error_attach');
                 }
             }

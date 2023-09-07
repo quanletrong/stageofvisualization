@@ -30,7 +30,7 @@
                                     <i class="fas fa-upload"></i>
                                 </button>
 
-                                <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, 'uploads/images/' . $job['year'] . '/' . $job['month'] . '/') ?>', '<?= $file ?>')">
+                                <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, $FDR_ORDER)?>', '<?= $file ?>')">
                                     <i class="fas fa-download"></i>
                                 </button>
 
@@ -39,7 +39,7 @@
                                 </button>
                             </div>
 
-                            <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                            <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
                         </div>
                     <?php } ?>
                 </div>
@@ -68,7 +68,7 @@
                                 <?php } ?>
                             </div>
 
-                            <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                            <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, $FDR_ORDER) ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
                         </div>
                     <?php } ?>
                 </div>

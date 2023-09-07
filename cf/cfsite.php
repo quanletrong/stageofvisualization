@@ -51,3 +51,4 @@ define('FOLDER_SERVICES', 'uploads/services/');
 define('FOLDER_ROOM', 'uploads/room/');
 define('FOLDER_STYLE', 'uploads/style/');
 define('FOLDER_LIBRARY', 'uploads/library/');
+define('FOLDER_ORDER', 'uploads/order/');

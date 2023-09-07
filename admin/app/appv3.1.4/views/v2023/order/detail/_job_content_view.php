@@ -61,12 +61,12 @@
                                                 </button>
                                             <?php } ?>
 
-                                            <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($job['image'], 'uploads/images/' . $job['year'] . '/' . $job['month'] . '/') ?>', '<?= $job['image'] ?>')">
+                                            <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($job['image'], $FDR_ORDER) ?>', '<?= $job['image'] ?>')">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                         </div>
 
-                                        <img src="<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>" style="aspect-ratio: 4/3; object-fit: cover;">
+                                        <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>" style="aspect-ratio: 4/3; object-fit: cover;">
                                     </div>
                                     <div class="mt-3">
                                         <b>Attach Reference Files</b>
@@ -85,12 +85,12 @@
                                                             </button>
                                                         <?php } ?>
 
-                                                        <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($item, 'uploads/images/' . $job['year'] . '/' . $job['month'] . '/') ?>', '<?= $item ?>')">
+                                                        <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($item, $FDR_ORDER) ?>', '<?= $item ?>')">
                                                             <i class="fas fa-download"></i>
                                                         </button>
                                                     </div>
 
-                                                    <img src="<?= url_image($item, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="aspect-ratio: 4/3; object-fit: cover;">
+                                                    <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" width="100" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="aspect-ratio: 4/3; object-fit: cover;">
                                                 </div>
                                             <?php } ?>
                                         </div>
@@ -144,7 +144,7 @@
                                                         <i class="fas fa-upload"></i>
                                                     </button>
 
-                                                    <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, 'uploads/images/' . $job['year'] . '/' . $job['month'] . '/') ?>', '<?= $file ?>')">
+                                                    <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, $FDR_ORDER) ?>', '<?= $file ?>')">
                                                         <i class="fas fa-download"></i>
                                                     </button>
 
@@ -153,7 +153,7 @@
                                                     </button>
                                                 </div>
 
-                                                <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                                                <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
                                             </div>
                                         <?php } ?>
                                     </div>
@@ -164,9 +164,10 @@
 
                             <!-- CARD REWORK LIST-->
                             <?php
-                            $data['id_order'] = $order['id_order'];
-                            $data['id_job']   = $id_job;
-                            $data['job']      = $job;
+                            $data['id_order']  = $order['id_order'];
+                            $data['id_job']    = $id_job;
+                            $data['job']       = $job;
+                            $data['FDR_ORDER'] = $FDR_ORDER;
                             $this->load->view(TEMPLATE_FOLDER . 'order/detail/_job_content_rework_view.php', $data); ?>
                             <!-- CARD REWORK LIST-->
                         </div>

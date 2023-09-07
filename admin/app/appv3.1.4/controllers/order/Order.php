@@ -85,7 +85,6 @@ class Order extends MY_Controller
         $all_user_working = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
         $order = $this->Order_model->get_info_order($id_order);
         empty($order) ? redirect(site_url('order', $this->_langcode)) : '';
-        // var_dump($order);die;
 
         ## check right access
         $status = $order['status'];
@@ -109,10 +108,11 @@ class Order extends MY_Controller
         }
 
         ## chung
-        $data['order']              = $order;
-        $data['role']               = $role;
-        $data['curr_uid']           = $uid;
-        $data['all_user_working']   = $all_user_working;
+        $data['order']            = $order;
+        $data['role']             = $role;
+        $data['curr_uid']         = $uid;
+        $data['all_user_working'] = $all_user_working;
+        $data['FDR_ORDER']        = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
 
         $header = [
             'title' => 'Chi tiết đơn hàng',
@@ -554,7 +554,8 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
@@ -591,7 +592,8 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
@@ -650,7 +652,9 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
@@ -676,6 +680,7 @@ class Order extends MY_Controller
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
 
+        $order = $this->Order_model->get_info_order($info['id_order']);
         if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
@@ -687,7 +692,9 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
@@ -711,6 +718,7 @@ class Order extends MY_Controller
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('IMAGE không tồn tại') : '';
 
+        $order = $this->Order_model->get_info_order($info['id_order']);
         if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
@@ -742,6 +750,8 @@ class Order extends MY_Controller
         $job = $this->Job_model->get_info_job_by_id($id_job);
         $job == [] ? resError('IMAGE không tồn tại') : '';
 
+        $order = $this->Order_model->get_info_order($job['id_order']);
+
         $note == ''             ? resError('Hãy nhập mô tả') : '';
         !is_array($attach)      ? resError('Attach không hợp lệ') : '';
 
@@ -752,7 +762,9 @@ class Order extends MY_Controller
             $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
             !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-            $copy = copy_image_from_file_manager_to_public_upload($url_image, $job['year'], $job['month']);
+            $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+            $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+
             !$copy['status'] ? resError($copy['error']) : '';
             $id_attach = time() + $i;
             $db_attach[$id_attach] = $copy['basename'];
@@ -788,7 +800,9 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+            $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
@@ -828,7 +842,9 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $copy = copy_image_from_file_manager_to_public_upload($url_image, $rework['year'], $rework['month']);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
@@ -917,7 +933,9 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $copy = copy_image_from_file_manager_to_public_upload($url_image, $info['year'], $info['month']);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
@@ -956,7 +974,9 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $copy = copy_image_from_file_manager_to_public_upload($url_image, $rework['year'], $rework['month']);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+        
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
