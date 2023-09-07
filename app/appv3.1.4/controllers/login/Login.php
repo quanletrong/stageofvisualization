@@ -33,7 +33,7 @@ class Login extends MY_Controller
         $currUrl = $currUrl != '' ? $currUrl : site_url('home', $this->_langcode);
 
         $userInfo = $this->Login_model->get_user_info_by_username($userame);
-        
+
         $redirect = '';
         if (!empty($userInfo)) {
             $passVerify = PasswordHash::hash_verify($userInfo['username'], $userInfo['password'], md5($password));
@@ -201,4 +201,5 @@ class Login extends MY_Controller
 
         return $password;
     }
+    
 }
