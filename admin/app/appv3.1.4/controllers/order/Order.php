@@ -95,12 +95,14 @@ class Order extends MY_Controller
                 break;
             case QC:
                 if (!isset($order['team'][$uid]) && $status != ORDER_QC_CHECK) {
-                    die('Bạn không phải thành viên trong đơn hàng này.');
+                    // die('Bạn không phải thành viên trong đơn hàng này.');
+                    redirect(site_url('order', $this->_langcode));
                 }
                 break;
             case EDITOR:
                 if (!isset($order['team'][$uid]) && $status != ORDER_AVAIABLE) {
-                    die('Bạn không phải thành viên trong đơn hàng này.');
+                    // die('Bạn không phải thành viên trong đơn hàng này.');
+                    redirect(site_url('order', $this->_langcode));
                 }
                 break;
             default:
@@ -976,7 +978,7 @@ class Order extends MY_Controller
 
         $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
-        
+
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
