@@ -46,8 +46,8 @@ class Setting extends MY_Controller
             $logo_ngang = removeAllTags($this->input->post('logo_ngang'));
 
             if ($phone != '' && $logo_vuong != '' && $logo_ngang != '') {
-                $copy_vuong = copy_image_to_public_upload($logo_vuong, LOGO_FOLDER);
-                $copy_ngang = copy_image_to_public_upload($logo_ngang, LOGO_FOLDER);
+                $copy_vuong = copy_image_to_public_upload($logo_vuong, FOLDER_LOGO);
+                $copy_ngang = copy_image_to_public_upload($logo_ngang, FOLDER_LOGO);
 
                 if ($copy_vuong['status'] && $copy_ngang['status']) {
                     $ngang_ok = $copy_ngang['basename'];
@@ -67,9 +67,8 @@ class Setting extends MY_Controller
         $setting = $this->Setting_model->get_setting();
 
         // path anh slide
-        $setting['logo_ngang_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_ngang'];
-        $setting['logo_vuong_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_vuong'];
-
+        $setting['logo_ngang_path'] = url_image($setting['logo_ngang'], FOLDER_LOGO);
+        $setting['logo_vuong_path'] = url_image($setting['logo_vuong'], FOLDER_LOGO);
         $data['setting'] = $setting;
 
         $this->_loadHeader($header);
@@ -93,20 +92,20 @@ class Setting extends MY_Controller
         // path anh slide
         $home_slide = json_decode($setting['home_slide'], true);
         foreach ($home_slide as $id => $it) {
-            $home_slide[$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . SLIDE_FOLDER . '/' . $it['image'];
+            $home_slide[$id]['image'] = url_image($it['image'], FOLDER_SLIDE);
         }
         $setting['home_slide'] = json_encode($home_slide);
 
         // path anh partner
         $partner = json_decode($setting['partner'], true);
         foreach ($partner['images'] as $id => $it) {
-            $partner['images'][$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
+            $partner['images'][$id]['image'] = url_image($it['image'], FOLDER_PARTNER);
         }
         $setting['partner'] = json_encode($partner);
 
         // path happy_guaranteed
         $happy_guaranteed = json_decode($setting['happy_guaranteed'], true);
-        $happy_guaranteed['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . HOME_FOLDER . '/' . @$happy_guaranteed['image'];
+        $happy_guaranteed['image_path'] = url_image(@$happy_guaranteed['image'], FOLDER_LOGO);
         $data['happy_guaranteed'] = $happy_guaranteed;
 
         $data['setting'] = $setting;
@@ -134,7 +133,7 @@ class Setting extends MY_Controller
             } else {
                 $ok_slide = [];
                 foreach ($arr_slide as $id => $slide) {
-                    $copy = copy_image_to_public_upload($slide['image'], SLIDE_FOLDER);
+                    $copy = copy_image_to_public_upload($slide['image'], FOLDER_SLIDE);
                     if ($copy['status']) {
                         $ok_slide[$id]['name'] = removeAllTags($slide['name']);
                         $ok_slide[$id]['image'] = $copy['basename'];
@@ -223,7 +222,7 @@ class Setting extends MY_Controller
             $happy_guaranteed['image'] = '';
 
             if ($image_happy != '' && $title_happy != '' && $sapo_happy != '') {
-                $copy = copy_image_to_public_upload($image_happy, HOME_FOLDER);
+                $copy = copy_image_to_public_upload($image_happy, FOLDER_LOGO);
                 if ($copy['status']) {
                     $happy_guaranteed['image'] = $copy['basename'];
                     $this->Setting_model->update_happy_guaranteed(json_encode($happy_guaranteed, JSON_FORCE_OBJECT));
@@ -249,7 +248,7 @@ class Setting extends MY_Controller
                 $ok_partner['title'] = $arr_partner['title'];
                 $ok_partner['sapo'] = $arr_partner['sapo'];
                 foreach ($arr_partner['images'] as $id => $partner) {
-                    $copy = copy_image_to_public_upload($partner['image'], PARTNER_FOLDER);
+                    $copy = copy_image_to_public_upload($partner['image'], FOLDER_PARTNER);
                     if ($copy['status']) {
                         $ok_partner['images'][$id]['name'] = removeAllTags($partner['name']);
                         $ok_partner['images'][$id]['image'] = $copy['basename'];

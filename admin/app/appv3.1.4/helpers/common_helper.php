@@ -830,16 +830,12 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = '')
     if (!empty($imginfo)) {
 
         $basename = generateRandomString(10) . '-' . basename($url_fmng_image);
-        $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
-
         $folder_arr = explode('/', $folder_str);
-
-        $RPUP = $DOCUMENT_ROOT . '/' . PUBLIC_UPLOAD_PATH . '/';
 
         $FULL_FOLDER = '';
         foreach ($folder_arr as $folder) {
 
-            $localFolder = $RPUP . $FULL_FOLDER . $folder . '/';
+            $localFolder = $_SERVER["DOCUMENT_ROOT"] .'/'. $FULL_FOLDER . $folder . '/';
 
             if (!is_dir($localFolder)) {
                 $ckMkdirYear = mkdir($localFolder, 755);
@@ -850,12 +846,12 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = '')
         }
 
         // check file exist
-        $dir_save = $RPUP . $FULL_FOLDER . $basename;
+        $dir_save = $_SERVER["DOCUMENT_ROOT"] .'/'. $FULL_FOLDER . $basename;
 
         if (file_exists($dir_save)) {
             $rdt = generateRandomString(10);
             $basename = $rdt . $basename;
-            $dir_save = $RPUP . $FULL_FOLDER . $basename;
+            $dir_save = $_SERVER["DOCUMENT_ROOT"] .'/'. $FULL_FOLDER . $basename;
         }
 
         //check move

@@ -48,18 +48,13 @@ class Service_model extends CI_Model
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                          // path image service
-                        $row['image_path'] = '';
-                        $year = date('Y', strtotime($row['create_time']));
-                        $month = date('m', strtotime($row['create_time']));
-                        $row['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image'];
-
+                        $row['image_path'] = url_image($row['image'], FOLDER_SERVICES);
                         // path image room
                         $arr_room = json_decode($row['room'], true);
                         foreach($arr_room as $id => $it){
-                            $path_imge = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $it['image'];
                             $arr_room[$id]['name'] = $it['name'];
                             $arr_room[$id]['image'] = $it['image'];
-                            $arr_room[$id]['image_path'] = $path_imge;
+                            $arr_room[$id]['image_path'] = url_image($it['image'], FOLDER_SERVICES);
                         }
                         $row['room'] = json_encode($arr_room);
                         $data[$row['id_service']] = $row;

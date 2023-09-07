@@ -40,3 +40,14 @@ define('LOGO_FOLDER', 'logo'); // uploads/images/logo
 define('HOME_FOLDER', 'home'); // uploads/images/home
 define('SLIDE_FOLDER', 'home/slide'); // uploads/images/home/slide
 define('PARTNER_FOLDER', 'home/partner');  // uploads/images/home/partner
+
+define('PUBLIC_UPLOAD_PATH', 'uploads/');
+define('TMP_UPLOAD_PATH', 'uploads/tmp/');
+define('FOLDER_AVATAR', 'uploads/avatar/');
+define('FOLDER_PARTNER', 'uploads/partner/');
+define('FOLDER_SLIDE', 'uploads/slide/');
+define('FOLDER_LOGO', 'uploads/logo/');
+define('FOLDER_SERVICES', 'uploads/services/');
+define('FOLDER_ROOM', 'uploads/room/');
+define('FOLDER_STYLE', 'uploads/style/');
+define('FOLDER_LIBRARY', 'uploads/library/');

@@ -60,7 +60,7 @@ class Library extends MY_Controller
                 // copy and validate image
                 $arr_image = json_decode($image, true);
                 foreach ($arr_image as $id => $it) {
-                    $copy = copy_image_from_file_manager_to_public_upload($it['image'], date('Y'), date('m'));
+                    $copy = copy_image_to_public_upload($it['image'], FOLDER_LIBRARY);
                     if ($copy['status']) {
                         $this->Library_model->add($id_room, $id_style, $it['name'], $copy['basename'], $status, $this->_session_uid(), $create_time);
                     }
@@ -82,18 +82,14 @@ class Library extends MY_Controller
                     redirect('library');
                 } else {
 
-                    $year   = date('Y', strtotime($info['create_time']));
-                    $monthe = date('m', strtotime($info['create_time']));
                     $update_time = date('Y-m-d H:i:s');
-
-
                     $arr_image = json_decode($image, true);
                     foreach ($arr_image as $id => $it) {
 
                         $image_ok = $info['image'];
                         // copy and validate image
                         if (strpos($it['image'], 'uploads/tmp') !== false) {
-                            $copy = copy_image_from_file_manager_to_public_upload($it['image'], $year, $monthe);
+                            $copy = copy_image_to_public_upload($it['image'], FOLDER_LIBRARY);
                             $image_ok = $copy['basename'];
                         }
 

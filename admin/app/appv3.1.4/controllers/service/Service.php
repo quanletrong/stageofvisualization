@@ -58,7 +58,7 @@ class Service extends MY_Controller
                 $room_ok = [];
                 foreach ($arr_room as $id => $it) {
                     $img_room = $it['image'];
-                    $copy = copy_image_from_file_manager_to_public_upload($img_room, date('Y'), date('m'));
+                    $copy = copy_image_to_public_upload($img_room, FOLDER_SERVICES);
                     if ($copy['status']) {
                         $room_ok[$id]['name'] = $it['name'];
                         $room_ok[$id]['image'] = $copy['basename'];
@@ -66,7 +66,7 @@ class Service extends MY_Controller
                 }
                 // end copy and validate room
 
-                $copy = copy_image_from_file_manager_to_public_upload($image, date('Y'), date('m'));
+                $copy = copy_image_to_public_upload($image, FOLDER_SERVICES);
                 if ($copy['status']) {
 
                     $exc = $this->Service_model->add($name, $sapo, $copy['basename'], json_encode($room_ok, JSON_FORCE_OBJECT), $price, $status, $this->_session_uid(), $create_time);
@@ -97,7 +97,7 @@ class Service extends MY_Controller
 
                     // copy anh truoc nếu upload mới
                     if (strpos($image, 'uploads/tmp') !== false) {
-                        $copy = copy_image_from_file_manager_to_public_upload($image, $year, $monthe);
+                        $copy = copy_image_to_public_upload($image, FOLDER_SERVICES);
                         if ($copy['status']) {
                             $image_ok = $copy['basename'];
                         } else {
@@ -119,7 +119,7 @@ class Service extends MY_Controller
                             // room cũ thay đổi ảnh
                             $img_room = $it['image'];
                             if (strpos($it['image'], 'uploads/tmp') !== false) {
-                                $copy = copy_image_from_file_manager_to_public_upload($img_room, $year, $monthe);
+                                $copy = copy_image_to_public_upload($img_room, FOLDER_SERVICES);
                                 if ($copy['status']) {
                                     $room_ok[$id]['image'] = $copy['basename'];
                                 }
@@ -130,7 +130,7 @@ class Service extends MY_Controller
                         // thêm room mới
                         else {
                             $img_room = $it['image'];
-                            $copy = copy_image_from_file_manager_to_public_upload($img_room, $year, $monthe);
+                            $copy = copy_image_to_public_upload($img_room, FOLDER_SERVICES);
                             if ($copy['status']) {
                                 $room_ok[$id]['name'] = $it['name'];
                                 $room_ok[$id]['image'] = $copy['basename'];

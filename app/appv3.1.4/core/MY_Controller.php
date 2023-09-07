@@ -95,8 +95,8 @@ class MY_Controller extends CI_Controller
         // load setting website
         $this->load->model('setting/Setting_model');
         $setting = $this->Setting_model->get_setting();
-        $setting['logo_ngang_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_ngang'];
-        $setting['logo_vuong_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_vuong'];
+        $setting['logo_ngang_path'] = url_image($setting['logo_ngang'], FOLDER_LOGO);
+        $setting['logo_vuong_path'] = url_image($setting['logo_vuong'], FOLDER_LOGO);
         $this->_settings = $setting;
     }
 
@@ -113,10 +113,6 @@ class MY_Controller extends CI_Controller
         $header['menuTab'] = $menuTab;
         $header['subMenuTab'] = $subMenuTab;
 
-        // $this->load->model('setting/Setting_model');
-        // $setting = $this->Setting_model->get_setting();
-        // $setting['logo_ngang_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_ngang'];
-        // $setting['logo_vuong_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . LOGO_FOLDER . '/' . $setting['logo_vuong'];
         $header['setting'] = $this->_settings;
 
         

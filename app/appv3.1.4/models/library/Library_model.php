@@ -52,10 +52,7 @@ class Library_model extends CI_Model
             if ($stmt->execute([$status])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $row['image_path'] = '';
-                        $year = date('Y', strtotime($row['create_time']));
-                        $month = date('m', strtotime($row['create_time']));
-                        $row['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image'];
+                        $row['image_path'] = url_image($row['image'], FOLDER_LIBRARY);
                         $data[$row['id_library']] = $row;
                     }
                 }

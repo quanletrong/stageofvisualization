@@ -27,18 +27,14 @@ class Style_model extends CI_Model
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         // path image style
-                        $row['image_path'] = '';
-                        $year = date('Y', strtotime($row['create_time']));
-                        $month = date('m', strtotime($row['create_time']));
-                        $row['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $row['image'];
+                        $row['image_path'] = url_image($row['image'], FOLDER_STYLE);
 
                         // path image slide
                         $arr_slide = json_decode($row['slide'], true);
                         foreach ($arr_slide as $id => $it) {
-                            $path_imge = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/' . $it['image'];
                             $arr_slide[$id]['name'] = $it['name'];
                             $arr_slide[$id]['image'] = $it['image'];
-                            $arr_slide[$id]['image_path'] = $path_imge;
+                            $arr_slide[$id]['image_path'] = url_image($it['image'], FOLDER_STYLE);
                         }
                         $row['slide'] = json_encode($arr_slide);
                         $data[$row['id_style']] = $row;

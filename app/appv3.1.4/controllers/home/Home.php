@@ -30,18 +30,18 @@ class Home extends MY_Controller
         //full path ảnh slide
         $home_slide = json_decode($setting['home_slide'], true);
         foreach ($home_slide as $id => $it) {
-            $home_slide[$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . SLIDE_FOLDER . '/' . $it['image'];
+            $home_slide[$id]['image'] = url_image($it['image'], FOLDER_SLIDE);
         }
         $setting['home_slide'] = $home_slide;
 
         //full path ảnh đối tác
         $partner = json_decode($setting['partner'], true);
         foreach ($partner['images'] as $id => $it) {
-            $partner['images'][$id]['image'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . PARTNER_FOLDER . '/' . $it['image'];
+            $partner['images'][$id]['image'] = url_image($it['image'], FOLDER_PARTNER);
         }
         // path happy_guaranteed
         $happy_guaranteed = json_decode($setting['happy_guaranteed'], true);
-        $happy_guaranteed['image_path'] = ROOT_DOMAIN . PUBLIC_UPLOAD_PATH . HOME_FOLDER . '/' . @$happy_guaranteed['image'];
+        $happy_guaranteed['image_path'] = url_image(@$happy_guaranteed['image'], FOLDER_LOGO); ;
         
 
         $data['service'] = $service;
