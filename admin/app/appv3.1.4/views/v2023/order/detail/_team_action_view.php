@@ -27,24 +27,28 @@
         <?php if (in_array($role, [ADMIN, SALE])) { ?>
             <div class="mb-3">
                 <b>Realtime</b>
-                <small onclick="alert('Thời gian từ lúc tạo đơn')">[Mô tả]</small>
-                <div id="cdt_real_time" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
+                <small onclick="alert('real time = (time tạo đơn + 24h) - time hiện tại')">[Mô tả]</small>
+                <div id="cdt_real_time" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;" title="<?=$order['create_time']?>">
                     <script>
-                        count_down_time('<?= $order['create_time'] ?>', 'cdt_real_time')
+                        // real time = (time tạo đơn + 24h) - time hiện tại
+                        <?php $time_chot_don = strtotime($order['create_time']) + 86400; ?>
+                        count_down_time('<?= date('Y-m-d H:i:s', $time_chot_don) ?>', 'cdt_real_time')
                     </script>
                 </div>
             </div>
         <?php } ?>
         <div>
             <b>Countdown time</b>
-            <small onclick="alert('Thời gian còn lại sau khi cộng thời gian custom')">[Mô tả]</small>
+            <small onclick="alert('countdown time = (time tạo + time custom ) - time hiện tại')">[Mô tả]</small>
             <div id="cdt_<?= $order['id_order'] ?>" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
+            <!-- countdown time = (time tạo + time custom ) - time hiện tại -->
                 <?= count_down_time_order($order) ?>
             </div>
         </div>
 
         <div class="mt-3">
-            <b>Custom time (thêm thời gian cho đơn)</b>
+            <b>Time custom</b>
+            <small onclick="alert('Thời gian phải hoàn thành tính từ khi tạo đơn')">[Mô tả]</small>
             <p>
             <div class="d-flex" id="box_custom_time">
                 <?php $disable = in_array($role, [ADMIN, SALE]) ? '' : 'disabled'; ?>

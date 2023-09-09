@@ -66,7 +66,7 @@
                                             </button>
                                         </div>
 
-                                        <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>" style="aspect-ratio: 4/3; object-fit: cover;">
+                                        <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
                                     </div>
                                     <div class="mt-3">
                                         <b>Attach Reference Files</b>
@@ -90,7 +90,7 @@
                                                         </button>
                                                     </div>
 
-                                                    <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" width="100" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="aspect-ratio: 4/3; object-fit: cover;">
+                                                    <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" width="100" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>">
                                                 </div>
                                             <?php } ?>
                                         </div>
@@ -153,7 +153,7 @@
                                                     </button>
                                                 </div>
 
-                                                <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                                                <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
                                             </div>
                                         <?php } ?>
                                     </div>
@@ -317,7 +317,7 @@
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
-                            <img id="img_complete_${id_file_complete}" data-id-job="${id_job}" data-id-complete="${id_file_complete}" src="${url_image}" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                            <img id="img_complete_${id_file_complete}" data-id-job="${id_job}" data-id-complete="${id_file_complete}" src="${url_image}" alt="" width="100%">
                         </div>`;
                     $(target).append(html)
                 } else {

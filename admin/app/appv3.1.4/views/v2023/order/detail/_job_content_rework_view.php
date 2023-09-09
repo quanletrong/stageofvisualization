@@ -39,7 +39,7 @@
                                 </button>
                             </div>
 
-                            <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                            <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
                         </div>
                     <?php } ?>
                 </div>
@@ -68,7 +68,7 @@
                                 <?php } ?>
                             </div>
 
-                            <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, $FDR_ORDER) ?>" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                            <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, $FDR_ORDER) ?>" alt="" width="100%">
                         </div>
                     <?php } ?>
                 </div>
@@ -183,7 +183,7 @@
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
-            <img id="img_attach_${id_attach}" src="${url_image}" class="img_attach" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+            <img id="img_attach_${id_attach}" src="${url_image}" class="img_attach" alt="" width="100%">
         </div>`;
         $(target).append(html)
     }
@@ -257,7 +257,7 @@
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
-                    <img id="img_complete_rework_${id_file_complete}" data-id-rework="${id_rework}" data-id-complete-rework="${id_file_complete}" src="${url_image}" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                    <img id="img_complete_rework_${id_file_complete}" data-id-rework="${id_rework}" data-id-complete-rework="${id_file_complete}" src="${url_image}" alt="" width="100%">
                 </div>`;
                     $(target).append(html)
                 } else {
@@ -368,7 +368,7 @@
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
-                            <img id="img_attach_${id_attach}" data-id-rework="${id_rework}" data-id-attach="${id_attach}" src="${url_image}" alt="" width="100%" style="aspect-ratio: 4/3; object-fit: cover;">
+                            <img id="img_attach_${id_attach}" data-id-rework="${id_rework}" data-id-attach="${id_attach}" src="${url_image}" alt="" width="100%">
                         </div>`;
                     $(target).append(html)
                 } else {

@@ -42,7 +42,7 @@
                         <th class="text-center">JOB TYPE</th>
                         <th class="text-center">IMAGE</th>
                         <th class="text-center">STATUS</th>
-                        <th class="text-center">TIME</th>
+                        <th class="text-center">COUNDOWN TIME</th>
                         <th class="text-center">TEAM WORKING</th>
                         <th class="text-center">ACTION</th>
                     </tr>

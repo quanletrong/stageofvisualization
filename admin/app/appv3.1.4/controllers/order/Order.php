@@ -43,10 +43,10 @@ class Order extends MY_Controller
                 $list_order = $this->Order_model->get_list(); //lấy tất cả đơn
                 break;
             case QC:
-                $list_order = $this->Order_model->get_list_for_qc($uid); //lấy tất cả đơn
+                $list_order = $this->Order_model->get_list_for_qc($uid); //lấy tất cả đơn khác pending hoặc những đơn qc đã active
                 break;
             case EDITOR:
-                $list_order = $this->Order_model->get_list_order_by_id_user($uid);
+                $list_order = $this->Order_model->get_list_order_by_id_user($uid); //lấy những đơn ed đã active
                 break;
             default:
                 break;
@@ -94,8 +94,9 @@ class Order extends MY_Controller
             case SALE:
                 break;
             case QC:
-                if (!isset($order['team'][$uid]) && $status != ORDER_QC_CHECK) {
-                    // die('Bạn không phải thành viên trong đơn hàng này.');
+                // QC chỉ được xem những đơn khác pending hoặc những đơn QC đã active
+                if (isset($order['team'][$uid]) || $status != ORDER_PENDING) {
+                } else {
                     redirect(site_url('order', $this->_langcode));
                 }
                 break;
@@ -114,7 +115,7 @@ class Order extends MY_Controller
         $data['role']             = $role;
         $data['curr_uid']         = $uid;
         $data['all_user_working'] = $all_user_working;
-        $data['FDR_ORDER']        = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $data['FDR_ORDER']        = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
 
         $header = [
             'title' => 'Chi tiết đơn hàng',
@@ -176,7 +177,7 @@ class Order extends MY_Controller
         }
         if ($new_status == ORDER_DONE) {
         }
-        if ($new_status == ORDER_DELIVERED ) {
+        if ($new_status == ORDER_DELIVERED) {
             $role == EDITOR ? resError('ED không có quyền đổi trạng thái về DELIVERED') : '';
         }
         if ($new_status == ORDER_FIX) {
@@ -189,7 +190,6 @@ class Order extends MY_Controller
         if ($new_status == ORDER_CANCLE) {
             $role == EDITOR ? resError('ED không có quyền đổi trạng thái về CANCLE') : '';
             $role == QC     ? resError('QC không có quyền đổi trạng thái về CANCLE') : '';
-
         }
         if ($new_status == ORDER_COMPLETE) {
             $role == EDITOR ? resError('ED không có quyền đổi trạng thái về COMPLETE') : '';
@@ -556,7 +556,7 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
         !$copy['status'] ? resError($copy['error']) : '';
 
@@ -594,7 +594,7 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
         !$copy['status'] ? resError($copy['error']) : '';
 
@@ -654,7 +654,7 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
         !$copy['status'] ? resError($copy['error']) : '';
@@ -694,7 +694,7 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
         !$copy['status'] ? resError($copy['error']) : '';
@@ -764,7 +764,7 @@ class Order extends MY_Controller
             $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
             !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-            $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+            $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
             $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
             !$copy['status'] ? resError($copy['error']) : '';
@@ -802,8 +802,8 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
-            $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+        $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
         !$copy['status'] ? resError($copy['error']) : '';
 
@@ -844,7 +844,7 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
         !$copy['status'] ? resError($copy['error']) : '';
@@ -935,7 +935,7 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
         !$copy['status'] ? resError($copy['error']) : '';
@@ -976,7 +976,7 @@ class Order extends MY_Controller
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
         !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
 
-        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']).'@'. $order['username'].'/';
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
         !$copy['status'] ? resError($copy['error']) : '';
