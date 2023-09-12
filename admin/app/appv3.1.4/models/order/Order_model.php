@@ -802,4 +802,22 @@ class Order_model extends CI_Model
         $stmt->closeCursor();
         return $execute;
     }
+
+    function tinh_tien_cho_cac_user_dang_active($id_order) {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job_user SET withdraw=1 WHERE id_order= $id_order AND status=1;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
 }

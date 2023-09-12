@@ -217,6 +217,11 @@ class Order extends MY_Controller
             $this->Order_model->luu_thoi_gian_giao_hang($id_order, $thoi_gian_giao_hang);
         }
 
+        // tính tiền cho user đang active trong đơn
+        if ($new_status == ORDER_DELIVERED || $new_status == ORDER_COMPLETE) {
+            $this->Order_model->tinh_tien_cho_cac_user_dang_active($id_order, $thoi_gian_giao_hang);
+        }
+
         // TODO: LOG
         resSuccess($kq);
     }
@@ -369,26 +374,38 @@ class Order extends MY_Controller
 
             $role == EDITOR                                         ? resError('ED không có quyền thực hiện chức năng này.') : '';
             $role == QC && !isset($working_qc_in_active[$cur_uid])  ? resError('Bạn chưa được gán vào IMAGE này') : '';
+            $working_qc_in_active[$id_user]['withdraw']             ? resError('Không thể xóa người đang ở trạng thái chờ rút tiền') : '';
         }
         // WORKING_QC_OUT
         else if ($working_type == WORKING_QC_OUT) {
-            $working_qc_in_active = $order['job'][$id_job]['working_qc_out_active'];
+            $working_qc_out_active = $order['job'][$id_job]['working_qc_out_active'];
 
             $role == EDITOR                                         ? resError('ED không có quyền thực hiện chức năng này.') : '';
             $role == QC && !isset($working_qc_out_active[$cur_uid]) ? resError('Bạn chưa được gán vào IMAGE này') : '';
+            $working_qc_out_active[$id_user]['withdraw']            ? resError('Không thể xóa người đang ở trạng thái chờ rút tiền') : '';
         }
         // WORKING_EDITOR
         else if ($working_type == WORKING_EDITOR) {
             $working_ed_active = $order['job'][$id_job]['working_ed_active'];
-            $role == EDITOR && !isset($working_ed_active[$cur_uid])  ? resError('Bạn chưa được gán vào IMAGE này') : '';
+            $role == EDITOR && !isset($working_ed_active[$cur_uid]) ? resError('Bạn chưa được gán vào IMAGE này') : '';
+            $working_ed_active[$id_user]['withdraw']                ? resError('Không thể xóa người đang ở trạng thái chờ rút tiền') : '';
+
         }
         // WORKING_CUSTOM
         else if ($working_type == WORKING_CUSTOM) {
             $role == EDITOR  ? resError('ED không có quyền thực hiện chức năng này.') : '';
+            
+            $working_custom_active = $order['job'][$id_job]['working_custom_active'];
+            var_dump( $order['job'][$id_job]);die;
+            $working_custom_active[$id_user]['withdraw'] ? resError('Không thể xóa người đang ở trạng thái chờ rút tiền') : '';
+
             $id_job = 0;
         } else {
             resError('Lỗi dữ liệu truyền vào. Hãy thử lại!');
         }
+
+        // KHÔNG ĐƯỢC XÓA USER ĐÃ RÚT TIỀN
+        // if()
 
         // cấp nhật giá custom về 0 (nếu có)
         if ($working_type == WORKING_CUSTOM) {
