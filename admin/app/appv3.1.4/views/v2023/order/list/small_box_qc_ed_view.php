@@ -8,7 +8,7 @@
     <?php if ($role == EDITOR) { ?>
         <button class="btn btn-success" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()"> <i class="fas fa-wallet"></i> START</button>
     <?php } ?>
-    <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance"> <i class="fas fa-wallet"></i> WITHDRAW BALANCE</button>
+    <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance" onclick="ajax_rut_tien()"> <i class="fas fa-wallet"></i> WITHDRAW BALANCE</button>
 </div>
 
 <div class="row">
@@ -146,6 +146,38 @@
                 if (kq.status) {
                     toasts_success();
                     window.location.href = `order/detail/${id_order}`;
+                } else {
+                    toasts_danger(kq.error);
+                }
+
+                $(btn).html(old_text);
+                $(btn).prop("disabled", false);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_rut_tien(btn, id_order) {
+        let old_text = $(btn).html();
+
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+        $.ajax({
+            url: `withdraw/ajax_rut_tien`,
+            type: "POST",
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+                if (kq.status) {
+                    let html = ``;
+                    Object.entries(kq.data).forEach((entry) => {
+                        const [key, value] = entry;
+                        console.log(`${key}: ${value}`);
+                    });
+
+
                 } else {
                     toasts_danger(kq.error);
                 }

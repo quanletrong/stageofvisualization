@@ -150,10 +150,10 @@ class Order_model extends CI_Model
         INNER JOIN tbl_user B ON A.id_user = B.id_user 
         WHERE A.status != $ORDER_PENDING ";
 
-        if($str_id_order != '') {
+        if ($str_id_order != '') {
             $sql .= " OR A.id_order IN ($str_id_order) ";
         }
-        
+
         $sql .= " ORDER BY A.status ASC, A.create_time ASC";
 
         $stmt = $iconn->prepare($sql);
@@ -629,11 +629,11 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    function add_job_user($id_order, $id_job, $id_user, $username, $type_service, $type_job_user, $status, $time_join)
+    function add_job_user($id_order, $id_job, $id_user, $username, $type_service, $type_job_user, $status, $time_join, $unit)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_job_user (id_order, id_job, id_user, username, type_service, type_job_user, status, time_join) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_job_user (id_order, id_job, id_user, username, type_service, type_job_user, status, time_join, custom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, $unit)";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -803,7 +803,8 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    function tinh_tien_cho_cac_user_dang_active($id_order) {
+    function tinh_tien_cho_cac_user_dang_active($id_order)
+    {
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = "UPDATE tbl_job_user SET withdraw=1 WHERE id_order= $id_order AND status=1;";
@@ -819,5 +820,32 @@ class Order_model extends CI_Model
         }
         $stmt->closeCursor();
         return $execute;
+    }
+
+    function rut_tien($id_user)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT type_service, (custom - IF(ISNULL(withdraw_custom)), 0, withdraw_custom ) as custom
+        FROM tbl_job_user
+        WHERE id_user = $id_user AND withdraw = 1 AND (withdraw_custom < withdraw || ISNULL(withdraw_custom) )";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
     }
 }

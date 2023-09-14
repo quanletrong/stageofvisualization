@@ -310,7 +310,7 @@ class Order extends MY_Controller
         if ($da_ton_tai_custom) {
             $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $id_user);
         } else {
-            $this->Order_model->add_job_user($id_order, 0, $id_user, $as_uinfo['username'], '', WORKING_CUSTOM, $status, $time_join);
+            $this->Order_model->add_job_user($id_order, 0, $id_user, $as_uinfo['username'], 'CT', WORKING_CUSTOM, $status, $time_join, 0);
         }
 
         // user gán đã tồn tại thì UPDATE status = 1
@@ -324,7 +324,7 @@ class Order extends MY_Controller
         // user gán chưa tồn tại thì INSERT bản ghi mới
         else {
             $type_service = @$order['job'][$id_job]['type_service'];
-            $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $type_service, $working_type, $status, $time_join);
+            $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $type_service, $working_type, $status, $time_join, 1);
 
             // TODO: LOG
             resSuccess($kq);
@@ -374,7 +374,7 @@ class Order extends MY_Controller
 
             $role == EDITOR                                         ? resError('ED không có quyền thực hiện chức năng này.') : '';
             $role == QC && !isset($working_qc_in_active[$cur_uid])  ? resError('Bạn chưa được gán vào IMAGE này') : '';
-            $working_qc_in_active[$id_user]['withdraw']             ? resError('Không thể xóa người đang ở trạng thái chờ rút tiền') : '';
+            $working_qc_in_active[$id_user]['withdraw']             ? resError('Xóa không thành công vì đơn hàng đã được tính tiền cho người dùng này') : '';
         }
         // WORKING_QC_OUT
         else if ($working_type == WORKING_QC_OUT) {
@@ -382,22 +382,21 @@ class Order extends MY_Controller
 
             $role == EDITOR                                         ? resError('ED không có quyền thực hiện chức năng này.') : '';
             $role == QC && !isset($working_qc_out_active[$cur_uid]) ? resError('Bạn chưa được gán vào IMAGE này') : '';
-            $working_qc_out_active[$id_user]['withdraw']            ? resError('Không thể xóa người đang ở trạng thái chờ rút tiền') : '';
+            $working_qc_out_active[$id_user]['withdraw']            ? resError('Xóa không thành công vì đơn hàng đã được tính tiền cho người dùng này') : '';
         }
         // WORKING_EDITOR
         else if ($working_type == WORKING_EDITOR) {
             $working_ed_active = $order['job'][$id_job]['working_ed_active'];
             $role == EDITOR && !isset($working_ed_active[$cur_uid]) ? resError('Bạn chưa được gán vào IMAGE này') : '';
-            $working_ed_active[$id_user]['withdraw']                ? resError('Không thể xóa người đang ở trạng thái chờ rút tiền') : '';
+            $working_ed_active[$id_user]['withdraw']                ? resError('Xóa không thành công vì đơn hàng đã được tính tiền cho người dùng này') : '';
 
         }
         // WORKING_CUSTOM
         else if ($working_type == WORKING_CUSTOM) {
             $role == EDITOR  ? resError('ED không có quyền thực hiện chức năng này.') : '';
             
-            $working_custom_active = $order['job'][$id_job]['working_custom_active'];
-            var_dump( $order['job'][$id_job]);die;
-            $working_custom_active[$id_user]['withdraw'] ? resError('Không thể xóa người đang ở trạng thái chờ rút tiền') : '';
+            $working_custom_active = $order['working_custom_active'];
+            $working_custom_active[$id_user]['withdraw'] ? resError('Xóa không thành công vì đơn hàng đã được tính tiền cho người dùng này') : '';
 
             $id_job = 0;
         } else {
@@ -496,13 +495,13 @@ class Order extends MY_Controller
         if ($da_ton_tai_custom) {
             $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $cur_uid);
         } else {
-            $this->Order_model->add_job_user($id_order, 0, $cur_uid, $cur_uname, '', WORKING_CUSTOM, $status, $time_join);
+            $this->Order_model->add_job_user($id_order, 0, $cur_uid, $cur_uname, 'CT', WORKING_CUSTOM, $status, $time_join, 0);
         }
 
         // add user vào job
         foreach ($list_job_no_ed as $id_job_no_ed) {
             $type_service = @$order['job'][$id_job]['type_service'];
-            $this->Order_model->add_job_user($id_order, $id_job_no_ed, $cur_uid, $cur_uname, $type_service, WORKING_EDITOR, $status, $time_join);
+            $this->Order_model->add_job_user($id_order, $id_job_no_ed, $cur_uid, $cur_uname, $type_service, WORKING_EDITOR, $status, $time_join, 1);
         }
 
         // chuyển trạng thái đơn về đang xử lý sau khi add user xong
