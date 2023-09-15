@@ -90,6 +90,9 @@ define('WORKING_QC_OUT', 5);
 define('WORKING_EDITOR', 3);
 define('WORKING_CUSTOM', 4);
 
+// 
+define('SERVICES_CUSTOM', 'CUSTOM');
+
 
 // thoi_gian_toi_thieu
 define('MIN_TIME_WORKING', 0);

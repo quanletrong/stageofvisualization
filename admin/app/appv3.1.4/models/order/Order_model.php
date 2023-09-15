@@ -827,16 +827,24 @@ class Order_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
 
-        $sql = "SELECT type_service, (custom - IF(ISNULL(withdraw_custom)), 0, withdraw_custom ) as custom
+        $sql = "SELECT id_order, id_job, type_service, (custom-withdraw_custom) as num
         FROM tbl_job_user
-        WHERE id_user = $id_user AND withdraw = 1 AND (withdraw_custom < withdraw || ISNULL(withdraw_custom) )";
+        WHERE id_user = $id_user AND withdraw = 1 AND custom > 0 AND (withdraw_custom < withdraw);";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute()) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        $data[] = $row;
+
+                        $type_service = $row['type_service'];
+
+                        if(isset($data[$type_service])) {
+                            $num = $data[$type_service] + $row['num'];
+                        } else {
+                            $num = $row['num'];
+                        }
+                        $data[$type_service] = $num;
                     }
                 }
             } else {

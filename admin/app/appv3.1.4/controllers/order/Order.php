@@ -310,7 +310,7 @@ class Order extends MY_Controller
         if ($da_ton_tai_custom) {
             $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $id_user);
         } else {
-            $this->Order_model->add_job_user($id_order, 0, $id_user, $as_uinfo['username'], 'CT', WORKING_CUSTOM, $status, $time_join, 0);
+            $this->Order_model->add_job_user($id_order, 0, $id_user, $as_uinfo['username'], SERVICES_CUSTOM, WORKING_CUSTOM, $status, $time_join, 0);
         }
 
         // user gán đã tồn tại thì UPDATE status = 1
@@ -495,7 +495,7 @@ class Order extends MY_Controller
         if ($da_ton_tai_custom) {
             $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $cur_uid);
         } else {
-            $this->Order_model->add_job_user($id_order, 0, $cur_uid, $cur_uname, 'CT', WORKING_CUSTOM, $status, $time_join, 0);
+            $this->Order_model->add_job_user($id_order, 0, $cur_uid, $cur_uname, SERVICES_CUSTOM, WORKING_CUSTOM, $status, $time_join, 0);
         }
 
         // add user vào job

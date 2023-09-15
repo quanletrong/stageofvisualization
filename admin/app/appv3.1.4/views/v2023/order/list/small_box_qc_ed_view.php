@@ -56,22 +56,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="d-flex mb-3" style="font-weight: bold;">
-                    <div class="w-50">VS</div>
-                    <div>5</div>
-                </div>
-                <div class="d-flex mb-3" style="font-weight: bold;">
-                    <div class="w-50">VR</div>
-                    <div>5</div>
-                </div>
-                <div class="d-flex mb-3" style="font-weight: bold;">
-                    <div class="w-50">3D</div>
-                    <div>5</div>
-                </div>
-                <div class="d-flex mb-3" style="font-weight: bold;">
-                    <div class="w-50">CUSTOM</div>
-                    <div>5</div>
-                </div>
+                <i class="fas fa-sync fa-spin"></i>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -163,8 +148,10 @@
     function ajax_rut_tien(btn, id_order) {
         let old_text = $(btn).html();
 
-        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).html('<i class="fas fa-sync fa-spin"></i>');
         $(btn).prop("disabled", true);
+        $('#modal-withdraw-balance .modal-body').html('<i class="fas fa-sync fa-spin"></i>');
+
         $.ajax({
             url: `withdraw/ajax_rut_tien`,
             type: "POST",
@@ -174,9 +161,15 @@
                     let html = ``;
                     Object.entries(kq.data).forEach((entry) => {
                         const [key, value] = entry;
-                        console.log(`${key}: ${value}`);
+
+                        html += `
+                        <div class="d-flex mb-3" style="font-weight: bold;">
+                            <div class="w-50">${key}</div>
+                            <div>${value}</div>
+                        </div>`
                     });
 
+                    $('#modal-withdraw-balance .modal-body').html(html)
 
                 } else {
                     toasts_danger(kq.error);
