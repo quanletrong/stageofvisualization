@@ -22,9 +22,15 @@ class Withdraw extends MY_Controller {
         $this->load->model('order/Order_model');
 	}
     
-    function ajax_rut_tien() {
+    function ajax_get_rut_tien() {
         $cur_uid = $this->_session_uid();
-        $rut_tien = $this->Order_model->rut_tien($cur_uid);
+        $rut_tien = $this->Order_model->danh_sach_chua_rut_tien($cur_uid);
         resSuccess($rut_tien);
+    }
+
+    function ajax_set_rut_tien() {
+        $cur_uid = $this->_session_uid();
+        $exc = $this->Order_model->tao_yeu_cau_rut_tien($cur_uid);
+        resSuccess($exc);
     }
 }

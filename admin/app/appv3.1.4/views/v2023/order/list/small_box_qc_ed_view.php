@@ -8,7 +8,7 @@
     <?php if ($role == EDITOR) { ?>
         <button class="btn btn-success" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()"> <i class="fas fa-wallet"></i> START</button>
     <?php } ?>
-    <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance" onclick="ajax_rut_tien()"> <i class="fas fa-wallet"></i> WITHDRAW BALANCE</button>
+    <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance" onclick="ajax_get_rut_tien()"> <i class="fas fa-wallet"></i> WITHDRAW BALANCE</button>
 </div>
 
 <div class="row">
@@ -60,7 +60,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">WITHDRAW</button>
+                <button type="button" class="btn btn-primary" onclick="ajax_set_rut_tien(this)">WITHDRAW</button>
             </div>
         </div>
     </div>
@@ -145,15 +145,11 @@
         });
     }
 
-    function ajax_rut_tien(btn, id_order) {
-        let old_text = $(btn).html();
-
-        $(btn).html('<i class="fas fa-sync fa-spin"></i>');
-        $(btn).prop("disabled", true);
+    function ajax_get_rut_tien() {
         $('#modal-withdraw-balance .modal-body').html('<i class="fas fa-sync fa-spin"></i>');
 
         $.ajax({
-            url: `withdraw/ajax_rut_tien`,
+            url: `withdraw/ajax_get_rut_tien`,
             type: "POST",
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
@@ -170,6 +166,32 @@
                     });
 
                     $('#modal-withdraw-balance .modal-body').html(html)
+
+                } else {
+                    toasts_danger(kq.error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_set_rut_tien(btn) {
+        let old_text = $(btn).html();
+
+        $(btn).html('<i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+
+        $.ajax({
+            url: `withdraw/ajax_set_rut_tien`,
+            type: "POST",
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+                if (kq.status) {
+                    toasts_success();
+                    $('#modal-withdraw-balance .modal-body').html('');
 
                 } else {
                     toasts_danger(kq.error);

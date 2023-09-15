@@ -822,7 +822,7 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    function rut_tien($id_user)
+    function danh_sach_chua_rut_tien($id_user)
     {
         $data = [];
         $iconn = $this->db->conn_id;
@@ -839,7 +839,7 @@ class Order_model extends CI_Model
 
                         $type_service = $row['type_service'];
 
-                        if(isset($data[$type_service])) {
+                        if (isset($data[$type_service])) {
                             $num = $data[$type_service] + $row['num'];
                         } else {
                             $num = $row['num'];
@@ -855,5 +855,25 @@ class Order_model extends CI_Model
 
         $stmt->closeCursor();
         return $data;
+    }
+
+    function tao_yeu_cau_rut_tien($id_user)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_job_user SET withdraw_custom = custom, withdraw_status = 1 
+        WHERE id_user = $id_user AND withdraw = 1 AND custom > 0 AND (withdraw_custom < withdraw);";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
     }
 }
