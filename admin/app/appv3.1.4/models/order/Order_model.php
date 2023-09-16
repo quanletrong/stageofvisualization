@@ -613,7 +613,7 @@ class Order_model extends CI_Model
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_job_user SET custom=? WHERE id_order=? AND id_job = 0 AND id_user=?";
+        $sql = "UPDATE tbl_job_user SET custom=?, withdraw_status = 0 WHERE id_order=? AND id_job = 0 AND id_user=?";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             $param = [$custom, $id_order, $id_user];
@@ -808,61 +808,6 @@ class Order_model extends CI_Model
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = "UPDATE tbl_job_user SET withdraw=1 WHERE id_order= $id_order AND status=1;";
-
-        $stmt = $iconn->prepare($sql);
-        if ($stmt) {
-            if ($stmt->execute()) {
-                $execute = true;
-            } else {
-                var_dump($stmt->errorInfo());
-                die;
-            }
-        }
-        $stmt->closeCursor();
-        return $execute;
-    }
-
-    function danh_sach_chua_rut_tien($id_user)
-    {
-        $data = [];
-        $iconn = $this->db->conn_id;
-
-        $sql = "SELECT id_order, id_job, type_service, (custom-withdraw_custom) as num
-        FROM tbl_job_user
-        WHERE id_user = $id_user AND withdraw = 1 AND custom > 0 AND (withdraw_custom < withdraw);";
-
-        $stmt = $iconn->prepare($sql);
-        if ($stmt) {
-            if ($stmt->execute()) {
-                if ($stmt->rowCount() > 0) {
-                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
-                        $type_service = $row['type_service'];
-
-                        if (isset($data[$type_service])) {
-                            $num = $data[$type_service] + $row['num'];
-                        } else {
-                            $num = $row['num'];
-                        }
-                        $data[$type_service] = $num;
-                    }
-                }
-            } else {
-                var_dump($stmt->errorInfo());
-                die;
-            }
-        }
-
-        $stmt->closeCursor();
-        return $data;
-    }
-
-    function tao_yeu_cau_rut_tien($id_user)
-    {
-        $execute = false;
-        $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_job_user SET withdraw_custom = custom, withdraw_status = 1 
-        WHERE id_user = $id_user AND withdraw = 1 AND custom > 0 AND (withdraw_custom < withdraw);";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {

@@ -130,136 +130,146 @@
 								</p>
 							</a>
 						</li>
-						<?php if(in_array($role, [ADMIN, SALE])) {?>
-						<!-- QUẢN LÝ DANH MỤC -->
-						<li class="nav-header">QUẢN LÝ DANH MỤC</li>
-						<li class="nav-item">
-							<a href="service" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Dịch vụ thiết kế
-									<!-- <i class="right fas fa-angle-left"></i> -->
-								</p>
-							</a>
-						</li>
+						<?php if (in_array($role, [ADMIN, SALE])) { ?>
+							<!-- QUẢN LÝ DANH MỤC -->
+							<li class="nav-header">QUẢN LÝ DANH MỤC</li>
+							<li class="nav-item">
+								<a href="service" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Dịch vụ thiết kế
+										<!-- <i class="right fas fa-angle-left"></i> -->
+									</p>
+								</a>
+							</li>
 
-						<li class="nav-item">
-							<a href="style" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Phong cách thiết kế
-								</p>
-							</a>
-						</li>
+							<li class="nav-item">
+								<a href="style" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Phong cách thiết kế
+									</p>
+								</a>
+							</li>
 
-						<li class="nav-item">
-							<a href="room" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Loại phòng thiết kế
-								</p>
-							</a>
-						</li>
+							<li class="nav-item">
+								<a href="room" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Loại phòng thiết kế
+									</p>
+								</a>
+							</li>
 
-						<li class="nav-item">
-							<a href="library" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Thư viện
-								</p>
-							</a>
-						</li>
+							<li class="nav-item">
+								<a href="library" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Thư viện
+									</p>
+								</a>
+							</li>
 
-						<!-- QUẢN LÝ NGƯỜI DÙNG -->
-						<li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
-						<li class="nav-item">
-							<a href="user" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Người dùng
-									<i class="fas fa-angle-left right"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="user/index" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Danh sách người dùng</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="user/add" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Thêm người dùng</p>
-									</a>
-								</li>
-							</ul>
-						</li>
+							<!-- QUẢN LÝ NGƯỜI DÙNG -->
+							<li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
 
-						<li class="nav-item">
-							<a href="contact" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Phản hồi người dùng
-								</p>
-							</a>
-						</li>
+							<li class="nav-item">
+								<a href="withdraw" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Yêu cầu rút tiền
+									</p>
+								</a>
+							</li>
 
-						<!-- CÀI ĐẶT WEBSITE -->
-						<li class="nav-header">CÀI ĐẶT WEBSITE</li>
-						<li class="nav-item">
-							<a href="setting" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
-								<p>
-									Cài đặt website
-									<i class="fas fa-angle-left right"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="setting/info" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Thông tin website</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="setting/home" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Trang chủ</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="setting/price" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Trang bảng giá</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="setting/order" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Trang tạo đơn</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="setting/privacy_policy" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Trang chính sách</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="setting/termsofuse" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Trang điều khoản</p>
-									</a>
-								</li>
+							<li class="nav-item">
+								<a href="user" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Người dùng
+										<i class="fas fa-angle-left right"></i>
+									</p>
+								</a>
+								<ul class="nav nav-treeview">
+									<li class="nav-item">
+										<a href="user/index" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Danh sách người dùng</p>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="user/add" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Thêm người dùng</p>
+										</a>
+									</li>
+								</ul>
+							</li>
 
-								<li class="nav-item">
-									<a href="setting/refund_policy" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Trang hoàn tiền</p>
-									</a>
-								</li>
-								<!-- <li class="nav-item">
+							<li class="nav-item">
+								<a href="contact" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Phản hồi người dùng
+									</p>
+								</a>
+							</li>
+
+							<!-- CÀI ĐẶT WEBSITE -->
+							<li class="nav-header">CÀI ĐẶT WEBSITE</li>
+							<li class="nav-item">
+								<a href="setting" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Cài đặt website
+										<i class="fas fa-angle-left right"></i>
+									</p>
+								</a>
+								<ul class="nav nav-treeview">
+									<li class="nav-item">
+										<a href="setting/info" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Thông tin website</p>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="setting/home" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Trang chủ</p>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="setting/price" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Trang bảng giá</p>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="setting/order" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Trang tạo đơn</p>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="setting/privacy_policy" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Trang chính sách</p>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="setting/termsofuse" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Trang điều khoản</p>
+										</a>
+									</li>
+
+									<li class="nav-item">
+										<a href="setting/refund_policy" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Trang hoàn tiền</p>
+										</a>
+									</li>
+									<!-- <li class="nav-item">
 									<a href="setting/introduce" class="nav-link">
 										<i class="far fa-circle nav-icon"></i>
 										<p>Trang giới thiệu</p>
@@ -277,10 +287,10 @@
 										<p>Trang tuyển dụng</p>
 									</a>
 								</li> -->
-							</ul>
-						</li>
-						<li class="nav-header"></li>
-						<li class="nav-header"></li>
+								</ul>
+							</li>
+							<li class="nav-header"></li>
+							<li class="nav-header"></li>
 						<?php } ?>
 
 					</ul>

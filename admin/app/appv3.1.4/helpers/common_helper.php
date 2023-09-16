@@ -835,7 +835,7 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
         $FULL_FOLDER = '';
         foreach ($folder_arr as $folder) {
 
-            $localFolder = $_SERVER["DOCUMENT_ROOT"] .'/'. $FULL_FOLDER . $folder . '/';
+            $localFolder = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $folder . '/';
 
             if (!is_dir($localFolder)) {
                 $ckMkdirYear = mkdir($localFolder, 755);
@@ -846,12 +846,12 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
         }
 
         // check file exist
-        $dir_save = $_SERVER["DOCUMENT_ROOT"] .'/'. $FULL_FOLDER . $basename;
+        $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
 
         if (file_exists($dir_save)) {
             $rdt = generateRandomString(10);
             $basename = $rdt . $basename;
-            $dir_save = $_SERVER["DOCUMENT_ROOT"] .'/'. $FULL_FOLDER . $basename;
+            $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
         }
 
         //check move
@@ -1206,4 +1206,31 @@ function allow_show_button_status_order_by_role($role, $status)
     }
     // không có rule phù hợp
     return false;
+}
+
+function role_name($id_role)
+{
+    $name = '';
+    switch ($id_role) {
+        case ADMIN:
+            $name = 'ADMIN';
+            break;
+        case SALE:
+            $name = 'SALE';
+            break;
+        case QC:
+            $name = 'QC';
+            break;
+        case EDITOR:
+            $name = 'EDITOR';
+            break;
+        case CUSTOMER:
+            $name = 'CUSTOMER';
+            break;
+        default:
+            $name = $id_role;
+            break;
+    }
+
+    return $name;
 }
