@@ -134,6 +134,8 @@
                     </tbody>
                 </table>
             </section>
+        <?php } else { ?>
+            <span>Không có yêu cầu đã xử lý.</span>
         <?php } ?>
     </div>
 </div>
