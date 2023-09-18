@@ -196,7 +196,8 @@
                 },
                 success: function(data, textStatus, jqXHR) {
                     console.log(data);
-                    alert('Success');
+                    alert('Bạn đã tạo thành công đơn hàng.');
+                    window.location.href = '<?=site_url(LINK_ORDER)?>';
 
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

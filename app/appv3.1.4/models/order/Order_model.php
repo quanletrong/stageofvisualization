@@ -156,7 +156,9 @@ class Order_model extends CI_Model
     {
         $data = [];
         $iconn = $this->db->conn_id;
-        $sql = "SELECT * FROM tbl_order WHERE id_order = ? LIMIT 1";
+        $sql = "SELECT A.*, B.username FROM tbl_order as A
+        INNER JOIN tbl_user as B ON A.id_user = B.id_user
+        WHERE A.id_order = ? LIMIT 1";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$id_order])) {

@@ -60,6 +60,7 @@ class User extends MY_Controller
         $data['list_type_service']  = $list_type_service;
         $data['list_job'] = $list_job;
         $data['order'] = $order;
+        $data['FDR_ORDER'] = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
 
         $this->_loadHeader($header);
         $this->load->view($this->_template_f . 'user/order_detail_view', $data);

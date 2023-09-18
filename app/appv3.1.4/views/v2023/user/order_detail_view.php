@@ -47,7 +47,7 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="position-relative image-hover">
-                                                    <img src="<?= url_image($job['image'], "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" class="img-order-all" alt="" width="100%">
+                                                    <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%">
                                                 </div>
                                                 <div class="mt-3">
                                                     <b>Attach Reference Files</b>
@@ -55,7 +55,7 @@
                                                         <?php $list_attach = json_decode($job['attach'], true); ?>
                                                         <?php foreach ($list_attach as $key => $item) { ?>
                                                             <div class="position-relative">
-                                                                <img src="<?= url_image($item, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100">
+                                                                <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" width="100">
                                                             </div>
                                                         <?php } ?>
                                                     </div>
@@ -102,7 +102,7 @@
                                                         <?php $list_complete = json_decode($job['file_complete'], true); ?>
                                                         <?php foreach ($list_complete as $key => $file) { ?>
                                                             <div class="position-relative" style="width: 48%;">
-                                                                <img src="<?= url_image($file, "uploads/images/" . $job['year'] . "/" . $job['month'] . "/") ?>" alt="" width="100%">
+                                                                <img src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
                                                             </div>
                                                         <?php } ?>
                                                     </div>

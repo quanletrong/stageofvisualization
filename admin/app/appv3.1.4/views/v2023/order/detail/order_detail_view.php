@@ -33,12 +33,12 @@
 
         <!-- CHAT BOX -->
         <section>
-            <?php $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_box_view.php'); ?>
+            <?php //$this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_box_view.php'); ?>
         </section>
 
         <!-- HISTORY -->
         <section>
-            <?php $this->load->view(TEMPLATE_FOLDER . 'order/detail/_history_view.php'); ?>
+            <?php //$this->load->view(TEMPLATE_FOLDER . 'order/detail/_history_view.php'); ?>
         </section>
     </div>
 </div>
