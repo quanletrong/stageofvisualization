@@ -73,7 +73,7 @@
                                 </div>
                             </form>
                             <table id="example1" class="table table-bordered table-striped">
-                                <thead>
+                                <thead class="thead-danger">
                                     <tr>
                                         <th class="text-center" width=50>STT</th>
                                         <th style="min-width: 200px; width: 200px;">Tên</th>
@@ -147,10 +147,10 @@
         
         $("#example1").DataTable({
             "lengthChange": true,
-            "pageLength": 50,
+            "pageLength": 100,
             "responsive": true,
             "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         $('.select2').select2();

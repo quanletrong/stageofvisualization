@@ -99,7 +99,7 @@
 
         $("#example1").DataTable({
             "lengthChange": true,
-            "pageLength": 50,
+            "pageLength": 100,
             "responsive": true,
             "autoWidth": false,
             // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]

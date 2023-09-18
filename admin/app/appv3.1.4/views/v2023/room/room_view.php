@@ -36,7 +36,7 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped">
-                                <thead>
+                                <thead class="thead-danger">
                                     <tr>
                                         <th class="text-center" style="min-width: 50px; width: 50px;">STT</th>
                                         <th>Tên phòng</th>
@@ -152,10 +152,11 @@
 <script>
     $(function() {
         $("#example1").DataTable({
+            "lengthChange": true,
+            "pageLength": 100,
             "responsive": true,
-            "lengthChange": false,
             "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
         $('#frm_room').validate({
