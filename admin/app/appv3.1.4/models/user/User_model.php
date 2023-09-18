@@ -16,7 +16,7 @@ class User_model extends CI_Model
         FROM tbl_user
         WHERE status = $status AND role IN ($role) 
         ORDER BY role ASC";
-        
+
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute()) {
@@ -39,7 +39,7 @@ class User_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
         $sql = " SELECT * FROM tbl_user WHERE id_user = ?";
-        
+
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$uid])) {
@@ -58,7 +58,7 @@ class User_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
         $sql = "SELECT * FROM tbl_user WHERE code_user = ? LIMIT 1";
-        
+
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$code])) {

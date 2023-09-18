@@ -125,10 +125,32 @@
 							<a href="order" class="nav-link">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
-									Đơn
-									<!-- <i class="right fas fa-angle-left"></i> -->
+									Tạo đơn
+									<i class="fas fa-angle-left right"></i>
 								</p>
 							</a>
+							<ul class="nav nav-treeview">
+
+								<li class="nav-item">
+									<a href="order/index" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Danh sách đơn hàng</p>
+									</a>
+								</li>
+
+								<li class="nav-item">
+									<a href="order/add_private" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Tạo đơn hàng nội bộ</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="order/add_customer" class="nav-link">
+										<i class="far fa-circle nav-icon"></i>
+										<p>Tạo đơn hàng cho khách</p>
+									</a>
+								</li>
+							</ul>
 						</li>
 						<?php if (in_array($role, [ADMIN, SALE])) { ?>
 							<!-- QUẢN LÝ DANH MỤC -->

@@ -445,3 +445,9 @@ function no_count_down_time(time, timeDone, elId) {
         document.getElementById(elId).innerHTML = '<span style="color:green">' + ket_qua + '</span>';
     }
 }
+
+function scroll_to(selector) {
+    $([document.documentElement, document.body]).animate({
+        scrollTop: $(selector).offset().top - 200
+    }, "fast");
+}
