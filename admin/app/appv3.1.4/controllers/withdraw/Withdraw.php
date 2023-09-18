@@ -66,7 +66,7 @@ class Withdraw extends MY_Controller
         $list_waiting = $this->Withdraw_model->withdraw_get_detail($id_user, $status_pending);
 
         $status_done = 1;
-        $list_done= $this->Withdraw_model->withdraw_get_detail($id_user, $status_done);
+        $list_done = $this->Withdraw_model->withdraw_get_detail($id_user, $status_done);
 
         $data['uinfo']      = $uinfo;
         $data['tong_hop_pending']   = $list_waiting['tong_hop'];
@@ -96,13 +96,35 @@ class Withdraw extends MY_Controller
         $data = [];
         foreach ($list_job_chua_rut as $item) {
             $type_service = $item['type_service'];
+            $type_job_user = $item['type_job_user'];
 
-            if (isset($data[$type_service])) {
-                $num = $data[$type_service] + $item['num'];
-            } else {
-                $num = $item['num'];
+            // CHECK IN
+            if ($type_job_user == WORKING_QC_IN) {
+                if (isset($data['CHECK_IN'])) {
+                    $num = $data['CHECK_IN'] + $item['num'];
+                } else {
+                    $num = $item['num'];
+                }
+                $data['CHECK_IN'] = $num;
             }
-            $data[$type_service] = $num;
+            // CHECK OUT
+            else if ($type_job_user == WORKING_QC_OUT) {
+                if (isset($data['CHECK_OUT'])) {
+                    $num = $data['CHECK_OUT'] + $item['num'];
+                } else {
+                    $num = $item['num'];
+                }
+                $data['CHECK_OUT'] = $num;
+            }
+            // TYPE SERVICES
+            else {
+                if (isset($data[$type_service])) {
+                    $num = $data[$type_service] + $item['num'];
+                } else {
+                    $num = $item['num'];
+                }
+                $data[$type_service] = $num;
+            }
         }
         resSuccess($data);
     }
@@ -121,10 +143,21 @@ class Withdraw extends MY_Controller
         } else {
             foreach ($list_job_chua_rut as $id_job_user => $job_user) {
                 $id_user = $job_user['id_user'];
-                $type_service = $job_user['type_service'];
+                $id_order = $job_user['id_order'];
+                $id_job = $job_user['id_job'];
+                $type_job_user = $job_user['type_job_user'];
+
+                if ($type_job_user == WORKING_QC_IN) {
+                    $type_service = 'CHECK_IN';
+                } else if ($type_job_user == WORKING_QC_OUT) {
+                    $type_service = 'CHECK_OUT';
+                } else {
+                    $type_service = $job_user['type_service'];
+                }
+
                 $custom = $job_user['num']; // số lượng rút
 
-                $this->Withdraw_model->tao_yeu_cau_rut_tien($id_user, $id_job_user, $type_service, $custom, $create_time);
+                $this->Withdraw_model->tao_yeu_cau_rut_tien($id_user, $id_order, $id_job, $id_job_user, $type_service, $custom, $create_time);
             }
 
             dbClose();
@@ -148,7 +181,8 @@ class Withdraw extends MY_Controller
             resError('Error');
         }
 
-        $list_waiting = $this->Withdraw_model->withdraw_get_detail_waiting($id_user);
+        $status_pending = 0;
+        $list_waiting = $this->Withdraw_model->withdraw_get_detail($id_user, $status_pending);
 
         if (empty($list_waiting['all'])) {
             resError('Không có yêu cầu nào được thực hiện.');

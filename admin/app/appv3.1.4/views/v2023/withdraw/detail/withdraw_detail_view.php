@@ -25,7 +25,7 @@
             <section>
                 <div class="d-flex" style="gap: 10px;">
                     <?php foreach ($tong_hop_pending as $type_service => $number) { ?>
-                        <div class="info-box bg-danger" style="max-width: 300px;">
+                        <div class="info-box bg-danger" style="max-width: 25%">
                             <div class="info-box-content">
                                 <span class="info-box-text"><?= $type_service ?></span>
                                 <span class="info-box-number"><?= $number ?></span>
@@ -88,7 +88,7 @@
             <section>
                 <div class="d-flex" style="gap: 10px;">
                     <?php foreach ($tong_hop_done as $type_service => $number) { ?>
-                        <div class="info-box bg-success" style="max-width: 300px;">
+                        <div class="info-box bg-success" style="max-width: 25%">
                             <div class="info-box-content">
                                 <span class="info-box-text"><?= $type_service ?></span>
                                 <span class="info-box-number"><?= $number ?></span>

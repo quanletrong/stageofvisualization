@@ -14,7 +14,7 @@ class Withdraw_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
 
-        $sql = "SELECT id_job_user, id_user, id_order, id_job, type_service, (custom-withdraw_custom) as num
+        $sql = "SELECT id_job_user, id_user, id_order, id_job, type_job_user, type_service, (custom-withdraw_custom) as num
         FROM tbl_job_user
         WHERE id_user = $id_user AND withdraw = 1 AND custom > 0 AND (withdraw_custom < custom);";
 
@@ -36,13 +36,13 @@ class Withdraw_model extends CI_Model
         return $data;
     }
 
-    function tao_yeu_cau_rut_tien($id_user, $id_job_user, $type_service, $custom, $create_time)
+    function tao_yeu_cau_rut_tien($id_user, $id_order, $id_job, $id_job_user, $type_service, $custom, $create_time)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = " UPDATE tbl_job_user SET withdraw_status = 1, withdraw_custom = custom  WHERE id_job_user = $id_job_user; ";
-        $sql .= "INSERT INTO tbl_withdraw (id_user, id_job_user, type_service, custom, status, create_time) 
-        VALUES ($id_user, $id_job_user, '$type_service', $custom, 0, '$create_time');";
+        $sql .= "INSERT INTO tbl_withdraw (id_user, id_order, id_job, id_job_user, type_service, custom, status, create_time) 
+        VALUES ($id_user, $id_order, $id_job, $id_job_user, '$type_service', $custom, 0, '$create_time');";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -91,11 +91,10 @@ class Withdraw_model extends CI_Model
         $data['all'] = [];
         $iconn = $this->db->conn_id;
 
-        $sql = "SELECT A.*, B.username, B.role, B.code_user, B.avatar, B.fullname, D.id_order, D.code_order ";
+        $sql = "SELECT A.*, B.username, B.role, B.code_user, B.avatar, B.fullname, C.code_order ";
         $sql .= "FROM tbl_withdraw as A ";
         $sql .= "INNER JOIN tbl_user as B ON A.id_user = B.id_user ";
-        $sql .= "INNER JOIN tbl_job_user as C ON A.id_job_user = C.id_job_user ";
-        $sql .= "INNER JOIN tbl_order as D ON C.id_order = D.id_order ";
+        $sql .= "INNER JOIN tbl_order as C ON A.id_order = C.id_order ";
         $sql .= "WHERE A.id_user = $id_user AND A.status = $status ";
         $sql .= "ORDER BY A.create_time ";
         $stmt = $iconn->prepare($sql);
