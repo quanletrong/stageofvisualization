@@ -77,8 +77,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <i class="fas fa-sync fa-spin"></i>
+            <div class="modal-body d-flex">
+                <div class="w-50 service">
+                    <i class="fas fa-sync fa-spin"></i>
+                </div>
+
+                <div class="w-50 in_out">
+                </div>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -167,7 +172,8 @@
     }
 
     function ajax_get_rut_tien() {
-        $('#modal-withdraw-balance .modal-body').html('<i class="fas fa-sync fa-spin"></i>');
+        $('#modal-withdraw-balance .modal-body .in_out').html('<i class="fas fa-sync fa-spin"></i>');
+        $('#modal-withdraw-balance .modal-body .service').html('');
 
         $.ajax({
             url: `withdraw/ajax_get_rut_tien`,
@@ -175,18 +181,29 @@
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
                 if (kq.status) {
-                    let html = ``;
+                    let in_out_html = ``;
+                    let service_html = ``;
                     Object.entries(kq.data).forEach((entry) => {
                         const [key, value] = entry;
 
-                        html += `
-                        <div class="d-flex mb-3" style="font-weight: bold;">
-                            <div class="w-50">${key}</div>
-                            <div>${value}</div>
-                        </div>`
+                        if (key == 'CHECK_IN' || key == 'CHECK_OUT') {
+                            in_out_html += `
+                            <div class="d-flex mb-3" style="font-weight: bold;">
+                                <div class="w-50">${key}</div>
+                                <div>${value}</div>
+                            </div>`
+                        } else {
+                            service_html += `
+                            <div class="d-flex mb-3" style="font-weight: bold;">
+                                <div class="w-50">${key}</div>
+                                <div>${value}</div>
+                            </div>`
+                        }
+
                     });
 
-                    $('#modal-withdraw-balance .modal-body').html(html)
+                    $('#modal-withdraw-balance .modal-body .in_out').html(in_out_html)
+                    $('#modal-withdraw-balance .modal-body .service').html(service_html)
 
                 } else {
                     toasts_danger(kq.error);
