@@ -23,6 +23,11 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="type_service">Mã</label>
+                                    <input type="text" class="form-control" id="type_service" name="type_service" placeholder="Mã">
+                                </div>
+
+                                <div class="form-group">
                                     <label for="name">Giá mỗi ảnh $</label>
                                     <input type="number" class="form-control" id="price" name="price" placeholder="">
                                 </div>
@@ -146,6 +151,11 @@
                     minlength: 5,
                     maxlength: 256
                 },
+                type_service: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 256
+                },
                 sapo: {
                     required: true,
                     minlength: 5
@@ -163,6 +173,11 @@
                 name: {
                     required: 'Không được bỏ trống',
                     minlength: 'Tối thiểu 5 ký tự',
+                    maxlength: 'Tối đa 256 ký tự',
+                },
+                type_service: {
+                    required: 'Không được bỏ trống',
+                    minlength: 'Tối thiểu 2 ký tự',
                     maxlength: 'Tối đa 256 ký tự',
                 },
                 sapo: {
@@ -202,6 +217,7 @@
                 $('#frm_service input[name=id_service]').val(service.id_service);
                 modal.find('.modal-title').text(`Sửa dịch vụ - ${service.name}`);
                 modal.find('.modal-body #name').val(service.name);
+                modal.find('.modal-body #type_service').val(service.type_service);
                 modal.find('.modal-body #sapo').val(service.sapo);
                 modal.find('.modal-body #price').val(service.price);
                 modal.find('.modal-body #image').val(service.image);
@@ -222,6 +238,7 @@
                 $('#frm_service input[name=id_service]').val('');
                 modal.find('.modal-title').text(`Thêm dịch vụ`);
                 modal.find('.modal-body #name').val('');
+                modal.find('.modal-body #type_service').val('');
                 modal.find('.modal-body #sapo').val('');
                 modal.find('.modal-body #price').val('');
                 modal.find('.modal-body #image').val('');

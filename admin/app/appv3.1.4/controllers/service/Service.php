@@ -36,15 +36,16 @@ class Service extends MY_Controller
 
         // SUBMIT FORM (nếu có)
         if (isset($_POST['action'])) {
-            $name        = $this->input->post('name');
-            $sapo        = $this->input->post('sapo');
-            $price       = $this->input->post('price');
-            $status      = $this->input->post('status');
-            $image       = $this->input->post('image');
-            $room        = $this->input->post('room');
-            $id_service  = $this->input->post('id_service');
-            $id_service  = is_numeric($id_service) && $id_service > 0 ? $id_service : 0;
-            $create_time = date('Y-m-d H:i:s');
+            $name         = removeAllTags($this->input->post('name'));
+            $type_service = removeAllTags($this->input->post('type_service'));
+            $sapo         = removeAllTags($this->input->post('sapo'));
+            $price        = removeAllTags($this->input->post('price'));
+            $status       = removeAllTags($this->input->post('status'));
+            $image        = removeAllTags($this->input->post('image'));
+            $room         = removeAllTags($this->input->post('room'));
+            $id_service   = removeAllTags($this->input->post('id_service'));
+            $id_service   = is_numeric($id_service) && $id_service > 0 ? $id_service : 0;
+            $create_time  = date('Y-m-d H:i:s');
 
             // TẠO MỚI 
             if ($_POST['action'] == 'add') {
@@ -69,7 +70,7 @@ class Service extends MY_Controller
                 $copy = copy_image_to_public_upload($image, FOLDER_SERVICES);
                 if ($copy['status']) {
 
-                    $exc = $this->Service_model->add($name, $sapo, $copy['basename'], json_encode($room_ok, JSON_FORCE_OBJECT), $price, $status, $this->_session_uid(), $create_time);
+                    $exc = $this->Service_model->add($name,$type_service, $sapo, $copy['basename'], json_encode($room_ok, JSON_FORCE_OBJECT), $price, $status, $this->_session_uid(), $create_time);
                     $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!';
                 } else {
                     $msg = $copy['error'];
@@ -90,8 +91,6 @@ class Service extends MY_Controller
                     $msg = 'Lưu không thành công vui lòng thử lại!';
                 } else {
 
-                    $year   = date('Y', strtotime($info['create_time']));
-                    $monthe = date('m', strtotime($info['create_time']));
                     $image_ok = $info['image'];
                     $update_time = date('Y-m-d H:i:s');
 
@@ -139,7 +138,7 @@ class Service extends MY_Controller
                     }
                     // end copy and validate room
 
-                    $exc = $this->Service_model->edit($name, $sapo, $price, $image_ok, json_encode($room_ok, JSON_FORCE_OBJECT), $status, $update_time, $id_service);
+                    $exc = $this->Service_model->edit($name, $type_service, $sapo, $price, $image_ok, json_encode($room_ok, JSON_FORCE_OBJECT), $status, $update_time, $id_service);
                     $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
                     redirect('service');
                 }

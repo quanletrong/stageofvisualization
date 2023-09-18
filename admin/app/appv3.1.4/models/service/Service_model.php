@@ -8,14 +8,14 @@ class Service_model extends CI_Model
         parent::__construct();
     }
 
-    function add($name, $sapo, $image, $room, $price, $status, $id_user, $create_time)
+    function add($name,$type_service, $sapo, $image, $room, $price, $status, $id_user, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_service (name, sapo, image, room, price, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_service (name, type_service, sapo, image, room, price, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $sapo, $image, $room, $price, $status, $id_user, $create_time];
+            $param = [$name, $type_service, $sapo, $image, $room, $price, $status, $id_user, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -87,14 +87,14 @@ class Service_model extends CI_Model
         return $data;
     }
 
-    function edit($name, $sapo, $price, $image, $room, $status, $update_time, $id_service)
+    function edit($name, $type_service, $sapo, $price, $image, $room, $status, $update_time, $id_service)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_service SET name=?, sapo=?, price=?, image=?, room=?, status=?, update_time=? WHERE id_service=?";
+        $sql = "UPDATE tbl_service SET name=?, type_service=?,sapo=?, price=?, image=?, room=?, status=?, update_time=? WHERE id_service=?";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $sapo, $price, $image, $room, $status, $update_time, $id_service];
+            $param = [$name, $type_service, $sapo, $price, $image, $room, $status, $update_time, $id_service];
 
             if ($stmt->execute($param)) {
                 $execute = true;
