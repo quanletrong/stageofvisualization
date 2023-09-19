@@ -125,7 +125,7 @@
 							<a href="order" class="nav-link">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
-									Tạo đơn
+									QUẢN LÝ ĐƠN HÀNG
 									<i class="fas fa-angle-left right"></i>
 								</p>
 							</a>
@@ -138,18 +138,20 @@
 									</a>
 								</li>
 
-								<li class="nav-item">
-									<a href="order/add_private" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Tạo đơn hàng nội bộ</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="order/add_customer" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Tạo đơn hàng cho khách</p>
-									</a>
-								</li>
+								<?php if (in_array($role, [ADMIN, SALE])) { ?>
+									<li class="nav-item">
+										<a href="order/add_private" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Tạo đơn hàng nội bộ</p>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="order/add_customer" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Tạo đơn hàng cho khách</p>
+										</a>
+									</li>
+								<?php } ?>
 							</ul>
 						</li>
 						<?php if (in_array($role, [ADMIN, SALE])) { ?>
