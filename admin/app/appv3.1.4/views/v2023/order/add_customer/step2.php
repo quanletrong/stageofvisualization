@@ -1,5 +1,5 @@
 <div class="container py-5 d-none" id="step-2">
-    <div class="fw-semibold fs-5 mb-3">STEP 2 OF 3: ADD PHOTOS </div>
+    <div class="fw-semibold fs-5 mb-3">NỘI DUNG ĐƠN HÀNG </div>
 
     <div class="row">
         <div class="col-12">
@@ -48,8 +48,8 @@
                     <!-- submit -->
                     <div class="mt-3">
                         <div class="d-flex">
-                            <button type="button" class="btn btn-lg btn-secondary w-25 me-3" id="step-2-back">Back Step 1</button>
-                            <button type="button" class="btn btn-lg btn-danger w-75" id="step-2-next">Continue to Next Step</button>
+                            <button type="button" class="btn btn-lg btn-secondary w-25 me-3" id="step-2-back">Back</button>
+                            <button type="button" class="btn btn-lg btn-danger w-75" id="step-2-next">NEXT</button>
                         </div>
 
                     </div>

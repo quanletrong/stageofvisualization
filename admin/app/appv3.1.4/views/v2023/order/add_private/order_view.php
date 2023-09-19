@@ -50,20 +50,6 @@
 <script>
     $("document").ready(function() {
 
-        if ($(window).width() < 992) {
-            $('.step-1-box').removeClass('w-50')
-        } else {
-            $('.step-1-box').addClass('w-50')
-        }
-
-        $(window).resize(function() {
-            if ($(window).width() < 992) {
-                $('.step-1-box').removeClass('w-50')
-            } else {
-                $('.step-1-box').addClass('w-50')
-            }
-        });
-
         // valid_order
         var valid_order = $('#form_order').validate({
             submitHandler: function(form) {
@@ -171,7 +157,7 @@
 
         function ajax_order() {
             $.ajax({
-                url: 'order/submit_add_private',
+                url: 'order/submit_add/private',
                 type: "POST",
                 data: {
                     order: STATE
@@ -179,7 +165,7 @@
                 success: function(data, textStatus, jqXHR) {
                     console.log(data);
                     alert('Bạn đã tạo thành công đơn hàng.');
-                    // window.location.href = '<?= site_url(LINK_ORDER) ?>';
+                    window.location.href = '<?= site_url(LINK_ORDER) ?>';
 
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

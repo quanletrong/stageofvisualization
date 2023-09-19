@@ -10,49 +10,50 @@
 
     let STATE = {};
     // step 1
-    STATE.name = '';
-    STATE.lastname = '';
-    STATE.email = '';
-    STATE.phone = '';
+    STATE.for_user = '';
 
     // step 2
     STATE.job = {};
     STATE.style = '';
-
-    // step 3
-    STATE.card_number = '';
-    STATE.card_mm = '';
-    STATE.card_yy = '';
-    STATE.card_cvv = '';
-    STATE.coupon = '';
+    
 </script>
-<div class="container-fluid" style="background-color: #fafafa;">
 
-    <form id="form_order">
-       
-        <!-- STEP 2 -->
-        <?php $this->load->view(VERSION . '/order/add/private/step2.php'); ?>
-        <!-- STEP 3 -->
-        <?php $this->load->view(VERSION . '/order/add/step3.php'); ?>
-    </form>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- PAGE HEADER -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1><?=$title?></h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
+                            <li class="breadcrumb-item active"><?=$title?></li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- JOB CONTENT / TEAM ACTION -->
+        <section>
+            <form id="form_order">
+
+                <!-- STEP 1 -->
+                <?php $this->load->view(VERSION . '/order/add_customer/step1.php'); ?>
+                <!-- STEP 2 -->
+                <?php $this->load->view(VERSION . '/order/add_customer/step2.php'); ?>
+                <!-- STEP 3 -->
+                <?php $this->load->view(VERSION . '/order/add_customer/step3.php'); ?>
+            </form>
+        </section>
+    </div>
 </div>
 
 <script>
     $("document").ready(function() {
-
-        if ($(window).width() < 992) {
-            $('.step-1-box').removeClass('w-50')
-        } else {
-            $('.step-1-box').addClass('w-50')
-        }
-
-        $(window).resize(function() {
-            if ($(window).width() < 992) {
-                $('.step-1-box').removeClass('w-50')
-            } else {
-                $('.step-1-box').addClass('w-50')
-            }
-        });
 
         // valid_order
         var valid_order = $('#form_order').validate({
@@ -83,22 +84,14 @@
 
         // step-1-next-2
         $("#step-1-next").click(function() {
+            if($('#list_customer').val() == '') {
+                alert ('Hãy chọn khách hàng cần tạo đơn!');
+                return;
+            }
             $("#step-1").addClass('d-none');
             $("#step-2").removeClass('d-none');
             $("#step-3").addClass('d-none');
             window.scrollTo(0, 0);
-
-            // if (STATE.name != '' && STATE.lastname != '' && STATE.email != '' && STATE.phone != '') {
-            //     $("#step-1").addClass('d-none');
-            //     $("#step-2").removeClass('d-none');
-            //     $("#step-3").addClass('d-none');
-            //     window.scrollTo(0, 0);
-            // } else {
-            //     valid_order.element(`*[name="name"]`)
-            //     valid_order.element(`*[name="lastname"]`);
-            //     valid_order.element(`*[name="phone"]`);
-            //     valid_order.element(`*[name="email"]`);
-            // }
         });
 
         // step-2-next-3
@@ -188,7 +181,7 @@
 
         function ajax_order() {
             $.ajax({
-                url: 'order/submit',
+                url: 'order/submit_add/customer',
                 type: "POST",
                 data: {
                     order: STATE
@@ -196,7 +189,7 @@
                 success: function(data, textStatus, jqXHR) {
                     console.log(data);
                     alert('Bạn đã tạo thành công đơn hàng.');
-                    window.location.href = '<?=site_url(LINK_ORDER)?>';
+                    // window.location.href = '<?= site_url(LINK_ORDER) ?>';
 
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

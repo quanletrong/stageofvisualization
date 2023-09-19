@@ -130,25 +130,26 @@ class Order extends MY_Controller
 
         $this->_loadFooter();
     }
+
     function add_private()
     {
         $cur_uid = $this->_session_uid();
         if (!in_array($this->_session_role(), [ADMIN, SALE])) {
-            resError('not_permit', 'Bạn không có quyền thực hiện.');
+            dbClose();
+            redirect(site_url('order', $this->_langcode));
+            die();
         }
 
         $room          = $this->Room_model->get_list(1);
         $style         = $this->Style_model->get_list(1);
         $library       = $this->Library_model->get_list(1);
         $service       = $this->Service_model->get_list(1);
-        $list_customer = $this->User_model->get_list_user_working(1, implode(",", [CUSTOMER]));
 
-        $data= [];
+        $data = [];
         $data['list_room']     = $room;
         $data['list_service']  = $service;
         $data['list_style']    = $style;
         $data['list_library']  = $library;
-        $data['list_customer'] = $list_customer;
 
         $header = [
             'title' => 'Tạo đơn hàng nội bộ',
@@ -159,31 +160,83 @@ class Order extends MY_Controller
         $this->_loadFooter();
     }
 
-    function submit_add_private()
+    function add_customer()
     {
-        var_dump($_POST);die;
-        // TODO: sale admin qc ed muốn tạo đơn có được không?
+        $cur_uid = $this->_session_uid();
+        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+            dbClose();
+            redirect(site_url('order', $this->_langcode));
+            die();
+        }
 
-        $this->_islogin() ? "" : resError('error_attach');
+        $room          = $this->Room_model->get_list(1);
+        $style         = $this->Style_model->get_list(1);
+        $library       = $this->Library_model->get_list(1);
+        $service       = $this->Service_model->get_list(1);
+        $list_customer = $this->User_model->get_list_user_working(1, implode(",", [CUSTOMER]));
+
+        $data = [];
+        $data['list_room']     = $room;
+        $data['list_service']  = $service;
+        $data['list_style']    = $style;
+        $data['list_library']  = $library;
+        $data['list_customer'] = $list_customer;
+
+        $header = [
+            'title' => 'Tạo đơn hàng cho khách',
+            'header_page_css_js' => 'order'
+        ];
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'order/add_customer/order_view', $data);
+        $this->_loadFooter();
+    }
+
+    function submit_add($type)
+    {
+        $cur_uid     = $this->_session_uid();
+        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+            resError('not_permit', 'Bạn không có quyền thực hiện.');
+        }
 
         $all_room    = $this->Room_model->get_list(1);
         $all_service = $this->Service_model->get_list(1);
         $all_style   = $this->Style_model->get_list(1);
 
-        $order = $this->input->post('order');
+        $order       = $this->input->post('order');
         $style       = $order['style'];
-        $id_user     = $this->_session_uid();
+        $for_user    = $order['for_user'];
         $create_time = date('Y-m-d H:i:s');
-        $coupon      = $order['coupon'];
-        $list_job  = $order['job'];
+        $list_job    = $order['job'];
 
         // VALIDATE
+
+        # check private
+        if ($type == 'private') {
+            $create_id_user = $cur_uid;
+            $for_user       = $cur_uid;
+            $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) . '@' . $this->_session_uname();
+        }
+        # check customer
+        else if ($type == 'customer') {
+            $info_user = $this->User_model->get_user_info_by_id($for_user);
+
+            empty($info_user)               ? resError('User được chọn không tồn tại') : '';
+            $info_user['role'] != CUSTOMER  ? resError('User được chọn không phải là khách hàng') : '';
+            $info_user['status'] == 0       ? resError('User được chọn đã bị khóa') : '';
+
+            $create_id_user = $cur_uid;
+            $for_user       = $for_user;
+            $FDR_ORDER      = FOLDER_ORDER . strtotime($create_time) . '@' . $info_user['username'];
+        } 
+        # không hợp lệ
+        else {
+            resError('type', 'Dữ liệu không hợp lệ');
+        }
+
         # check style
-        if(isIdNumber($style)) {
+        if (isIdNumber($style)) {
             isset($all_style[$style]) ? '' : resError('error_style');
         }
-        
-        $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) .'@'.$this->_session_uname();
 
         foreach ($list_job as $id_job => $job) {
             $room        = $job['room'];
@@ -218,7 +271,8 @@ class Order extends MY_Controller
 
         // Tạo đơn vào tbl_order
         // TODO: dòng bên dưới tạm fix PAY_HOAN_THANH, sau bổ sung paypal sẽ thay bằng PAY_DANG_CHO
-        $new_order = $this->Order_model->add_order($style, $create_time, $id_user, $coupon, PAY_HOAN_THANH, ORDER_PENDING);
+        $coupon = '';
+        $new_order = $this->Order_model->add_order($style, $create_time, $for_user, $coupon, PAY_HOAN_THANH, ORDER_PENDING, DON_NOI_BO, $create_id_user);
 
         $flag_error = false;
         if ($new_order) {

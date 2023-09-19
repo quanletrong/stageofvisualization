@@ -1,5 +1,5 @@
 <div class="container py-5" id="step-2">
-    <div class="fw-semibold fs-5 mb-3">THÔNG TIN ĐƠN HÀNG </div>
+    <div class="fw-semibold fs-5 mb-3">NỘI DUNG ĐƠN HÀNG </div>
 
     <div class="row">
         <div class="col-12">
