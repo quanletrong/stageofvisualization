@@ -161,7 +161,7 @@ class Order extends MY_Controller
 
         $order = $this->Order_model->get_info_order($job['id_order']);
         empty($order) ? resError('Đơn hàng không tồn tại') : '';
-        
+
         $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
         !$edit_action ? resError('Bạn không có quyền thao tác') : '';
 
@@ -194,7 +194,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $url_image = $this->input->post('url_image');
         $id_rework = $this->input->post('id_rework');
@@ -206,9 +205,8 @@ class Order extends MY_Controller
 
         $order = $this->Order_model->get_info_order($info['id_order']);
 
-        if ($role == QC || $role == EDITOR) {
-            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
-        }
+        $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
+        !$edit_action ? resError('Bạn không có quyền thao tác') : '';
 
         $parse = parse_url($url_image);
         !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
@@ -232,7 +230,6 @@ class Order extends MY_Controller
 
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $url_image = $this->input->post('url_image');
         $id_rework = $this->input->post('id_rework');
@@ -246,9 +243,8 @@ class Order extends MY_Controller
 
         $order = $this->Order_model->get_info_order($rework['id_order']);
 
-        if ($role == QC || $role == EDITOR) {
-            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
-        }
+        $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
+        !$edit_action ? resError('Bạn không có quyền thao tác') : '';
 
         !isset($rework['attach'][$id_attach]) ? resError('ID attach không tồn tại') : '';
 
@@ -272,13 +268,12 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $id_rework    = $this->input->post('id_rework');
         $id_attach = $this->input->post('id_attach');
 
-        !isIdNumber($id_rework) ? resError('Rework không hợp lệ')           : '';
-        !isIdNumber($id_attach) ? resError('ID Attach không hợp lệ') : '';
+        !isIdNumber($id_rework) ? resError('Rework không hợp lệ')       : '';
+        !isIdNumber($id_attach) ? resError('ID Attach không hợp lệ')    : '';
 
         $info = $this->Job_model->get_info_rework_by_id($id_rework);
         $info == [] ? resError('Rework không tồn tại') : '';
@@ -289,7 +284,7 @@ class Order extends MY_Controller
         $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
         !$edit_action ? resError('Bạn không có quyền thao tác') : '';
 
-        !isset($info['attach'][$id_attach]) ? resError('ID FILE COMPLETE không tồn tại') : '';
+        !isset($info['attach'][$id_attach]) ? resError('ID attach không tồn tại') : '';
 
         unset($info['attach'][$id_attach]); // xóa
 
@@ -303,7 +298,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $id_rework    = $this->input->post('id_rework');
         $requirement = removeAllTags($this->input->post('requirement'));
@@ -316,9 +310,8 @@ class Order extends MY_Controller
 
         $order = $this->Order_model->get_info_order($info['id_order']);
 
-        if ($role == QC) {
-            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
-        }
+        $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
+        !$edit_action ? resError('Bạn không có quyền thao tác') : '';
 
         //TODO: THIẾU GHI LOG
         $this->Job_model->update_requirement_rework($id_rework, $requirement);

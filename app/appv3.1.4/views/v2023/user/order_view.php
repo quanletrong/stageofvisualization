@@ -2,7 +2,7 @@
     <h1 class="fs-4 mt-3">MY ORDERS AND LISTINGS</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?=site_url('')?>"><i class="fa-solid fa-house"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="<?= site_url('') ?>"><i class="fa-solid fa-house"></i> Home</a></li>
             <li class="breadcrumb-item active">My Order</li>
         </ol>
     </nav>
@@ -33,12 +33,14 @@
                         <?php
                         if ($order['status'] == ORDER_PENDING) {
                             echo '<small class="badge" style="color:white;background-color: deeppink">PENDING</small>';
-                        }else if ($order['status'] == ORDER_DELIVERED) {
+                        } else if ($order['status'] == ORDER_DELIVERED) {
                             echo '<small class="badge bg-info">DELIVERED</small>';
                         } else if ($order['status'] == ORDER_COMPLETE) {
                             echo '<small class="badge bg-success">COMPLETE</small>';
                         } else if ($order['status'] == ORDER_CANCLE) {
                             echo '<small class="badge bg-danger">CANCLE</small>';
+                        } else if ($order['status'] == ORDER_REWORK) {
+                            echo '<small class="badge bg-danger">REWORK</small>';
                         } else {
                             echo '<small class="badge bg-warning">IN PROGRESS</small>';
                         }

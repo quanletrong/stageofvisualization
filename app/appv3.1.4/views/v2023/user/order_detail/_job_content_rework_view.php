@@ -2,38 +2,41 @@
 <?php $i = 1 ?>
 <?php foreach ($job['rework'] as $id_rework => $rework) { ?>
     <div class="card card-primary shadow collapsed-card mt-3">
-        <div class="card-header bg-danger text-white">
+        <div class="card-header bg-danger text-white" onclick="$(this).siblings('.card-body').slideToggle()" style="cursor: pointer;">
             <div class="d-flex justify-content-between align-items-center">
                 <h6 class="card-title mb-0">
-                    <div>REWORK <?= $i++ ?></div>
+                    <div>REWORK <?= $i ?></div>
                 </h6>
             </div>
         </div>
-        <div class="card-body">
-            <div>
-                <div id="list_complete_rework_<?= $id_rework ?>" data-id-rework="<?= $id_rework ?>" class="d-flex flex-wrap" style="gap: 10px;">
-                    <?php foreach ($rework['file_complete'] as $key => $file) { ?>
-                        <div class="position-relative image-hover" style="width: 48%;" id="file_complete_rework_<?= $key ?>">
+        <div class="card-body" style="display: <?= $i < count($job['rework']) ? 'none' : 'block' ?>;">
+            <?php if (count($rework['file_complete'])) { ?>
+                <div>
+                    <b>Rerowk Complete Files</b>
+                    <div id="list_complete_rework_<?= $id_rework ?>" data-id-rework="<?= $id_rework ?>" class="d-flex flex-wrap" style="gap: 10px;">
+                        <?php foreach ($rework['file_complete'] as $key => $file) { ?>
+                            <div class="position-relative image-hover" style="<?= count($rework['file_complete']) === 1 ? 'width: 100%;' : 'width: 48%;' ?>" id="file_complete_rework_<?= $key ?>">
 
-                            <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
-                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_<?= $key ?>">
-                                    <i class="fas fa-upload"></i>
-                                </button>
+                                <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                                    <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_<?= $key ?>">
+                                        <i class="fas fa-upload"></i>
+                                    </button>
 
-                                <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, $FDR_ORDER) ?>', '<?= $file ?>')">
-                                    <i class="fas fa-download"></i>
-                                </button>
+                                    <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, $FDR_ORDER) ?>', '<?= $file ?>')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
 
-                                <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete_rework(this, <?= $id_rework ?>,<?= $key ?>)">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                    <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete_rework(this, <?= $id_rework ?>,<?= $key ?>)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+
+                                <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
                             </div>
-
-                            <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
-                        </div>
-                    <?php } ?>
+                        <?php } ?>
+                    </div>
                 </div>
-            </div>
+            <?php } ?>
             <div class="mt-2">
                 <b>Attach Reference Files</b>
                 <div id="list_attach_rework_<?= $id_rework ?>" data-id-rework="<?= $id_rework ?>" class="mt-2 d-flex flex-wrap" style="gap:7px">
@@ -65,9 +68,10 @@
                 <b>Requirements</b>
                 <textarea class="form-control" id="requirement_rework_<?= $id_rework ?>" rows="5"><?= $rework['note'] ?></textarea>
             </div>
-            <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement_rework(this, <?= $id_rework ?>)" style="width: 100px;">Save</button>
+            <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement_rework(this, <?= $id_rework ?>)" style="width: 150px;">Save Requirements</button>
         </div>
     </div>
+    <?php $i++ ?>
 <?php } ?>
 
 <div class="mt-3 card shadow d-none" id="card_new_rework_<?= $id_job ?>">
@@ -135,7 +139,7 @@
                 if (kq.status) {
                     location.reload();
                 } else {
-                    toasts_danger(kq.error);
+                    alert(kq.error);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -186,7 +190,7 @@
                 if (kq.status) {
 
                 } else {
-                    toasts_danger(kq.error);
+                    alert(kq.error);
                 }
                 $(btn).html('Save');
                 $(btn).prop("disabled", false);
@@ -234,7 +238,7 @@
                         </div>`;
                     $(target).append(html)
                 } else {
-                    toasts_danger(kq.error);
+                    alert(kq.error);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -268,7 +272,7 @@
                         .attr('onclick', `downloadURI('${url_image}', '${file_name}')`)
 
                 } else {
-                    toasts_danger(kq.error);
+                    alert(kq.error);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -295,7 +299,7 @@
                 if (kq.status) {
 
                 } else {
-                    toasts_danger(kq.error);
+                    alert(kq.error);
                 }
                 $(`#file_complete_rework_${id_complete}`).remove();
                 $(btn).prop("disabled", false);
@@ -324,7 +328,7 @@
                 if (kq.status) {
 
                 } else {
-                    toasts_danger(kq.error);
+                    alert(kq.error);
                 }
                 $(`#file_attach_${id_attach}`).remove();
                 $(btn).prop("disabled", false);
