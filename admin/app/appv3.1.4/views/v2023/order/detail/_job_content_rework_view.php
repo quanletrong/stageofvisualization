@@ -1,25 +1,13 @@
 <!-- LIST REWORK ĐÃ TẠO -->
 <?php $i = 1 ?>
 <?php foreach ($job['rework'] as $id_rework => $rework) { ?>
-    <div class="card card-primary shadow collapsed-card">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                    <div>REWORK <?= $i++ ?></div>
-                </h3>
-                <div class="card-tools m-0 d-flex">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                        <i class="fas fa-plus"></i>
-                    </button>
-
-                    <button type="button" class="btn btn-tool" data-card-widget="remove">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-
+    <div class="card card-primary shadow">
+        <div class="card-header" onclick="$(this).siblings('.card-body').slideToggle()" style="cursor: pointer;">
+            <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                <div>REWORK <?= $i ?></div>
+            </h3>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="display: <?= $i < count($job['rework']) ? 'none' : 'block' ?>;">
             <div>
                 <div id="list_complete_rework_<?= $id_rework ?>" data-id-rework="<?= $id_rework ?>" class="d-flex flex-wrap" style="gap: 10px;">
                     <?php foreach ($rework['file_complete'] as $key => $file) { ?>
@@ -30,7 +18,7 @@
                                     <i class="fas fa-upload"></i>
                                 </button>
 
-                                <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, $FDR_ORDER)?>', '<?= $file ?>')">
+                                <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, $FDR_ORDER) ?>', '<?= $file ?>')">
                                     <i class="fas fa-download"></i>
                                 </button>
 
@@ -43,7 +31,7 @@
                         </div>
                     <?php } ?>
                 </div>
-                <button class="btn btn-warning btn-sm mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_complete_rework" data-target="#list_complete_rework_<?= $id_rework ?>"> <i class="fas fa-upload"></i> Upload file rework</button>
+                <a class="mt-2" href="javascript:void(0)" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_complete_rework" data-target="#list_complete_rework_<?= $id_rework ?>"> <i class="fas fa-upload"></i> Upload complete rework</a>
             </div>
             <div class="mt-2">
                 <b>Attach Reference Files</b>
@@ -75,7 +63,7 @@
 
                 <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
                     <div class="mt-2 d-flex flex-wrap" style="gap:7px">
-                        <button class="btn btn-warning btn-sm mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_rework" data-target="#list_attach_rework_<?= $id_rework ?>"> <i class="fas fa-paperclip"></i> Upload attach file</button>
+                        <a class="mt-2" href="javascript:void(0)" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_rework" data-target="#list_attach_rework_<?= $id_rework ?>"> <i class="fas fa-paperclip"></i> Upload attach file</a>
                     </div>
                 <?php } ?>
             </div>
@@ -85,13 +73,14 @@
                 <textarea class="form-control" id="requirement_rework_<?= $id_rework ?>" rows="5"><?= $rework['note'] ?></textarea>
             </div>
             <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement_rework(this, <?= $id_rework ?>)" style="width: 100px;">Save</button>
+                <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement_rework(this, <?= $id_rework ?>)" style="width: 150px;">Save Requirements</button>
             <?php } ?>
         </div>
     </div>
+    <?php $i++ ?>
 <?php } ?>
 
-<div class="card card-danger shadow d-none" id="card_new_rework_<?= $id_job ?>">
+<div class="card card-danger shadow" id="card_new_rework_<?= $id_job ?>" style="display: none;" >
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">
             <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
@@ -105,7 +94,7 @@
             <b>Attach Reference Files</b>
             <div id="list_attach_rework_<?= $id_job ?>" class="mt-1 d-flex flex-wrap" style="gap:7px"></div>
             <div class="mt-1 d-flex flex-wrap" style="gap:7px">
-                <button class="btn btn-warning btn-sm mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_new_rework" data-target="#list_attach_rework_<?= $id_job ?>"> <i class="fas fa-paperclip"></i> Upload attach file</button>
+                <a class="mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_new_rework" data-target="#list_attach_rework_<?= $id_job ?>"> <i class="fas fa-paperclip"></i> Upload attach file</a>
             </div>
         </div>
         <div class="mt-2">
@@ -113,8 +102,8 @@
             <textarea class="txt_note_rework_add form-control" rows="5"></textarea>
         </div>
         <div class="mt-2 text-center">
-            <button class="btn btn-warning btn-sm mt-2" onclick="ajax_add_rework(this, '<?= $id_job ?>')" style="width: 100px;">save</button>
-            <button class="btn btn-info btn-sm mt-2" style="width: 100px;" onclick="$('#card_new_rework_<?= $id_job ?>').addClass('d-none');">close</button>
+            <button class="btn btn-warning btn-sm mt-2" onclick="ajax_add_rework(this, '<?= $id_job ?>')" style="width: 100px;">Save Rework</button>
+            <button class="btn btn-sm mt-2" style="width: 100px;" onclick="$('#card_new_rework_<?= $id_job ?>').slideToggle();">Cancle</button>
         </div>
     </div>
 </div>
@@ -122,7 +111,7 @@
 <!-- END CARD REWORK LIST-->
 <?php if (in_array($role, [ADMIN, SALE])) { ?>
     <div class="mt-2">
-        <button class="btn btn-warning w-100 mt-2" onclick="$('#card_new_rework_<?= $id_job ?>').removeClass('d-none');"> <i class="fas fa-plus"></i> New Rework</button>
+        <button class="btn btn-danger w-100 mt-2" onclick="$('#card_new_rework_<?= $id_job ?>').slideToggle();"> <i class="fas fa-plus"></i> New Rework</button>
     </div>
 <?php } ?>
 
@@ -216,7 +205,7 @@
                 } else {
                     toasts_danger(kq.error);
                 }
-                $(btn).html('Save');
+                $(btn).html('Save Requirements');
                 $(btn).prop("disabled", false);
             },
             error: function(jqXHR, textStatus, errorThrown) {

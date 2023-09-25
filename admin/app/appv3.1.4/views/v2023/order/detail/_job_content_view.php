@@ -115,7 +115,7 @@
                                         <b>Requirements:</b>
                                         <textarea class="form-control requirement_job" rows="5" id="requirement_job_<?= $id_job ?>"><?= $job['requirement'] ?></textarea>
                                         <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                                            <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)" style="width: 100px;">Save</button>
+                                            <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)" style="width: 150px;">Save Requirements</button>
                                         <?php } ?>
                                     </div>
 
@@ -158,7 +158,7 @@
                                         <?php } ?>
                                     </div>
 
-                                    <button class="btn btn-warning w-100 mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_complete" data-target="#list_complete_<?= $id_job ?>"> <i class="fas fa-upload"></i> Upload file complete</button>
+                                    <button class="btn btn-sm btn-warning w-100 mt-2" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_complete" data-target="#list_complete_<?= $id_job ?>"> <i class="fas fa-upload"></i> Upload file complete</button>
                                 </div>
                             </div>
 
@@ -267,7 +267,7 @@
                 } else {
                     toasts_danger(kq.error);
                 }
-                $(btn).html('Save');
+                $(btn).html('Save Requirements');
                 $(btn).prop("disabled", false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
