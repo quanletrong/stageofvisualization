@@ -48,22 +48,23 @@ class User extends MY_Controller
             'active_link' => 'user',
             'header_page_css_js' => 'user'
         ];
+
+        $id_order = isIdNumber($id_order) ? $id_order : 0;
+
         $order = $this->Order_model->get_info_order($id_order);
-
-        $list_job = $this->Order_model->get_list_job_by_order($id_order);
-
-        ## danh sách VS VR 3D...
-        $list_type_service = [];
-        foreach ($list_job as $id_job => $job) {
-            $list_type_service[$job['type_service']][] = $job['id_job'];
+        if (empty($order)) {
+            dbClose();
+            redirect(site_url('user', $this->_langcode));
+            die();
         }
-        $data['list_type_service']  = $list_type_service;
-        $data['list_job'] = $list_job;
+
+        $data['list_type_service']  =  $order['list_type_service'];
+        $data['list_job'] = $order['job'];
         $data['order'] = $order;
         $data['FDR_ORDER'] = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
 
         $this->_loadHeader($header);
-        $this->load->view($this->_template_f . 'user/order_detail_view', $data);
+        $this->load->view($this->_template_f . 'user/order_detail/order_detail_view', $data);
         $this->_loadFooter();
     }
 }

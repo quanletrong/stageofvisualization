@@ -3,6 +3,30 @@
         border-radius: 5px;
         box-shadow: 3px 2px 7px 0px #888888;
     }
+
+    .tab-content img {
+        border-radius: 5px;
+        box-shadow: 3px 2px 7px 0px #888888;
+    }
+
+    .card-header {
+        padding: 0.3rem 0.8rem;
+    }
+
+    #list-image-order .card-body {
+        padding: 0.5rem 0.8rem;
+    }
+
+    .image-hover:hover .position-btn {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .position-relative:hover i {
+        cursor: pointer;
+        color: red;
+    }
 </style>
 <div class="container-fluid">
     <h1 class="fs-4 mt-3">ORDERS DETAIL</h1>
@@ -97,10 +121,9 @@
                                                 </div>
                                             </div>
                                             <div class="card-body">
-                                                <?php if ($job['file_complete'] != '') { ?>
+                                                <?php if (count($job['file_complete'])) { ?>
                                                     <div class="d-flex flex-wrap" style="gap: 10px;">
-                                                        <?php $list_complete = json_decode($job['file_complete'], true); ?>
-                                                        <?php foreach ($list_complete as $key => $file) { ?>
+                                                        <?php foreach ($job['file_complete'] as $key => $file) { ?>
                                                             <div class="position-relative" style="width: 48%;">
                                                                 <img src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
                                                             </div>
@@ -115,52 +138,16 @@
                                             </div>
                                         </div>
 
-                                        <!-- TODO: chưa làm -->
-                                        <?php if ($order['status'] == ORDER_DELIVERED) { ?>
-                                            <div class="mt-3">
-                                                <button class="btn btn-warning w-100 shadow" onclick="alert('Chức năng đang phát triển')"><i class="fa-solid fa-plus"></i> ADD REWORK</button>
-                                            </div>
-                                        <?php } ?>
-
                                         <!-- CARD REWORK LIST-->
-                                        <!-- TODO: chưa làm -->
-                                        <div class="card shadow d-none">
-                                            <div class="card-header">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <h6 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                                                        <div>REWORK 1</div>
-                                                    </h6>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div>
-                                                    <b>Requirements</b>
-                                                    <textarea class="form-control " rows="5">Please use greyish wide plank hardwood flooring in rooms, dark gray tiles in bathrooms and light carpet in bedrooms.Use Scandinavian furniture design and white kitchen with dark gray countertops.</textarea>
-                                                </div>
-                                                <div class="mt-2">
-                                                    <b>Attach Reference Files</b>
-                                                    <div class="d-flex flex-wrap" style="gap:7px">
-                                                        <div class="position-relative">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                        </div>
-
-                                                        <div class="position-relative">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100">
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="mt-2">
-                                                    <b>File rework complete</b>
-                                                    <div class="d-flex flex-wrap" style="gap: 10px;">
-                                                        <div class="position-relative" style="width: 48%;">
-                                                            <img src="https://picsum.photos/320/180" alt="" width="100%">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <?php
+                                        $data['id_order']  = $order['id_order'];
+                                        $data['id_job']    = $id_job;
+                                        $data['job']       = $job;
+                                        $data['FDR_ORDER'] = $FDR_ORDER;
+                                        $this->load->view(TEMPLATE_FOLDER . 'user/order_detail/_job_content_rework_view.php', $data);
+                                        ?>
                                         <!-- END CARD REWORK LIST-->
+
                                     </div>
                                 </div>
                             </div>
@@ -215,11 +202,14 @@
                         <p><b style="color: orange;">TOTAL: [<?= count($list_job) ?>]</b></p>
                     </div>
 
-                    <?php if($order['status'] == ORDER_DELIVERED) {?>
-                    <div class="mt-3">
-                        <p>If you agree with this file, then click COMPLETE!</p>
-                        <button class=" btn btn-success w-100">COMPLETE</button>
-                    </div>
+                    <?php if ($order['status'] == ORDER_DELIVERED) { ?>
+                        <div class="mt-3">
+                            <p>If you agree with this file, then click COMPLETE!</p>
+                            <button class=" btn btn-success w-100">COMPLETE</button>
+                        </div>
+                        <div class="mt-2">
+                            <button class="btn btn-warning w-100 mt-2" onclick="$('#card_new_rework_<?= $id_job ?>').removeClass('d-none');"> <i class="fas fa-plus"></i> Add Rework</button>
+                        </div>
                     <?php } ?>
                     <!-- <div class="mt-3" onclick="alert('Chức năng đang phát triển')">
                         <img src="images/chat.png" class="w-100" style="border:  1px solid #eee;">

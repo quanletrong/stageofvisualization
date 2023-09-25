@@ -941,7 +941,7 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
         $FULL_FOLDER = '';
         foreach ($folder_arr as $folder) {
 
-            $localFolder = $_SERVER["DOCUMENT_ROOT"] .'/'. $FULL_FOLDER . $folder . '/';
+            $localFolder = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $folder . '/';
 
             if (!is_dir($localFolder)) {
                 $ckMkdirYear = mkdir($localFolder, 755);
@@ -952,12 +952,12 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
         }
 
         // check file exist
-        $dir_save = $_SERVER["DOCUMENT_ROOT"] .'/'. $FULL_FOLDER . $basename;
+        $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
 
         if (file_exists($dir_save)) {
             $rdt = generateRandomString(10);
             $basename = $rdt . $basename;
-            $dir_save = $_SERVER["DOCUMENT_ROOT"] .'/'. $FULL_FOLDER . $basename;
+            $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
         }
 
         //check move

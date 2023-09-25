@@ -54,9 +54,10 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // order
-$route[LINK_ORDER]           = 'order/order/index';
-$route[LINK_ORDER.'/submit'] = 'order/order/submit';
-
+$route[LINK_ORDER]                           = 'order/order/index';
+$route[LINK_ORDER.'/submit']                 = 'order/order/submit';
+$route[LINK_ORDER.'/ajax_add_rework/(:num)'] = 'order/order/ajax_add_rework/$1';
+$route[LINK_ORDER.'/ajax_delete_file_attach_rework'] = 'order/order/ajax_delete_file_attach_rework';
 
 // upload
 $route['upload']      = 'upload/upload/index';
@@ -72,14 +73,14 @@ $route[LINK_PRICINGS] = 'pricing/pricing/index';
 $route[LINK_LIBRARY]  = 'library/library/index';
 
 // usser
-$route[LINK_USER_SIGN_IN]      = 'user/user/login';
-$route[LINK_USER_SIGN_OUT]     = 'user/user/logout';
-$route[LINK_USER_ORDER]        = 'user/user/order';
+$route[LINK_USER_SIGN_IN]                = 'user/user/login';
+$route[LINK_USER_SIGN_OUT]               = 'user/user/logout';
+$route[LINK_USER_ORDER]                  = 'user/user/order';
 $route[LINK_USER_ORDER_DETAIL.'/(:num)'] = 'user/user/orderdetail/$1';
-$route[LINK_USER_PROFILES]     = 'user/user/profiles';
-$route[LINK_USER_NOTICES]      = 'user/user/notices';
-$route[LINK_USER_SETTINGS]     = 'user/user/settings';
-$route[LINK_USER_TRANSACTIONS] = 'user/user/transactions';
+$route[LINK_USER_PROFILES]               = 'user/user/profiles';
+$route[LINK_USER_NOTICES]                = 'user/user/notices';
+$route[LINK_USER_SETTINGS]               = 'user/user/settings';
+$route[LINK_USER_TRANSACTIONS]           = 'user/user/transactions';
 
 // login
 $route[LINK_USER_LOGIN]               = 'login/login/index';

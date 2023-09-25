@@ -11,6 +11,7 @@ define('LINK_HIW', 'how-it-works');
 define('LINK_PRICINGS', 'pricing');
 define('LINK_LIBRARY', 'library');
 define('LINK_ORDER', 'order');
+define('LINK_ORDER_AJAX_ADD_REWORK', 'order/ajax-add-rework');
 
 define('LINK_ABOUT', 'about');
 define('LINK_CAREERS', 'careers');
