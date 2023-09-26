@@ -1234,3 +1234,18 @@ function role_name($id_role)
 
     return $name;
 }
+
+function voucher_value($value, $unit)
+{
+    if ($unit === '1') {
+        return $value . ' %';
+    } else if ($unit === '2') {
+        return $value . ' VNĐ';
+    } else if ($unit === '3') {
+        return $value . ' $';
+    } else if ($unit === '4') {
+        return $value . ' EUR';
+    } else {
+        return $value;
+    }
+}
