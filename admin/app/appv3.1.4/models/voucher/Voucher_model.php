@@ -8,14 +8,14 @@ class Voucher_model extends CI_Model
         parent::__construct();
     }
 
-    function add($name, $type_service, $sapo, $image, $room, $price, $status, $id_user, $create_time)
+    function add($code, $note, $price, $price_unit, $status, $limit, $expire_date, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_service (name, type_service, sapo, image, room, price, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_voucher (code, note, price, price_unit, status, `limit`, expire_date, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $type_service, $sapo, $image, $room, $price, $status, $id_user, $create_time];
+            $param = [$code, $note, $price, $price_unit, $status, $limit, $expire_date, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -230,14 +230,15 @@ class Voucher_model extends CI_Model
         return $data;
     }
 
-    function delete_multiple_voucher_user($arr_user, $id_voucher) {
+    function delete_multiple_voucher_user($arr_user, $id_voucher)
+    {
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = '';
-        foreach($arr_user as $id_user) {
+        foreach ($arr_user as $id_user) {
             $sql .= "DELETE FROM tbl_voucher_user WHERE id_user= $id_user AND id_voucher = $id_voucher ; ";
         }
-        
+
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute()) {
@@ -251,14 +252,15 @@ class Voucher_model extends CI_Model
         return $execute;
     }
 
-    function add_multiple_voucher_user($arr_user, $id_voucher, $create_time) {
+    function add_multiple_voucher_user($arr_user, $id_voucher, $create_time)
+    {
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = '';
-        foreach($arr_user as $id_user) {
+        foreach ($arr_user as $id_user) {
             $sql .= "INSERT INTO tbl_voucher_user (id_user, id_voucher, create_time) VALUES ($id_user, $id_voucher, '$create_time') ; ";
         }
-        
+
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute()) {

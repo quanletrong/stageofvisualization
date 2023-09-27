@@ -55,41 +55,41 @@ class Voucher extends MY_Controller
 
             $create_time        = date('Y-m-d H:i:s');
 
-            // TODO: CHƯA VALIDATE
-
+            // VALIDATE DATA
             $voucher_user_sale  = $voucher_user_sale  == null ? [] : $voucher_user_sale;
             $voucher_user_khach = $voucher_user_khach == null ? [] : $voucher_user_khach;
+            //TODO: kiểm trauser có tồn tại ko
 
-            $status = $status == 'on' ? 0 : 1;
-            //END validate
+            $code        = $code                   != '' ? $code : 0;
+            $note        = $note                   != '' ? $note : 0;
+            $price       = is_numeric($price) || $price > 0 ? $price : 0;
+            $price_unit  = in_array($price_unit, [1, 2, 3, 4]) ? $price_unit : 0;
+            $limit       = is_numeric($limit) && $limit > 0 ? $limit : 0;
+            $expire_date = strtotime($expire_date) == false ? 0 : $expire_date;
+            $status      = $status                 == 'on' ? 0 : 1;
+
+            if (!$code || !$note || !$price || !$price_unit || !$limit || !$expire_date) {
+                $this->session->set_flashdata('flsh_msg', 'Dữ liệu không hợp lệ!');
+                redirect('voucher');
+            }
+
+            //END VALIDATE
 
             // TẠO MỚI 
             if ($_POST['action'] == 'add') {
 
+                // update voucher
+                $newid = $this->Voucher_model->add($code, $note, $price, $price_unit, $status, $limit, $expire_date, $create_time);
 
-                // // copy and validate room
-                // $arr_room = json_decode($room, true);
-                // $room_ok = [];
-                // foreach ($arr_room as $id => $it) {
-                //     $img_room = $it['image'];
-                //     $copy = copy_image_to_public_upload($img_room, FOLDER_SERVICES);
-                //     if ($copy['status']) {
-                //         $room_ok[$id]['name'] = $it['name'];
-                //         $room_ok[$id]['image'] = $copy['basename'];
-                //     }
-                // }
-                // // end copy and validate room
+                // thêm user voucher
+                $voucher_user_new = array_merge($voucher_user_khach, $voucher_user_sale);
+                if (count($voucher_user_new)) {
+                    $exc = $this->Voucher_model->add_multiple_voucher_user($voucher_user_new, $newid, $create_time);
+                }
 
-                // $copy = copy_image_to_public_upload($image, FOLDER_SERVICES);
-                // if ($copy['status']) {
-
-                //     $exc = $this->Service_model->add($name, $type_service, $sapo, $copy['basename'], json_encode($room_ok, JSON_FORCE_OBJECT), $price, $status, $this->_session_uid(), $create_time);
-                //     $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!';
-                // } else {
-                //     $msg = $copy['error'];
-                // }
-                // $this->session->set_flashdata('flsh_msg', $msg);
-                // redirect('service');
+                //error
+                $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
+                redirect('voucher');
             }
 
             // CẬP NHẬT
@@ -112,11 +112,11 @@ class Voucher extends MY_Controller
                     $new = array_diff($voucher_user_new, $voucher_user_old);
                     $del = array_diff($voucher_user_old, $voucher_user_new);
 
-                    if(count($new)) {
+                    if (count($new)) {
                         $exc = $this->Voucher_model->add_multiple_voucher_user($new, $id_voucher, $create_time);
                     }
 
-                    if(count($del)) {
+                    if (count($del)) {
                         $exc = $this->Voucher_model->delete_multiple_voucher_user($del, $id_voucher);
                     }
 
