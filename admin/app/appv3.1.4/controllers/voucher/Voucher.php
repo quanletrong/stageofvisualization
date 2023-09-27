@@ -41,146 +41,115 @@ class Voucher extends MY_Controller
 
         // SUBMIT FORM (nếu có)
         if (isset($_POST['action'])) {
-            $name         = removeAllTags($this->input->post('name'));
-            $type_service = removeAllTags($this->input->post('type_service'));
-            $sapo         = removeAllTags($this->input->post('sapo'));
-            $price        = removeAllTags($this->input->post('price'));
-            $status       = removeAllTags($this->input->post('status'));
-            $image        = removeAllTags($this->input->post('image'));
-            $room         = removeAllTags($this->input->post('room'));
-            $id_service   = removeAllTags($this->input->post('id_service'));
-            $id_service   = is_numeric($id_service) && $id_service > 0 ? $id_service : 0;
-            $create_time  = date('Y-m-d H:i:s');
+            $code               = removeAllTags($this->input->post('code'));
+            $note               = removeAllTags($this->input->post('note'));
+            $voucher_user_sale  = $this->input->post('voucher_user_sale[]');
+            $voucher_user_khach = $this->input->post('voucher_user_khach[]');
+            $price              = removeAllTags($this->input->post('price'));
+            $price_unit         = removeAllTags($this->input->post('price_unit'));
+            $limit              = removeAllTags($this->input->post('limit'));
+            $expire_date        = removeAllTags($this->input->post('expire_date'));
+            $status             = removeAllTags($this->input->post('status'));
+            $id_voucher         = removeAllTags($this->input->post('id_voucher'));
+            $id_voucher         = is_numeric($id_voucher) && $id_voucher > 0 ? $id_voucher : 0;
+
+            $create_time        = date('Y-m-d H:i:s');
+
+            // TODO: CHƯA VALIDATE
+
+            $voucher_user_sale  = $voucher_user_sale  == null ? [] : $voucher_user_sale;
+            $voucher_user_khach = $voucher_user_khach == null ? [] : $voucher_user_khach;
+
+            $status = $status == 'on' ? 0 : 1;
+            //END validate
 
             // TẠO MỚI 
             if ($_POST['action'] == 'add') {
 
-                // TODO: validate dữ liệu submit
-                $status = $status == 'on' ? 1 : 0;
-                //END validate
 
-                // copy and validate room
-                $arr_room = json_decode($room, true);
-                $room_ok = [];
-                foreach ($arr_room as $id => $it) {
-                    $img_room = $it['image'];
-                    $copy = copy_image_to_public_upload($img_room, FOLDER_SERVICES);
-                    if ($copy['status']) {
-                        $room_ok[$id]['name'] = $it['name'];
-                        $room_ok[$id]['image'] = $copy['basename'];
-                    }
-                }
-                // end copy and validate room
+                // // copy and validate room
+                // $arr_room = json_decode($room, true);
+                // $room_ok = [];
+                // foreach ($arr_room as $id => $it) {
+                //     $img_room = $it['image'];
+                //     $copy = copy_image_to_public_upload($img_room, FOLDER_SERVICES);
+                //     if ($copy['status']) {
+                //         $room_ok[$id]['name'] = $it['name'];
+                //         $room_ok[$id]['image'] = $copy['basename'];
+                //     }
+                // }
+                // // end copy and validate room
 
-                $copy = copy_image_to_public_upload($image, FOLDER_SERVICES);
-                if ($copy['status']) {
+                // $copy = copy_image_to_public_upload($image, FOLDER_SERVICES);
+                // if ($copy['status']) {
 
-                    $exc = $this->Service_model->add($name, $type_service, $sapo, $copy['basename'], json_encode($room_ok, JSON_FORCE_OBJECT), $price, $status, $this->_session_uid(), $create_time);
-                    $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!';
-                } else {
-                    $msg = $copy['error'];
-                }
-                $this->session->set_flashdata('flsh_msg', $msg);
-                redirect('service');
+                //     $exc = $this->Service_model->add($name, $type_service, $sapo, $copy['basename'], json_encode($room_ok, JSON_FORCE_OBJECT), $price, $status, $this->_session_uid(), $create_time);
+                //     $msg = $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!';
+                // } else {
+                //     $msg = $copy['error'];
+                // }
+                // $this->session->set_flashdata('flsh_msg', $msg);
+                // redirect('service');
             }
 
             // CẬP NHẬT
             if ($_POST['action'] == 'edit') {
 
-                // TODO: validate dữ liệu submit
-                $status = $status == 'on' ? 1 : 0;
-                //END validate
-
-                $info   = $this->Service_model->get_info($id_service);
+                $info =  $this->Voucher_model->get_info($id_voucher);
                 if (empty($info)) {
                     $msg = 'Lưu không thành công vui lòng thử lại!';
                 } else {
 
-                    $image_ok = $info['image'];
-                    $update_time = date('Y-m-d H:i:s');
+                    // update voucher
+                    $exc = $this->Voucher_model->edit($code, $note, $price, $price_unit, $status, $limit, $expire_date, $id_voucher);
 
-                    // copy anh truoc nếu upload mới
-                    if (strpos($image, 'uploads/tmp') !== false) {
-                        $copy = copy_image_to_public_upload($image, FOLDER_SERVICES);
-                        if ($copy['status']) {
-                            $image_ok = $copy['basename'];
-                        } else {
-                            $this->session->set_flashdata('flsh_msg', $copy['error']);
-                            redirect('service');
-                        }
+                    // thêm xóa user khỏi voucher
+                    $voucher_user_new = array_merge($voucher_user_khach, $voucher_user_sale);
+                    $voucher_user_old = [];
+                    foreach ($info['voucher_user'] as $id_user => $item) {
+                        $voucher_user_old[] = $id_user;
+                    }
+                    $new = array_diff($voucher_user_new, $voucher_user_old);
+                    $del = array_diff($voucher_user_old, $voucher_user_new);
+
+                    if(count($new)) {
+                        $exc = $this->Voucher_model->add_multiple_voucher_user($new, $id_voucher, $create_time);
                     }
 
-                    // copy and validate room
-                    $room_old = json_decode($info['room'], true);
-                    $room_ok = [];
-                    $arr_room = json_decode($room, true);
-                    foreach ($arr_room as $id => $it) {
-
-                        // room cũ
-                        if (isset($room_old[$id])) {
-                            $room_ok[$id]['name'] = $it['name'];
-
-                            // room cũ thay đổi ảnh
-                            $img_room = $it['image'];
-                            if (strpos($it['image'], 'uploads/tmp') !== false) {
-                                $copy = copy_image_to_public_upload($img_room, FOLDER_SERVICES);
-                                if ($copy['status']) {
-                                    $room_ok[$id]['image'] = $copy['basename'];
-                                }
-                            } else {
-                                $room_ok[$id]['image'] = $room_old[$id]['image'];
-                            }
-                        }
-                        // thêm room mới
-                        else {
-                            $img_room = $it['image'];
-                            $copy = copy_image_to_public_upload($img_room, FOLDER_SERVICES);
-                            if ($copy['status']) {
-                                $room_ok[$id]['name'] = $it['name'];
-                                $room_ok[$id]['image'] = $copy['basename'];
-                            }
-                        }
+                    if(count($del)) {
+                        $exc = $this->Voucher_model->delete_multiple_voucher_user($del, $id_voucher);
                     }
-                    // end copy and validate room
 
-                    $exc = $this->Service_model->edit($name, $type_service, $sapo, $price, $image_ok, json_encode($room_ok, JSON_FORCE_OBJECT), $status, $update_time, $id_service);
+                    //error
                     $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
-                    redirect('service');
+                    redirect('voucher');
                 }
                 $this->session->set_flashdata('flsh_msg', $msg);
-                redirect('service');
+                redirect('voucher');
             }
         }
 
         $id_voucher    = '';
-        $value_type    = '';     // 1 giảm theo phần trăm đơn; 2 giảm theo số tiền
         $f_price       = '';     // 
         $t_price       = '';
         $price_unit    = '';     // 1 phần trăm;2 VND; 3 Đô la; 3 ...
         $code          = '';
         $f_expire      = '';     // lọc theo ngày hết hạn
         $t_expire      = '';     // lọc theo ngày hết hạn
-        $type_assign   = '';     // 1 cho sale; 2 cho customer
-        $id_assign     = '';     // lọc theo người được gán 
-        $id_used       = '';     // lọc theo người đã dùng
-        $id_order      = '';     // lọc theo đơn đã dùng
         $status        = '';     // lọc theo trạng thái
         $f_create_time = '';
         $t_create_time = '';
         $note          = '';
-        $create_by     = '1';
+        $create_by     = '';
         $limit         = 10000;
         $offset        = 0;
-
-        // $list =  $this->Voucher_model->get_list($id_voucher, $value_type, $f_price, $t_price, $price_unit, $code, $f_expire, $t_expire, $type_assign, $id_assign, $id_used, $id_order, $status, $f_create_time, $t_create_time, $note, $limit, $offset);
-
 
         $list =  $this->Voucher_model->get_list2($id_voucher, $f_price, $t_price, $price_unit, $code, $f_expire, $t_expire, $status, $f_create_time, $t_create_time, $note, $create_by, $limit, $offset);
 
         $data['list'] = $list;
         $data['list_sale'] = $list_sale;
         $data['list_khach'] = $list_khach;
-        
+
 
         $this->_loadHeader($header);
         $this->load->view($this->_template_f . 'voucher/voucher_view', $data);

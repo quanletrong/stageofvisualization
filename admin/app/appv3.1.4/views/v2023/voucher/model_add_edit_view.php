@@ -41,7 +41,7 @@
                                 <div class="form-group">
                                     <label for="sapo">Cấp mã cho Sale</label>
                                     <div>
-                                        <select class="form-control select2" id="voucher_user_sale" multiple="multiple" name="voucher_user_sale" style="width: 100%;">
+                                        <select class="form-control select2" id="voucher_user_sale" multiple="multiple" name="voucher_user_sale[]" style="width: 100%;">
                                             <?php foreach ($list_sale as $id_user => $user) { ?>
                                                 <option value="<?= $id_user ?>"><?= $user['username'] ?></option>
                                             <?php } ?>
@@ -53,7 +53,7 @@
                                 <div class="form-group">
                                     <label for="sapo">Cấp mã cho Khách hàng</label>
                                     <div>
-                                        <select class="form-control select2" id="voucher_user_khach" multiple="multiple" name="voucher_user_khach" style="width: 100%;">
+                                        <select class="form-control select2" id="voucher_user_khach" multiple="multiple" name="voucher_user_khach[]" style="width: 100%;">
                                             <?php foreach ($list_khach as $id_user => $user) { ?>
                                                 <option value="<?= $id_user ?>"><?= $user['username'] ?></option>
                                             <?php } ?>
@@ -108,80 +108,84 @@
         $('#frm_voucher').validate({
             submitHandler: function(form) {
 
-                if ($(form).find('input[name="image"]') == '') {
-                    $('#image-error').show();
-                    $([document.documentElement, document.body]).animate({
-                        scrollTop: $("#image-error").offset().top
-                    }, 2000);
+                $(form).find('button[type="submit"]').attr('disabled', 'disabled');
+                // $(form).find('input[name="room"]').val(JSON.stringify(ROOM))
+                form.submit();
 
-                    $(form).find('button[type="submit"]').attr('disabled', false);
+                // if ($(form).find('input[name="image"]') == '') {
+                //     $('#image-error').show();
+                //     $([document.documentElement, document.body]).animate({
+                //         scrollTop: $("#image-error").offset().top
+                //     }, 2000);
 
-                } else {
+                //     $(form).find('button[type="submit"]').attr('disabled', false);
 
-                    $(form).find('button[type="submit"]').attr('disabled', 'disabled');
-                    $(form).find('input[name="room"]').val(JSON.stringify(ROOM))
-                    form.submit();
-                }
-            },
-            rules: {
-                name: {
-                    required: true,
-                    minlength: 5,
-                    maxlength: 256
-                },
-                type_voucher: {
-                    required: true,
-                    minlength: 2,
-                    maxlength: 256
-                },
-                sapo: {
-                    required: true,
-                    minlength: 5
-                },
-                price: {
-                    required: true,
-                    maxlength: 256
-                },
-                image: {
-                    required: true
-                }
+                // } else {
 
+                //     $(form).find('button[type="submit"]').attr('disabled', 'disabled');
+                //     // $(form).find('input[name="room"]').val(JSON.stringify(ROOM))
+                //     form.submit();
+                // }
             },
-            messages: {
-                name: {
-                    required: 'Không được bỏ trống',
-                    minlength: 'Tối thiểu 5 ký tự',
-                    maxlength: 'Tối đa 256 ký tự',
-                },
-                type_voucher: {
-                    required: 'Không được bỏ trống',
-                    minlength: 'Tối thiểu 2 ký tự',
-                    maxlength: 'Tối đa 256 ký tự',
-                },
-                sapo: {
-                    required: 'Không được bỏ trống',
-                    minlength: 'Tối thiểu 5 ký tự',
-                    maxlength: 'Tối đa 256 ký tự',
-                },
-                price: {
-                    required: 'Không được bỏ trống',
-                    maxlength: 'Tối đa 256 ký tự',
-                },
-                image: {
-                    required: 'Không được bỏ trống'
-                }
-            },
-            errorElement: 'span',
-            errorPlacement: function(error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group, .input-group').append(error);
-            },
-            highlight: function(element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function(element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
+            // rules: {
+            //     name: {
+            //         required: true,
+            //         minlength: 5,
+            //         maxlength: 256
+            //     },
+            //     type_voucher: {
+            //         required: true,
+            //         minlength: 2,
+            //         maxlength: 256
+            //     },
+            //     sapo: {
+            //         required: true,
+            //         minlength: 5
+            //     },
+            //     price: {
+            //         required: true,
+            //         maxlength: 256
+            //     },
+            //     image: {
+            //         required: true
+            //     }
+
+            // },
+            // messages: {
+            //     name: {
+            //         required: 'Không được bỏ trống',
+            //         minlength: 'Tối thiểu 5 ký tự',
+            //         maxlength: 'Tối đa 256 ký tự',
+            //     },
+            //     type_voucher: {
+            //         required: 'Không được bỏ trống',
+            //         minlength: 'Tối thiểu 2 ký tự',
+            //         maxlength: 'Tối đa 256 ký tự',
+            //     },
+            //     sapo: {
+            //         required: 'Không được bỏ trống',
+            //         minlength: 'Tối thiểu 5 ký tự',
+            //         maxlength: 'Tối đa 256 ký tự',
+            //     },
+            //     price: {
+            //         required: 'Không được bỏ trống',
+            //         maxlength: 'Tối đa 256 ký tự',
+            //     },
+            //     image: {
+            //         required: 'Không được bỏ trống'
+            //     }
+            // },
+            // errorElement: 'span',
+            // errorPlacement: function(error, element) {
+            //     error.addClass('invalid-feedback');
+            //     element.closest('.form-group, .input-group').append(error);
+            // },
+            // highlight: function(element, errorClass, validClass) {
+            //     $(element).addClass('is-invalid');
+            // },
+            // unhighlight: function(element, errorClass, validClass) {
+            //     $(element).removeClass('is-invalid');
+            // }
         });
 
 

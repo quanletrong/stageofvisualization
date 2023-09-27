@@ -86,15 +86,18 @@ class Voucher_model extends CI_Model
         return $data;
     }
 
-    function get_info($id_service)
+    function get_info($id_voucher)
     {
         $data = [];
         $iconn = $this->db->conn_id;
-        $sql = "SELECT * FROM tbl_service WHERE id_service = ? LIMIT 1";
+        $sql = "SELECT * FROM tbl_voucher WHERE id_voucher = ? LIMIT 1";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([$id_service])) {
+            if ($stmt->execute([$id_voucher])) {
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $data['voucher_user'] = $this->voucher_user_get_list($data['id_voucher'], $iconn);
+                $data['voucher_order'] = $this->voucher_order_get_list($data['id_voucher'], $iconn);
             } else {
                 var_dump($stmt->errorInfo());
                 die;
@@ -104,16 +107,16 @@ class Voucher_model extends CI_Model
         return $data;
     }
 
-    function edit($name, $type_service, $sapo, $price, $image, $room, $status, $update_time, $id_service)
+    function edit($code, $note, $price, $price_unit, $status, $limit, $expire_date, $id_voucher)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_service SET name=?, type_service=?,sapo=?, price=?, image=?, room=?, status=?, update_time=? WHERE id_service=?";
+        $sql = "UPDATE tbl_voucher 
+        SET code=?, note=?, price=?, price_unit=?, `status`=?, `limit`=?, expire_date=? 
+        WHERE id_voucher=?";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $type_service, $sapo, $price, $image, $room, $status, $update_time, $id_service];
-
-            if ($stmt->execute($param)) {
+            if ($stmt->execute([$code, $note, $price, $price_unit, $status, $limit, $expire_date, $id_voucher])) {
                 $execute = true;
             } else {
                 var_dump($stmt->errorInfo());
@@ -176,7 +179,7 @@ class Voucher_model extends CI_Model
     function voucher_user_get_list($id_voucher, $iconn = null)
     {
 
-        if($iconn === null) {
+        if ($iconn === null) {
             $iconn = $this->db->conn_id;
         }
 
@@ -202,7 +205,7 @@ class Voucher_model extends CI_Model
     function voucher_order_get_list($id_voucher, $iconn = null)
     {
 
-        if($iconn === null) {
+        if ($iconn === null) {
             $iconn = $this->db->conn_id;
         }
 
@@ -225,5 +228,47 @@ class Voucher_model extends CI_Model
         }
 
         return $data;
+    }
+
+    function delete_multiple_voucher_user($arr_user, $id_voucher) {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = '';
+        foreach($arr_user as $id_user) {
+            $sql .= "DELETE FROM tbl_voucher_user WHERE id_user= $id_user AND id_voucher = $id_voucher ; ";
+        }
+        
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function add_multiple_voucher_user($arr_user, $id_voucher, $create_time) {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = '';
+        foreach($arr_user as $id_user) {
+            $sql .= "INSERT INTO tbl_voucher_user (id_user, id_voucher, create_time) VALUES ($id_user, $id_voucher, '$create_time') ; ";
+        }
+        
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
     }
 }
