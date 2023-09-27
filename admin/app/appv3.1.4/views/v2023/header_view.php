@@ -194,6 +194,16 @@
 								</a>
 							</li>
 
+							<li class="nav-item">
+								<a href="voucher" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Khuyến mại
+										<!-- <i class="right fas fa-angle-left"></i> -->
+									</p>
+								</a>
+							</li>
+
 							<!-- QUẢN LÝ NGƯỜI DÙNG -->
 							<li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
 

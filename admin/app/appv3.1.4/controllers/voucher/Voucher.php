@@ -32,6 +32,7 @@ class Voucher extends MY_Controller
         }
 
         $list_sale = $this->User_model->get_list_user_working(1, implode(",", [SALE]));
+        $list_khach = $this->User_model->get_list_user_working(1, implode(",", [CUSTOMER]));
 
         $header = [
             'title' => 'Quản lý mã giảm giá',
@@ -153,9 +154,9 @@ class Voucher extends MY_Controller
 
         $id_voucher    = '';
         $value_type    = '';     // 1 giảm theo phần trăm đơn; 2 giảm theo số tiền
-        $f_value       = '';     // 
-        $t_value       = '';
-        $value_unit    = '';     // 0 phần trăm;1 VND; 2 Đô la; 3 ...
+        $f_price       = '';     // 
+        $t_price       = '';
+        $price_unit    = '';     // 1 phần trăm;2 VND; 3 Đô la; 3 ...
         $code          = '';
         $f_expire      = '';     // lọc theo ngày hết hạn
         $t_expire      = '';     // lọc theo ngày hết hạn
@@ -167,13 +168,18 @@ class Voucher extends MY_Controller
         $f_create_time = '';
         $t_create_time = '';
         $note          = '';
+        $create_by     = '1';
         $limit         = 10000;
         $offset        = 0;
 
-        $list =  $this->Voucher_model->get_list($id_voucher, $value_type, $f_value, $t_value, $value_unit, $code, $f_expire, $t_expire, $type_assign, $id_assign, $id_used, $id_order, $status, $f_create_time, $t_create_time, $note, $limit, $offset);
+        // $list =  $this->Voucher_model->get_list($id_voucher, $value_type, $f_price, $t_price, $price_unit, $code, $f_expire, $t_expire, $type_assign, $id_assign, $id_used, $id_order, $status, $f_create_time, $t_create_time, $note, $limit, $offset);
+
+
+        $list =  $this->Voucher_model->get_list2($id_voucher, $f_price, $t_price, $price_unit, $code, $f_expire, $t_expire, $status, $f_create_time, $t_create_time, $note, $create_by, $limit, $offset);
 
         $data['list'] = $list;
         $data['list_sale'] = $list_sale;
+        $data['list_khach'] = $list_khach;
         
 
         $this->_loadHeader($header);

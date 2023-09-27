@@ -1249,3 +1249,44 @@ function voucher_value($value, $unit)
         return $value;
     }
 }
+
+function sql_between_number($from, $to, $filed, $SQL)
+{
+    if ($from !== '' && $to === '') {
+        $SQL['query'] .= " AND $filed >= ? ";
+        $SQL['param'][] = $from;
+    }
+
+    if ($from === '' && $to !== '') {
+        $SQL['query'] .= " AND $filed <= ? ";
+        $SQL['param'][] = $to;
+    }
+
+    if ($from !== '' && $to !== '') {
+        $SQL['query'] .= "AND $filed BETWEEN ? AND ? ";
+        $SQL['param'][] = $from;
+        $SQL['param'][] = $to;
+    }
+
+    return $SQL;
+}
+
+function sql_like($keywwork, $filed, $SQL)
+{
+    if ($keywwork !== '') {
+        $SQL['query'] .= " AND $filed LIKE ? ";
+        $SQL['param'][] = "%$keywwork%";
+    }
+
+    return $SQL;
+}
+
+function sql_in($id_string, $filed, $SQL)
+{
+    if ($id_string !== '') {
+        $SQL['query'] .= " AND $filed IN ($id_string) ";
+        // $SQL['param'][] = $id_string;
+    }
+
+    return $SQL;
+}

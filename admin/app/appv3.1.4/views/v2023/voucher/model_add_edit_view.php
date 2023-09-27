@@ -29,14 +29,14 @@
 
                                 <div class="form-group">
                                     <label for="sapo">Hết hạn</label>
-                                    <input type="text" class="form-control" id="expire" name="expire">
+                                    <input type="text" class="form-control" id="expire_date" name="expire_date">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="sapo">Giảm giá</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control w-75" id="value" name="value">
-                                        <select class="form-control w-25" id="value_unit" name="value_unit">
+                                        <input type="text" class="form-control w-75" id="price" name="price">
+                                        <select class="form-control w-25" id="price_unit" name="price_unit">
                                             <option value="1">%</option>
                                             <option value="2">VNĐ</option>
                                             <option value="3">$</option>
@@ -46,7 +46,7 @@
                                 </div>
 
                                 <div class="mb-1">
-                                    <label>Trạng thái dịch vụ <small>ON đang cung cấp - OFF ngừng cung cấp</small></label>
+                                    <label>Trạng thái của mã <small>ON đang hoạt động - OFF ngừng hoạt động</small></label>
 
                                 </div>
 
@@ -56,11 +56,23 @@
                             </div>
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
-                                    <label for="sapo">Cấp mã cho tài khoản</label>
+                                    <label for="sapo">Cấp mã cho Sale</label>
                                     <div>
-                                        <select class="form-control select2" id="id_assign" name="id_assign" style="width: 100%;">
-                                            <?php foreach ($list_sale as $id_sale => $sale) { ?>
-                                                <option value="<?= $id_sale ?>"><?= $sale['username'] ?></option>
+                                        <select class="form-control select2" id="voucher_user_sale" multiple="multiple" name="voucher_user_sale" style="width: 100%;">
+                                            <?php foreach ($list_sale as $id_user => $user) { ?>
+                                                <option value="<?= $id_user ?>"><?= $user['username'] ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="sapo">Cấp mã cho Khách hàng</label>
+                                    <div>
+                                        <select class="form-control select2" id="voucher_user_khach" multiple="multiple" name="voucher_user_khach" style="width: 100%;">
+                                            <?php foreach ($list_khach as $id_user => $user) { ?>
+                                                <option value="<?= $id_user ?>"><?= $user['username'] ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>
@@ -112,9 +124,8 @@
     var ROOM = {}; // các hạng mục thiết kế thuộc dịch vụ
     $(function() {
 
-        $('#id_assign').select2({
-            minimumResultsForSearch: -1
-        });
+        $('#voucher_user_sale').select2({});
+        $('#voucher_user_khach').select2({});
 
         $('#frm_voucher').validate({
             submitHandler: function(form) {
@@ -200,22 +211,37 @@
             var button = $(event.relatedTarget);
             var type = button.data('type');
             var modal = $(this);
+
             if (type == 'edit') {
                 var voucher = button.data('voucher');
                 $('#frm_voucher input[name=action]').val('edit');
                 $('#frm_voucher input[name=id_voucher]').val(voucher.id_voucher);
+
+                let voucher_user_sale_selected = [];
+                let voucher_user_khach_selected = [];
+                for (const [user_id, value] of Object.entries(voucher.voucher_user)) {
+                    if (value.role == <?= SALE ?>) {
+                        voucher_user_sale_selected.push(user_id.toString());
+                    }
+                    if (value.role == <?= CUSTOMER ?>) {
+                        voucher_user_khach_selected.push(user_id.toString());
+                    }
+                }
+
                 //left
                 modal.find('.modal-title').text(`Sửa mã - ${voucher.code}`);
                 modal.find('.modal-body #code').val(voucher.code);
                 modal.find('.modal-body #note').val(voucher.note);
-                modal.find('.modal-body #expire').val(voucher.expire);
-                modal.find('.modal-body #value_unit').val(voucher.value_unit).change();
-                modal.find('.modal-body #value').val(voucher.value);
+                modal.find('.modal-body #expire_date').val(voucher.expire_date);
+                modal.find('.modal-body #price_unit').val(voucher.price_unit).change();
+                modal.find('.modal-body #price').val(voucher.price);
                 modal.find('.modal-body #status').bootstrapSwitch('state', !parseInt(voucher.status));
 
                 //right
                 modal.find('.modal-body #used_time').text(`[${voucher.used_time}]`);
-                modal.find('.modal-body #id_assign').val(`${voucher.id_assign}`);
+                modal.find('.modal-body #voucher_user_sale').val(voucher_user_sale_selected);
+                modal.find('.modal-body #voucher_user_khach').val(voucher_user_khach_selected);
+
                 modal.find('.modal-body #id_order').val(`#OID${voucher.id_order}`);
                 modal.find('.modal-body #code_order').val(`${voucher.code_order}`);
                 modal.find('.modal-body #used').val(`${voucher.used}`);
@@ -224,26 +250,27 @@
             } else {
                 $('#frm_voucher input[name=action]').val('add');
                 $('#frm_voucher input[name=id_voucher]').val('');
-                
+
                 //left
                 modal.find('.modal-title').text(`Thêm mã giảm giá`);
                 modal.find('.modal-body #code').val('');
                 modal.find('.modal-body #note').val('');
-                modal.find('.modal-body #expire').val('');
-                modal.find('.modal-body #value').val('');
+                modal.find('.modal-body #expire_date').val('');
+                modal.find('.modal-body #price').val('');
                 modal.find('.modal-body #status').bootstrapSwitch('state', false);
 
                 //right
                 modal.find('.modal-body #used_time').text(``);
+                modal.find('.modal-body #voucher_user_sale').val([]);
+                modal.find('.modal-body #voucher_user_khach').val([]);
                 modal.find('.modal-body #id_order').val(``);
                 modal.find('.modal-body #code_order').val(``);
                 modal.find('.modal-body #used').val(``);
                 modal.find('.modal-body #code_user_used').val(``);
             }
 
-            $('#id_assign').select2({
-                minimumResultsForSearch: -1
-            });
+            $('#voucher_user_sale').select2({});
+            $('#voucher_user_khach').select2({});
         });
     });
 </script>

@@ -43,7 +43,6 @@
                                         <th class="">Mô tả</th>
                                         <th class="text-right">Giảm giá</th>
                                         <th class="text-center">Hết hạn</th>
-                                        <th class="text-center">Sở hữu</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
                                         <th style="min-width: 70px; width: 70px;">Action</th>
                                     </tr>
@@ -56,15 +55,11 @@
                                             <td class="align-middle"><?= $item['code'] ?></td>
                                             <td class="align-middle"><?= $item['note'] ?></td>
                                             <td class="align-middle text-right">
-                                                <?= voucher_value($item['value'], $item['value_unit']); ?>
+                                                <?= voucher_value($item['price'], $item['price_unit']); ?>
                                             </td>
 
                                             <td class="align-middle text-center">
-                                                <?= date('d/m/Y H:i:s ', strtotime($item['expire'])) ?>
-                                            </td>
-
-                                            <td class="align-middle text-center">
-                                                <?= $item['assign'] ?>
+                                                <?= date('d/m/Y H:i:s ', strtotime($item['expire_date'])) ?>
                                             </td>
 
                                             <td class="align-middle text-center">
