@@ -207,9 +207,11 @@ class Voucher_model extends CI_Model
         }
 
         $data = [];
-        $sql = "SELECT A.*, B.code_order
+        $sql = "SELECT A.*, B.code_order, B.price, C.username as username, D.username as create_by_user
         FROM tbl_voucher_order as A
         LEFT JOIN tbl_order as B ON A.id_order = B.id_order
+        LEFT JOIN tbl_user as C ON B.id_user = C.id_user
+        LEFT JOIN tbl_user as D ON A.create_by = D.id_user
         WHERE id_voucher = $id_voucher";
 
         $stmt = $iconn->prepare($sql);

@@ -43,6 +43,8 @@
                                         <th class="">Mô tả</th>
                                         <th class="text-right">Giảm giá</th>
                                         <th class="text-center">Hết hạn</th>
+                                        <th class="text-center">Giới hạn</th>
+                                        <th class="text-center">Đã dùng</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
                                         <th style="min-width: 70px; width: 70px;">Action</th>
                                     </tr>
@@ -63,6 +65,22 @@
                                             </td>
 
                                             <td class="align-middle text-center">
+                                                <?= $item['limit'] ?> lần
+                                            </td>
+
+                                            <td class="align-middle text-center">
+                                                <?php if (count($item['voucher_order'])) { ?>
+                                                    <?= count($item['voucher_order']) ?> đơn
+                                                    <a href="#" data-toggle="modal" data-target="#modal-voucher-order" data-price='<?= $item['price'] ?>' data-price-unit='<?= $item['price_unit'] ?>' data-order="<?= htmlentities(json_encode($item['voucher_order'])) ?>">
+                                                        [VIEW]
+                                                    </a>
+                                                <?php } else {
+                                                    echo '0 đơn';
+                                                } ?>
+
+                                            </td>
+
+                                            <td class="align-middle text-center">
                                                 <?php
                                                 if ($item['status'] === '1') {
                                                     echo '<span class="badge bg-danger">OFF</span>';
@@ -73,7 +91,7 @@
                                             </td>
                                             <td class="align-middle text-center">
                                                 <a href="#" data-toggle="modal" data-target="#modal-voucher" data-type="edit" data-voucher="<?= htmlentities(json_encode($item)) ?>">
-                                                    [VIEW]
+                                                    [EDIT]
                                                 </a>
                                             </td>
                                         </tr>
@@ -96,6 +114,8 @@
 
 <!-- load modal add edit -->
 <?php $this->load->view('v2023/voucher/model_add_edit_view'); ?>
+
+<?php $this->load->view('v2023/voucher/model_voucher_order_view'); ?>
 
 <script>
     $(function() {

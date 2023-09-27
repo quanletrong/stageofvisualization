@@ -17,34 +17,6 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 col-lg-6">
-                                <div class="form-group">
-                                    <label for="name">CODE</label>
-                                    <input type="text" class="form-control" id="code" name="code" placeholder="Nhập CODE giảm giá">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="sapo">Mô tả</label>
-                                    <textarea class="form-control" id="note" name="note" placeholder="Nhập mô tả" rows="4"></textarea>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="sapo">Hết hạn</label>
-                                    <input type="text" class="form-control" id="expire_date" name="expire_date">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="sapo">Giảm giá</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control w-75" id="price" name="price">
-                                        <select class="form-control w-25" id="price_unit" name="price_unit">
-                                            <option value="1">%</option>
-                                            <option value="2">VNĐ</option>
-                                            <option value="3">$</option>
-                                            <option value="4">EUR</option>
-                                        </select>
-                                    </div>
-                                </div>
-
                                 <div class="mb-1">
                                     <label>Trạng thái của mã <small>ON đang hoạt động - OFF ngừng hoạt động</small></label>
 
@@ -53,6 +25,17 @@
                                 <div class="form-group d-flex" style="gap:20px">
                                     <input type="checkbox" id="status" name="status" data-bootstrap-switch data-off-color="danger" data-on-color="success">
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="name">CODE</label>
+                                    <input type="text" class="form-control" id="code" name="code" placeholder="Nhập CODE giảm giá">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="sapo">Mô tả</label>
+                                    <textarea class="form-control" id="note" name="note" placeholder="Nhập mô tả" rows="8"></textarea>
+                                </div>
+
                             </div>
                             <div class="col-12 col-lg-6">
                                 <div class="form-group">
@@ -80,31 +63,26 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="sapo">Mã giảm giá đã được sử dụng <small id="used_time"></small></label>
-                                    <div class="d-flex" style="gap:10px;">
-                                        <div class="w-50">
-                                            <small>ID đơn hàng</small>
-                                            <input type="text" class="form-control " id="id_order" disabled>
-                                        </div>
-                                        <div class="w-50">
-                                            <small>CODE đơn hàng</small>
-                                            <input type="text" class="form-control" id="code_order" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex" style="gap:10px">
-                                        <div class="w-50">
-                                            <small>Tài khoản khách hàng</small>
-                                            <input type="text" class="form-control" id="used" disabled>
-                                        </div>
-                                        <div class="w-50">
-                                            <small>CODE khách hàng</small>
-                                            <input type="text" class="form-control" id="code_user_used" disabled>
-                                        </div>
+                                    <label for="sapo">Giảm giá</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control w-75" id="price" name="price">
+                                        <select class="form-control w-25" id="price_unit" name="price_unit">
+                                            <option value="1">%</option>
+                                            <option value="2">VNĐ</option>
+                                            <option value="3">$</option>
+                                            <option value="4">EUR</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="sapo">Giới hạn lần sử dụng</label>
+                                    <input type="text" class="form-control" id="limit" name="limit">
+                                </div>
 
+                                <div class="form-group">
+                                    <label for="sapo">Hết hạn</label>
+                                    <input type="text" class="form-control" id="expire_date" name="expire_date">
                                 </div>
                             </div>
                         </div>
@@ -235,6 +213,7 @@
                 modal.find('.modal-body #expire_date').val(voucher.expire_date);
                 modal.find('.modal-body #price_unit').val(voucher.price_unit).change();
                 modal.find('.modal-body #price').val(voucher.price);
+                modal.find('.modal-body #limit').val(voucher.limit);
                 modal.find('.modal-body #status').bootstrapSwitch('state', !parseInt(voucher.status));
 
                 //right
@@ -257,6 +236,7 @@
                 modal.find('.modal-body #note').val('');
                 modal.find('.modal-body #expire_date').val('');
                 modal.find('.modal-body #price').val('');
+                modal.find('.modal-body #limit').val(1);
                 modal.find('.modal-body #status').bootstrapSwitch('state', false);
 
                 //right
