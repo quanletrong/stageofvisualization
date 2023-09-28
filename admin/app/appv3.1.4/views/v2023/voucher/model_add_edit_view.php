@@ -205,12 +205,12 @@
 
                 let voucher_user_sale_selected = [];
                 let voucher_user_khach_selected = [];
-                for (const [user_id, value] of Object.entries(voucher.voucher_user)) {
+                for (const [key, value] of Object.entries(voucher.voucher_user)) {
                     if (value.role == <?= SALE ?>) {
-                        voucher_user_sale_selected.push(user_id.toString());
+                        voucher_user_sale_selected.push(value.id_user.toString());
                     }
                     if (value.role == <?= CUSTOMER ?>) {
-                        voucher_user_khach_selected.push(user_id.toString());
+                        voucher_user_khach_selected.push(value.id_user.toString());
                     }
                 }
 

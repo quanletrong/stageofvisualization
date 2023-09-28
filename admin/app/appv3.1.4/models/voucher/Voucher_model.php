@@ -96,7 +96,7 @@ class Voucher_model extends CI_Model
             if ($stmt->execute([$id_voucher])) {
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                $data['voucher_user'] = $this->voucher_user_get_list($data['id_voucher'], $iconn);
+                $data['voucher_user'] = $this->voucher_user_get_list($data['id_voucher'], '',  $iconn);
                 $data['voucher_order'] = $this->voucher_order_get_list($data['id_voucher'], $iconn);
             } else {
                 var_dump($stmt->errorInfo());
@@ -160,7 +160,7 @@ class Voucher_model extends CI_Model
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         // sanh sách người dùng được cấp quyền sử dụng mã
-                        $row['voucher_user'] = $this->voucher_user_get_list($row['id_voucher'], $iconn);
+                        $row['voucher_user'] = $this->voucher_user_get_list($row['id_voucher'], '', $iconn);
                         // danh sách đơn hàng đã sử dụng mã 
                         $row['voucher_order'] = $this->voucher_order_get_list($row['id_voucher'], $iconn);
 
@@ -176,23 +176,28 @@ class Voucher_model extends CI_Model
         return $data;
     }
 
-    function voucher_user_get_list($id_voucher, $iconn = null)
+    function voucher_user_get_list($id_voucher, $id_user, $iconn = null)
     {
-
         if ($iconn === null) {
             $iconn = $this->db->conn_id;
         }
 
         $data = [];
-        $sql = "SELECT A.*, B.username, B.role, B.code_user
-        FROM tbl_voucher_user as A
-        LEFT JOIN tbl_user as B ON A.id_user = B.id_user
-        WHERE id_voucher = $id_voucher";
+        $SQL['query'] = '';
+        $SQL['param'] = [];
 
-        $stmt = $iconn->prepare($sql);
-        if ($stmt->execute()) {
+        $SQL['query'] = " SELECT A.*, B.username, B.role, B.code_user
+            FROM tbl_voucher_user as A
+            LEFT JOIN tbl_user as B ON A.id_user = B.id_user ";
+
+        $SQL['query'] .= " WHERE 1=1 ";
+        $SQL = sql_in($id_voucher, 'A.id_voucher', $SQL);
+        $SQL = sql_in($id_user, 'A.id_user', $SQL);
+
+        $stmt = $iconn->prepare($SQL['query']);
+        if ($stmt->execute($SQL['param'])) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $data[$row['id_user']] = $row;
+                $data[$row['id_voucher_user']] = $row;
             }
         } else {
             var_dump($stmt->errorInfo());

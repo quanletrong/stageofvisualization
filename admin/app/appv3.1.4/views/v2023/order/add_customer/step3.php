@@ -13,6 +13,12 @@
                     <div>$<span id="total_price"></span></div>
                 </div>
 
+                <div class="fw-bold mb-2"><strong>Nhập Voucher</strong></div>
+                
+                <div>
+
+                </div>
+
                 <div class="mb-3">
                     <div class="d-flex">
                         <button type="button" class="btn btn-lg btn-secondary w-25 me-3" id="step-3-back">Back</button>

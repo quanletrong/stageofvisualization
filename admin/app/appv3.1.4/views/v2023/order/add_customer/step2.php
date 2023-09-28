@@ -31,7 +31,6 @@
                                         <input class="form-check-input" type="radio" name="style" value="<?= $id ?>" id="radio_design_style_<?= $id ?>" onchange="STATE.style = this.value">
                                         <label class="form-check-label link-color" for="radio_design_style_<?= $id ?>"><?= $st['name'] ?></label>
                                     </div>
-                                    <div class="text-decoration-underline" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModalDesignStyle" data-name="<?= $st['name'] ?>" data-slide="<?= htmlentities($st['slide']) ?>">View Examples</div>
                                 </div>
                             </div>
                         <?php } ?>
