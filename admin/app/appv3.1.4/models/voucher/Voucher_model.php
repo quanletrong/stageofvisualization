@@ -210,7 +210,7 @@ class Voucher_model extends CI_Model
         }
 
         $data = [];
-        $sql = "SELECT A.*, B.code_order, B.price, C.username as username, D.username as create_by_user
+        $sql = "SELECT A.*, B.code_order, C.username as username, D.username as create_by_user
         FROM tbl_voucher_order as A
         LEFT JOIN tbl_order as B ON A.id_order = B.id_order
         LEFT JOIN tbl_user as C ON B.id_user = C.id_user
@@ -220,7 +220,34 @@ class Voucher_model extends CI_Model
         $stmt = $iconn->prepare($sql);
         if ($stmt->execute()) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                // thêm trường tổng giá của đơn
+                $row['price'] = $this->_order_get_price($row['id_order'], $iconn);
                 $data[$row['id_order']] = $row;
+            }
+        } else {
+            var_dump($stmt->errorInfo());
+            die;
+        }
+
+        return $data;
+    }
+
+    function _order_get_price($id_order, $iconn = null)
+    {
+
+        if ($iconn === null) {
+            $iconn = $this->db->conn_id;
+        }
+
+        $data = 0;
+        $sql = "SELECT sum(A.price) as price
+        FROM tbl_job as A
+        WHERE id_order = $id_order";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $data = $row['price'];
             }
         } else {
             var_dump($stmt->errorInfo());

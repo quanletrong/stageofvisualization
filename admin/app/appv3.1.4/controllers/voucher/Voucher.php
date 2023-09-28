@@ -56,9 +56,6 @@ class Voucher extends MY_Controller
             $create_time        = date('Y-m-d H:i:s');
 
             // VALIDATE DATA
-            $voucher_user_sale  = $voucher_user_sale  == null ? [] : $voucher_user_sale;
-            $voucher_user_khach = $voucher_user_khach == null ? [] : $voucher_user_khach;
-            //TODO: kiểm trauser có tồn tại ko
 
             $code        = $code                   != '' ? $code : 0;
             $note        = $note                   != '' ? $note : 0;
@@ -68,8 +65,28 @@ class Voucher extends MY_Controller
             $expire_date = strtotime($expire_date) == false ? 0 : $expire_date;
             $status      = $status                 == 'on' ? 0 : 1;
 
+            // dữ liệu không hợp lệ => báo lỗi
             if (!$code || !$note || !$price || !$price_unit || !$limit || !$expire_date) {
                 $this->session->set_flashdata('flsh_msg', 'Dữ liệu không hợp lệ!');
+                redirect('voucher');
+            }
+
+            // tài khoản được gán mã không tồn tại => báo lỗi
+            $voucher_user_sale  = $voucher_user_sale  == null ? [] : $voucher_user_sale;
+            $voucher_user_khach = $voucher_user_khach == null ? [] : $voucher_user_khach;
+            $all_sale_khach = $list_sale + $list_khach;
+            $voucher_user_new = array_merge($voucher_user_khach, $voucher_user_sale);
+
+            foreach ($voucher_user_new as $id_user) {
+                if (isset($all_sale_khach[$id_user]) == false) {
+                    $this->session->set_flashdata('flsh_msg', 'Tài khoản được cấp mã không tồn tại!');
+                    redirect('voucher');
+                }
+            }
+
+            // giảm giá theo phần trăm lớn hơn 100% => báo lỗi
+            if ($price_unit == 1 && $price > 100) {
+                $this->session->set_flashdata('flsh_msg', 'Giảm giá không được quá 100%!');
                 redirect('voucher');
             }
 
@@ -82,7 +99,7 @@ class Voucher extends MY_Controller
                 $newid = $this->Voucher_model->add($code, $note, $price, $price_unit, $status, $limit, $expire_date, $create_time);
 
                 // thêm user voucher
-                $voucher_user_new = array_merge($voucher_user_khach, $voucher_user_sale);
+
                 if (count($voucher_user_new)) {
                     $exc = $this->Voucher_model->add_multiple_voucher_user($voucher_user_new, $newid, $create_time);
                 }

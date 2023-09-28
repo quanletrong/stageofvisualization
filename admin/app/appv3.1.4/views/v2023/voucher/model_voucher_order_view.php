@@ -51,7 +51,7 @@
                 let price_voucher = 0;
 
                 if (unit == 1) {
-                    price_voucher = price * item.price
+                    price_voucher = (price * item.price)/100
                 } else {
                     price_voucher = price;
                 }
