@@ -52,7 +52,9 @@
                                 <tbody>
                                     <?php $index = 1; ?>
                                     <?php foreach ($list as $id_voucher => $item) { ?>
-                                        <tr>
+
+                                        <?php $da_het_han = strtotime($item['expire_date']) < time(); ?>
+                                        <tr <?= $da_het_han ? 'style="text-decoration-line: line-through"' : '' ?>>
                                             <td class="align-middle text-center"><?= $index++ ?></td>
                                             <td class="align-middle"><?= $item['code'] ?></td>
                                             <td class="align-middle"><?= $item['note'] ?></td>
@@ -90,7 +92,7 @@
                                                 ?>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <a href="#" data-toggle="modal" data-target="#modal-voucher" data-type="edit" data-voucher="<?= htmlentities(json_encode($item)) ?>">
+                                                <a href="#" data-toggle="modal" data-target="#modal-voucher" data-count_order="<?= count($item['voucher_order']) ?>" data-het_han='<?= $da_het_han ? '1' : '0' ?>' data-type="edit" data-voucher="<?= htmlentities(json_encode($item)) ?>">
                                                     [EDIT]
                                                 </a>
                                             </td>

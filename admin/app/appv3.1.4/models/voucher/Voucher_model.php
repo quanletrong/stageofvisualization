@@ -210,18 +210,23 @@ class Voucher_model extends CI_Model
         }
 
         $data = [];
-        $sql = "SELECT A.*, B.code_order, C.username as username, D.username as create_by_user
-        FROM tbl_voucher_order as A
-        LEFT JOIN tbl_order as B ON A.id_order = B.id_order
-        LEFT JOIN tbl_user as C ON B.id_user = C.id_user
-        LEFT JOIN tbl_user as D ON A.create_by = D.id_user
-        WHERE id_voucher = $id_voucher";
+        $sql = "SELECT A.*, B.code_order, C.username as khach, D.username as sale, E.code as code_voucher
+        FROM tbl_payment_order as A
+        
+        -- lấy code_order
+        LEFT JOIN tbl_order as B ON B.id_order = A.id_order
+        -- lấy tên khách
+        LEFT JOIN tbl_user as C ON C.id_user = B.id_user
+        -- lấy tên ng giới thiệu
+        LEFT JOIN tbl_user as D ON D.id_user = A.sale_voucher
+        -- lấy mã khuyễn mại
+        LEFT JOIN tbl_voucher as E ON E.id_voucher = A.id_voucher
+
+        WHERE A.id_voucher = $id_voucher";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt->execute()) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                // thêm trường tổng giá của đơn
-                $row['price'] = $this->_order_get_price($row['id_order'], $iconn);
                 $data[$row['id_order']] = $row;
             }
         } else {
@@ -232,30 +237,30 @@ class Voucher_model extends CI_Model
         return $data;
     }
 
-    function _order_get_price($id_order, $iconn = null)
-    {
+    // function _order_get_price($id_order, $iconn = null)
+    // {
 
-        if ($iconn === null) {
-            $iconn = $this->db->conn_id;
-        }
+    //     if ($iconn === null) {
+    //         $iconn = $this->db->conn_id;
+    //     }
 
-        $data = 0;
-        $sql = "SELECT sum(A.price) as price
-        FROM tbl_job as A
-        WHERE id_order = $id_order";
+    //     $data = 0;
+    //     $sql = "SELECT sum(A.price) as price
+    //     FROM tbl_job as A
+    //     WHERE id_order = $id_order";
 
-        $stmt = $iconn->prepare($sql);
-        if ($stmt->execute()) {
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $data = $row['price'];
-            }
-        } else {
-            var_dump($stmt->errorInfo());
-            die;
-        }
+    //     $stmt = $iconn->prepare($sql);
+    //     if ($stmt->execute()) {
+    //         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    //             $data = $row['price'];
+    //         }
+    //     } else {
+    //         var_dump($stmt->errorInfo());
+    //         die;
+    //     }
 
-        return $data;
-    }
+    //     return $data;
+    // }
 
     function delete_multiple_voucher_user($arr_user, $id_voucher)
     {

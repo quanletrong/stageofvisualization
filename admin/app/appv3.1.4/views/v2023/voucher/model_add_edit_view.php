@@ -88,8 +88,9 @@
                         </div>
                     </div>
                     <!-- /.card-body -->
-                    <div class="card-footer d-flex justify-content-center">
+                    <div class="card-footer d-flex justify-content-center" id="btn_save_voucher">
                         <button type="submit" class="btn btn-lg btn-danger">Lưu lại</button>
+                        <div class="notice_save text-red">Đơn đã hết hạn không thể chỉnh sửa</div>
                     </div>
                 </form>
             </div>
@@ -196,6 +197,9 @@
 
             if (type == 'edit') {
                 var voucher = button.data('voucher');
+                var het_han = button.data('het_han');
+                var count_order = button.data('count_order');
+
                 $('#frm_voucher input[name=action]').val('edit');
                 $('#frm_voucher input[name=id_voucher]').val(voucher.id_voucher);
 
@@ -210,6 +214,7 @@
                     }
                 }
 
+                
                 //left
                 modal.find('.modal-title').text(`Sửa mã - ${voucher.code}`);
                 modal.find('.modal-body #code').val(voucher.code);
@@ -229,6 +234,20 @@
                 modal.find('.modal-body #code_order').val(`${voucher.code_order}`);
                 modal.find('.modal-body #used').val(`${voucher.used}`);
                 modal.find('.modal-body #code_user_used').val(`${voucher.code_user_used}`);
+
+                // ẩn hiện nút SAVE
+                if(het_han == '1') {
+                    $('#btn_save_voucher button').hide();
+                    $('#btn_save_voucher .notice_save').show().text('Không thể chỉnh sửa do Voucher này đã hết hạn');
+
+                } 
+                else if(count_order > 0) {
+                    $('#btn_save_voucher button').hide();
+                    $('#btn_save_voucher .notice_save').show().text('Không thể chỉnh sửa do Voucher này đã được sử dụng để thanh toán đơn hàng');
+                }else {
+                    $('#btn_save_voucher button').show();
+                    $('#btn_save_voucher .notice_save').hide();
+                }
 
             } else {
                 $('#frm_voucher input[name=action]').val('add');
@@ -251,6 +270,10 @@
                 modal.find('.modal-body #code_order').val(``);
                 modal.find('.modal-body #used').val(``);
                 modal.find('.modal-body #code_user_used').val(``);
+
+                // hiện nút SAVE
+                $('#btn_save_voucher button').show();
+                $('#btn_save_voucher .notice_save').hide();
             }
 
             $('#voucher_user_sale').select2({});
