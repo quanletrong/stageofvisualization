@@ -6,12 +6,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Danh sách khuyến mãi</h1>
+                    <h1>Danh sách tài khoản</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
-                        <li class="breadcrumb-item active">Danh sách khuyến mãi</li>
+                        <li class="breadcrumb-item active">Danh sách tài khoản</li>
                     </ol>
                 </div>
             </div>
@@ -26,8 +26,8 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h3 class="card-title">Danh sách khuyến mãi</h3>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-voucher" data-type="add">
+                                <h3 class="card-title">Danh sách tài khoản</h3>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-user" data-type="add">
                                     Thêm mới
                                 </button>
                             </div>
@@ -40,59 +40,51 @@
                                     <tr>
                                         <th class="text-center">STT</th>
                                         <th style="min-width: 200px; width: 200px;">CODE</th>
-                                        <th class="">Mô tả</th>
-                                        <th class="text-right">Giảm giá</th>
-                                        <th class="text-center">Hết hạn</th>
-                                        <th class="text-center">Giới hạn</th>
-                                        <th class="text-center">Đã dùng</th>
+                                        <th class="">Username</th>
+                                        <th class="">Fullname</th>
+                                        <th class="">Phone</th>
+                                        <th class="">Email</th>
+                                        <th class="text-center">Role</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
-                                        <th style="min-width: 70px; width: 70px;">Action</th>
+                                        <th class="text-center">Ngày tạo</th>
+                                        <th class="text-center" style="min-width: 70px; width: 70px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php $index = 1; ?>
-                                    <?php foreach ($list as $id_voucher => $item) { ?>
+                                    <?php foreach ($list as $id_user => $item) { ?>
 
-                                        <?php $da_het_han = strtotime($item['expire_date']) < time(); ?>
-                                        <tr <?= $da_het_han ? 'style="text-decoration-line: line-through"' : '' ?>>
+                                        <?php $da_khoa = !$item['status']; ?>
+                                        <tr <?= $da_khoa ? 'style="text-decoration-line: line-through"' : '' ?>>
                                             <td class="align-middle text-center"><?= $index++ ?></td>
-                                            <td class="align-middle"><?= $item['code'] ?></td>
-                                            <td class="align-middle"><?= $item['note'] ?></td>
-                                            <td class="align-middle text-right">
-                                                <?= voucher_value($item['price'], $item['price_unit']); ?>
-                                            </td>
-
+                                            <td class="align-middle"><?= $item['code_user'] ?></td>
+                                            <td class="align-middle"><?= $item['username'] ?></td>
+                                            <td class="align-middle"><?= $item['fullname'] ?></td>
+                                            <td class="align-middle"><?= $item['phone'] ?></td>
+                                            <td class="align-middle"><?= $item['email'] ?></td>
                                             <td class="align-middle text-center">
-                                                <?= date('d/m/Y H:i:s ', strtotime($item['expire_date'])) ?>
+                                                <?php if ($item['role'] == ADMIN) echo 'ADMIN' ?>
+                                                <?php if ($item['role'] == SALE) echo 'SALE' ?>
+                                                <?php if ($item['role'] == QC) echo 'QC' ?>
+                                                <?php if ($item['role'] == EDITOR) echo 'EDITOR' ?>
+                                                <?php if ($item['role'] == CUSTOMER) echo 'CUSTOMER' ?>
                                             </td>
-
-                                            <td class="align-middle text-center">
-                                                <?= $item['limit'] ?> lần
-                                            </td>
-
-                                            <td class="align-middle text-center">
-                                                <?php if (count($item['voucher_order'])) { ?>
-                                                    <?= count($item['voucher_order']) ?> đơn
-                                                    <a href="#" data-toggle="modal" data-target="#modal-voucher-order" data-price='<?= $item['price'] ?>' data-price-unit='<?= $item['price_unit'] ?>' data-order="<?= htmlentities(json_encode($item['voucher_order'])) ?>">
-                                                        [VIEW]
-                                                    </a>
-                                                <?php } else {
-                                                    echo '0 đơn';
-                                                } ?>
-
-                                            </td>
-
                                             <td class="align-middle text-center">
                                                 <?php
                                                 if ($item['status'] === '1') {
-                                                    echo '<span class="badge bg-danger">OFF</span>';
-                                                } else {
                                                     echo '<span class="badge bg-success">ON</span>';
+                                                } else {
+                                                    echo '<span class="badge bg-danger">OFF</span>';
                                                 }
                                                 ?>
                                             </td>
+
                                             <td class="align-middle text-center">
-                                                <a href="#" data-toggle="modal" data-target="#modal-voucher" data-count_order="<?= count($item['voucher_order']) ?>" data-het_han='<?= $da_het_han ? '1' : '0' ?>' data-type="edit" data-voucher="<?= htmlentities(json_encode($item)) ?>">
+                                                <?= date('d/m/Y H:i:s ', strtotime($item['create_time'])) ?>
+                                            </td>
+
+                                            <td class="align-middle text-center">
+                                                <a href="#" data-toggle="modal" data-target="#modal-user" data-type="edit" data-user="<?= htmlentities(json_encode($item)) ?>">
                                                     [EDIT]
                                                 </a>
                                             </td>
@@ -115,9 +107,8 @@
 </div>
 
 <!-- load modal add edit -->
-<?php $this->load->view('v2023/voucher/model_add_edit_view'); ?>
-
-<?php $this->load->view('v2023/voucher/model_voucher_order_view'); ?>
+<?php $this->load->view('v2023/user/model_add_edit_view'); 
+?>
 
 <script>
     $(function() {
