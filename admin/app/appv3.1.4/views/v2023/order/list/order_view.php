@@ -45,7 +45,7 @@
                         <th class="text-center">COUNDOWN TIME</th>
                         <th class="text-center">TEAM WORKING</th>
                         <?php if (in_array($role, [ADMIN, SALE])) { ?>
-                            <th class="text-center">PUBLIC</th>
+                            <th class="text-center">NỘI BỘ</th>
                         <?php } ?>
                         <th class="text-center">ACTION</th>
                     </tr>
