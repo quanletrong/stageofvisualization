@@ -25,7 +25,7 @@ class Withdraw extends MY_Controller
 
     function index()
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+        if (!in_array($this->_session_role(), [ADMIN])) {
             show_custom_error('Tài khoản không có quyền truy cập!');
         }
         $withdraw = $this->Withdraw_model->withdraw_get_list();
@@ -44,7 +44,7 @@ class Withdraw extends MY_Controller
 
     function detail($id_user)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+        if (!in_array($this->_session_role(), [ADMIN])) {
             show_custom_error('Tài khoản không có quyền truy cập!');
         }
 
@@ -167,7 +167,7 @@ class Withdraw extends MY_Controller
 
     function ajax_phe_duyet_rut_tien($id_user)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+        if (!in_array($this->_session_role(), [ADMIN])) {
             show_custom_error('Tài khoản không có quyền truy cập!');
         }
 
