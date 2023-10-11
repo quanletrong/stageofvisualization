@@ -227,7 +227,7 @@ class Order extends MY_Controller
             $create_id_user = $cur_uid;
             $for_user       = $for_user;
             $FDR_ORDER      = FOLDER_ORDER . strtotime($create_time) . '@' . $info_user['username'];
-        } 
+        }
         # không hợp lệ
         else {
             resError('type', 'Dữ liệu không hợp lệ');
@@ -1208,5 +1208,23 @@ class Order extends MY_Controller
         //TODO: THIẾU GHI LOG
         $this->Job_model->update_file_complete_rework($id_rework, json_encode($info['file_complete']));
         resSuccess($id_complete);
+    }
+
+    function ajax_update_noi_bo()
+    {
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $noi_bo   = $this->input->post('noi_bo');
+        $id_order = $this->input->post('id_order');
+
+        in_array($noi_bo, [1, 2]) ? '' : resError('Giá trị không hợp lệ');
+
+        $order = $this->Order_model->get_info_order($id_order);
+        $order == [] ? resError('Đơn hàng không tồn tại') : '';
+
+        //TODO: THIẾU GHI LOG
+        // $this->Order_model->update_custom_time_order($id_order, $second);
+        resSuccess('Thành công');
     }
 }
