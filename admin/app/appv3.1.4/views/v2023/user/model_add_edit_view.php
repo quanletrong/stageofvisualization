@@ -68,6 +68,16 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="sapo">Loại tài khoản</label>
+                                    <div>
+                                        <select class="form-control select2" id="type" name="type" style="width: 100%;">
+                                            <option value="1">Nội bộ</option>
+                                            <option value="2">Vãng lai</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
                                     <label for="sapo">Cấp quyền làm đơn</label>
                                     <div>
                                         <select class="form-control select2" id="user_service" multiple="multiple" name="user_service[]" style="width: 100%;">
@@ -78,7 +88,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" value="" id="chk_all_user_service">
                                             <label class="form-check-label" for="chk_all_user_service">
-                                            Select All
+                                                Select All
                                             </label>
                                         </div>
                                     </div>
@@ -103,6 +113,7 @@
     $(function() {
 
         $('#role').select2({});
+        $('#type').select2({});
         $('#user_service').select2({});
 
         $("#chk_all_user_service").click(function() {
@@ -226,6 +237,7 @@
 
                 //right
                 modal.find('.modal-body #role').val(user.role);
+                modal.find('.modal-body #type').val(user.type);
                 modal.find('.modal-body #user_service').val(user_service);
             } else {
                 $('#frm_user input[name=action]').val('add');
@@ -242,10 +254,12 @@
 
                 //right
                 modal.find('.modal-body #role').val('');
+                modal.find('.modal-body #type').val(1);
                 modal.find('.modal-body #user_service').val([]);
             }
 
             $("#role").trigger("change");
+            $("#type").trigger("change");
             $("#user_service").trigger("change");
         });
     });

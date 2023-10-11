@@ -49,6 +49,7 @@ class User extends MY_Controller
             $phone        = removeAllTags($this->input->post('phone'));
             $email        = removeAllTags($this->input->post('email'));
             $role         = removeAllTags($this->input->post('role'));
+            $type         = removeAllTags($this->input->post('type'));
             $user_service = $this->input->post('user_service[]');
             $status       = removeAllTags($this->input->post('status'));
             $status       = $status == 'on' ? 1 : 0;
@@ -63,9 +64,10 @@ class User extends MY_Controller
             $phone     = $phone     != '' ? $phone : false;
             $email     = $email     != '' ? $email : false;
             $role      = in_array($role, [ADMIN, QC, SALE, EDITOR, CUSTOMER]) ? $role : false;
+            $type      = in_array($type, ['1', '2']) ? $type : false;
 
             // dữ liệu không hợp lệ => báo lỗi
-            if (!$username || !$fullname || !$phone || !$email || !$role) {
+            if (!$username || !$fullname || !$phone || !$email || !$role || !$type) {
                 $this->session->set_flashdata('flsh_msg', 'Dữ liệu không hợp lệ!');
                 redirect('user');
             }
@@ -110,7 +112,7 @@ class User extends MY_Controller
                 }
 
                 // add user
-                $newid = $this->User_model->add($code_user, $username, $fullname, $phone, $email, $status, $role, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time);
+                $newid = $this->User_model->add($code_user, $username, $fullname, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time);
 
                 //error
                 $this->session->set_flashdata('flsh_msg', $newid ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
@@ -144,7 +146,7 @@ class User extends MY_Controller
                     }
 
                     // update voucher
-                    $exc = $this->User_model->edit($code_user, $fullname, $phone, $email, $status, $role, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $id_user);
+                    $exc = $this->User_model->edit($code_user, $fullname, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $id_user);
 
                     //error
                     $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');

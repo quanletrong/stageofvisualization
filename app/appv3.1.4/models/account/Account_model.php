@@ -108,11 +108,13 @@ class Account_model extends CI_Model
     function add($uname, $pass, $fullname, $email, $phone, $avatar, $role, $status, $uid_creare = 0)
     {
         $id = 0;
+        $type = 2;
+        $user_service = '{}';
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_user (username, password, fullname, email, phone, avatar, role, status, id_user_create, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_user (username, password, fullname, email, phone, avatar, role, status, `type`, user_service, id_user_create, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$uname, $pass, $fullname, $email, $phone, $avatar, $role, $status, $uid_creare , date('Y-m-d H:i:s'), ""];
+            $param = [$uname, $pass, $fullname, $email, $phone, $avatar, $role, $status, $type, $user_service, $uid_creare , date('Y-m-d H:i:s'), ""];
 
             if ($stmt->execute($param)) {
                 $id = $iconn->lastInsertId();

@@ -49,14 +49,14 @@ class User_model extends CI_Model
         return $data;
     }
 
-    function add($code_user, $username, $fullname, $phone, $email, $status, $role, $user_service_db, $create_time)
+    function add($code_user, $username, $fullname, $phone, $email, $status, $role, $type, $user_service_db, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_user (code_user, username, fullname, phone, email, `status`, `role`, user_service, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_user (code_user, username, fullname, phone, email, `status`, `role`, `type`, user_service, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$code_user, $username, $fullname, $phone, $email, $status, $role, $user_service_db, $create_time];
+            $param = [$code_user, $username, $fullname, $phone, $email, $status, $role, $type, $user_service_db, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -69,16 +69,16 @@ class User_model extends CI_Model
         return $new_id;
     }
 
-    function edit($code_user, $fullname, $phone, $email, $status, $role, $user_service_db, $update_time, $id_user)
+    function edit($code_user, $fullname, $phone, $email, $status, $role, $type, $user_service_db, $update_time, $id_user)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = "UPDATE tbl_user 
-        SET code_user=?, fullname=?, phone=?, email=?, `status`=?, `role`=?, `user_service`=?, update_time=? 
+        SET code_user=?, fullname=?, phone=?, email=?, `status`=?, `role`=?, `type`=?, `user_service`=?, update_time=? 
         WHERE id_user=?";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([$code_user, $fullname, $phone, $email, $status, $role, $user_service_db, $update_time, $id_user])) {
+            if ($stmt->execute([$code_user, $fullname, $phone, $email, $status, $role, $type, $user_service_db, $update_time, $id_user])) {
                 $execute = true;
             } else {
                 var_dump($stmt->errorInfo());
