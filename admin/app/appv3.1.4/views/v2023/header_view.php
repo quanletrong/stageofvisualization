@@ -154,7 +154,7 @@
 								<?php } ?>
 							</ul>
 						</li>
-						<?php if (in_array($role, [ADMIN, SALE])) { ?>
+						<?php if (in_array($role, [ADMIN])) { ?>
 							<!-- QUẢN LÝ DANH MỤC -->
 							<li class="nav-header">QUẢN LÝ DANH MỤC</li>
 							<li class="nav-item">
