@@ -2,6 +2,8 @@
 
 class Order_model extends CI_Model
 {
+    private $_status_sort = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK, ORDER_DONE, ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE];
+    
     public function __construct()
     {
         // Call the CI_Model constructor
@@ -78,7 +80,7 @@ class Order_model extends CI_Model
         $sql = "SELECT A.*
             FROM tbl_order as A
             WHERE id_user = $id_user
-            ORDER BY A.status ASC, A.create_time ASC";
+            ORDER BY FIELD(A.status, ".implode(',', $this->_status_sort)."), A.create_time DESC";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {

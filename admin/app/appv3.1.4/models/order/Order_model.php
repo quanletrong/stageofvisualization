@@ -2,6 +2,8 @@
 
 class Order_model extends CI_Model
 {
+    private $_status_sort = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK, ORDER_DONE, ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE];
+
     public function __construct()
     {
         // Call the CI_Model constructor
@@ -104,7 +106,7 @@ class Order_model extends CI_Model
         $sql = "SELECT A.*, B.code_user as code_user
         FROM tbl_order as A
         INNER JOIN tbl_user B ON A.id_user = B.id_user 
-        ORDER BY A.status ASC, A.create_time ASC";
+        ORDER BY FIELD(A.status, ".implode(',', $this->_status_sort)."), A.create_time DESC";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -154,7 +156,7 @@ class Order_model extends CI_Model
             $sql .= " OR A.id_order IN ($str_id_order) ";
         }
 
-        $sql .= " ORDER BY A.status ASC, A.create_time ASC";
+        $sql .= " ORDER BY FIELD(A.status, ".implode(',', $this->_status_sort)."), A.create_time DESC ";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -238,7 +240,7 @@ class Order_model extends CI_Model
             FROM tbl_order as A
             INNER JOIN tbl_user B ON A.id_user = B.id_user 
             WHERE id_order IN ($str_id_order)
-            ORDER BY A.status ASC, A.create_time ASC";
+            ORDER BY FIELD(A.status, ".implode(',', $this->_status_sort)."), A.create_time DESC";
 
             $stmt = $iconn->prepare($sql);
             if ($stmt) {
