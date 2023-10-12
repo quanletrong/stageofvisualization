@@ -109,7 +109,7 @@ class Order extends MY_Controller
         // Tạo đơn vào tbl_order
         // TODO: dòng bên dưới tạm fix PAY_HOAN_THANH, sau bổ sung paypal sẽ thay bằng PAY_DANG_CHO
         $create_id_user = $id_user;
-        $new_order = $this->Order_model->add_order($style, $create_time, $id_user, PAY_HOAN_THANH, ORDER_PENDING, DON_KHACH_TAO, $id_user, $create_id_user);
+        $new_order = $this->Order_model->add_order($style, $create_time, $id_user, PAY_HOAN_THANH, ORDER_PENDING, DON_KHACH_TAO, $create_id_user, ED_NOI_BO);
 
         $flag_error = false;
         if ($new_order) {
