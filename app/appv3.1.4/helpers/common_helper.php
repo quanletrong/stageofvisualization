@@ -1033,7 +1033,7 @@ function url_image($file_name, $folder)
 {
     $CI = &get_instance();
     if ($CI->config->item('cf_upload_local') == '') {
-        $root_domain = 'https://stageofvisualization.quancoder.com/';
+        $root_domain = 'https://stageofvisualization.com/';
     } else {
         $root_domain = ROOT_DOMAIN;
     }
