@@ -272,7 +272,7 @@ class Order extends MY_Controller
         // Tạo đơn vào tbl_order
         // TODO: dòng bên dưới tạm fix PAY_HOAN_THANH, sau bổ sung paypal sẽ thay bằng PAY_DANG_CHO
         $coupon = '';
-        $new_order = $this->Order_model->add_order($style, $create_time, $for_user, PAY_HOAN_THANH, ORDER_PENDING, DON_NOI_BO, $create_id_user);
+        $new_order = $this->Order_model->add_order($style, $create_time, $for_user, PAY_HOAN_THANH, ORDER_PENDING, DON_NOI_BO, $create_id_user, ED_NOI_BO);
 
         $flag_error = false;
         if ($new_order) {
@@ -1210,15 +1210,15 @@ class Order extends MY_Controller
         resSuccess($id_complete);
     }
 
-    function ajax_update_noi_bo()
+    function ajax_update_ed_type()
     {
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
-        $noi_bo   = $this->input->post('noi_bo');
+        $ed_type   = $this->input->post('ed_type');
         $id_order = $this->input->post('id_order');
 
-        in_array($noi_bo, [1, 2]) ? '' : resError('Giá trị không hợp lệ');
+        in_array($ed_type, [ED_NOI_BO, ED_CTV]) ? '' : resError('Giá trị không hợp lệ');
 
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn hàng không tồn tại') : '';

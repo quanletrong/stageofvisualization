@@ -822,14 +822,14 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    function add_order($id_style, $create_time, $id_user, $pending_pay, $status, $order_type, $create_id_user)
+    function add_order($id_style, $create_time, $id_user, $pending_pay, $status, $order_type, $create_id_user, $ed_type)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_order (id_style, create_time, id_user, pending_pay, status, order_type, create_id_user) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_order (id_style, create_time, id_user, pending_pay, status, order_type, create_id_user, ed_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_style, $create_time, $id_user, $pending_pay, $status, $order_type, $create_id_user];
+            $param = [$id_style, $create_time, $id_user, $pending_pay, $status, $order_type, $create_id_user, $ed_type];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();

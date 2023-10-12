@@ -98,6 +98,10 @@ define('DON_KHACH_TAO', 1); // đơn do khách tự tạo
 define('DON_NOI_BO', 2); // đơn nội bộ do sale, admin tạo, đơn này không cần thanh toán
 define('DON_TAO_HO', 3); // đơn do sale, admin tạo hộ khách
 
+//editor type
+define('ED_NOI_BO', 1); // editor nội bộ
+define('ED_CTV', 2); // editor cộng tác viên
+
 // thoi_gian_toi_thieu
 define('MIN_TIME_WORKING', 0);
 

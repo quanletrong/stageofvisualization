@@ -45,7 +45,7 @@
                         <th class="text-center">COUNDOWN TIME</th>
                         <th class="text-center">TEAM WORKING</th>
                         <?php if (in_array($role, [ADMIN, SALE])) { ?>
-                            <th class="text-center">NỘI BỘ</th>
+                            <th class="text-center">EDITOR</th>
                         <?php } ?>
                         <th class="text-center">ACTION</th>
                     </tr>
@@ -90,16 +90,19 @@
                             <?php if (in_array($role, [ADMIN, SALE])) { ?>
                                 <td class="align-middle text-center">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle" type="button" id="drop_change_don_noi_bo_<?= $order['id_order'] ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <?php if ($order['noi_bo'] == '1') { ?>
+                                        <button class="btn dropdown-toggle" type="button" id="drop_change_don_ed_type_<?= $order['id_order'] ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <?php if ($order['ed_type'] == ED_NOI_BO) { ?>
                                                 <i class="fas fa-lock text-secondary" title="Nội bộ"></i>
                                             <?php } else { ?>
-                                                <i class="fas fa-globe-europe text-success" title="Công khai"></i>
+                                                <i class="fas fa-globe-europe text-success" title="Cộng tác viên"></i>
                                             <?php } ?>
                                         </button>
-                                        <div class="dropdown-menu" aria-labelledby="drop_change_don_noi_bo_<?= $order['id_order'] ?>">
-                                            <button class="dropdown-item" type="button" onclick="drop_change_don_noi_bo(1, <?= $order['id_order'] ?>)">Nội bộ</button>
-                                            <button class="dropdown-item" type="button" onclick="drop_change_don_noi_bo(2, <?= $order['id_order'] ?>)">Công khai</button>
+                                        <div class="dropdown-menu" aria-labelledby="drop_change_don_ed_type_<?= $order['id_order'] ?>">
+                                            <button class="dropdown-item" type="button" onclick="drop_change_don_ed_type(<?= ED_NOI_BO ?>, <?= $order['id_order'] ?>)">
+                                                <i class="fas fa-lock text-secondary" title="Nội bộ"></i> Nội bộ</button>
+                                            <button class="dropdown-item" type="button" onclick="drop_change_don_ed_type(<?= ED_CTV ?>, <?= $order['id_order'] ?>)">
+                                                <i class="fas fa-globe-europe text-success" title="Cộng tác viên"></i> Cộng tác viên
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
@@ -129,17 +132,17 @@
             // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-        
+
     });
 
-    function drop_change_don_noi_bo(noi_bo, id_order) {
-        $('#drop_change_don_noi_bo_' + id_order).html('<i class="fas fa-sync fa-spin "></i>');
+    function drop_change_don_ed_type(ed_type, id_order) {
+        $('#drop_change_don_ed_type_' + id_order).html('<i class="fas fa-sync fa-spin "></i>');
 
         $.ajax({
             type: "POST",
-            url: "<?= site_url('order/ajax_update_noi_bo') ?>", // dùng chung trong auction
+            url: "<?= site_url('order/ajax_update_ed_type') ?>", // dùng chung trong auction
             data: {
-                'noi_bo': noi_bo,
+                'ed_type': ed_type,
                 'id_order': id_order,
             },
             success: function(res) {
@@ -147,11 +150,11 @@
                     let resData = JSON.parse(res);
                     if (resData.status) {
 
-                        if (noi_bo == 1) {
-                            $('#drop_change_don_noi_bo_' + id_order).html('<i class="fas fa-lock text-secondary" title="Nội bộ"></i>');
-                            
+                        if (ed_type == <?= ED_NOI_BO ?>) {
+                            $('#drop_change_don_ed_type_' + id_order).html('<i class="fas fa-lock text-secondary" title="Nội bộ"></i>');
+
                         } else {
-                            $('#drop_change_don_noi_bo_' + id_order).html('<i class="fas fa-globe-europe text-success" title="Công khai"></i>');
+                            $('#drop_change_don_ed_type_' + id_order).html('<i class="fas fa-globe-europe text-success" title="Cộng tác viên"></i>');
                         }
                         toasts_success();
                     } else {
