@@ -13,7 +13,7 @@ class Order_model extends CI_Model
         $new_id = 0;
         $ed_type = ED_CTV;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_order (id_style, create_time, id_user, coupon, pending_pay, status, order_type, create_id_user, ed_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_order (id_style, create_time, id_user, pending_pay, status, order_type, create_id_user, ed_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             $param = [$id_style, $create_time, $id_user, $pending_pay, $status, $order_type, $create_id_user, $ed_type];
