@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="direct-chat-messages" style="max-height: 600px;">
+                <div class="direct-chat-messages" style="height: auto;max-height: 600px;">
                     <i class="fas fa-sync fa-spin"></i>
                 </div>
             </div>
