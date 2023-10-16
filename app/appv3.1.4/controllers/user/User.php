@@ -42,6 +42,7 @@ class User extends MY_Controller
     //TODO: check right
     function orderdetail($id_order)
     {
+        $cur_uid     = $this->_session_uid();
         $data = [];
         $header = [
             'title' => 'Order',
@@ -52,7 +53,7 @@ class User extends MY_Controller
         $id_order = isIdNumber($id_order) ? $id_order : 0;
 
         $order = $this->Order_model->get_info_order($id_order);
-        if (empty($order)) {
+        if (empty($order) || $order['id_user'] != $cur_uid) {
             dbClose();
             redirect(site_url('user', $this->_langcode));
             die();

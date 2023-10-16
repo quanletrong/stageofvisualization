@@ -184,7 +184,7 @@
                         } else if ($order['status'] == ORDER_CANCLE) {
                             echo '<button class="btn btn-danger w-100">CANCLE</button>';
                             echo '<p>Đơn hàng của bạn đã bị xóa!</p>';
-                        }else if ($order['status'] == ORDER_REWORK) {
+                        } else if ($order['status'] == ORDER_REWORK) {
                             echo '<button class="btn btn-danger w-100">REWORK</button>';
                             echo '<p>Đơn hàng của bạn đang được làm lại!</p>';
                         } else {
@@ -195,8 +195,8 @@
                     </div>
 
                     <div class="mt-3">
-                        <p><b style="color: orange;">ID Customer: <?= $order['code_user'] !='' ? htmlentities($order['code_user']) : '#CID'.$order['code_user'] ?></b></p>
-                        <p><b style="color: orange;">ID Order: <?= $order['code_order'] !='' ? htmlentities($order['code_order']) : '#OID'.$order['id_order'] ?></b></p>
+                        <p><b style="color: orange;">ID Customer: <?= $order['code_user'] != '' ? htmlentities($order['code_user']) : '#CID' . $order['code_user'] ?></b></p>
+                        <p><b style="color: orange;">ID Order: <?= $order['code_order'] != '' ? htmlentities($order['code_order']) : '#OID' . $order['id_order'] ?></b></p>
 
                         <?php foreach ($list_type_service as $type => $val) { ?>
                             <p><b style="color: orange;"><?= $type ?>: <?= count($val) ?></b></p>
@@ -223,6 +223,13 @@
 
     </div>
 
+    <!-- CHAT BOX -->
+    <?php
+    $this->load->view(TEMPLATE_FOLDER . 'user/order_detail/_chat_view.php', [
+        'order' => $order
+    ]);
+    ?>
+    <!-- END CHAT BOX -->
 
 
 </div>

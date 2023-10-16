@@ -102,6 +102,10 @@ define('DON_TAO_HO', 3); // đơn do sale, admin tạo hộ khách
 define('ED_NOI_BO', 1); // editor nội bộ
 define('ED_CTV', 2); // editor cộng tác viên
 
+// chat type
+define('CHAT_NOI_BO', 1); // chat nội bộ
+define('CHAT_KHACH', 2); // chat khách
+
 // thoi_gian_toi_thieu
 define('MIN_TIME_WORKING', 0);
 
