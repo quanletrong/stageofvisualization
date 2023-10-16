@@ -1197,6 +1197,7 @@ class Order extends MY_Controller
         $info = $this->Job_model->get_info_rework_by_id($id_rework);
         $info == [] ? resError('Rework không tồn tại') : '';
 
+        $order = $this->Order_model->get_info_order($info['id_order']);
         if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }

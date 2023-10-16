@@ -1,4 +1,3 @@
-
 <div class="content-wrapper">
     <div class="container-fluid">
         <!-- PAGE HEADER -->
@@ -33,12 +32,18 @@
 
         <!-- CHAT BOX -->
         <section>
-            <?php //$this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_box_view.php'); ?>
+            <?php
+            $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_box_view.php', [
+                'order' => $order,
+                'role' => $role
+            ]);
+            ?>
         </section>
 
         <!-- HISTORY -->
         <section>
-            <?php //$this->load->view(TEMPLATE_FOLDER . 'order/detail/_history_view.php'); ?>
+            <?php //$this->load->view(TEMPLATE_FOLDER . 'order/detail/_history_view.php'); 
+            ?>
         </section>
     </div>
 </div>
