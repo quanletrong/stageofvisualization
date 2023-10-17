@@ -29,6 +29,11 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="name"> <span class="text-red">*</span> Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu">
+                                </div>
+
+                                <div class="form-group">
                                     <label for="name"> <span class="text-red">*</span> Fullname</label>
                                     <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Nhập Fullname">
                                 </div>
@@ -230,6 +235,7 @@
                 modal.find('.modal-title').text(`Sửa tài khoản - ${user.username}`);
                 modal.find('.modal-body #code_user').val(user.code_user);
                 modal.find('.modal-body #username').val(user.username);
+                modal.find('.modal-body #password').val(user.password);
                 modal.find('.modal-body #fullname').val(user.fullname);
                 modal.find('.modal-body #phone').val(user.phone);
                 modal.find('.modal-body #email').val(user.email);
@@ -247,6 +253,7 @@
                 modal.find('.modal-title').text(`Thêm tài khoản`);
                 modal.find('.modal-body #code_user').val('');
                 modal.find('.modal-body #username').val('');
+                modal.find('.modal-body #password').val('');
                 modal.find('.modal-body #fullname').val('');
                 modal.find('.modal-body #phone').val('');
                 modal.find('.modal-body #email').val('');

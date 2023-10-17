@@ -45,6 +45,7 @@ class User extends MY_Controller
         if (isset($_POST['action'])) {
             $code_user    = removeAllTags($this->input->post('code_user'));
             $username     = removeAllTags($this->input->post('username'));
+            $password     = removeAllTags($this->input->post('password'));
             $fullname     = removeAllTags($this->input->post('fullname'));
             $phone        = removeAllTags($this->input->post('phone'));
             $email        = removeAllTags($this->input->post('email'));
@@ -92,9 +93,22 @@ class User extends MY_Controller
             // TẠO MỚI 
             if ($_POST['action'] == 'add') {
 
+                // check username
+                $preg_match_username = preg_match('/^[a-zA-Z0-9_]+$/', $username);
+                if(!$preg_match_username) {
+                    $this->session->set_flashdata('flsh_msg', 'Username chỉ bao gồm chữ hoa, chữ thường, chữ số và dấu gạch dưới');
+                    redirect('user');
+                }
+                
+                // check passwork
+                $check_match = preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password);
+                if (!$check_match) {
+                    $this->session->set_flashdata('flsh_msg', 'Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*');
+                    redirect('user');
+                }
+
                 // check code user đã tồn tại =>  báo lỗi
                 if (!empty($user_by_code)) {
-                    die('xxxx');
                     $this->session->set_flashdata('flsh_msg', 'Code user đã tồn tại!');
                     redirect('user');
                 }
@@ -111,8 +125,10 @@ class User extends MY_Controller
                     redirect('user');
                 }
 
+
                 // add user
-                $newid = $this->User_model->add($code_user, $username, $fullname, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time);
+                $password_hash = PasswordHash::hash($username, md5($password));
+                $newid = $this->User_model->add($code_user, $username, $password_hash, $fullname, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time);
 
                 //error
                 $this->session->set_flashdata('flsh_msg', $newid ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
@@ -126,6 +142,18 @@ class User extends MY_Controller
                 if (empty($info)) {
                     $msg = 'Lưu không thành công vui lòng thử lại!';
                 } else {
+
+                    if ($password != $info['password']) {
+                        // check passwork
+                        $check_match = preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password);
+                        if (!$check_match) {
+                            $this->session->set_flashdata('flsh_msg', 'Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*');
+                            redirect('user');
+                        }
+                        $password_hash = PasswordHash::hash($info['username'], md5($password));
+                    } else {
+                        $password_hash = $info['password'];
+                    }
 
                     // check code user đã tồn tại =>  báo lỗi
                     if ($info['code_user'] != $code_user && !empty($user_by_code)) {
@@ -146,7 +174,7 @@ class User extends MY_Controller
                     }
 
                     // update voucher
-                    $exc = $this->User_model->edit($code_user, $fullname, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $id_user);
+                    $exc = $this->User_model->edit($code_user, $fullname, $password_hash, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $id_user);
 
                     //error
                     $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');

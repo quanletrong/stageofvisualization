@@ -60,7 +60,7 @@ class Signup extends MY_Controller {
             } else if (strlen($password) < 8) {
                 $error['password'] = true;
             }
-            if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/', $password)) {
+            if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password)) {
                 $error['password'] = true;
             }
     
