@@ -55,7 +55,7 @@ class Discuss extends MY_Controller
         $id_order = isIdNumber($id_order)    ? $id_order : 0;
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn không tồn tại') : '';
-        if ($role == QC || $role == EDITOR) {
+        if ($role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
@@ -80,7 +80,7 @@ class Discuss extends MY_Controller
         $id_order = isIdNumber($id_order)    ? $id_order : 0;
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn không tồn tại') : '';
-        if ($role == QC || $role == EDITOR) {
+        if ($role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
