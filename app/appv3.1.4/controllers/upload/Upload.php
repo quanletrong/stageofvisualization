@@ -45,7 +45,7 @@ class Upload extends MY_Controller
                     }
 
                     // Check file size
-                    if ($size > 5000000) {
+                    if ($size > LIMIT_SIZE_IMAGE) {
                         $data[$i]['status'] = 0;
                         $data[$i]['error'][] = 'Sorry, your file is too large, limit 50Mb';
                     }
