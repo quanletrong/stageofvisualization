@@ -248,17 +248,14 @@
     function add_job() {
         let job_id = Date.now();
         let job_new = `<div class="border p-4 shadow mb-2 div_main_2" id="${job_id}">
-                <div class="position-relative">
+                <div class="position-relative text-center">
                     <button type="button" class="btn_upload_image d-none" onclick="quanlt_upload(this);" data-callback="cb_upload_image_job" data-target="#image_${job_id}"></button>
                     <input type="hidden" id="image_${job_id}" data-id="${job_id}"/>
-                    <img id="image_${job_id}_pre" class="img-fluid w-100" alt="">
+                    <img id="image_${job_id}_pre" class="img-fluid w-50" alt="" >
                     <div class="position-absolute" style="top:10px; right: 10px; cursor: pointer;">
                         <i class="fa-solid fa-xmark fs-3" onclick="step2_remove_job(${job_id})"></i>
                     </div>
                 </div>
-
-                <small>Thumbnail shown. The full quality photo <span class="link-color" style="cursor: pointer;">(preview)</span> will be received when the order is placed.</small>
-
                 <div class="my-3">
                     <label for="exampleFormControlInput1" class="form-label fw-bold">Room Type:</label>
                     <select title="Please select room type." class="form-control room" onchange="STATE.job[${job_id}].room = this.value">
