@@ -214,7 +214,8 @@ class Order extends MY_Controller
         if ($type == 'private') {
             $create_id_user = $cur_uid;
             $for_user       = $cur_uid;
-            $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) . '@' . $this->_session_uname();
+            $info_user = $this->User_model->get_user_info_by_id($cur_uid);
+            $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) . '@' . $info_user['username'];
         }
         # check customer
         else if ($type == 'customer') {

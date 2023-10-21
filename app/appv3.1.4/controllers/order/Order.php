@@ -73,7 +73,8 @@ class Order extends MY_Controller
             isset($all_style[$style]) ? '' : resError('error_style');
         }
 
-        $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) . '@' . $this->_session_uname();
+        $info_user = $this->User_model->get_user_info_by_id($id_user);
+        $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) . '@' . $info_user['username'];
 
         foreach ($list_job as $id_job => $job) {
             $room        = $job['room'];
