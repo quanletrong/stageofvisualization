@@ -49,14 +49,14 @@ class User_model extends CI_Model
         return $data;
     }
 
-    function add($code_user, $username, $pass_hash, $fullname, $phone, $email, $status, $role, $type, $user_service_db, $create_time)
+    function add($code_user, $username, $pass_hash, $fullname, $phone, $email, $status, $role, $type, $user_service_db, $create_time, $avatar)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_user (code_user, username, `password`, fullname, phone, email, `status`, `role`, `type`, user_service, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_user (code_user, username, `password`, fullname, phone, email, `status`, `role`, `type`, user_service, create_time, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$code_user, $username, $pass_hash, $fullname, $phone, $email, $status, $role, $type, $user_service_db, $create_time];
+            $param = [$code_user, $username, $pass_hash, $fullname, $phone, $email, $status, $role, $type, $user_service_db, $create_time, $avatar];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();

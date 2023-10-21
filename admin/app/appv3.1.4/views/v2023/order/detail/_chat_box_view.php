@@ -35,7 +35,7 @@
     <!-- END TRAO ĐÔI KHÁCH  -->
 
     <!-- TRAO DOI NOI BỘ -->
-    <div class="col-12 col-lg-<?=$role == ADMIN || $role == SALE ? 6 : 12 ?>">
+    <div class="col-12 col-lg-<?= $role == ADMIN || $role == SALE ? 6 : 12 ?>">
         <div id="discuss_noi_bo" class="card direct-chat direct-chat-primary" style="position: relative; left: 0px; top: 0px;">
             <div class="card-header ui-sortable-handle">
                 <h3 class="card-title">TRAO ĐỔI NỘI BỘ</h3>
@@ -71,6 +71,25 @@
     $(document).ready(function() {
 
         // trao đổi nội bộ
+        ajax_discuss_list_noi_bo();
+        setInterval(() => {
+            ajax_discuss_list_noi_bo();
+        }, 15000);
+
+        //end trao đổi nội bộ
+
+        // trao doi voi khach
+        ajax_discuss_list_khach();
+        <?php if ($role == ADMIN || $role == SALE) { ?>
+            setInterval(() => {
+                ajax_discuss_list_khach();
+            }, 15000);
+
+        <?php } ?>
+        // END trao doi voi khach
+    })
+
+    function ajax_discuss_list_noi_bo() {
         $.ajax({
             url: `discuss/ajax_discuss_list_noi_bo`,
             type: "POST",
@@ -119,26 +138,25 @@
                 alert('Error');
             }
         });
-        //end trao đổi nội bộ
+    }
 
-        // trao doi voi khach
-        <?php if ($role == ADMIN || $role == SALE) { ?>
-            $.ajax({
-                url: `discuss/ajax_discuss_list_khach`,
-                type: "POST",
-                data: {
-                    id_order: <?= $order['id_order'] ?>,
-                },
-                success: function(data, textStatus, jqXHR) {
-                    let kq = JSON.parse(data);
+    function ajax_discuss_list_khach() {
+        $.ajax({
+            url: `discuss/ajax_discuss_list_khach`,
+            type: "POST",
+            data: {
+                id_order: <?= $order['id_order'] ?>,
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
 
-                    if (kq.status) {
-                        let list_discuss = kq.data;
+                if (kq.status) {
+                    let list_discuss = kq.data;
 
-                        let html = ``;
-                        for (const [key, discuss] of Object.entries(list_discuss)) {
+                    let html = ``;
+                    for (const [key, discuss] of Object.entries(list_discuss)) {
 
-                            html += `
+                        html += `
                         
                             <div class="direct-chat-msg">
                                 <div class="direct-chat-infos clearfix">
@@ -152,28 +170,26 @@
                                     ${discuss.content}
                                 </div>
                             </div> `;
-                        }
-
-                        $('#discuss_khach .total-discuss').html(Object.keys(list_discuss).length);
-                        $('#discuss_khach .direct-chat-messages')
-                            .html(html)
-                            .scrollTop($('#discuss_khach .direct-chat-messages')[0].scrollHeight);
-                        $('#discuss_khach .direct-chat-messages')
-
-
-
-                    } else {
-                        toasts_danger(kq.error);
                     }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(data);
-                    alert('Error');
+
+                    $('#discuss_khach .total-discuss').html(Object.keys(list_discuss).length);
+                    $('#discuss_khach .direct-chat-messages')
+                        .html(html)
+                        .scrollTop($('#discuss_khach .direct-chat-messages')[0].scrollHeight);
+                    $('#discuss_khach .direct-chat-messages')
+
+
+
+                } else {
+                    toasts_danger(kq.error);
                 }
-            });
-        <?php } ?>
-        // END trao doi voi khach
-    })
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
 
     function ajax_discuss_add(btn) {
         $(btn).html(' <i class="fas fa-sync fa-spin"></i>');

@@ -94,6 +94,14 @@
 <script>
     $(document).ready(function() {
         // trao doi voi khach
+        ajax_discuss_list();
+        setInterval(() => {
+            ajax_discuss_list();
+        }, 15000);
+        // END trao doi voi khach
+    })
+
+    function ajax_discuss_list() {
         $.ajax({
             url: `discuss/ajax_discuss_list`,
             type: "POST",
@@ -142,8 +150,7 @@
                 alert('Error');
             }
         });
-        // END trao doi voi khach
-    })
+    }
 
     function ajax_discuss_add(btn) {
         $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
