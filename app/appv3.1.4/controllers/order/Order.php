@@ -15,6 +15,7 @@ class Order extends MY_Controller
         $this->load->model('order/Order_model');
         $this->load->model('job/Job_model');
         $this->load->model('login/Login_model');
+        $this->load->model('account/Account_model');
     }
 
     function index()
@@ -73,7 +74,7 @@ class Order extends MY_Controller
             isset($all_style[$style]) ? '' : resError('error_style');
         }
 
-        $info_user = $this->User_model->get_user_info_by_id($id_user);
+        $info_user = $this->Account_model->get_user_info_by_uid($id_user);
         $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) . '@' . $info_user['username'];
 
         foreach ($list_job as $id_job => $job) {
