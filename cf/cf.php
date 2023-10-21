@@ -123,3 +123,5 @@ define("gg_ClientSecret", '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');
 
 // limit size upload image
 define('LIMIT_SIZE_IMAGE', 52428800); // 50Mb
+
+define('AVATAR_DEFAULT', 'user-default.png');
