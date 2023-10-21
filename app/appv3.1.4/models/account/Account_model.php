@@ -111,7 +111,7 @@ class Account_model extends CI_Model
         $type = 2;
         $user_service = '{}';
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_user (username, password, fullname, email, phone, avatar, role, status, `type`, user_service, id_user_create, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_user (username, password, fullname, email, phone, avatar, role, status, `type`, user_service, id_user_create, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             $param = [$uname, $pass, $fullname, $email, $phone, $avatar, $role, $status, $type, $user_service, $uid_creare , date('Y-m-d H:i:s'), ""];

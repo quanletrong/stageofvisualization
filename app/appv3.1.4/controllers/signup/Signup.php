@@ -80,7 +80,7 @@ class Signup extends MY_Controller {
                 $info['success'] = "0";
             } else {
                 $password_hash = PasswordHash::hash($uname, md5($password));
-                $user_id = $this->Account_model->add($uname, $password_hash, $fullname, $email, $phone, "", CUSTOMER, 1, 0);
+                $user_id = $this->Account_model->add($uname, $password_hash, $fullname, $email, $phone, AVATAR_DEFAULT, CUSTOMER, 1, 0);
                 if($user_id > 0){
                     $info['success'] = "1";
                 }
