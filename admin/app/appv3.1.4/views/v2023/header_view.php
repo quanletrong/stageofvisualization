@@ -220,7 +220,7 @@
 								<a href="user" class="nav-link">
 									<i class="nav-icon fas fa-th"></i>
 									<p>
-										Người dùng
+										Danh sách tài khoản
 									</p>
 								</a>
 							</li>
@@ -245,6 +245,12 @@
 									</p>
 								</a>
 								<ul class="nav nav-treeview">
+								<li class="nav-item">
+										<a href="setting/max_order_working" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Điều kiện JOIN đơn mới</p>
+										</a>
+									</li>
 									<li class="nav-item">
 										<a href="setting/info" class="nav-link">
 											<i class="far fa-circle nav-icon"></i>

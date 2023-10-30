@@ -368,4 +368,36 @@ class Setting extends MY_Controller
         $this->load->view($this->_template_f . 'setting/setting_termsofuse_view', $data);
         $this->_loadFooter();
     }
+
+    function max_order_working()
+    {
+        $data = [];
+        if ($this->_session_role() != ADMIN) {
+            show_custom_error('Tài khoản không có quyền truy cập!');
+        }
+        $header = [
+            'title' => 'Giới hạn tham gia đơn hàng',
+            'header_page_css_js' => 'setting'
+        ];
+
+        if (isset($_POST['max_order_working'])) {
+            $max_order_working = $this->input->post('max_order_working');
+
+            if (is_numeric($max_order_working) && $max_order_working > 0) {
+                $this->Setting_model->update_max_order_working($max_order_working);
+                $this->session->set_flashdata('flsh_msg', 'OK');
+            } else {
+                $this->session->set_flashdata('flsh_msg', 'Dữ liệu không hợp lệ');
+            }
+
+            redirect('setting/max_order_working');
+        }
+
+        $setting = $this->Setting_model->get_setting();
+        $data['setting'] = $setting;
+
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'setting/max_order_working_view', $data);
+        $this->_loadFooter();
+    }
 }

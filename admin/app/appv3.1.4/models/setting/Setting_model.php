@@ -236,4 +236,23 @@ class Setting_model extends CI_Model
         return $data;
     }
 
+    function update_max_order_working($max_order_working)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "UPDATE tbl_setting SET max_order_working=? ;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$max_order_working])) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
 }
