@@ -4,6 +4,8 @@ class Order_model extends CI_Model
 {
     private $_status_sort = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK, ORDER_DONE, ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE];
 
+    private $_status_working = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+
     public function __construct()
     {
         // Call the CI_Model constructor
@@ -270,6 +272,37 @@ class Order_model extends CI_Model
             $stmt->closeCursor();
         }
         return $list_order;
+    }
+
+    function get_total_order_working_by_id_user($id_user)
+    {
+        $total_order = 0;
+        $iconn = $this->db->conn_id;
+
+        // lấy list id order theo user từ bảng `tbl_job_user`
+        $list_id_order = $this->_get_list_id_order_by_user_id($id_user, $iconn);
+
+        // lấy list info order theo list id_order
+        if (!empty($list_id_order)) {
+            $str_id_order = implode(',', $list_id_order);
+            $sql = "SELECT count(*) as total_order
+            FROM tbl_order as A
+            WHERE id_order IN ($str_id_order) AND status IN (".implode(',', $this->_status_working).")";
+
+            $stmt = $iconn->prepare($sql);
+            if ($stmt) {
+                if ($stmt->execute()) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $total_order = (int) $row['total_order'];
+                    }
+                } else {
+                    var_dump($stmt->errorInfo());
+                    die;
+                }
+            }
+            $stmt->closeCursor();
+        }
+        return $total_order;
     }
 
     function _get_list_id_order_by_user_id($id_user, $iconn)

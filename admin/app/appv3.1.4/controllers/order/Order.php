@@ -26,6 +26,7 @@ class Order extends MY_Controller
         $this->load->model('library/Library_model');
         $this->load->model('room/Room_model');
         $this->load->model('service/Service_model');
+        $this->load->model('setting/Setting_model');
     }
 
     function index()
@@ -663,6 +664,15 @@ class Order extends MY_Controller
 
         if ($list_job_no_ed == []) {
             resError('Đơn không hợp lệ');
+        }
+
+        // kiểm tra số lượng đơn đang làm có vượt quá max_working_order trong setting không?
+        $total_order_working = $this->Order_model->get_total_order_working_by_id_user($cur_uid);
+        $get_setting = $this->Setting_model->get_setting();
+        $max_order_working = (int) $get_setting['max_order_working'];
+        
+        if($total_order_working >= $max_order_working) {
+            resError('Bạn đang có '.$total_order_working.' đơn chưa hoàn thành. <br/> Số đơn chưa hoàn thành phải ít hơn '.$max_order_working.' đơn.');
         }
 
         # SAVE

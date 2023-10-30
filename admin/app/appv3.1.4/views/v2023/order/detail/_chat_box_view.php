@@ -79,7 +79,6 @@
         //end trao đổi nội bộ
 
         // trao doi voi khach
-        ajax_discuss_list_khach();
         <?php if ($role == ADMIN || $role == SALE) { ?>
             setInterval(() => {
                 ajax_discuss_list_khach();
