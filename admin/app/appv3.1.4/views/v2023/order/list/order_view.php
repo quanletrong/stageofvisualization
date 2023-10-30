@@ -45,7 +45,7 @@
                         <th class="text-center">COUNDOWN TIME</th>
                         <th class="text-center">TEAM WORKING</th>
                         <?php if (in_array($role, [ADMIN, SALE])) { ?>
-                            <th class="text-center">EDITOR</th>
+                            <th class="text-center">PHÂN ĐƠN</th>
                         <?php } ?>
                         <th class="text-center">ACTION</th>
                     </tr>
@@ -92,16 +92,16 @@
                                     <div class="dropdown">
                                         <button class="btn dropdown-toggle" type="button" id="drop_change_don_ed_type_<?= $order['id_order'] ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <?php if ($order['ed_type'] == ED_NOI_BO) { ?>
-                                                <i class="fas fa-lock text-secondary" title="Nội bộ"></i>
+                                                <i class="fas fa-lock text-secondary" title="ED nội bộ"></i>
                                             <?php } else { ?>
-                                                <i class="fas fa-globe-europe text-success" title="Cộng tác viên"></i>
+                                                <i class="fas fa-globe-europe text-success" title="ED cộng tác viên"></i>
                                             <?php } ?>
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="drop_change_don_ed_type_<?= $order['id_order'] ?>">
                                             <button class="dropdown-item" type="button" onclick="drop_change_don_ed_type(<?= ED_NOI_BO ?>, <?= $order['id_order'] ?>)">
-                                                <i class="fas fa-lock text-secondary" title="Nội bộ"></i> Nội bộ</button>
+                                                <i class="fas fa-lock text-secondary" title="Nội bộ"></i> ED Nội bộ</button>
                                             <button class="dropdown-item" type="button" onclick="drop_change_don_ed_type(<?= ED_CTV ?>, <?= $order['id_order'] ?>)">
-                                                <i class="fas fa-globe-europe text-success" title="Cộng tác viên"></i> Cộng tác viên
+                                                <i class="fas fa-globe-europe text-success" title="Cộng tác viên"></i> ED cộng tác viên
                                             </button>
                                         </div>
                                     </div>
