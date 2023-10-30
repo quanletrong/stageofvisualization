@@ -116,6 +116,15 @@ class Withdraw extends MY_Controller
                 }
                 $data['CHECK_OUT'] = $num;
             }
+            // CUSTOM
+            else if ($type_job_user == WORKING_CUSTOM) {
+                if (isset($data['CUSTOM'])) {
+                    $num = $data['CUSTOM'] + $item['num'];
+                } else {
+                    $num = $item['num'];
+                }
+                $data['CUSTOM'] = $num;
+            }
             // TYPE SERVICES
             else {
                 if (isset($data[$type_service])) {

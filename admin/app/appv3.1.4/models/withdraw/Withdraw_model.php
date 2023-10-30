@@ -107,6 +107,9 @@ class Withdraw_model extends CI_Model
                         $data['all'][$row['id_withdraw']] = $row;
 
                         // cộng type_service giống nhau
+                        
+                        $row['type_service'] = $row['type_service'] == '' ? 'CUSTOM' : $row['type_service'];
+
                         if (isset($data['tong_hop'][$row['type_service']])) {
                             $data['tong_hop'][$row['type_service']] += $row['custom'];
                         } else {
