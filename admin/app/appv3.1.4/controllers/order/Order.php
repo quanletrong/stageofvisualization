@@ -487,13 +487,13 @@ class Order extends MY_Controller
             $this->Order_model->update_status_order($id_order, ORDER_PROGRESS);
         }
 
-        // cập nhật vào custom
-        $da_ton_tai_custom = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, 0, WORKING_CUSTOM, $id_user);
-        if ($da_ton_tai_custom) {
-            $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $id_user);
-        } else {
-            $this->Order_model->add_job_user($id_order, 0, $id_user, $as_uinfo['username'], SERVICES_CUSTOM, WORKING_CUSTOM, $status, $time_join, 0);
-        }
+        // cập nhật vào custom (TODO: bỏ)
+        // $da_ton_tai_custom = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, 0, WORKING_CUSTOM, $id_user);
+        // if ($da_ton_tai_custom) {
+        //     $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $id_user);
+        // } else {
+        //     $this->Order_model->add_job_user($id_order, 0, $id_user, $as_uinfo['username'], SERVICES_CUSTOM, WORKING_CUSTOM, $status, $time_join, 0);
+        // }
 
         // user gán đã tồn tại thì UPDATE status = 1
         $da_ton_tai = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $working_type, $id_user);
@@ -621,12 +621,26 @@ class Order extends MY_Controller
         $role    = $this->_session_role();
         $cur_uid = $this->_session_uid();
         $order   = $this->Order_model->get_info_order($id_order);
+        $uinfo   = $this->User_model->get_user_info_by_id($id_user);
 
-        $order == []                        ? resError('Đơn không tồn tại') : '';
-        !in_array($role, [ADMIN, SALE])    ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-        !is_numeric($custom) || $custom < 0 ? resError('Tổng custom không hợp lệ') : '';
+        $uinfo == []                                    ? resError('User không tồn tại') : '';
+        $order == []                                    ? resError('Đơn không tồn tại') : '';
+        !in_array($role, [ADMIN, SALE, QC, EDITOR])     ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+        !is_numeric($custom) || $custom < 0             ? resError('Tổng custom không hợp lệ') : '';
 
+        // QC ED không có quyền thay đổi custom của người khác
+        // QC ED không có quyền thay custom khi đơn hàng đã giao hoặc đã hoàn thành hoặc đã hủy
+        if (in_array($role, [QC, EDITOR])) {
 
+            $cur_uid != $id_user ? resError('QC ED không có quyền thay đổi custom của người khác') : '';
+
+            $DON_GIAO_HUY_XONG = [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE];
+            if(in_array($order['status'], $DON_GIAO_HUY_XONG)) {
+                resError('QC ED không có quyền thay custom khi đơn hàng đã giao hoặc đã hoàn thành hoặc đã hủy');
+            }
+        }
+
+        // kiểm tra đã vượt quá tổng custom hay chưa
         $order['working_custom_active'][$id_user]['custom'] = $custom;
         $num_custom_used = 0;
         foreach ($order['working_custom_active'] as $u) {
@@ -635,6 +649,7 @@ class Order extends MY_Controller
         if ($num_custom_used > $order['custom']) {
             resError('Đã vượt quá tổng custom');
         }
+        // end kiểm tra đã vượt quá tổng custom hay chưa
 
         $kq = $this->Order_model->update_custom_order_for_user($id_order, $custom, $id_user);
 
@@ -1222,6 +1237,10 @@ class Order extends MY_Controller
         resSuccess($id_complete);
     }
 
+    /**
+     * Chức năng thay đổi đơn cho ED nội bộ hoặc ED cộng tác viên
+     * TODO: chưa xong
+     */
     function ajax_update_ed_type()
     {
         $role = $this->_session_role();

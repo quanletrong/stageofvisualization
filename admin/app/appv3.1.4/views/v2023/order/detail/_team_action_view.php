@@ -271,24 +271,26 @@
         <div class="mt-3">
             <b>GIÁ CUSTOM (cộng thêm tiền cho đơn)</b>
             <div class="mt-1">
-                <?php $disable = in_array($role, [QC, EDITOR]) ? 'disabled' : ''; ?>
+                <?php $dis_total_custom = in_array($role, [QC, EDITOR]) ? 'disabled' : ''; ?>
                 <div class="d-flex mt-1" style="align-items: center;">
                     <div style="color: red; font-weight: bold; width: 150px;">Tổng custom</div>
                     <div class="input-group">
-                        <input id="textCustomOrder" type="number" min="0" class="form-control" value="<?= $order['custom'] ?>" <?= $disable ?> style="color: red; font-weight: bold;">
+                        <input id="textCustomOrder" type="number" min="0" class="form-control" value="<?= $order['custom'] ?>" <?= $dis_total_custom ?> style="color: red; font-weight: bold;">
                         <div class="input-group-append">
-                            <button class="btn btn-warning" type="button" <?= $disable ?> onclick="ajax_change_custom_order(this, '<?= $order['id_order'] ?>', $('#textCustomOrder').val())" style="width: 50px;"><i class="fas fa-save"></i></button>
+                            <button class="btn btn-warning" type="button" <?= $dis_total_custom ?> onclick="ajax_change_custom_order(this, '<?= $order['id_order'] ?>', $('#textCustomOrder').val())" style="width: 50px;"><i class="fas fa-save"></i></button>
                         </div>
                     </div>
                 </div>
 
                 <?php foreach ($order['working_custom_active'] as $id_user => $user) { ?>
+                    <?php $disabled_order = in_array($order['status'], [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE]) ? 'disabled' : '' ?>
+                    <?php $disabled_user = in_array($role, [QC, EDITOR]) && $curr_uid != $id_user ? 'disabled' : '' ?>
                     <div class="d-flex mt-1">
                         <div style="color: red; width: 150px;"><?= $user['username'] ?></div>
                         <div class="input-group">
-                            <input type="number" min="0" class="form-control" value="<?= $user['custom'] ?>" id="textCustomOrder_<?= $id_user ?>" <?= $disable ?>>
+                            <input type="number" min="0" class="form-control" value="<?= $user['custom'] ?>" id="textCustomOrder_<?= $id_user ?>" <?= $disabled_order ?> <?= $disabled_user ?> >
                             <div class="input-group-append">
-                                <button class="btn btn-warning" type="button" <?= $disable ?> onclick="ajax_change_custom_order_for_user(this, '<?= $order['id_order'] ?>', $('#textCustomOrder_<?= $id_user ?>').val(), '<?= $id_user ?>')" style="width: 50px;"><i class="fas fa-save"></i></button>
+                                <button class="btn btn-warning" type="button" <?= $disabled_order ?> <?= $disabled_user ?> onclick="ajax_change_custom_order_for_user(this, '<?= $order['id_order'] ?>', $('#textCustomOrder_<?= $id_user ?>').val(), '<?= $id_user ?>')" style="width: 50px;"><i class="fas fa-save"></i></button>
                             </div>
                         </div>
                     </div>
