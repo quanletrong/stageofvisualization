@@ -1,7 +1,10 @@
 <?php
+
+set_time_limit(3600); // 1h
+
 // Create ZIP file
 $zip = new ZipArchive();
-$filename = "./".time().".zip";
+$filename = time() . ".zip";
 
 if ($zip->open($filename, ZipArchive::CREATE) !== TRUE) {
     exit("cannot open <$filename>\n");
@@ -26,7 +29,11 @@ function createZip($zip, $dir)
                 if (is_file($dir . $file)) {
                     if ($file != '' && $file != '.' && $file != '..') {
 
-                        $zip->addFile($dir . $file);
+                        $okAddFile = $zip->addFile($dir . $file);
+                        if ($okAddFile !== true) {
+                            echo 'addFile error: ' . $dir . $file;
+                            die;
+                        }
                     }
                 } else {
                     // If directory
@@ -35,7 +42,11 @@ function createZip($zip, $dir)
                         if ($file != '' && $file != '.' && $file != '..') {
 
                             // Add empty directory
-                            $zip->addEmptyDir($dir . $file);
+                            $okAddEmptyDir = $zip->addEmptyDir($dir . $file);
+                            if ($okAddEmptyDir !== true) {
+                                echo 'addEmptyDir error: ' . $dir . $file;
+                                die;
+                            }
 
                             $folder = $dir . $file . '/';
 
@@ -52,13 +63,44 @@ function createZip($zip, $dir)
 
 // $filename = "myzipfile.zip";
 
-if (file_exists($filename)) {
-    header('Content-Type: application/zip');
-    header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
-    header('Content-Length: ' . filesize($filename));
 
-    flush();
-    readfile($filename);
-    // delete file
-    unlink($filename);
-}
+// $file = $filename;
+// if (headers_sent()) {
+//     echo 'HTTP header already sent';
+// } else {
+//     if (!is_file($file)) {
+//         header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+//         echo 'File not found';
+//     } else if (!is_readable($file)) {
+//         header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+//         echo 'File not readable';
+//     } else {
+//         header($_SERVER['SERVER_PROTOCOL'] . ' 200 OK');
+//         header("Content-Type: application/zip");
+//         header("Content-Transfer-Encoding: Binary");
+//         header("Content-Length: " . filesize($file));
+//         header("Content-Disposition: attachment; filename=\"" . basename($file) . "\"");
+//         readfile($file);
+
+//         unlink($filename);
+//         exit;
+//     }
+// }
+
+
+file_put_contents($filename, fopen('http://stageofvisualization.local/'.$filename, 'r'));
+unlink($filename);
+exit;
+
+
+// $filename = "myzipfile.zip";
+// if (file_exists($filename)) {
+//     header('Content-Type: application/zip');
+//     header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
+//     header('Content-Length: ' . filesize($filename));
+
+//     flush();
+//     readfile($filename);
+//     // delete file
+//     unlink($filename);
+// }
