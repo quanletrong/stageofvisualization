@@ -786,6 +786,74 @@ class Order extends MY_Controller
         resSuccess('Thành công');
     }
 
+    function ajax_add_attach_file()
+    {
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $url_image = $this->input->post('url_image');
+        $id_job = $this->input->post('id_job');
+
+        !isIdNumber($id_job) ? resError('id_job không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('id_job không tồn tại') : '';
+
+        $order = $this->Order_model->get_info_order($info['id_order']);
+
+        if ($role == QC) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        $attachs = json_decode($info['attach'], true);
+
+        $parse = parse_url($url_image);
+        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+        $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+
+        !$copy['status'] ? resError($copy['error']) : '';
+
+        //TODO: THIẾU GHI LOG
+        $id_attach = time();
+        $attachs[$id_attach] = $copy['basename'];
+        $this->Job_model->update_attach_job($id_job, json_encode($attachs));
+        resSuccess($id_attach);
+    }
+
+    function ajax_delete_attach_file()
+    {
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $id_job    = $this->input->post('id_job');
+        $id_attach = $this->input->post('id_attach');
+
+        !isIdNumber($id_job) ? resError('id_job không hợp lệ')           : '';
+        !isIdNumber($id_attach) ? resError('id_attach không hợp lệ') : '';
+
+        $info = $this->Job_model->get_info_job_by_id($id_job);
+        $info == [] ? resError('id_job không tồn tại') : '';
+
+        if ($role == QC) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        $attachs = json_decode($info['attach'], true);
+        !isset($attachs[$id_attach]) ? resError('id_attach không tồn tại') : '';
+
+        unset($attachs[$id_attach]); // xóa
+
+        //TODO: THIẾU GHI LOG
+        $this->Job_model->update_attach_job($id_job, json_encode($attachs));
+        resSuccess($id_attach);
+    }
+
     function ajax_edit_attach_file()
     {
         $cur_uid = $this->_session_uid();
