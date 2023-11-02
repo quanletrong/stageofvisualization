@@ -69,28 +69,44 @@
                                         <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
                                     </div>
                                     <div class="mt-3">
-                                        <b>Attach Reference Files</b>
-                                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                        <div class="d-flex align justify-content-between align-items-center">
+                                            <b>Attach Reference Files</b>
+                                            <div>
+                                                <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                                                    <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_attach_file" title="Thêm file đính kèm" data-job="<?= $id_job ?>">
+                                                        <i class="fas fa-upload"></i>
+                                                    </button>
+                                                <?php } ?>
+
+                                                <button class="btn btn-sm btn-warning" onclick="" title="Tải tất cả file đính kèm">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; flex-wrap: wrap;" class="list_attach mt-2">
                                             <?php $list_attach = json_decode($job['attach'], true); ?>
                                             <?php foreach ($list_attach as $key => $item) { ?>
-                                                <div class="position-relative image-hover">
+                                                <div class="position-relative image-hover w-25 p-1">
                                                     <div class="position-absolute d-none" style="right: 10px">
                                                         <i class="fas fa-times icon-delete-image"></i>
                                                     </div>
 
-                                                    <div class="position-btn" style="position: absolute; display: none; top: 20%; width:100%; gap:10px">
-                                                        <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                                                            <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_attach_file" data-target="#attach_file_<?= $key ?>">
-                                                                <i class="fas fa-upload"></i>
-                                                            </button>
-                                                        <?php } ?>
-
-                                                        <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($item, $FDR_ORDER) ?>', '<?= $item ?>')">
+                                                    <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:5px">
+                                                        <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($item, $FDR_ORDER) ?>', '<?= $item ?>')" style="font-size: 10px; padding: 3px 5px;">
                                                             <i class="fas fa-download"></i>
                                                         </button>
+                                                        <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                                                            <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_attach_file" data-target="#attach_file_<?= $key ?>" style="font-size: 10px; padding: 3px 5px;">
+                                                                <i class="fas fa-upload"></i>
+                                                            </button>
+
+                                                            <button class="btn btn-sm btn-warning" onclick="ajax_delete_attach_file(this, <?= $id_job ?>, '<?= $key ?>')" style="font-size: 10px; padding: 3px 5px;">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        <?php } ?>
                                                     </div>
 
-                                                    <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" width="100" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>">
+                                                    <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="width: -webkit-fill-available; width: -moz-available;">
                                                 </div>
                                             <?php } ?>
                                         </div>
@@ -232,6 +248,93 @@
                 } else {
                     toasts_danger(kq.error);
                 }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function cb_upload_add_attach_file(url_image, target, file_name, btn_upload) {
+
+        let btn_upload_old = $(btn_upload).html();
+        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+
+        let id_job = $(btn_upload).data('job');
+
+        $(target).attr('src', url_image);
+
+        $.ajax({
+            url: `order/ajax_add_attach_file`,
+            type: "POST",
+            data: {
+                id_job,
+                url_image
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+                let new_id_attach = kq.data;
+                if (kq.status) {
+                    let html = `<div class="position-relative image-hover w-25 p-1">
+                        <div class="position-absolute d-none" style="right: 10px">
+                            <i class="fas fa-times icon-delete-image"></i>
+                        </div>
+
+                        <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:5px">
+                            <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')" style="font-size: 10px; padding: 3px 5px;">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_attach_file" data-target="#attach_file_${new_id_attach}" style="font-size: 10px; padding: 3px 5px;">
+                                    <i class="fas fa-upload"></i>
+                                </button>
+
+                                <button class="btn btn-sm btn-warning" onclick="ajax_delete_attach_file(this, ${id_job}, '${new_id_attach}')" style="font-size: 10px; padding: 3px 5px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            <?php } ?>
+                        </div>
+
+                        <img src="${url_image}" alt="" width="100" data-id-job="${id_job}" data-id-attach="${new_id_attach}" id="attach_file_${new_id_attach}" style="width: -webkit-fill-available; width: -moz-available;">
+                    </div>`;
+
+                    $(`#tab_content_job_${id_job} .list_attach`).append(html);
+
+                } else {
+                    toasts_danger(kq.error);
+                }
+
+                $(btn_upload).html(btn_upload_old);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    function ajax_delete_attach_file(btn, id_job, id_attach) {
+        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
+
+        $.ajax({
+            url: `order/ajax_delete_attach_file`,
+            type: "POST",
+            data: {
+                id_job,
+                id_attach
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+
+                } else {
+                    toasts_danger(kq.error);
+                }
+                $(`#attach_file_${id_attach}`).parent().remove();
+                $(btn).prop("disabled", false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);

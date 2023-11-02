@@ -69,7 +69,7 @@
 					},
 					success: function(response) {
 						$(quanlt_btn_upload).html(quanlt_btn_upload_old);
-						callback_upload_image(quanlt_cb, response, quanlt_input_target)
+						callback_upload_image(quanlt_cb, response, quanlt_input_target, quanlt_btn_upload)
 					},
 					data: formData,
 					cache: false,
@@ -79,7 +79,7 @@
 				return false;
 			});
 		})
-		var quanlt_cb;
+		var quanlt_cb; // tên hàm call back sau khi upload xong
 		var quanlt_input_target;
 		var quanlt_btn_upload;
 		var quanlt_btn_upload_old;
@@ -88,11 +88,12 @@
 			quanlt_input_target = $(e).data('target');
 			quanlt_btn_upload = e
 			quanlt_btn_upload_old = $(e).html();
+			attr_data = $(e).data();
 
 			$('#quanlt_file_button').click();
 		}
 
-		function callback_upload_image(cb, response, input_target) {
+		function callback_upload_image(cb, response, input_target, btn_upload) {
 			try {
 				try {
 					response = JSON.parse(response);
@@ -110,7 +111,7 @@
 									// gọi call back nếu có
 									if (cb != '') {
 										try {
-											window[cb](value.link, input_target, value.name);
+											window[cb](value.link, input_target, value.name, btn_upload);
 										} catch (error) {
 											console.log(error)
 										}
