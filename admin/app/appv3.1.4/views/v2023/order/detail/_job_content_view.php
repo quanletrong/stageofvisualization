@@ -306,6 +306,7 @@
                 }
 
                 $(btn_upload).html(btn_upload_old);
+                $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);

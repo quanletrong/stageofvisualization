@@ -66,6 +66,7 @@
 					},
 					beforeSend: function() {
 						$(quanlt_btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+						$(quanlt_btn_upload).prop('disabled', true)
 					},
 					success: function(response) {
 						$(quanlt_btn_upload).html(quanlt_btn_upload_old);
