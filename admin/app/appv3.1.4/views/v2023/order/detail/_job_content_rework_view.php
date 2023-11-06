@@ -9,7 +9,19 @@
         </div>
         <div class="card-body" style="display: <?= $i < count($job['rework']) ? 'none' : 'block' ?>;">
             <div>
-                <div id="list_complete_rework_<?= $id_rework ?>" data-id-rework="<?= $id_rework ?>" class="d-flex flex-wrap">
+                <div class="d-flex align justify-content-between align-items-center">
+                    <b>Complete file rework</b>
+                    <div>
+                        <button class="btn btn-sm btn-warning" href="javascript:void(0)" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_complete_rework" data-target="#list_complete_rework_<?= $id_rework ?>" style="width: 80px;" title="Thêm file hoàn thành">
+                            <i class="fas fa-upload"></i> Tải lên
+                        </button>
+
+                        <button class="btn btn-sm btn-warning" onclick="" title="Tải tất cả file hoàn thành" style="width: 100px;">
+                            <i class="fas fa-download"></i> Tải xuống
+                        </button>
+                    </div>
+                </div>
+                <div id="list_complete_rework_<?= $id_rework ?>" data-id-rework="<?= $id_rework ?>" class="d-flex flex-wrap mt-2">
                     <?php foreach ($rework['file_complete'] as $key => $file) { ?>
                         <div class="position-relative image-hover w-50 p-1" id="file_complete_rework_<?= $key ?>">
 
@@ -31,10 +43,24 @@
                         </div>
                     <?php } ?>
                 </div>
-                <button class="mt-2 btn btn-sm btn-warning" href="javascript:void(0)" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_complete_rework" data-target="#list_complete_rework_<?= $id_rework ?>" style="width: 200px;"> <i class="fas fa-upload"></i> Upload complete rework</button>
             </div>
-            <div class="mt-2">
-                <b>Attach Reference Files</b>
+            <hr>
+            <div class="mt-4">
+                <div class="d-flex align justify-content-between align-items-center">
+                    <b>Attach Reference Files</b>
+                    <div>
+                        <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                            <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_rework" data-target="#list_attach_rework_<?= $id_rework ?>" style="width: 80px;" title="Thêm file đính kèm">
+                                <i class="fas fa-upload"></i> Tải lên
+                            </button>
+                        <?php } ?>
+
+                        <button class="btn btn-sm btn-warning" onclick="" style="width: 100px;" title="Tải tất cả file đính kèm">
+                            <i class="fas fa-download"></i> Tải xuống
+                        </button>
+                    </div>
+                </div>
+
                 <div id="list_attach_rework_<?= $id_rework ?>" data-id-rework="<?= $id_rework ?>" class="mt-2 d-flex flex-wrap">
                     <?php foreach ($rework['attach'] as $id_attach => $url_attach) { ?>
                         <div class="position-relative image-hover w-25 p-1" id="file_attach_<?= $id_attach ?>">
@@ -60,23 +86,20 @@
                         </div>
                     <?php } ?>
                 </div>
+            </div>
+            <hr>
+            <div class="mt-4">
+                <div class="d-flex align justify-content-between align-items-center">
+                    <b>Requirements</b>
+                    <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                        <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement_rework(this, <?= $id_rework ?>)" style="width: 150px;">
+                            Save Requirements</button>
+                    <?php } ?>
+                </div>
 
-                <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                    <div class="mt-2 d-flex flex-wrap" style="gap:7px">
-                        <button class="mt-2 btn btn-sm btn-warning" href="javascript:void(0)" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_rework" data-target="#list_attach_rework_<?= $id_rework ?>" style="width: 150px;">
-                            <i class="fas fa-paperclip"></i> Upload attach file
-                        </button>
-                    </div>
-                <?php } ?>
+                <textarea class="form-control mt-2" id="requirement_rework_<?= $id_rework ?>" rows="5"><?= $rework['note'] ?></textarea>
             </div>
 
-            <div class="mt-2">
-                <b>Requirements</b>
-                <textarea class="form-control" id="requirement_rework_<?= $id_rework ?>" rows="5"><?= $rework['note'] ?></textarea>
-            </div>
-            <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement_rework(this, <?= $id_rework ?>)" style="width: 150px;">Save Requirements</button>
-            <?php } ?>
         </div>
     </div>
     <?php $i++ ?>
@@ -92,7 +115,7 @@
 
     </div>
     <div class="card-body">
-        <div class="mt-2">
+        <div class="mt-3">
             <b>Attach Reference Files</b>
             <div id="list_attach_rework_<?= $id_job ?>" class="mt-1 d-flex flex-wrap" style="gap:7px"></div>
             <div class="mt-1 d-flex flex-wrap" style="gap:7px">
@@ -365,7 +388,7 @@
                     let html = `
                         <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}">
                             <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:5px">
-                            
+
                                 <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')" style="font-size: 10px; padding: 3px 5px;">
                                     <i class="fas fa-download"></i>
                                 </button>

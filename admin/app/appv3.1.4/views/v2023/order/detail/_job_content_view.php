@@ -68,18 +68,19 @@
 
                                         <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
                                     </div>
-                                    <div class="mt-3">
+                                    <hr>
+                                    <div class="mt-4">
                                         <div class="d-flex align justify-content-between align-items-center">
                                             <b>Attach Reference Files</b>
                                             <div>
                                                 <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                                                    <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_attach_file" title="Thêm file đính kèm" data-job="<?= $id_job ?>">
-                                                        <i class="fas fa-upload"></i>
+                                                    <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_attach_file" title="Thêm file đính kèm" data-job="<?= $id_job ?>" style="width: 80px;" title="Thêm file đính kèm">
+                                                        <i class="fas fa-upload"></i> Tải lên
                                                     </button>
                                                 <?php } ?>
 
-                                                <button class="btn btn-sm btn-warning" onclick="" title="Tải tất cả file đính kèm">
-                                                    <i class="fas fa-download"></i>
+                                                <button class="btn btn-sm btn-warning" onclick="" style="width: 100px;" title="Tải tất cả file đính kèm">
+                                                    <i class="fas fa-download"></i> Tải xuống
                                                 </button>
                                             </div>
                                         </div>
@@ -112,7 +113,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="mt-3">
+                                    <hr>
+                                    <div class="mt-4">
                                         <div class="d-flex">
                                             <div style="min-width: 130px; font-weight: bold;">Room Type</div>
                                             <div><?= $job['room'] ?></div>
@@ -127,12 +129,16 @@
                                         </div>
                                     </div>
 
-                                    <div class="mt-3">
-                                        <b>Requirements:</b>
-                                        <textarea class="form-control requirement_job" rows="5" id="requirement_job_<?= $id_job ?>"><?= $job['requirement'] ?></textarea>
-                                        <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                                            <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)" style="width: 150px;">Save Requirements</button>
-                                        <?php } ?>
+                                    <hr>
+                                    <div class="mt-4">
+                                        <div class="d-flex align justify-content-between align-items-center">
+                                            <b>Requirements:</b>
+                                            <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                                                <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)" style="width: 150px;">Save Requirements</button>
+                                            <?php } ?>
+                                        </div>
+                                        <textarea class="form-control requirement_job mt-2" rows="5" id="requirement_job_<?= $id_job ?>"><?= $job['requirement'] ?></textarea>
+
                                     </div>
 
                                 </div>
