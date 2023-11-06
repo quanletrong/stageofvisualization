@@ -151,11 +151,11 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div id="list_complete_<?= $id_job ?>" data-id-job="<?= $id_job ?>" class="d-flex flex-wrap" style="gap: 10px;">
+                                    <div id="list_complete_<?= $id_job ?>" data-id-job="<?= $id_job ?>" class="d-flex flex-wrap">
                                         <?php foreach ($job['file_complete'] as $key => $file) { ?>
-                                            <div class="position-relative image-hover" style="width: 48%;" id="file_complete_<?= $key ?>">
+                                            <div class="position-relative image-hover w-50 p-1" style="width: 48%;" id="file_complete_<?= $key ?>">
 
-                                                <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                                                <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
                                                     <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_<?= $key ?>">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
@@ -423,8 +423,8 @@
                 if (kq.status) {
                     let id_file_complete = kq.data;
                     let html = `
-                        <div class="position-relative image-hover" style="width: 48%;" id="file_complete_${id_file_complete}">
-                            <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                        <div class="position-relative image-hover w-50 p-1" id="file_complete_${id_file_complete}">
+                            <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
                                 <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_${id_file_complete}">
                                     <i class="fas fa-edit"></i>
                                 </button>
