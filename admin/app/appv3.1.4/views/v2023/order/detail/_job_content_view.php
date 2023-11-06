@@ -79,9 +79,11 @@
                                                     </button>
                                                 <?php } ?>
 
-                                                <button class="btn btn-sm btn-warning" onclick="" style="width: 100px;" title="Tải tất cả file đính kèm">
-                                                    <i class="fas fa-download"></i> Tải xuống
-                                                </button>
+                                                <a href="order/ajax_zip_attach/<?= $id_job ?>">
+                                                    <button class="btn btn-sm btn-warning" style="width: 100px;" title="Tải tất cả file đính kèm">
+                                                        <i class="fas fa-download"></i> Tải xuống
+                                                    </button>
+                                                </a>
                                             </div>
                                         </div>
                                         <div style="display: flex; flex-wrap: wrap;" class="list_attach mt-2">

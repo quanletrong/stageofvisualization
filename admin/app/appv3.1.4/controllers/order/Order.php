@@ -635,7 +635,7 @@ class Order extends MY_Controller
             $cur_uid != $id_user ? resError('QC ED không có quyền thay đổi custom của người khác') : '';
 
             $DON_GIAO_HUY_XONG = [ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE];
-            if(in_array($order['status'], $DON_GIAO_HUY_XONG)) {
+            if (in_array($order['status'], $DON_GIAO_HUY_XONG)) {
                 resError('QC ED không có quyền thay custom khi đơn hàng đã giao hoặc đã hoàn thành hoặc đã hủy');
             }
         }
@@ -1326,5 +1326,81 @@ class Order extends MY_Controller
         //TODO: THIẾU GHI LOG
         // $this->Order_model->update_custom_time_order($id_order, $second);
         resSuccess('Thành công');
+    }
+
+    /**
+     * Chức năng zip files attach
+     */
+    function ajax_zip_attach($id_job)
+    {
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+
+        // check right
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? redirect(site_url('order', $this->_langcode)) : '';
+
+        isIdNumber($id_job) ? $id_job : 0;
+
+        $job = $this->Job_model->get_info_job_by_id($id_job);
+        $job == [] ? redirect(site_url('order', $this->_langcode)) : '';
+
+        $order = $this->Order_model->get_info_order($job['id_order']);
+        $order == [] ? redirect(site_url('order', $this->_langcode)) : '';
+
+        if ($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? redirect(site_url('order', $this->_langcode)) : '';
+        }
+        // end check right
+
+        // danh sach file attach
+        $attach = json_decode($job['attach'], true);
+        $FDR_ORDER =  $_SERVER['DOCUMENT_ROOT'] . '/' . FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+        foreach ($attach as $id => $at) {
+            $attach[$id] = $FDR_ORDER . $at;
+        }
+        $filename = $_SERVER['DOCUMENT_ROOT'] . '/' . "attach_files" . time() . ".zip";
+        $error_text = handle_zip_files($filename, $attach);
+
+        if ($error_text != '') {
+            redirect(site_url('order/detail/' . $order['id_order'] . '?zip=' . $error_text, $this->_langcode));
+        }
+    }
+
+    /**
+     * Chức năng zip files attach
+     */
+    function ajax_zip_attach_rework($id_rework)
+    {
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+
+        // check right
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        isIdNumber($id_rework) ? $id_rework : 0;
+
+        $rework = $this->Job_model->get_info_rework_by_id($id_rework);
+        $rework == [] ? resError('Rework không tồn tại') : '';
+
+        $order = $this->Order_model->get_info_order($rework['id_order']);
+        if ($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        // end check right
+
+        // danh sach file attach
+        $attach = $rework['attach'];
+        $FDR_ORDER =  $_SERVER['DOCUMENT_ROOT'] . '/' . FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+        foreach ($attach as $id => $at) {
+            $attach[$id] = $FDR_ORDER . $at;
+        }
+
+        $filename = $_SERVER['DOCUMENT_ROOT'] . '/' . "attach_rework_files" . time() . ".zip";
+        $error_text = handle_zip_files($filename, $attach);
+
+        if ($error_text != '') {
+            redirect(site_url('order/detail/' . $order['id_order'] . '?zip=' . $error_text, $this->_langcode));
+        }
     }
 }

@@ -80,6 +80,7 @@
 
         // trao doi voi khach
         <?php if ($role == ADMIN || $role == SALE) { ?>
+            ajax_discuss_list_khach();
             setInterval(() => {
                 ajax_discuss_list_khach();
             }, 15000);
