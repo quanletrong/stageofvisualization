@@ -891,6 +891,17 @@ function generateRandomString($length = 10) {
     return $randomString;
 }
 
+function generateRandomNumber($length = 10)
+{
+    $characters = '123456789';
+    $charactersLength = strlen($characters);
+    $randomString = '0';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return (int) $randomString;
+}
+
 function copy_image_from_file_manager_to_public_upload($url_fmng_image, $yearFolder, $monthFolder)
 {
     $imginfo = getImageSizeFromUrl($url_fmng_image);

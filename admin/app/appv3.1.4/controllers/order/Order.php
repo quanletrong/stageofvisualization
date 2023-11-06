@@ -819,7 +819,7 @@ class Order extends MY_Controller
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
-        $id_attach = time();
+        $id_attach = generateRandomNumber();
         $attachs[$id_attach] = $copy['basename'];
         $this->Job_model->update_attach_job($id_job, json_encode($attachs));
         resSuccess($id_attach);
@@ -949,7 +949,7 @@ class Order extends MY_Controller
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
-        $id_file_complete = time();
+        $id_file_complete = generateRandomNumber();
         $info['file_complete'][$id_file_complete] = $copy['basename'];
         $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
         resSuccess($id_file_complete);
@@ -1057,7 +1057,7 @@ class Order extends MY_Controller
             $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
             !$copy['status'] ? resError($copy['error']) : '';
-            $id_attach = time() + $i;
+            $id_attach = generateRandomNumber();
             $db_attach[$id_attach] = $copy['basename'];
         }
 
@@ -1097,7 +1097,8 @@ class Order extends MY_Controller
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
-        $id_attach = time();
+        // $id_attach = time();
+        $id_attach = generateRandomNumber(10);
         $info['attach'][$id_attach] = $copy['basename'];
         $this->Job_model->update_file_attach_rework($id_rework, json_encode($info['attach']));
         resSuccess($id_attach);
@@ -1154,7 +1155,7 @@ class Order extends MY_Controller
         $id_attach = $this->input->post('id_attach');
 
         !isIdNumber($id_rework) ? resError('Rework không hợp lệ')           : '';
-        !isIdNumber($id_attach) ? resError('ID FILE COMPLETE không hợp lệ') : '';
+        !isIdNumber($id_attach) ? resError('ID FILE REWORK không hợp lệ') : '';
 
         $info = $this->Job_model->get_info_rework_by_id($id_rework);
         $info == [] ? resError('Rework không tồn tại') : '';
@@ -1163,7 +1164,7 @@ class Order extends MY_Controller
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
-        !isset($info['attach'][$id_attach]) ? resError('ID FILE COMPLETE không tồn tại') : '';
+        !isset($info['attach'][$id_attach]) ? resError('ID FILE REWORK không tồn tại') : '';
 
         unset($info['attach'][$id_attach]); // xóa
 
@@ -1230,7 +1231,7 @@ class Order extends MY_Controller
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
-        $id_file_complete = time();
+        $id_file_complete = generateRandomNumber();
         $info['file_complete'][$id_file_complete] = $copy['basename'];
         $this->Job_model->update_file_complete_rework($id_rework, json_encode($info['file_complete']));
         resSuccess($id_file_complete);

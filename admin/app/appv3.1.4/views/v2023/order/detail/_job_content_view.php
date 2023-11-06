@@ -238,7 +238,6 @@
 
     function cb_upload_edit_attach_file(url_image, target, file_name, btn_upload) {
 
-        let btn_upload_old = $(btn_upload).html();
         $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
         $(btn_upload).prop('disabled', true)
 
@@ -263,7 +262,7 @@
                 } else {
                     toasts_danger(kq.error);
                 }
-                $(btn_upload).html(btn_upload_old);
+                $(btn_upload).html(`<i class="fas fa-sync fa-upload"></i> Tải lên`);
                 $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -275,7 +274,6 @@
 
     function cb_upload_add_attach_file(url_image, target, file_name, btn_upload) {
 
-        let btn_upload_old = $(btn_upload).html();
         $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
         $(btn_upload).prop('disabled', true)
 
@@ -323,7 +321,7 @@
                     toasts_danger(kq.error);
                 }
 
-                $(btn_upload).html(btn_upload_old);
+                $(btn_upload).html(`<i class="fas fa-sync fa-upload"></i> Tải lên`);
                 $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -411,7 +409,6 @@
 
     function cb_upload_add_file_complete(url_image, target, file_name, btn_upload) {
 
-        let btn_upload_old = $(btn_upload).html();
         $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
         $(btn_upload).prop('disabled', true)
 
@@ -450,7 +447,7 @@
                     toasts_danger(kq.error);
                 }
 
-                $(btn_upload).html(btn_upload_old);
+                $(btn_upload).html(`<i class="fas fa-sync fa-upload"></i>`);
                 $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {

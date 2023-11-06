@@ -181,7 +181,7 @@ class Order extends MY_Controller
             $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
             !$copy['status'] ? resError($copy['error']) : '';
-            $id_attach = time() + $i;
+            $id_attach = generateRandomNumber();
             $db_attach[$id_attach] = $copy['basename'];
         }
 
@@ -221,7 +221,7 @@ class Order extends MY_Controller
         !$copy['status'] ? resError($copy['error']) : '';
 
         //TODO: THIẾU GHI LOG
-        $id_attach = time();
+        $id_attach = generateRandomNumber();
         $info['attach'][$id_attach] = $copy['basename'];
         $this->Job_model->update_file_attach_rework($id_rework, json_encode($info['attach']));
         resSuccess($id_attach);
