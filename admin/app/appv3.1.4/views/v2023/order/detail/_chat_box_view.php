@@ -73,7 +73,7 @@
         // trao đổi nội bộ
         ajax_discuss_list_noi_bo();
         setInterval(() => {
-            ajax_discuss_list_noi_bo();
+            // ajax_discuss_list_noi_bo();
         }, 15000);
 
         //end trao đổi nội bộ
@@ -116,7 +116,15 @@
                                 <img class="direct-chat-img" src="${discuss.avatar_url}" alt="message user image">
 
                                 <div class="direct-chat-text">
-                                    ${discuss.content}
+                                    
+                                    <div class="d-flex d-none">
+                                        <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
+                                        <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
+                                        <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
+                                        <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
+                                    </div>
+                                    <p>${discuss.content}</p>
+                                    
                                 </div>
                             </div> `;
                     }

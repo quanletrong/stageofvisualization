@@ -83,8 +83,16 @@
                                     </button>
                                 <?php } ?>
                             </div>
+                            
+                            <?php if (@getimagesize(url_image($url_attach, $FDR_ORDER))) { ?>
+                                <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, $FDR_ORDER) ?>" alt="" width="100%">
+                            <?php } else { ?>
+                                <div id="img_attach_<?= $id_attach ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>">
+                                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                    <span style="font-size:12px;"><?= $url_attach ?></span>
+                                </div>
+                            <?php } ?>
 
-                            <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, $FDR_ORDER) ?>" alt="" width="100%">
                         </div>
                     <?php } ?>
                 </div>
@@ -189,18 +197,42 @@
         });
     }
 
-    function cb_upload_add_file_attach_new_rework(url_image, target, file_name) {
+    function cb_upload_add_file_attach_new_rework(link_file, target, file_name) {
+
         let id_attach = Date.now();
 
-        let html = `
-        <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}">
-            <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
-                <button class="btn btn-sm btn-warning" onclick="remove_attach('#file_attach_${id_attach}')" style="font-size: 10px; padding: 3px 5px;">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <img id="img_attach_${id_attach}" src="${url_image}" class="img_attach" alt="" width="100%">
-        </div>`;
+        let html = ``;
+        if (isImage(link_file)) {
+            html = `
+            <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}">
+                <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                    <button class="btn btn-sm btn-warning" onclick="remove_attach('#file_attach_${id_attach}')" style="font-size: 10px; padding: 3px 5px;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <img id="img_attach_${id_attach}" src="${link_file}" class="img_attach" alt="" width="100%">
+            </div>`;
+        } else {
+            html = `
+            <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}" title="${file_name}" >
+                <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                    <button class="btn btn-sm btn-warning" onclick="remove_attach('#file_attach_${id_attach}')" style="font-size: 10px; padding: 3px 5px;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+
+                <div 
+                    id="img_attach_${id_attach}" 
+                    width="100%" 
+                    class="rounded border p-2 text-truncate" 
+                    style="height: 100px; line-break: anywhere; text-align:center"
+                > 
+                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
+                   <span style="font-size:12px;">${file_name}</span>
+                </div>
+            </div>`;
+        }
+
         $(target).append(html)
     }
 
@@ -218,7 +250,8 @@
         $(btn).prop("disabled", true);
 
         $.ajax({
-            url: `order/ajax_update_requirement_rework`,
+            url: `
+            order / ajax_update_requirement_rework`,
             type: "POST",
             data: {
                 id_rework,
@@ -246,7 +279,7 @@
     function cb_upload_add_file_complete_rework(url_image, target, file_name, btn_upload) {
 
         let btn_upload_old = $(btn_upload).html();
-        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).html(` < i class = "fas fa-sync fa-spin" > < /i>`);
         $(btn_upload).prop('disabled', true)
 
         let id_rework = $(target).data('id-rework');
@@ -386,27 +419,51 @@
 
                 if (kq.status) {
                     let id_attach = kq.data;
-                    let html = `
-                        <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}">
-                            <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:5px">
+                    let html_main = ``;
 
-                                <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')" style="font-size: 10px; padding: 3px 5px;">
-                                    <i class="fas fa-download"></i>
+                    let html_file = ``;
+                    if (isImage(url_image)) {
+                        html_file = `
+                        <img id="img_attach_${id_attach}" data-id-rework="${id_rework}" data-id-attach="${id_attach}" src="${url_image}" alt="" width="100%">`;
+                    } else {
+                        html_file = `
+                        <div 
+                            id="img_attach_${id_attach}" 
+                            width="100%" 
+                            class="rounded border p-2 text-truncate" 
+                            style="height: 100px; line-break: anywhere; text-align:center"
+                            data-id-rework="${id_rework}"
+                            data-id-attach="${id_attach}"
+                        > 
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
+                        <span style="font-size:12px;">${file_name}</span>
+                        </div>`;
+                    }
+
+                    html_main = `
+                    <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}">
+                        <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:5px">
+
+                            <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')" style="font-size: 10px; padding: 3px 5px;">
+                                <i class="fas fa-download"></i>
+                            </button>
+
+                            <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_attach_rework" data-target="#img_attach_${id_attach}" style="font-size: 10px; padding: 3px 5px;">
+                                    <i class="fas fa-edit"></i>
                                 </button>
 
-                                <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
-                                    <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_attach_rework" data-target="#img_attach_${id_attach}" style="font-size: 10px; padding: 3px 5px;">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
+                                <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_attach_rework(this, ${id_rework}, ${id_attach})" style="font-size: 10px; padding: 3px 5px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            <?php } ?>
+                        </div>
 
-                                    <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_attach_rework(this, ${id_rework}, ${id_attach})" style="font-size: 10px; padding: 3px 5px;">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                <?php } ?>
-                            </div>
-                            <img id="img_attach_${id_attach}" data-id-rework="${id_rework}" data-id-attach="${id_attach}" src="${url_image}" alt="" width="100%">
-                        </div>`;
-                    $(target).append(html)
+                        ${html_file}
+
+                    </div>`;
+
+                    $(target).append(html_main)
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -524,4 +581,7 @@
         }
     }
     // END ATTACH REWORK
+    function isImage(url_image) {
+        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image);
+    }
 </script>

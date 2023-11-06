@@ -39,7 +39,7 @@ class Upload extends MY_Controller
                     $tmp_name = $_FILES['file']['tmp_name'][$i];
                     $size = $_FILES['file']['size'][$i];
                     $target_dir = $_SERVER["DOCUMENT_ROOT"] . "/uploads/tmp/";
-                    $name_file = generateRandomString(5) . '-' . basename($name_file);
+                    $name_file = basename($name_file);
                     $target_file = $target_dir . $name_file;
                     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
@@ -47,11 +47,10 @@ class Upload extends MY_Controller
                     $data[$i]['name'] = $name_file;
 
 
-                    $check = @getimagesize($tmp_name);
-                    if ($check !== false) {
+                    if (is_file($tmp_name)) {
                     } else {
                         $data[$i]['status'] = 0;
-                        $data[$i]['error'][] = 'File is not an image.';
+                        $data[$i]['error'][] = 'Sorry, file not exits';
                     }
 
                     // Check if file already exists
@@ -63,19 +62,20 @@ class Upload extends MY_Controller
                     // Check file size
                     if ($size > LIMIT_SIZE_IMAGE) {
                         $data[$i]['status'] = 0;
-                        $data[$i]['error'][] = 'Sorry, your file is too large, limit 50Mb';
+                        $data[$i]['error'][] = 'Sorry, your file is too large, limit 200Mb';
                     }
 
-                    // Allow certain file formats
-                    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
-                        $data[$i]['status'] = 0;
-                        $data[$i]['error'][] = 'Sorry, only JPG, JPEG, PNG & GIF files are allowed.';
-                    }
+                    // Allow certain file formats TODO: chuaw giới hạn loại file
+                    // if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                    //     $data[$i]['status'] = 0;
+                    //     $data[$i]['error'][] = 'Sorry, only JPG, JPEG, PNG & GIF files are allowed.';
+                    // }
 
                     if ($data[$i]['status']) {
                         if (move_uploaded_file($tmp_name, $target_file)) {
                             $link = ROOT_DOMAIN . '/uploads/tmp/' . $name_file;
                             $data[$i]['link'] = $link;
+                            $data[$i]['mime'] = $imageFileType;
                         } else {
                             $data[$i]['status'] = 0;
                             $data[$i]['error'][] = 'Sorry, there was an error uploading your file.';
@@ -86,8 +86,10 @@ class Upload extends MY_Controller
                 resSuccess($data);
 
             } else {
-                resError('Xin lỗi, không tìm thấy ảnh.');
+                resError('Sorry. File not found.');
             }
+        } else {
+            resError('Sorry. File not found.');
         }
     }
 }

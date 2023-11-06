@@ -709,6 +709,25 @@ function getImageSizeFromUrl($url)
     return $rel;
 }
 
+function get_remote_file_info($url) {
+    $rel = 0;
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HEADER, TRUE);
+    curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+    $data = curl_exec($ch);
+    $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+    $httpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpResponseCode == 200) {
+        $rel = getimagesizefromstring($data);
+    }
+
+    $rel = (int) $fileSize;
+    return $rel;
+}
+
 function getCanonicalUrl()
 {
     $url = HTTP_PROTOCOL . '://' . $_SERVER['SERVER_NAME'];
@@ -837,10 +856,11 @@ function copy_image_from_file_manager_to_public_upload($url_fmng_image, $yearFol
 
 function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
 {
-    $imginfo = getImageSizeFromUrl($url_fmng_image);
-    if (!empty($imginfo)) {
+    // $imginfo = getImageSizeFromUrl($url_fmng_image);
+    $filesize = get_remote_file_info($url_fmng_image);
+    if ($filesize > 0) {
 
-        $basename = generateRandomString(10) . '-' . basename($url_fmng_image);
+        $basename = basename($url_fmng_image);
         $folder_arr = explode('/', $folder_str);
 
         $FULL_FOLDER = '';
@@ -860,8 +880,8 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
         $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
 
         if (file_exists($dir_save)) {
-            $rdt = generateRandomString(10);
-            $basename = $rdt . $basename;
+            $rdt = generateRandomString(5);
+            $basename = $rdt ."-". $basename;
             $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
         }
 

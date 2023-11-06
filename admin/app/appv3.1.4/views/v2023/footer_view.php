@@ -50,7 +50,8 @@
 
 <!-- upload anh -->
 <form id="quanlt_frm_files" enctype="multipart/form-data" action="upload" method="post">
-	<input type="file" id="quanlt_file_button" name="file[]" accept="image/*" multiple hidden />
+	<!-- <input type="file" id="quanlt_file_button" name="file[]" accept="image/*" multiple hidden /> -->
+	<input type="file" id="quanlt_file_button" name="file[]" multiple hidden />
 	<script>
 		$(function() {
 			$("#quanlt_frm_files").on('change', '#quanlt_file_button', function(e) {
