@@ -57,7 +57,7 @@
                                         <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
                                             <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
                                                 <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_main_file" data-target="#main_file_<?= $id_job ?>">
-                                                    <i class="fas fa-upload"></i>
+                                                    <i class="fas fa-edit"></i>
                                                 </button>
                                             <?php } ?>
 
@@ -97,7 +97,7 @@
                                                         </button>
                                                         <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
                                                             <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_attach_file" data-target="#attach_file_<?= $key ?>" style="font-size: 10px; padding: 3px 5px;">
-                                                                <i class="fas fa-upload"></i>
+                                                                <i class="fas fa-edit"></i>
                                                             </button>
 
                                                             <button class="btn btn-sm btn-warning" onclick="ajax_delete_attach_file(this, <?= $id_job ?>, '<?= $key ?>')" style="font-size: 10px; padding: 3px 5px;">
@@ -157,7 +157,7 @@
 
                                                 <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
                                                     <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_<?= $key ?>">
-                                                        <i class="fas fa-upload"></i>
+                                                        <i class="fas fa-edit"></i>
                                                     </button>
 
                                                     <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, $FDR_ORDER) ?>', '<?= $file ?>')">
@@ -196,8 +196,11 @@
 </div>
 
 <script>
-    function cb_upload_edit_main_file(url_image, target, file_name) {
+    function cb_upload_edit_main_file(url_image, target, file_name, btn_upload) {
 
+        let btn_upload_old = $(btn_upload).html();
+        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).prop('disabled', true)
         let id_job = $(target).data('id');
 
         $(target).attr('src', url_image);
@@ -217,6 +220,8 @@
                 } else {
                     toasts_danger(kq.error);
                 }
+                $(btn_upload).html(btn_upload_old);
+                $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
@@ -225,7 +230,11 @@
         });
     }
 
-    function cb_upload_edit_attach_file(url_image, target, file_name) {
+    function cb_upload_edit_attach_file(url_image, target, file_name, btn_upload) {
+
+        let btn_upload_old = $(btn_upload).html();
+        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).prop('disabled', true)
 
         let id_job = $(target).data('id-job');
         let id_attach = $(target).data('id-attach');
@@ -248,6 +257,8 @@
                 } else {
                     toasts_danger(kq.error);
                 }
+                $(btn_upload).html(btn_upload_old);
+                $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
@@ -260,6 +271,7 @@
 
         let btn_upload_old = $(btn_upload).html();
         $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).prop('disabled', true)
 
         let id_job = $(btn_upload).data('job');
 
@@ -287,7 +299,7 @@
                             </button>
                             <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
                                 <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_attach_file" data-target="#attach_file_${new_id_attach}" style="font-size: 10px; padding: 3px 5px;">
-                                    <i class="fas fa-upload"></i>
+                                    <i class="fas fa-edit"></i>
                                 </button>
 
                                 <button class="btn btn-sm btn-warning" onclick="ajax_delete_attach_file(this, ${id_job}, '${new_id_attach}')" style="font-size: 10px; padding: 3px 5px;">
@@ -391,7 +403,11 @@
         delete link;
     }
 
-    function cb_upload_add_file_complete(url_image, target, file_name) {
+    function cb_upload_add_file_complete(url_image, target, file_name, btn_upload) {
+
+        let btn_upload_old = $(btn_upload).html();
+        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).prop('disabled', true)
 
         let id_job = $(target).data('id-job');
         $.ajax({
@@ -410,7 +426,7 @@
                         <div class="position-relative image-hover" style="width: 48%;" id="file_complete_${id_file_complete}">
                             <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
                                 <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_${id_file_complete}">
-                                    <i class="fas fa-upload"></i>
+                                    <i class="fas fa-edit"></i>
                                 </button>
 
                                 <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')">
@@ -427,6 +443,9 @@
                 } else {
                     toasts_danger(kq.error);
                 }
+
+                $(btn_upload).html(btn_upload_old);
+                $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
@@ -435,7 +454,11 @@
         });
     }
 
-    function cb_upload_edit_file_complete(url_image, target, file_name) {
+    function cb_upload_edit_file_complete(url_image, target, file_name, btn_upload) {
+
+        let btn_upload_old = $(btn_upload).html();
+        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).prop('disabled', true)
 
         let id_job = $(target).data('id-job');
         let id_complete = $(target).data('id-complete');
@@ -462,6 +485,9 @@
                 } else {
                     toasts_danger(kq.error);
                 }
+
+                $(btn_upload).html(btn_upload_old);
+                $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);

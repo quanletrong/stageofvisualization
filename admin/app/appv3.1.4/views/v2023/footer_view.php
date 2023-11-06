@@ -70,6 +70,7 @@
 					},
 					success: function(response) {
 						$(quanlt_btn_upload).html(quanlt_btn_upload_old);
+						$(quanlt_btn_upload).prop('disabled', false)
 						callback_upload_image(quanlt_cb, response, quanlt_input_target, quanlt_btn_upload)
 					},
 					data: formData,
