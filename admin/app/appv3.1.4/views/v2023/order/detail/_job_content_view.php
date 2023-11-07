@@ -53,7 +53,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="position-relative image-hover">
+                                    <div class="position-relative image-hover" id="box_main_file_<?= $id_job ?>">
                                         <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
                                             <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
                                                 <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_main_file" data-target="#main_file_<?= $id_job ?>">
@@ -66,7 +66,15 @@
                                             </button>
                                         </div>
 
-                                        <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
+                                        <?php if (@getimagesize(url_image($job['image'], $FDR_ORDER))) { ?>
+                                            <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
+                                        <?php } else { ?>
+                                            <div id="main_file_<?= $id_job ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id="<?= $id_job ?>">
+                                                <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                                <span style="font-size:12px;"><?= $job['image'] ?></span>
+                                            </div>
+                                        <?php } ?>
+
                                     </div>
                                     <hr>
                                     <div class="mt-4">
@@ -89,7 +97,7 @@
                                         <div style="display: flex; flex-wrap: wrap;" class="list_attach mt-2">
                                             <?php $list_attach = json_decode($job['attach'], true); ?>
                                             <?php foreach ($list_attach as $key => $item) { ?>
-                                                <div class="position-relative image-hover w-25 p-1">
+                                                <div class="position-relative image-hover w-25 p-1" id="box_attach_<?= $key ?>">
                                                     <div class="position-absolute d-none" style="right: 10px">
                                                         <i class="fas fa-times icon-delete-image"></i>
                                                     </div>
@@ -109,7 +117,15 @@
                                                         <?php } ?>
                                                     </div>
 
-                                                    <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="width: -webkit-fill-available; width: -moz-available;">
+                                                    <?php if (@getimagesize(url_image($item, $FDR_ORDER))) { ?>
+                                                        <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="width: -webkit-fill-available; width: -moz-available;">
+                                                    <?php } else { ?>
+                                                        <div id="attach_file_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>">
+                                                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                                            <span style="font-size:12px;"><?= $item ?></span>
+                                                        </div>
+                                                    <?php } ?>
+
                                                 </div>
                                             <?php } ?>
                                         </div>
@@ -177,7 +193,14 @@
                                                     </button>
                                                 </div>
 
-                                                <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
+                                                <?php if (@getimagesize(url_image($file, $FDR_ORDER))) { ?>
+                                                    <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
+                                                <?php } else { ?>
+                                                    <div id="img_complete_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>">
+                                                        <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                                        <span style="font-size:12px;"><?= $file ?></span>
+                                                    </div>
+                                                <?php } ?>
                                             </div>
                                         <?php } ?>
                                     </div>
@@ -211,8 +234,6 @@
         $(btn_upload).prop('disabled', true)
         let id_job = $(target).data('id');
 
-        $(target).attr('src', url_image);
-
         $.ajax({
             url: `order/ajax_edit_main_file`,
             type: "POST",
@@ -224,7 +245,31 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
+                    let html = ``;
+                    let fileview = ``;
 
+                    if (isImage(url_image)) {
+                        fileview = `
+                        <img src="${url_image}" class="img-order-all" alt="" width="100%" data-id="${id_job}" id="main_file_${id_job}">`;
+                    } else {
+                        fileview = `
+                        <div id="main_file_${id_job}" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id="${id_job}">
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                            <span style="font-size:12px;">${file_name}</span>
+                        </div>`;
+                    }
+
+                    // cập nhật file mới vào nút download
+                    $(target)
+                        .siblings('.position-btn')
+                        .find('.fa-download')
+                        .parent()
+                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`);
+
+                    $(target).remove(); // xóa file cũ
+
+                    $(`#box_main_file_${id_job}`).append(fileview); // thay bằng file mới
+                    
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -246,8 +291,6 @@
         let id_job = $(target).data('id-job');
         let id_attach = $(target).data('id-attach');
 
-        $(target).attr('src', url_image);
-
         $.ajax({
             url: `order/ajax_edit_attach_file`,
             type: "POST",
@@ -260,6 +303,42 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
+
+                    let html = ``;
+                    let fileview = ``;
+
+                    if (isImage(url_image)) {
+                        fileview = `
+                        <img src="${url_image}" alt="" width="100" 
+                            id="attach_file_${id_attach}" 
+                            data-id-job="${id_job}" 
+                            data-id-attach="${id_attach}" 
+                            style="width: -webkit-fill-available; width: -moz-available;"
+                        >`;
+                    } else {
+                        fileview = `
+                        <div 
+                            id="attach_file_${id_attach}" 
+                            data-id-job="${id_job}" 
+                            data-id-attach="${id_attach}" 
+                            class="rounded border p-2 text-truncate" 
+                            style="height: 100px; line-break: anywhere; text-align:center"
+                            width="100%" 
+                        > 
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
+                            <span style="font-size:12px;">${file_name}</span>
+                        </div>`;
+                    }
+
+                    $(target)
+                        .siblings('.position-btn')
+                        .find('.fa-download')
+                        .parent()
+                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`); // cập nhật file mới vào nút download
+
+                    $(target).remove(); // xóa file cũ
+
+                    $(`#box_attach_${id_attach}`).append(fileview); // thay bằng file mới
 
                 } else {
                     toasts_danger(kq.error);
@@ -294,7 +373,33 @@
                 let kq = JSON.parse(data);
                 let new_id_attach = kq.data;
                 if (kq.status) {
-                    let html = `<div class="position-relative image-hover w-25 p-1">
+                    let html = ``;
+                    let fileview = ``;
+
+                    if (isImage(url_image)) {
+                        fileview = `
+                        <img src="${url_image}" alt="" width="100" 
+                            id="attach_file_${new_id_attach}" 
+                            data-id-job="${id_job}" 
+                            data-id-attach="${new_id_attach}" 
+                            style="width: -webkit-fill-available; width: -moz-available;"
+                        >`;
+                    } else {
+                        fileview = `
+                        <div 
+                            id="attach_file_${new_id_attach}" 
+                            data-id-job="${id_job}" 
+                            data-id-attach="${new_id_attach}" 
+                            class="rounded border p-2 text-truncate" 
+                            style="height: 100px; line-break: anywhere; text-align:center"
+                            width="100%" 
+                        > 
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
+                            <span style="font-size:12px;">${file_name}</span>
+                        </div>`;
+                    }
+
+                    html = `<div class="position-relative image-hover w-25 p-1" id="box_attach_${new_id_attach}">
                         <div class="position-absolute d-none" style="right: 10px">
                             <i class="fas fa-times icon-delete-image"></i>
                         </div>
@@ -314,7 +419,8 @@
                             <?php } ?>
                         </div>
 
-                        <img src="${url_image}" alt="" width="100" data-id-job="${id_job}" data-id-attach="${new_id_attach}" id="attach_file_${new_id_attach}" style="width: -webkit-fill-available; width: -moz-available;">
+                       ${fileview}
+
                     </div>`;
 
                     $(`#tab_content_job_${id_job} .list_attach`).append(html);
@@ -427,7 +533,29 @@
 
                 if (kq.status) {
                     let id_file_complete = kq.data;
-                    let html = `
+
+                    let html = ``;
+                    let fileview = ``;
+
+                    if (isImage(url_image)) {
+                        fileview = `
+                        <img id="img_complete_${id_file_complete}" data-id-job="${id_job}" data-id-complete="${id_file_complete}" src="${url_image}" alt="" width="100%">`;
+                    } else {
+                        fileview = `
+                        <div 
+                            id="img_complete_${id_file_complete}" 
+                            width="100%" 
+                            class="rounded border p-2 text-truncate" 
+                            style="height: 100px; line-break: anywhere; text-align:center"
+                            data-id-job="${id_job}"
+                            data-id-complete="${id_file_complete}"
+                        > 
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
+                            <span style="font-size:12px;">${file_name}</span>
+                        </div>`;
+                    }
+
+                    html = `
                         <div class="position-relative image-hover w-50 p-1" id="file_complete_${id_file_complete}">
                             <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
                                 <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_${id_file_complete}">
@@ -442,14 +570,16 @@
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
-                            <img id="img_complete_${id_file_complete}" data-id-job="${id_job}" data-id-complete="${id_file_complete}" src="${url_image}" alt="" width="100%">
+
+                            ${fileview}
+
                         </div>`;
                     $(target).append(html)
                 } else {
                     toasts_danger(kq.error);
                 }
 
-                $(btn_upload).html(`<i class="fas fa-upload"></i>`);
+                $(btn_upload).html(`<i class="fas fa-upload"></i> Upload file complete`);
                 $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -480,12 +610,34 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    $(target).attr('src', url_image)
+                    let fileview = ``;
+                    if (isImage(url_image)) {
+                        fileview = `
+                        <img id="img_complete_${id_complete}" data-id-job="${id_job}" data-id-complete="${id_complete}" src="${url_image}" alt="" width="100%">`;
+                    } else {
+                        fileview = `
+                        <div 
+                            id="img_complete_${id_complete}" 
+                            width="100%" 
+                            class="rounded border p-2 text-truncate" 
+                            style="height: 100px; line-break: anywhere; text-align:center"
+                            data-id-job="${id_job}"
+                            data-id-complete="${id_complete}"
+                        > 
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
+                            <span style="font-size:12px;">${file_name}</span>
+                        </div>`;
+                    }
+
                     $(target)
                         .siblings('.position-btn')
                         .find('.fa-download')
                         .parent()
-                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`)
+                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`); // cập nhật file mới vào nút download
+
+                    $(target).remove(); // xóa file cũ
+
+                    $(`#file_complete_${id_complete}`).append(fileview); // thay bằng file mới
 
                 } else {
                     toasts_danger(kq.error);

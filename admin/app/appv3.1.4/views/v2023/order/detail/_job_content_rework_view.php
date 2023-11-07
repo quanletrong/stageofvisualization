@@ -39,7 +39,14 @@
                                 </button>
                             </div>
 
-                            <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
+                            <?php if (@getimagesize(url_image($file, $FDR_ORDER))) { ?>
+                                <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
+                            <?php } else { ?>
+                                <div id="img_complete_rework_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>">
+                                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                    <span style="font-size:12px;"><?= $file ?></span>
+                                </div>
+                            <?php } ?>
                         </div>
                     <?php } ?>
                 </div>
@@ -127,9 +134,9 @@
     <div class="card-body">
         <div class="mt-3">
             <b>Attach Reference Files</b>
-            <div id="list_attach_rework_<?= $id_job ?>" class="mt-1 d-flex flex-wrap" style="gap:7px"></div>
+            <div id="list_attach_new_rework_<?= $id_job ?>" class="mt-1 d-flex flex-wrap" style="gap:7px"></div>
             <div class="mt-1 d-flex flex-wrap" style="gap:7px">
-                <button class="mt-2 btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_new_rework" data-target="#list_attach_rework_<?= $id_job ?>"> <i class="fas fa-paperclip"></i> Upload attach file</button>
+                <button class="mt-2 btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_new_rework" data-target="#list_attach_new_rework_<?= $id_job ?>"> <i class="fas fa-paperclip"></i> Upload attach file</button>
             </div>
         </div>
         <div class="mt-2">
@@ -158,9 +165,9 @@
     function ajax_add_rework(btn, id_job) {
         let note = $(`#card_new_rework_${id_job} .txt_note_rework_add`).val();
         let attach = [];
-        $(`#card_new_rework_${id_job} .img_attach`).each(function(index) {
-            let src = $(this).attr('src');
-            attach.push(src);
+        $(`#list_attach_new_rework_${id_job} > div`).each(function(index) {
+            let file = $(this).data('file');
+            attach.push(file);
         });
 
         if (note == '') {
@@ -204,7 +211,7 @@
         let html = ``;
         if (isImage(link_file)) {
             html = `
-            <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}">
+            <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}" data-file="${link_file}">
                 <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
                     <button class="btn btn-sm btn-warning" onclick="remove_attach('#file_attach_${id_attach}')" style="font-size: 10px; padding: 3px 5px;">
                         <i class="fas fa-trash"></i>
@@ -214,7 +221,7 @@
             </div>`;
         } else {
             html = `
-            <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}" title="${file_name}" >
+            <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}" title="${file_name}" data-file="${link_file}">
                 <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
                     <button class="btn btn-sm btn-warning" onclick="remove_attach('#file_attach_${id_attach}')" style="font-size: 10px; padding: 3px 5px;">
                         <i class="fas fa-trash"></i>
@@ -222,7 +229,7 @@
                 </div>
 
                 <div 
-                    id="img_attach_${id_attach}" 
+                    id="img_attach_${id_attach}"
                     width="100%" 
                     class="rounded border p-2 text-truncate" 
                     style="height: 100px; line-break: anywhere; text-align:center"
@@ -294,23 +301,47 @@
 
                 if (kq.status) {
                     let id_file_complete = kq.data;
-                    let html = `
-                <div class="position-relative image-hover w-50 p-1" id="file_complete_rework_${id_file_complete}">
-                    <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
-                        <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_${id_file_complete}">
-                            <i class="fas fa-edit"></i>
-                        </button>
 
-                        <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')">
-                            <i class="fas fa-download"></i>
-                        </button>
+                    let html = ``;
+                    let fileview = ``;
 
-                        <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete_rework(this, ${id_rework}, ${id_file_complete})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                    <img id="img_complete_rework_${id_file_complete}" data-id-rework="${id_rework}" data-id-complete-rework="${id_file_complete}" src="${url_image}" alt="" width="100%">
-                </div>`;
+                    if (isImage(url_image)) {
+                        fileview = `
+                        <img id="img_complete_rework_${id_file_complete}" data-id-rework="${id_rework}" data-id-complete-rework="${id_file_complete}" src="${url_image}" alt="" width="100%">`;
+                    } else {
+                        fileview = `
+                        <div 
+                            id="img_complete_rework_${id_file_complete}" 
+                            width="100%" 
+                            class="rounded border p-2 text-truncate" 
+                            style="height: 100px; line-break: anywhere; text-align:center"
+                            data-id-rework="${id_rework}"
+                            data-id-complete-rework="${id_file_complete}"
+                        > 
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
+                            <span style="font-size:12px;">${file_name}</span>
+                        </div>`;
+                    }
+
+                    html = `<div class="position-relative image-hover w-50 p-1" id="file_complete_rework_${id_file_complete}">
+                        <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
+                            <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_${id_file_complete}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')">
+                                <i class="fas fa-download"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete_rework(this, ${id_rework}, ${id_file_complete})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+
+                        ${fileview}
+
+                    </div>`;
+
                     $(target).append(html)
                 } else {
                     toasts_danger(kq.error);
@@ -346,12 +377,33 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    $(target).attr('src', url_image)
+                    let fileview = ``;
+                    if (isImage(url_image)) {
+                        fileview = `
+                        <img id="img_complete_rework_${id_complete_rework}" data-id-rework="${id_rework}" data-id-complete-rework="${id_complete_rework}" src="${url_image}" alt="" width="100%">`;
+                    } else {
+                        fileview = `
+                        <div 
+                            id="img_complete_rework_${id_complete_rework}" 
+                            width="100%" 
+                            class="rounded border p-2 text-truncate" 
+                            style="height: 100px; line-break: anywhere; text-align:center"
+                            data-id-rework="${id_rework}"
+                            data-id-complete-rework="${id_complete_rework}"
+                        > 
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
+                            <span style="font-size:12px;">${file_name}</span>
+                        </div>`;
+                    }
+
                     $(target)
                         .siblings('.position-btn')
                         .find('.fa-download')
                         .parent()
-                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`)
+                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`); // cập nhật file mới vào nút download
+
+                    $(target).remove(); // xóa file cũ
+                    $(`#file_complete_rework_${id_complete_rework}`).append(fileview); // thay bằng file mới
 
                 } else {
                     toasts_danger(kq.error);
@@ -418,13 +470,13 @@
                 if (kq.status) {
                     let id_attach = kq.data;
                     let html_main = ``;
+                    let fileview = ``;
 
-                    let html_file = ``;
                     if (isImage(url_image)) {
-                        html_file = `
+                        fileview = `
                         <img id="img_attach_${id_attach}" data-id-rework="${id_rework}" data-id-attach="${id_attach}" src="${url_image}" alt="" width="100%">`;
                     } else {
-                        html_file = `
+                        fileview = `
                         <div 
                             id="img_attach_${id_attach}" 
                             width="100%" 
@@ -457,7 +509,7 @@
                             <?php } ?>
                         </div>
 
-                        ${html_file}
+                        ${fileview}
 
                     </div>`;
 
@@ -495,6 +547,36 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
+
+                    if (isImage(url_image)) {
+                        fileview = `
+                        <img id="img_attach_${id_attach}" data-id-rework="${id_rework}" data-id-attach="${id_attach}" src="${url_image}" alt="" width="100%">`;
+                    } else {
+                        fileview = `
+                        <div 
+                            id="img_attach_${id_attach}" 
+                            width="100%" 
+                            class="rounded border p-2 text-truncate" 
+                            style="height: 100px; line-break: anywhere; text-align:center"
+                            data-id-rework="${id_rework}"
+                            data-id-attach="${id_attach}"
+                        > 
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
+                        <span style="font-size:12px;">${file_name}</span>
+                        </div>`;
+                    }
+
+                    // cập nhật file mới vào nút download
+                    $(target)
+                        .siblings('.position-btn')
+                        .find('.fa-download')
+                        .parent()
+                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`);
+
+                    $(target).remove(); // xóa file cũ
+
+                    $(`#file_attach_${id_attach}`).append(fileview); // thay bằng file mới
+
                     $(target).attr('src', url_image)
                     $(target)
                         .siblings('.position-btn')
@@ -580,6 +662,6 @@
     }
     // END ATTACH REWORK
     function isImage(url_image) {
-        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image);
+        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
     }
 </script>
