@@ -69,7 +69,7 @@
                                         <?php if (@getimagesize(url_image($job['image'], $FDR_ORDER))) { ?>
                                             <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
                                         <?php } else { ?>
-                                            <div id="main_file_<?= $id_job ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id="<?= $id_job ?>">
+                                            <div id="main_file_<?= $id_job ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id="<?= $id_job ?>">
                                                 <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                                                 <span style="font-size:12px;"><?= $job['image'] ?></span>
                                             </div>
@@ -120,7 +120,7 @@
                                                     <?php if (@getimagesize(url_image($item, $FDR_ORDER))) { ?>
                                                         <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="width: -webkit-fill-available; width: -moz-available;">
                                                     <?php } else { ?>
-                                                        <div id="attach_file_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>">
+                                                        <div id="attach_file_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>">
                                                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                                                             <span style="font-size:12px;"><?= $item ?></span>
                                                         </div>
@@ -196,7 +196,7 @@
                                                 <?php if (@getimagesize(url_image($file, $FDR_ORDER))) { ?>
                                                     <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
                                                 <?php } else { ?>
-                                                    <div id="img_complete_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>">
+                                                    <div id="img_complete_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>">
                                                         <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                                                         <span style="font-size:12px;"><?= $file ?></span>
                                                     </div>
@@ -253,7 +253,7 @@
                         <img src="${url_image}" class="img-order-all" alt="" width="100%" data-id="${id_job}" id="main_file_${id_job}">`;
                     } else {
                         fileview = `
-                        <div id="main_file_${id_job}" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id="${id_job}">
+                        <div id="main_file_${id_job}" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id="${id_job}">
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                             <span style="font-size:12px;">${file_name}</span>
                         </div>`;
@@ -321,7 +321,7 @@
                             id="attach_file_${id_attach}" 
                             data-id-job="${id_job}" 
                             data-id-attach="${id_attach}" 
-                            class="rounded border p-2 text-truncate" 
+                            class="rounded border p-2 text-truncate shadow" 
                             style="height: 100px; line-break: anywhere; text-align:center"
                             width="100%" 
                         > 
@@ -390,7 +390,7 @@
                             id="attach_file_${new_id_attach}" 
                             data-id-job="${id_job}" 
                             data-id-attach="${new_id_attach}" 
-                            class="rounded border p-2 text-truncate" 
+                            class="rounded border p-2 text-truncate shadow" 
                             style="height: 100px; line-break: anywhere; text-align:center"
                             width="100%" 
                         > 
@@ -545,7 +545,7 @@
                         <div 
                             id="img_complete_${id_file_complete}" 
                             width="100%" 
-                            class="rounded border p-2 text-truncate" 
+                            class="rounded border p-2 text-truncate shadow" 
                             style="height: 100px; line-break: anywhere; text-align:center"
                             data-id-job="${id_job}"
                             data-id-complete="${id_file_complete}"
@@ -619,7 +619,7 @@
                         <div 
                             id="img_complete_${id_complete}" 
                             width="100%" 
-                            class="rounded border p-2 text-truncate" 
+                            class="rounded border p-2 text-truncate shadow" 
                             style="height: 100px; line-break: anywhere; text-align:center"
                             data-id-job="${id_job}"
                             data-id-complete="${id_complete}"

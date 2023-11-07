@@ -42,7 +42,7 @@
                             <?php if (@getimagesize(url_image($file, $FDR_ORDER))) { ?>
                                 <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
                             <?php } else { ?>
-                                <div id="img_complete_rework_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>">
+                                <div id="img_complete_rework_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>">
                                     <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                                     <span style="font-size:12px;"><?= $file ?></span>
                                 </div>
@@ -94,7 +94,7 @@
                             <?php if (@getimagesize(url_image($url_attach, $FDR_ORDER))) { ?>
                                 <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, $FDR_ORDER) ?>" alt="" width="100%">
                             <?php } else { ?>
-                                <div id="img_attach_<?= $id_attach ?>" width="100%" class="rounded border p-2 text-truncate" style="height: 100px; line-break: anywhere; text-align:center" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>">
+                                <div id="img_attach_<?= $id_attach ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>">
                                     <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                                     <span style="font-size:12px;"><?= $url_attach ?></span>
                                 </div>
@@ -231,7 +231,7 @@
                 <div 
                     id="img_attach_${id_attach}"
                     width="100%" 
-                    class="rounded border p-2 text-truncate" 
+                    class="rounded border p-2 text-truncate shadow" 
                     style="height: 100px; line-break: anywhere; text-align:center"
                 > 
                     <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
@@ -313,7 +313,7 @@
                         <div 
                             id="img_complete_rework_${id_file_complete}" 
                             width="100%" 
-                            class="rounded border p-2 text-truncate" 
+                            class="rounded border p-2 text-truncate shadow" 
                             style="height: 100px; line-break: anywhere; text-align:center"
                             data-id-rework="${id_rework}"
                             data-id-complete-rework="${id_file_complete}"
@@ -386,7 +386,7 @@
                         <div 
                             id="img_complete_rework_${id_complete_rework}" 
                             width="100%" 
-                            class="rounded border p-2 text-truncate" 
+                            class="rounded border p-2 text-truncate shadow" 
                             style="height: 100px; line-break: anywhere; text-align:center"
                             data-id-rework="${id_rework}"
                             data-id-complete-rework="${id_complete_rework}"
@@ -480,7 +480,7 @@
                         <div 
                             id="img_attach_${id_attach}" 
                             width="100%" 
-                            class="rounded border p-2 text-truncate" 
+                            class="rounded border p-2 text-truncate shadow" 
                             style="height: 100px; line-break: anywhere; text-align:center"
                             data-id-rework="${id_rework}"
                             data-id-attach="${id_attach}"
@@ -556,7 +556,7 @@
                         <div 
                             id="img_attach_${id_attach}" 
                             width="100%" 
-                            class="rounded border p-2 text-truncate" 
+                            class="rounded border p-2 text-truncate shadow" 
                             style="height: 100px; line-break: anywhere; text-align:center"
                             data-id-rework="${id_rework}"
                             data-id-attach="${id_attach}"
