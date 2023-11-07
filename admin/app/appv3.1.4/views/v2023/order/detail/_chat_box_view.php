@@ -117,7 +117,7 @@
 
                                 <div class="direct-chat-text">
                                     
-                                    <div class="d-flex d-none">
+                                    <div class="d-flex" style="display: none !important">
                                         <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
                                         <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
                                         <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
