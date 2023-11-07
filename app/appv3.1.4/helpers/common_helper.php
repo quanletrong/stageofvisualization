@@ -803,6 +803,25 @@ function getImageSizeFromUrl($url)
 	return $rel;
 }
 
+function get_remote_file_info($url) {
+    $rel = 0;
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HEADER, TRUE);
+    curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+    $data = curl_exec($ch);
+    $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+    $httpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpResponseCode == 200) {
+        $rel = getimagesizefromstring($data);
+    }
+
+    $rel = (int) $fileSize;
+    return $rel;
+}
+
 function getCanonicalUrl()
 {
     $url = HTTP_PROTOCOL . '://' . $_SERVER['SERVER_NAME'];
@@ -943,10 +962,11 @@ function copy_image_from_file_manager_to_public_upload($url_fmng_image, $yearFol
 
 function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
 {
-    $imginfo = getImageSizeFromUrl($url_fmng_image);
-    if (!empty($imginfo)) {
+    // $imginfo = getImageSizeFromUrl($url_fmng_image);
+    $filesize = get_remote_file_info($url_fmng_image);
+    if ($filesize > 0) {
 
-        $basename = generateRandomString(10) . '-' . basename($url_fmng_image);
+        $basename = basename($url_fmng_image);
         $folder_arr = explode('/', $folder_str);
 
         $FULL_FOLDER = '';
@@ -966,8 +986,8 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
         $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
 
         if (file_exists($dir_save)) {
-            $rdt = generateRandomString(10);
-            $basename = $rdt . $basename;
+            $rdt = generateRandomString(5);
+            $basename = $rdt ."-". $basename;
             $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
         }
 
@@ -1073,4 +1093,55 @@ function deleteDirectory($dir) {
     }
 
     return rmdir($dir);
+}
+
+// $files = [
+//     'uploads/order/1698688481@admin/CTYX0AQHYd-cfdfa-comfortable-contemporary-child_bedroom05800x600.jpg',
+//     'uploads/order/1698688481@admin/EfwNVsJLNp-n2T3Q-comfortable-contemporary-bath01800x600.jpg',
+//     'uploads/order/1698688481@admin/fUO1PVgrxG-F03Aq-comfortable-contemporary-basement05800x600.jpg'
+// ];
+function handle_zip_files($filename, $files)
+{
+    $result = '';
+
+    // Create ZIP file
+    $zip = new ZipArchive();
+    
+    if ($zip->open($filename, ZipArchive::CREATE) !== TRUE) {
+        $result = "cannot open <$filename>\n";
+    }
+
+    // Create zip
+    foreach ($files as $file) {
+        if (is_file($file)) {
+            $new_filename = substr($file, strrpos($file, '/') + 1);
+            $zip->addFile($file, $new_filename);
+        }
+    }
+
+    $zip->close();
+
+    if (headers_sent()) {
+        echo 'HTTP header already sent';
+    } else {
+        if (!is_file($filename)) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+            $result = 'File not found';
+        } else if (!is_readable($filename)) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+            $result = 'File not readable';
+        } else {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 200 OK');
+            header("Content-Type: application/zip");
+            header("Content-Transfer-Encoding: Binary");
+            header("Content-Length: " . filesize($filename));
+            header("Content-Disposition: attachment; filename=\"" . basename($filename) . "\"");
+            readfile($filename);
+
+            unlink($filename);
+            exit;
+        }
+    }
+
+    return $result;
 }

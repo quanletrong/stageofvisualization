@@ -197,7 +197,7 @@
                 success: function(data, textStatus, jqXHR) {
                     console.log(data);
                     alert('Bạn đã tạo thành công đơn hàng.');
-                    window.location.href = '<?=site_url(LINK_ORDER)?>';
+                    window.location.href = '<?= site_url(LINK_ORDER) ?>';
 
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -237,10 +237,25 @@
     function cb_upload_attach(link, target, name) {
         let job_id = $(target).data('id');
         let attach_id = Date.now() + Object.keys(STATE.job[job_id].attach).length;
-        let attach_html = `<div style="position:relative" class="mt-2">
-            <img src="${link}"  style="width:50px;aspect-ratio: 1; object-fit: cover;" >
-            <i class="fa-solid fa-xmark" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
-        </div>`;
+
+        let attach_html = ``;
+        if (isImage(link)) {
+            attach_html = `
+            <div style="position:relative" class="mt-2">
+                <img src="${link}"  style="width:100px;aspect-ratio: 1; object-fit: cover;" >
+                <i class="fa-solid fa-xmark" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
+            </div>`;
+        } else {
+            attach_html = `
+            <div style="position:relative" class="mt-2">
+                <div style="width:100px;aspect-ratio: 1; object-fit: cover; text-align:center" class="border p-2 pt-4" >
+                    <i class="fa fa-paperclip" aria-hidden="true"></i>
+                    <p style="font-size:12px" class="text-truncate">${name}</p>
+                </div>
+                <i class="fa-solid fa-xmark" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
+            </div>`;
+        }
+
         $(`#${job_id}_attach_pre`).append(attach_html);
         STATE.job[job_id].attach[attach_id] = link;
     }
@@ -341,5 +356,9 @@
             .siblings('.form-check')
             .find('.form-check-input')
             .prop('checked', false)
+    }
+
+    function isImage(url_image) {
+        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
     }
 </script>
