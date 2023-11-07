@@ -83,7 +83,7 @@
                                     </button>
                                 <?php } ?>
                             </div>
-                            
+
                             <?php if (@getimagesize(url_image($url_attach, $FDR_ORDER))) { ?>
                                 <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, $FDR_ORDER) ?>" alt="" width="100%">
                             <?php } else { ?>
@@ -246,12 +246,11 @@
             return;
         }
 
-        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+        $(btn).html('<i class="fas fa-sync fa-spin"></i>');
         $(btn).prop("disabled", true);
 
         $.ajax({
-            url: `
-            order / ajax_update_requirement_rework`,
+            url: `order/ajax_update_requirement_rework`,
             type: "POST",
             data: {
                 id_rework,
@@ -269,8 +268,7 @@
                 $(btn).prop("disabled", false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(data);
-                alert('Error');
+                alert('Vui lòng thử lại');
             }
         });
     }
@@ -279,7 +277,7 @@
     function cb_upload_add_file_complete_rework(url_image, target, file_name, btn_upload) {
 
         let btn_upload_old = $(btn_upload).html();
-        $(btn_upload).html(` < i class = "fas fa-sync fa-spin" > < /i>`);
+        $(btn_upload).html(`<i class = "fas fa-sync fa-spin" ></i>`);
         $(btn_upload).prop('disabled', true)
 
         let id_rework = $(target).data('id-rework');
