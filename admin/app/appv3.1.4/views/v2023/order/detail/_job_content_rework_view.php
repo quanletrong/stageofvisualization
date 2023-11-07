@@ -467,7 +467,7 @@
                 } else {
                     toasts_danger(kq.error);
                 }
-                $(btn_upload).html('<i class="fas fa-sync fa-upload"></i> Tải lên');
+                $(btn_upload).html('<i class="fas fa-upload"></i> Tải lên');
                 $(btn_upload).attr('disabled', false);
             },
             error: function(jqXHR, textStatus, errorThrown) {
