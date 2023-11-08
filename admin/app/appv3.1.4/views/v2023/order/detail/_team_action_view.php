@@ -28,7 +28,7 @@
             <div class="mb-3">
                 <b>Realtime</b>
                 <small onclick="alert('real time = (time tạo đơn + 24h) - time hiện tại')">[Mô tả]</small>
-                <div id="cdt_real_time" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;" title="<?= $order['create_time'] ?>">
+                <div id="cdt_real_time" class="mt-2" title="<?= $order['create_time'] ?>">
                     <script>
                         // real time = (time tạo đơn + 24h) - time hiện tại
                         <?php $time_chot_don = strtotime($order['create_time']) + 86400; ?>
@@ -40,7 +40,7 @@
         <div>
             <b>Countdown time</b>
             <small onclick="alert('countdown time = (time tạo + time custom ) - time hiện tại')">[Mô tả]</small>
-            <div id="cdt_<?= $order['id_order'] ?>" style=" border: 1px solid #ddd; padding: 3px 10px; border-radius: 4px; text-align: center; background: #eee; font-weight: bold;">
+            <div id="cdt_<?= $order['id_order'] ?>" class="mt-2">
                 <!-- countdown time = (time tạo + time custom ) - time hiện tại -->
                 <?= count_down_time_order($order) ?>
             </div>
