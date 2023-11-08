@@ -1373,3 +1373,17 @@ function handle_zip_files($filename, $files)
 
     return $result;
 }
+
+function sec2time($sec){
+    $returnstring = " ";
+    $days = intval($sec/86400);
+    $hours = intval ( ($sec/3600) - ($days*24));
+    $minutes = intval( ($sec - (($days*86400)+ ($hours*3600)))/60);
+    $seconds = $sec - ( ($days*86400)+($hours*3600)+($minutes * 60));
+    
+    $returnstring .= ($days)?(($days == 1)? "1 ngày ":"$days ngày "):"";
+    $returnstring .= ($hours)?( ($hours == 1)?"1 giờ ":"$hours giờ "):"";
+    $returnstring .= ($minutes)?( ($minutes == 1)?"1 phút ":"$minutes phút "):"";
+    $returnstring .= ($seconds)?( ($seconds == 1)?"1 giây ":"$seconds giây"):"";
+    return ($returnstring);
+}

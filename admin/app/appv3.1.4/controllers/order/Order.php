@@ -411,7 +411,13 @@ class Order extends MY_Controller
             $this->Order_model->tinh_tien_cho_cac_user_dang_active($id_order, $thoi_gian_giao_hang);
         }
 
-        // TODO: LOG
+        //LOG
+        $log['type']      = LOG_STATUS;
+        $log['id_order']  = $order['id_order'];
+        $log['old']       = status_order($order['status'])['text'];
+        $log['new']       = status_order($new_status)['text'];
+        $this->Log_model->log_add($log);
+
         resSuccess($kq);
     }
 
@@ -506,18 +512,33 @@ class Order extends MY_Controller
         $da_ton_tai = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, $id_job, $working_type, $id_user);
         if ($da_ton_tai) {
             $kq = $this->Order_model->change_status_job_user($status, $id_order, $id_job, $working_type, $id_user);
-
-            // TODO: LOG
-            resSuccess($kq);
         }
         // user gán chưa tồn tại thì INSERT bản ghi mới
         else {
             $type_service = @$order['job'][$id_job]['type_service'];
             $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $type_service, $working_type, $status, $time_join, 1);
-
-            // TODO: LOG
-            resSuccess($kq);
         }
+        
+        //LOG
+        if ($working_type == WORKING_EDITOR) {
+            $log_type = LOG_QC_IN_ADD;
+        }
+        else if ($working_type == WORKING_QC_IN) {
+            $log_type = LOG_QC_IN_ADD;
+        }
+        else if ($working_type == WORKING_QC_OUT) {
+            $log_type = LOG_QC_OUT_ADD;
+        }
+        else if ($working_type == WORKING_CUSTOM) {
+            $log_type = LOG_CUSTOM_ADD;
+        }
+
+        $log['type']      = $log_type;
+        $log['id_order']  = $order['id_order'];
+        $log['new']       = $as_uinfo['username'];
+        $this->Log_model->log_add($log);
+
+        resSuccess($kq);
     }
 
     // Bản chất xóa custom là đổi `status = 0`
@@ -739,6 +760,14 @@ class Order extends MY_Controller
         $infoOrderCode != []    ? resError('Code Order đã tồn tại') : '';
 
         $this->Order_model->update_code_order($id_order, $code);
+
+        //LOG
+        $log['type']      = LOG_ORDER_CODE;
+        $log['id_order']  = $order['id_order'];
+        $log['old']       = $order['code_order'];
+        $log['new']       = $code;
+        $this->Log_model->log_add($log);
+
         resSuccess('Thành công');
     }
 
@@ -755,8 +784,18 @@ class Order extends MY_Controller
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn hàng không tồn tại') : '';
 
-        //TODO: THIẾU GHI LOG
+        // thời gian mới = thời gian cũ
+        $order['custom_time'] == $second ? resSuccess('Thành công') : '';
+
         $this->Order_model->update_custom_time_order($id_order, $second);
+
+        //LOG
+        $log['type']      = LOG_TIME_CUSTOM;
+        $log['id_order']  = $order['id_order'];
+        $log['old']       = sec2time($order['custom_time']);
+        $log['new']       = sec2time($second);
+        $this->Log_model->log_add($log);
+
         resSuccess('Thành công');
     }
 
@@ -1179,11 +1218,18 @@ class Order extends MY_Controller
 
         !$copy['status'] ? resError($copy['error']) : '';
 
-        //TODO: THIẾU GHI LOG
-        // $id_attach = time();
         $id_attach = generateRandomNumber(10);
         $info['attach'][$id_attach] = $copy['basename'];
         $this->Job_model->update_file_attach_rework($id_rework, json_encode($info['attach']));
+
+        //LOG
+        $log['type']      = LOG_RW_REF_ADD;
+        $log['id_order']  = $order['id_order'];
+        $log['id_job']    = $info['id_job'];
+        $log['id_rework'] = $id_rework;
+        $log['new']       = $copy['basename'];
+        $this->Log_model->log_add($log);
+
         resSuccess($id_attach);
     }
 
@@ -1222,9 +1268,18 @@ class Order extends MY_Controller
 
         !$copy['status'] ? resError($copy['error']) : '';
 
-        //TODO: THIẾU GHI LOG
+        $old_file = $rework['attach'][$id_attach]; // file cu
         $rework['attach'][$id_attach] = $copy['basename'];
         $this->Job_model->update_file_attach_rework($id_rework, json_encode($rework['attach']));
+
+        //LOG
+        $log['type']      = LOG_RW_REF_EDIT;
+        $log['id_order']  = $rework['id_order'];
+        $log['id_job']    = $rework['id_job'];
+        $log['id_rework'] = $id_rework;
+        $log['old']       = $old_file;
+        $log['new']       = $copy['basename'];
+        $this->Log_model->log_add($log);
         resSuccess($id_attach);
     }
 
@@ -1240,23 +1295,32 @@ class Order extends MY_Controller
         !isIdNumber($id_rework) ? resError('Rework không hợp lệ')           : '';
         !isIdNumber($id_attach) ? resError('ID FILE REWORK không hợp lệ') : '';
 
-        $info = $this->Job_model->get_info_rework_by_id($id_rework);
-        $info == [] ? resError('Rework không tồn tại') : '';
+        $rework = $this->Job_model->get_info_rework_by_id($id_rework);
+        $rework == [] ? resError('Rework không tồn tại') : '';
+
+        $order = $this->Order_model->get_info_order($rework['id_order']);
 
         if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
-        !isset($info['attach'][$id_attach]) ? resError('ID FILE REWORK không tồn tại') : '';
+        !isset($rework['attach'][$id_attach]) ? resError('ID FILE REWORK không tồn tại') : '';
 
-        unset($info['attach'][$id_attach]); // xóa
+        $old_file = $rework['attach'][$id_attach]; // file cu
+        unset($rework['attach'][$id_attach]); // xóa
 
-        //TODO: THIẾU GHI LOG
-        $this->Job_model->update_file_attach_rework($id_rework, json_encode($info['attach']));
+        $this->Job_model->update_file_attach_rework($id_rework, json_encode($rework['attach']));
+
+        //LOG
+        $log['type']      = LOG_RW_REF_REMOVE;
+        $log['id_order']  = $rework['id_order'];
+        $log['id_job']    = $rework['id_job'];
+        $log['id_rework'] = $id_rework;
+        $log['new']       = $old_file;
+        $this->Log_model->log_add($log);
         resSuccess($id_attach);
     }
 
-    // TODO: mới copy code
     function ajax_update_requirement_rework()
     {
         $cur_uid = $this->_session_uid();
@@ -1269,17 +1333,29 @@ class Order extends MY_Controller
         !isIdNumber($id_rework) ? resError('Rework không hợp lệ') : '';
         !strlen($requirement) ? resError('Requirement không được bỏ trống') : '';
 
-        $info = $this->Job_model->get_info_rework_by_id($id_rework);
-        $info == [] ? resError('Rework không tồn tại') : '';
+        $rework = $this->Job_model->get_info_rework_by_id($id_rework);
+        $rework == [] ? resError('Rework không tồn tại') : '';
 
-        $order = $this->Order_model->get_info_order($info['id_order']);
+        // du lieu moi = du lieu cu
+        $rework['note'] == $requirement ? resSuccess('Thành công') : '';
+
+        $order = $this->Order_model->get_info_order($rework['id_order']);
 
         if ($role == QC) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
-        //TODO: THIẾU GHI LOG
         $this->Job_model->update_requirement_rework($id_rework, $requirement);
+
+        //LOG
+        $log['type']     = LOG_RW_NOTE_EDIT;
+        $log['id_order'] = $rework['id_order'];
+        $log['id_job']   = $rework['id_job'];
+        $log['id_rework']= $id_rework;
+        $log['old']      = $rework['note'];
+        $log['new']      = $requirement;
+        $this->Log_model->log_add($log);
+
         resSuccess('Thành công');
     }
 
@@ -1294,10 +1370,10 @@ class Order extends MY_Controller
 
         !isIdNumber($id_rework) ? resError('Rework không hợp lệ') : '';
 
-        $info = $this->Job_model->get_info_rework_by_id($id_rework);
-        $info == [] ? resError('Rework không tồn tại') : '';
+        $rework = $this->Job_model->get_info_rework_by_id($id_rework);
+        $rework == [] ? resError('Rework không tồn tại') : '';
 
-        $order = $this->Order_model->get_info_order($info['id_order']);
+        $order = $this->Order_model->get_info_order($rework['id_order']);
 
         if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
@@ -1313,10 +1389,18 @@ class Order extends MY_Controller
 
         !$copy['status'] ? resError($copy['error']) : '';
 
-        //TODO: THIẾU GHI LOG
         $id_file_complete = generateRandomNumber();
-        $info['file_complete'][$id_file_complete] = $copy['basename'];
-        $this->Job_model->update_file_complete_rework($id_rework, json_encode($info['file_complete']));
+        $rework['file_complete'][$id_file_complete] = $copy['basename'];
+        $this->Job_model->update_file_complete_rework($id_rework, json_encode($rework['file_complete']));
+
+        //LOG
+        $log['type']     = LOG_RW_FILE_COMPLETE_ADD;
+        $log['id_order'] = $rework['id_order'];
+        $log['id_job']   = $rework['id_job'];
+        $log['id_rework']= $id_rework;
+        $log['new']      = $copy['basename'];
+        $this->Log_model->log_add($log);
+
         resSuccess($id_file_complete);
     }
 
@@ -1344,6 +1428,8 @@ class Order extends MY_Controller
 
         !isset($rework['file_complete'][$id_complete_rework]) ? resError('ID COMPLETE không tồn tại') : '';
 
+        $old_file = $rework['file_complete'][$id_complete_rework]; // file cu
+
         $parse = parse_url($url_image);
         !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
         $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
@@ -1354,9 +1440,18 @@ class Order extends MY_Controller
 
         !$copy['status'] ? resError($copy['error']) : '';
 
-        //TODO: THIẾU GHI LOG
         $rework['file_complete'][$id_complete_rework] = $copy['basename'];
         $this->Job_model->update_file_complete_rework($id_rework, json_encode($rework['file_complete']));
+
+        //LOG
+        $log['type']     = LOG_RW_FILE_COMPLETE_EDIT;
+        $log['id_order'] = $rework['id_order'];
+        $log['id_job']   = $rework['id_job'];
+        $log['id_rework']= $id_rework;
+        $log['old']      = $old_file;
+        $log['new']      = $copy['basename'];
+        $this->Log_model->log_add($log);
+
         resSuccess($id_complete_rework);
     }
 
@@ -1372,20 +1467,30 @@ class Order extends MY_Controller
         !isIdNumber($id_rework)     ? resError('Rework không hợp lệ')           : '';
         !isIdNumber($id_complete)   ? resError('ID FILE COMPLETE không hợp lệ') : '';
 
-        $info = $this->Job_model->get_info_rework_by_id($id_rework);
-        $info == [] ? resError('Rework không tồn tại') : '';
+        $rework = $this->Job_model->get_info_rework_by_id($id_rework);
+        $rework == [] ? resError('Rework không tồn tại') : '';
 
-        $order = $this->Order_model->get_info_order($info['id_order']);
+        $order = $this->Order_model->get_info_order($rework['id_order']);
         if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
-        !isset($info['file_complete'][$id_complete]) ? resError('ID FILE COMPLETE không tồn tại') : '';
+        !isset($rework['file_complete'][$id_complete]) ? resError('ID FILE COMPLETE không tồn tại') : '';
 
-        unset($info['file_complete'][$id_complete]); // xóa
+        $old_file = $rework['file_complete'][$id_complete]; //file cu
 
-        //TODO: THIẾU GHI LOG
-        $this->Job_model->update_file_complete_rework($id_rework, json_encode($info['file_complete']));
+        unset($rework['file_complete'][$id_complete]); // xóa
+
+        $this->Job_model->update_file_complete_rework($id_rework, json_encode($rework['file_complete']));
+
+        //LOG
+        $log['type']     = LOG_RW_FILE_COMPLETE_REMOVE;
+        $log['id_order'] = $rework['id_order'];
+        $log['id_job']   = $rework['id_job'];
+        $log['id_rework']= $id_rework;
+        $log['new']      = $old_file;
+        $this->Log_model->log_add($log);
+
         resSuccess($id_complete);
     }
 
@@ -1406,7 +1511,6 @@ class Order extends MY_Controller
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn hàng không tồn tại') : '';
 
-        //TODO: THIẾU GHI LOG
         // $this->Order_model->update_custom_time_order($id_order, $second);
         resSuccess('Thành công');
     }
