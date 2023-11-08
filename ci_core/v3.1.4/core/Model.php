@@ -77,4 +77,11 @@ class CI_Model {
 		return get_instance()->$key;
 	}
 
+	protected function _session_uid()
+    {
+        $user_id = trim($this->session->userdata('uid'));
+        $user_id = isIdNumber($user_id) ? $user_id : 0;
+        return $user_id;
+    }
+
 }

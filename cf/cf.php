@@ -125,3 +125,67 @@ define("gg_ClientSecret", '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');
 define('LIMIT_SIZE_IMAGE', 52428800); // 50Mb
 
 define('AVATAR_DEFAULT', 'user-default.png');
+
+
+define('LOG_TIME_CUSTOM', 1);
+define('LOG_STATUS', 2);
+define('LOG_CUSTOMER_CODE', 3);
+define('LOG_ORDER_CODE', 4);
+define('LOG_QC_IN_ADD', 5);
+define('LOG_QC_IN_REMOVE', 6);
+define('LOG_QC_OUT_ADD', 7);
+define('LOG_QC_OUT_REMOVE', 8);
+define('LOG_ED_ADD', 9);
+define('LOG_ED_REMOVE', 10);
+define('LOG_CUSTOM_ADD', 11);
+define('LOG_CUSTOM_REMOVE', 12);
+define('LOG_CUSTOM_TOTAL_PRICE_EDIT', 13);
+define('LOG_CUSTOM_USER_PRICE_EDIT', 14);
+define('LOG_FILE_MAIN_EDIT', 15);
+define('LOG_REF_ADD', 16);
+define('LOG_REF_EDIT', 17);
+define('LOG_REF_REMOVE', 18);
+define('LOG_NOTE_EDIT', 19);
+define('LOG_COMPLETE_ADD', 20);
+define('LOG_COMPLETE_EDIT', 21);
+define('LOG_COMPLETE_REMOVE', 22);
+define('LOG_RW_ADD', 23);
+define('LOG_RW_FILE_COMPLETE_ADD', 24);
+define('LOG_RW_FILE_COMPLETE_EDIT', 25);
+define('LOG_RW_FILE_COMPLETE_REMOVE', 26);
+define('LOG_RW_REF_ADD', 27);
+define('LOG_RW_REF_EDIT', 28);
+define('LOG_RW_REF_REMOVE', 29);
+define('LOG_RW_NOTE_EDIT', 30);
+const LOG = [
+        LOG_TIME_CUSTOM             => 'Sửa thời gian làm đơn hàng',
+        LOG_STATUS                  => 'Sửa trạng thái đơn hàng',
+        LOG_CUSTOMER_CODE           => 'Sửa mã khách hàng',
+        LOG_ORDER_CODE              => 'Sửa mã đơn hàng',
+        LOG_QC_IN_ADD               => 'Sửa Working QC IN',
+        LOG_QC_IN_REMOVE            => 'Xóa Working QC IN',
+        LOG_QC_OUT_ADD              => 'Sửa Working QC OUT',
+        LOG_QC_OUT_REMOVE           => 'Xóa Working QC OUT',
+        LOG_ED_ADD                  => 'Sửa Working Editor',
+        LOG_ED_REMOVE               => 'Xóa Working Editor',
+        LOG_CUSTOM_ADD              => 'Thêm Working custom',
+        LOG_CUSTOM_REMOVE           => 'Xóa Working custom',
+        LOG_CUSTOM_TOTAL_PRICE_EDIT => 'Sửa tổng giá custom của đơn hàng',
+        LOG_CUSTOM_USER_PRICE_EDIT  => 'Sửa giá custom của tài khoản',
+        LOG_FILE_MAIN_EDIT          => 'Sửa file chính',
+        LOG_REF_ADD                 => 'Thêm file đính kèm',
+        LOG_REF_EDIT                => 'Sửa ảnh đính kèm',
+        LOG_REF_REMOVE              => 'Xóa ảnh đính kèm',
+        LOG_NOTE_EDIT               => 'Sửa yêu cầu',
+        LOG_COMPLETE_ADD            => 'Thêm file hoàn thành',
+        LOG_COMPLETE_EDIT           => 'Sửa file hoàn thành',
+        LOG_COMPLETE_REMOVE         => 'Xóa file hoàn thành',
+        LOG_RW_ADD                  => 'Thêm mới <b>Rework</b>',
+        LOG_RW_FILE_COMPLETE_ADD    => 'Thêm file hoàn thành cho <b>Rework</b> ',
+        LOG_RW_FILE_COMPLETE_EDIT   => 'Sửa file hoàn thành cho <b>Rework</b>',
+        LOG_RW_FILE_COMPLETE_REMOVE => 'Xóa file hoàn thành cho <b>Rework</b>',
+        LOG_RW_REF_ADD              => 'Thêm file đính kèm cho <b>Rework</b>',
+        LOG_RW_REF_EDIT             => 'Sửa file đính kèm cho <b>Rework</b>',
+        LOG_RW_REF_REMOVE           => 'Xóa file đính kèm cho <b>Rework</b>',
+        LOG_RW_NOTE_EDIT            => 'Sửa yêu cầu cho <b>Rework</b>',
+];

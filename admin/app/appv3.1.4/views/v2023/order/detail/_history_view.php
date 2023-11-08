@@ -3,204 +3,104 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title">LỊCH SỬ</h3>
+                    <h3 class="card-title">LỊCH SỬ (<?= count($logs) ?>)</h3>
                 </div>
 
             </div>
             <div class="card-body">
 
                 <div class="timeline">
-
-                    <!-- <div class="time-label">
-                                    <span class="bg-red">10 Feb. 2014</span>
-                                </div> -->
-
-                    <div>
-                        <i class="fas fa-cart-plus bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 12:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">C123456</a> đã tạo thành công đơn hàng</h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 13:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">saler_1</a> thay đổi trạng thái từ <b>Pending</b> thành <b>QC CHECK</b></h3>
-                        </div>
-                    </div>
-
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 14:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">QC_1</a> đã tham gia job</h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 15:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">QC_2</a> đã tham gia job</h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 16:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">QC_1</a> thay đổi trạng thái từ <b>QC CHECK</b> thành <b>Avaiabel</b></h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 17:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">design1</a> đã tham gia job</h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 18:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">design2</a> đã tham gia job</h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 19:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">design1</a> đang xử lý Image 1(VR)</h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 20:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">design1</a> đang xử lý Image 2(VR)</h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 21:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">design2</a> đang xử lý Image 3(VS)</h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 22:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">design2</a> đang xử lý Image 4(3D)</h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 23:05 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">design2</a> thay đổi trạng thái từ <b>IN PROCESS</b> thành <b>DONE</b>
-                                <h3>
-                        </div>
-                    </div>
-
-                    <div>
-                        <i class="fas fa-user bg-blue"></i>
-                        <div class="timeline-item">
-                            <span class="time"><i class="fas fa-clock"></i> 23:45 30/07/2023</span>
-                            <h3 class="timeline-header"><a href="#">QC1</a> thay đổi trạng thái từ <b>DONE</b> thành <b>DELIVERY</b>
-                                <h3>
-                        </div>
-                    </div>
-
-                    <div>
+                    <!-- <div>
                         <i class="fas fa-check-circle bg-success"></i>
                         <div class="timeline-item">
                             <span class="time"><i class="fas fa-clock"></i> 07:05 31/07/2023</span>
                             <h3 class="timeline-header">Hoàn thành đơn<h3>
                         </div>
+                    </div> -->
+
+                    <?php foreach ($logs as $id_log => $log) { ?>
+                        <div>
+                            <img class="direct-chat-img" src="<?= $log['avatar'] ?>" alt="message user image" style="left: 18px;position: absolute;width: 30px;height: 30px;">
+                            <div class="timeline-item"=>
+                                <span class="time"><i class="fas fa-clock"></i> <?= date('H:i, d/m/Y', strtotime($log['created_time'])) ?></span>
+                                <h3 class="timeline-header" onclick="$(this).parent().find('.timeline-body').slideToggle()" style="cursor: pointer;">
+
+                                    <?= timeSince($log['created_time']) ?> trước
+                                    <!-- TITLE -->
+                                    <a href="javascript:void(0)"><?= $log['by_uname'] ?></a>
+
+                                    <?= LOG[$log['type']] ?>
+
+                                    <!-- REWWORK NẾU CÓ -->
+                                    <?php $i = @array_search($log['id_rework'], array_keys($order['job'][$log['id_job']]['rework'])) + 1; ?>
+                                    <b><?= $log['id_rework'] > 0 ? $i : '' ?></b>
+
+                                    <!-- IMAGE NẾU CÓ -->
+                                    <?php $i = array_search($log['id_job'], array_keys($order['job'])) + 1; ?>
+                                    <?= $log['id_job'] > 0 ? ' của <b>IMAGE ' . $i . ' (' . $order['job'][$log['id_job']]['type_service'] . ')</b>' : '' ?>
+
+                                    <!-- CUSTOM PRICE USER NẾU CÓ -->
+                                    <b><?= $log['id_user'] > 0 ? $log['username'] : '' ?></b>
+
+                                    <!-- CŨ -->
+                                    <?php if ($log['old'] != '') { ?>
+                                        từ
+                                        <?php $sub_old = substr($log['old'], 0, 50); ?>
+                                        <b><?= strlen($log['old']) > strlen($sub_old) ? $sub_old . '...' : $sub_old ?></b>
+                                    <?php } ?>
+
+                                    <!-- MỚI -->
+                                    <?php if ($log['new'] != '') { ?>
+                                        → 
+                                        <?php $sub_new = substr($log['new'], 0, 50); ?>
+                                        <b><?= strlen($log['new']) > strlen($sub_new) ? $sub_new . '...' : $sub_new ?></b>
+                                    <?php } ?>
+
+                                </h3>
+                                <div class="timeline-body" style="display: none;">
+                                    <div class="d-flex align-items-center" style="gap:10px; ">
+                                        <!-- DỮ LIỆU CŨ -->
+                                        <?php if ($log['old'] != '') { ?>
+                                            <?php if (@getimagesize(url_image($log['old'], $FDR_ORDER))) { ?>
+                                                <img src="<?= url_image($log['old'], $FDR_ORDER) ?>" alt="" width="150" onclick="downloadURI('<?= url_image($log['old'], $FDR_ORDER) ?>', 'old-image')" style="cursor: pointer" title="Bấm vào để tải xuống">
+                                            <?php } else if (get_remote_file_info(url_image($log['old'], $FDR_ORDER)) > 0) { ?>
+                                                <div class="rounded border p-2 text-truncate shadow" style="width: 150px; line-break: anywhere; text-align:center; cursor: pointer;" onclick="downloadURI('<?= url_image($log['old'], $FDR_ORDER) ?>', 'old-file')" title="Bấm vào để tải xuống">
+                                                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                                    <span style="font-size:12px;"><?= $log['old'] ?></span>
+                                                </div>
+                                            <?php } else { ?>
+                                                <b><?= $log['old'] ?></b>
+                                            <?php } ?>
+                                        <?php } ?>
+                                        <!-- DỮ LIỆU MỚI -->
+                                        <?php if ($log['new'] != '') { ?>
+                                            <div> → </div>
+                                            <?php if (@getimagesize(url_image($log['new'], $FDR_ORDER))) { ?>
+                                                <img src="<?= url_image($log['new'], $FDR_ORDER) ?>" alt="" width="150" onclick="downloadURI('<?= url_image($log['new'], $FDR_ORDER) ?>', 'new-image')" style="cursor: pointer" title="Bấm vào để tải xuống">
+                                            <?php } else if (get_remote_file_info(url_image($log['new'], $FDR_ORDER)) > 0) { ?>
+                                                <div class="rounded border p-2 text-truncate shadow" style="width: 150px; line-break: anywhere; text-align:center; cursor: pointer;" onclick="downloadURI('<?= url_image($log['new'], $FDR_ORDER) ?>', 'new-file')" title="Bấm vào để tải xuống">
+                                                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                                    <span style="font-size:12px;"><?= $log['new'] ?></span>
+                                                </div>
+                                            <?php } else { ?>
+                                                <b><?= $log['new'] ?></b>
+                                            <?php } ?>
+                                        <?php } ?>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                    <div>
+                        <i class="fas fa-cart-plus bg-blue"></i>
+                        <div class="timeline-item">
+                            <span class="time"><i class="fas fa-clock"></i> 12:05 30/07/2023</span>
+                            <h3 class="timeline-header">Tạo thành công đơn hàng</h3>
+                        </div>
                     </div>
-
-                    <div class="d-none">
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #4 Cập nhật bởi <span style="color: red;">design1</span> lúc <span style="color: red;">15:15 30-07-2023 </span>
-                            <div>Trạng thái thay đổi từ <b>Avaiabel</b> thành <b>In Progress</b></div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #5 Cập nhật bởi <span style="color: red;">lequanltv</span> lúc <span style="color: red;">16:00 30-07-2023 </span>
-                            <div>Image 1(VR) upload file complete</div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #6 Cập nhật bởi <span style="color: red;">design1</span> lúc <span style="color: red;">16:15 30-07-2023 </span>
-                            <div>Image 2(VR) upload file complete</div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #7 Cập nhật bởi <span style="color: red;">design2</span> lúc <span style="color: red;">16:16 30-07-2023 </span>
-                            <div>Image 3(VS) upload file complete</div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #8 Cập nhật bởi <span style="color: red;">design3</span> lúc <span style="color: red;">16:17 30-07-2023 </span>
-                            <div>Image 4(3D) upload file complete</div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #9 Cập nhật bởi <span style="color: red;">design3</span> lúc <span style="color: red;">16:18 30-07-2023 </span>
-                            <div>Trạng thái thay đổi từ <b>In Progress</b> thành <b>DONE</b></div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #10 Cập nhật bởi <span style="color: red;">QC1</span> lúc <span style="color: red;">16:30 30-07-2023 </span>
-                            <div>Trạng thái thay đổi từ <b>DONE</b> thành <b>Delivered</b></div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #11 Cập nhật bởi <span style="color: red;">khach_hang_1</span> lúc <span style="color: red;">17:30 30-07-2023 </span>
-                            <div>Trạng thái thay đổi từ <b>Delivered</b> thành <b>REWORK</b></div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #12 Cập nhật bởi <span style="color: red;">sale1</span> lúc <span style="color: red;">17:35 30-07-2023 </span>
-                            <div>Trạng thái thay đổi từ <b>REWORK</b> thành <b>QC CHECK</b></div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #13 Cập nhật bởi <span style="color: red;">QC1</span> lúc <span style="color: red;">17:40 30-07-2023 </span>
-                            <div>Trạng thái thay đổi từ <b>QC CHECK</b> thành <b>In Progress</b></div>
-                            <div>Đã thêm <b>design4</b></div>
-                            <div>Giá custom <b>design4</b> thay đổi từ 0 thành 1</div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #14 Cập nhật bởi <span style="color: red;">design4</span> lúc <span style="color: red;">18:45 30-07-2023 </span>
-                            <div>Trạng thái thay đổi từ <b>In Progress</b> thành <b>DONE</b></div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #15 Cập nhật bởi <span style="color: red;">QC1</span> lúc <span style="color: red;">19:30 30-07-2023 </span>
-                            <div>Trạng thái thay đổi từ <b>DONE</b> thành <b>Delivered</b></div>
-                        </div>
-
-                        <div class="mb-1" style="border-bottom: 1px solid #dedede;">
-                            #16 Cập nhật bởi <span style="color: red;">khach_hang_1</span> lúc <span style="color: red;">20:30 30-07-2023 </span>
-                            <div>Trạng thái thay đổi từ <b>DONE</b> thành <b>COMPLETE</b></div>
-                        </div>
-                    </div>
-
                 </div>
-
             </div>
         </div>
     </div>

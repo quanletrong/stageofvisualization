@@ -27,6 +27,7 @@ class Order extends MY_Controller
         $this->load->model('room/Room_model');
         $this->load->model('service/Service_model');
         $this->load->model('setting/Setting_model');
+        $this->load->model('log/Log_model');
     }
 
     function index()
@@ -88,6 +89,7 @@ class Order extends MY_Controller
         $uid = $this->_session_uid();
         $all_user_working = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
         $order = $this->Order_model->get_info_order($id_order);
+        // var_dump($order);die;
         empty($order) ? redirect(site_url('order', $this->_langcode)) : '';
 
         ## check right access
@@ -120,6 +122,11 @@ class Order extends MY_Controller
         $data['curr_uid']         = $uid;
         $data['all_user_working'] = $all_user_working;
         $data['FDR_ORDER']        = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+
+        ## log
+        $dk['id_order'] = $id_order;
+        $logs = $this->Log_model->log_list($dk);
+        $data['logs'] = $logs;
 
         $header = [
             'title' => 'Chi tiết đơn hàng',
@@ -781,8 +788,16 @@ class Order extends MY_Controller
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
         !$copy['status'] ? resError($copy['error']) : '';
 
-        //TODO: THIẾU GHI LOG
         $this->Job_model->update_image_job($id_job, $copy['basename']);
+
+        //LOG
+        $log['type']     = LOG_FILE_MAIN_EDIT;
+        $log['id_order'] = $order['id_order'];
+        $log['id_job']   = $id_job;
+        $log['old']      = $log['db_old'] = $order['job'][$id_job]['image'];
+        $log['new']      = $log['db_new'] = $copy['basename'];
+        $this->Log_model->log_add($log);
+
         resSuccess('Thành công');
     }
 
@@ -818,10 +833,17 @@ class Order extends MY_Controller
 
         !$copy['status'] ? resError($copy['error']) : '';
 
-        //TODO: THIẾU GHI LOG
         $id_attach = generateRandomNumber();
         $attachs[$id_attach] = $copy['basename'];
         $this->Job_model->update_attach_job($id_job, json_encode($attachs));
+
+        //LOG
+        $log['type']     = LOG_REF_ADD;
+        $log['id_order'] = $order['id_order'];
+        $log['id_job']   = $id_job;
+        $log['new']      = $copy['basename'];
+        $this->Log_model->log_add($log);
+
         resSuccess($id_attach);
     }
 
@@ -840,6 +862,7 @@ class Order extends MY_Controller
         $info = $this->Job_model->get_info_job_by_id($id_job);
         $info == [] ? resError('id_job không tồn tại') : '';
 
+        $order = $this->Order_model->get_info_order($info['id_order']);
         if ($role == QC) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
@@ -847,10 +870,18 @@ class Order extends MY_Controller
         $attachs = json_decode($info['attach'], true);
         !isset($attachs[$id_attach]) ? resError('id_attach không tồn tại') : '';
 
+        $log['new'] = $attachs[$id_attach]; // log file cũ
+
         unset($attachs[$id_attach]); // xóa
 
-        //TODO: THIẾU GHI LOG
         $this->Job_model->update_attach_job($id_job, json_encode($attachs));
+
+        //LOG
+        $log['type']     = LOG_REF_REMOVE;
+        $log['id_order'] = $order['id_order'];
+        $log['id_job']   = $id_job;
+        $this->Log_model->log_add($log);
+
         resSuccess($id_attach);
     }
 
@@ -887,9 +918,17 @@ class Order extends MY_Controller
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
         !$copy['status'] ? resError($copy['error']) : '';
 
-        //TODO: THIẾU GHI LOG
+        $old_attach = $attachs[$id_attach]; // log file cũ
         $attachs[$id_attach] = $copy['basename'];
         $this->Job_model->update_attach_job($id_job, json_encode($attachs));
+
+        //LOG
+        $log['type']     = LOG_REF_EDIT;
+        $log['id_order'] = $order['id_order'];
+        $log['id_job']   = $id_job;
+        $log['old'] = $old_attach;
+        $log['new'] = $copy['basename'];
+        $this->Log_model->log_add($log);
         resSuccess('Thành công');
     }
 
@@ -913,8 +952,20 @@ class Order extends MY_Controller
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
 
-        //TODO: THIẾU GHI LOG
+        // nếu ko thay đổi gì thì bỏ qua
+        if ($order['job'][$id_job]['requirement'] == $requirement) {
+            resSuccess('Thành công');
+        }
+
         $this->Job_model->update_requirement_job($id_job, $requirement);
+
+        //LOG
+        $log['type']     = LOG_NOTE_EDIT;
+        $log['id_order'] = $order['id_order'];
+        $log['id_job']   = $id_job;
+        $log['old']      = $order['job'][$id_job]['requirement'];
+        $log['new']      = $requirement;
+        $this->Log_model->log_add($log);
         resSuccess('Thành công');
     }
 
@@ -948,10 +999,17 @@ class Order extends MY_Controller
 
         !$copy['status'] ? resError($copy['error']) : '';
 
-        //TODO: THIẾU GHI LOG
         $id_file_complete = generateRandomNumber();
         $info['file_complete'][$id_file_complete] = $copy['basename'];
         $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+
+        //LOG
+        $log['type']     = LOG_COMPLETE_ADD;
+        $log['id_order'] = $order['id_order'];
+        $log['id_job']   = $id_job;
+        $log['new']      = $copy['basename'];
+        $this->Log_model->log_add($log);
+
         resSuccess($id_file_complete);
     }
 
@@ -987,10 +1045,17 @@ class Order extends MY_Controller
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
 
         !$copy['status'] ? resError($copy['error']) : '';
-
-        //TODO: THIẾU GHI LOG
+        $old_file = $info['file_complete'][$id_complete];
         $info['file_complete'][$id_complete] = $copy['basename'];
         $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+
+        //LOG
+        $log['type']     = LOG_COMPLETE_EDIT;
+        $log['id_order'] = $order['id_order'];
+        $log['id_job']   = $id_job;
+        $log['old']      = $old_file;
+        $log['new']      = $copy['basename'];
+        $this->Log_model->log_add($log);
         resSuccess($id_complete);
     }
 
@@ -1016,10 +1081,17 @@ class Order extends MY_Controller
 
         !isset($info['file_complete'][$id_complete]) ? resError('ID FILE COMPLETE không tồn tại') : '';
 
+        $old_file = $info['file_complete'][$id_complete]; // để ghi vào log
         unset($info['file_complete'][$id_complete]); // xóa
 
-        //TODO: THIẾU GHI LOG
         $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+
+        //LOG
+        $log['type']     = LOG_COMPLETE_REMOVE;
+        $log['id_order'] = $order['id_order'];
+        $log['id_job']   = $id_job;
+        $log['new']      = $old_file;
+        $this->Log_model->log_add($log);
         resSuccess($id_complete);
     }
 
@@ -1061,9 +1133,20 @@ class Order extends MY_Controller
             $db_attach[$id_attach] = $copy['basename'];
         }
 
-        $exc = $this->Job_model->add_rework($job['id_order'], $id_job, json_encode($db_attach), $note, $cur_uid);
+        $newid = $this->Job_model->add_rework($job['id_order'], $id_job, json_encode($db_attach), $note, $cur_uid);
 
-        $exc ? resSuccess('ok') : resError('Không lưu được vào lúc này, vui lòng thử lại');
+        if ($newid) {
+            //LOG
+            $log['type']      = LOG_RW_ADD;
+            $log['id_order']  = $order['id_order'];
+            $log['id_job']    = $id_job;
+            $log['id_rework'] = $newid;
+            $this->Log_model->log_add($log);
+
+            resSuccess('ok');
+        } else {
+            resError('Không lưu được vào lúc này, vui lòng thử lại');
+        }
     }
 
     function ajax_add_file_attach_rework()
