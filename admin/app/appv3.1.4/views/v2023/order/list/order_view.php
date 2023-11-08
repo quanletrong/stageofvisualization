@@ -36,7 +36,7 @@
             <table id="example1" class="table table-bordered table-striped">
                 <thead class="thead-danger">
                     <tr>
-                        <th class="text-center">JID</th>
+                        <th class="text-center" style="max-width: 200px;">JID</th>
                         <th class="text-center">CID</th>
                         <th class="text-center">DATE</th>
                         <th class="text-center">JOB TYPE</th>
@@ -54,7 +54,7 @@
                     <?php $index = 1; ?>
                     <?php foreach ($list_order as $id_order => $order) { ?>
                         <tr class="text-default">
-                            <td class="align-middle text-center"><?= $order['code_order'] == '' ? 'OID' . $order['id_order'] : $order['code_order'] ?></td>
+                            <td class="align-middle text-center" style="max-width: 200px; line-break: anywhere"><?= $order['code_order'] == '' ? 'OID' . $order['id_order'] : $order['code_order'] ?></td>
                             <td class="align-middle text-center"><?= $order['code_user'] == '' ? 'UID' . $order['id_user'] :  $order['code_user'] ?></td>
                             <td class="align-middle text-center"><span title="<?= timeSince($order['create_time']) ?> trước"><?= $order['create_time'] ?> </span></td>
                             <td class="align-middle text-center">

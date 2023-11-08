@@ -411,12 +411,13 @@ function count_down_time(time, elId) {
         var minutes = Math.floor((distance_abs % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance_abs % (1000 * 60)) / 1000);
 
-        let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
-        if (IS_EXPIRED) {
-            document.getElementById(elId).innerHTML = '<span style="color:red"> - ' + ket_qua + '</span>';
-        } else {
-            document.getElementById(elId).innerHTML = '<span style="color:green">' + ket_qua + '</span>';
-        }
+        // CODE CU
+        // let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
+        // if (IS_EXPIRED) {
+        //     document.getElementById(elId).innerHTML = '<span style="color:red"> - ' + ket_qua + '</span>';
+        // } else {
+        //     document.getElementById(elId).innerHTML = '<span style="color:green">' + ket_qua + '</span>';
+        // }
 
         let bg_color = IS_EXPIRED ? 'bg-danger' : 'bg-success';
         // let am = IS_EXPIRED ? '-' : '';
@@ -486,7 +487,9 @@ function no_count_down_time(time, timeDone, elId) {
     var minutes = Math.floor((distance_abs % (1000 * 60 * 60)) / (1000 * 60));
     var seconds = Math.floor((distance_abs % (1000 * 60)) / 1000);
 
-    let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
+    // CODE CU
+    // let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
+    
     let bg_color = IS_EXPIRED ? 'bg-danger' : 'bg-success';
     let html = `
         <div class='d-flex' style="gap:10px; justify-content: space-evenly; width:100%; font-weight: bold;">
