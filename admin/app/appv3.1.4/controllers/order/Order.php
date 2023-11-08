@@ -521,7 +521,7 @@ class Order extends MY_Controller
         
         //LOG
         if ($working_type == WORKING_EDITOR) {
-            $log_type = LOG_QC_IN_ADD;
+            $log_type = LOG_ED_ADD;
         }
         else if ($working_type == WORKING_QC_IN) {
             $log_type = LOG_QC_IN_ADD;
@@ -627,7 +627,7 @@ class Order extends MY_Controller
 
         //LOG
         if ($working_type == WORKING_EDITOR) {
-            $log_type = LOG_QC_IN_REMOVE;
+            $log_type = LOG_ED_REMOVE;
         }
         else if ($working_type == WORKING_QC_IN) {
             $log_type = LOG_QC_IN_REMOVE;
@@ -657,7 +657,7 @@ class Order extends MY_Controller
         $order == []                        ? resError('Đơn không tồn tại') : '';
         !in_array($role, [ADMIN, SALE])     ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
         !is_numeric($custom) || $custom < 0 ? resError('Tổng custom không hợp lệ') : '';
-        $custom == $order['custom']         ? resSuccess['OK'] : ''; // giá mới = giá cũ
+        $custom == $order['custom']         ? resSuccess('ok') : ''; // giá mới = giá cũ
 
         $kq = $this->Order_model->update_custom_order($id_order, $custom);
 
@@ -713,7 +713,7 @@ class Order extends MY_Controller
 
         $log['type']      = LOG_CUSTOM_USER_PRICE_EDIT;
         $log['id_order']  = $order['id_order'];
-        $log['id_user']   = $uinfo['username'];
+        $log['id_user']   = $id_user;
         $log['old']       = $old_custom;
         $log['new']       = $custom;
         $this->Log_model->log_add($log);
