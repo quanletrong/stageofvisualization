@@ -28,4 +28,4 @@
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
 <!-- common js -->
-<script src="js/v2023/common.js"></script>
+<script src="js/v2023/common.js?v=1"></script>
