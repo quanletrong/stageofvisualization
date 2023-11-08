@@ -423,40 +423,40 @@ function count_down_time(time, elId) {
         // let am = IS_EXPIRED ? '-' : '';
         let html = `
             <div class='d-flex' style="gap:10px; justify-content: space-evenly; width:100%; font-weight: bold;">
-                <div class="d-flex" style="flex-direction:column; text-align: center;">
+                <div class="d-flex" style="flex-direction:column; align-items: center;">
                     <div 
                         class="text-light rounded-circle ${bg_color} p-2 d-flex" 
-                        style="width: 40px; height: 40px; align-items: center;justify-content: center;"
+                        style="width: 30px; height: 30px; align-items: center;justify-content: center;"
                     >
                         <span>${days}</span>
                     </div>
                     <span>Ngày</span>
                 </div>
                 
-                <div class="d-flex" style="flex-direction:column; text-align: center;">
+                <div class="d-flex" style="flex-direction:column; align-items: center;">
                     <div 
                         class="text-light rounded-circle ${bg_color} p-2 d-flex" 
-                        style="width: 40px; height: 40px; align-items: center;justify-content: center;"
+                        style="width: 30px; height: 30px; align-items: center;justify-content: center;"
                     >
                         <span>${hours}</span>
                     </div>
                     <span>Giờ</span>
                 </div>
 
-                <div class="d-flex" style="flex-direction:column; text-align: center;">
+                <div class="d-flex" style="flex-direction:column; align-items: center;">
                     <div 
                         class="text-light rounded-circle ${bg_color} p-2 d-flex" 
-                        style="width: 40px; height: 40px; align-items: center;justify-content: center;"
+                        style="width: 30px; height: 30px; align-items: center;justify-content: center;"
                     >
                         <span>${minutes}</span>
                     </div>
                     <span>Phút</span>
                 </div>
 
-                <div class="d-flex" style="flex-direction:column; text-align: center;">
+                <div class="d-flex" style="flex-direction:column; align-items: center;">
                     <div 
                         class="text-light rounded-circle ${bg_color} p-2 d-flex" 
-                        style="width: 40px; height: 40px; align-items: center;justify-content: center;"
+                        style="width: 30px; height: 30px; align-items: center;justify-content: center;"
                     >
                         <span>${seconds}</span>
                     </div>
@@ -489,44 +489,44 @@ function no_count_down_time(time, timeDone, elId) {
 
     // CODE CU
     // let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
-    
+
     let bg_color = IS_EXPIRED ? 'bg-danger' : 'bg-success';
     let html = `
         <div class='d-flex' style="gap:10px; justify-content: space-evenly; width:100%; font-weight: bold;">
-            <div class="d-flex" style="flex-direction:column; text-align: center;">
+            <div class="d-flex" style="flex-direction:column; align-items: center;">
                 <div 
                     class="text-light rounded-circle ${bg_color} p-2 d-flex" 
-                    style="width: 40px; height: 40px; align-items: center;justify-content: center;"
+                    style="width: 30px; height: 30px; align-items: center;justify-content: center;"
                 >
                     <span>${days}</span>
                 </div>
                 <span>Ngày</span>
             </div>
             
-            <div class="d-flex" style="flex-direction:column; text-align: center;">
+            <div class="d-flex" style="flex-direction:column; align-items: center;">
                 <div 
                     class="text-light rounded-circle ${bg_color} p-2 d-flex" 
-                    style="width: 40px; height: 40px; align-items: center;justify-content: center;"
+                    style="width: 30px; height: 30px; align-items: center;justify-content: center;"
                 >
                     <span>${hours}</span>
                 </div>
                 <span>Giờ</span>
             </div>
 
-            <div class="d-flex" style="flex-direction:column; text-align: center;">
+            <div class="d-flex" style="flex-direction:column; align-items: center;">
                 <div 
                     class="text-light rounded-circle ${bg_color} p-2 d-flex" 
-                    style="width: 40px; height: 40px; align-items: center;justify-content: center;"
+                    style="width: 30px; height: 30px; align-items: center;justify-content: center;"
                 >
                     <span>${minutes}</span>
                 </div>
                 <span>Phút</span>
             </div>
 
-            <div class="d-flex" style="flex-direction:column; text-align: center;">
+            <div class="d-flex" style="flex-direction:column; align-items: center;">
                 <div 
                     class="text-light rounded-circle ${bg_color} p-2 d-flex" 
-                    style="width: 40px; height: 40px; align-items: center;justify-content: center;"
+                    style="width: 30px; height: 30px; align-items: center;justify-content: center;"
                 >
                     <span>${seconds}</span>
                 </div>
