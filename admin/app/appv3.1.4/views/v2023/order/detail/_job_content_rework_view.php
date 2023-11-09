@@ -39,7 +39,7 @@
                                 </button>
                             </div>
 
-                            <?php if (@getimagesize(url_image($file, $FDR_ORDER))) { ?>
+                            <?php if (stringIsImage($file)) { ?>
                                 <img id="img_complete_rework_<?= $key ?>" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
                             <?php } else { ?>
                                 <div id="img_complete_rework_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-rework="<?= $id_rework ?>" data-id-complete-rework="<?= $key ?>">
@@ -91,7 +91,7 @@
                                 <?php } ?>
                             </div>
 
-                            <?php if (@getimagesize(url_image($url_attach, $FDR_ORDER))) { ?>
+                            <?php if (stringIsImage($url_attach)) { ?>
                                 <img id="img_attach_<?= $id_attach ?>" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>" src="<?= url_image($url_attach, $FDR_ORDER) ?>" alt="" width="100%">
                             <?php } else { ?>
                                 <div id="img_attach_<?= $id_attach ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-rework="<?= $id_rework ?>" data-id-attach="<?= $id_attach ?>">

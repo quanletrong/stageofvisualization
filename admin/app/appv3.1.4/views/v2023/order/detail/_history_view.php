@@ -61,9 +61,9 @@
                                     <div class="d-flex align-items-center" style="gap:10px; ">
                                         <!-- DỮ LIỆU CŨ -->
                                         <?php if ($log['old'] != '') { ?>
-                                            <?php if (@getimagesize(url_image($log['old'], $FDR_ORDER))) { ?>
+                                            <?php if (stringIsImage($log['old'])) { ?>
                                                 <img src="<?= url_image($log['old'], $FDR_ORDER) ?>" alt="" width="150" onclick="downloadURI('<?= url_image($log['old'], $FDR_ORDER) ?>', 'old-image')" style="cursor: pointer" title="Bấm vào để tải xuống">
-                                            <?php } else if (get_remote_file_info(url_image($log['old'], $FDR_ORDER)) > 0) { ?>
+                                            <?php } else if (stringIsFile($log['old'])) { ?>
                                                 <div class="rounded border p-2 text-truncate shadow" style="width: 150px; line-break: anywhere; text-align:center; cursor: pointer;" onclick="downloadURI('<?= url_image($log['old'], $FDR_ORDER) ?>', 'old-file')" title="Bấm vào để tải xuống">
                                                     <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                                                     <span style="font-size:12px;"><?= $log['old'] ?></span>
@@ -75,9 +75,9 @@
                                         <!-- DỮ LIỆU MỚI -->
                                         <?php if ($log['new'] != '') { ?>
                                             <div> → </div>
-                                            <?php if (@getimagesize(url_image($log['new'], $FDR_ORDER))) { ?>
+                                            <?php if (stringIsImage($log['new'])) { ?>
                                                 <img src="<?= url_image($log['new'], $FDR_ORDER) ?>" alt="" width="150" onclick="downloadURI('<?= url_image($log['new'], $FDR_ORDER) ?>', 'new-image')" style="cursor: pointer" title="Bấm vào để tải xuống">
-                                            <?php } else if (get_remote_file_info(url_image($log['new'], $FDR_ORDER)) > 0) { ?>
+                                            <?php } else if (stringIsFile($log['new'])) { ?>
                                                 <div class="rounded border p-2 text-truncate shadow" style="width: 150px; line-break: anywhere; text-align:center; cursor: pointer;" onclick="downloadURI('<?= url_image($log['new'], $FDR_ORDER) ?>', 'new-file')" title="Bấm vào để tải xuống">
                                                     <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                                                     <span style="font-size:12px;"><?= $log['new'] ?></span>

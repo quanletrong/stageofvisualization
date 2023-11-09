@@ -1626,4 +1626,12 @@ class Order extends MY_Controller
             redirect(site_url('order/detail/' . $order['id_order'] . '?zip=' . $error_text, $this->_langcode));
         }
     }
+
+    /**
+     * Chức năng lấy danh sách log
+     */
+
+    function ajax_log_order($id_order) {
+    
+    }
 }

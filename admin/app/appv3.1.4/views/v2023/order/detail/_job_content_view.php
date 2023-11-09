@@ -66,7 +66,7 @@
                                             </button>
                                         </div>
 
-                                        <?php if (@getimagesize(url_image($job['image'], $FDR_ORDER))) { ?>
+                                        <?php if (stringIsImage($job['image'])) { ?>
                                             <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
                                         <?php } else { ?>
                                             <div id="main_file_<?= $id_job ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id="<?= $id_job ?>">
@@ -117,7 +117,7 @@
                                                         <?php } ?>
                                                     </div>
 
-                                                    <?php if (@getimagesize(url_image($item, $FDR_ORDER))) { ?>
+                                                    <?php if (stringIsImage($item)) { ?>
                                                         <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="width: -webkit-fill-available; width: -moz-available;">
                                                     <?php } else { ?>
                                                         <div id="attach_file_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>">
@@ -193,7 +193,7 @@
                                                     </button>
                                                 </div>
 
-                                                <?php if (@getimagesize(url_image($file, $FDR_ORDER))) { ?>
+                                                <?php if (stringIsImage($file)) { ?>
                                                     <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
                                                 <?php } else { ?>
                                                     <div id="img_complete_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>">
