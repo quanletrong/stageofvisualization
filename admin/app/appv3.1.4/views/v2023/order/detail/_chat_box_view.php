@@ -54,13 +54,26 @@
             </div>
 
             <div class="card-footer">
-                <div class="input-group">
+                <div class="d-flex" style="gap:10px; flex-wrap: wrap;">
+                    <!-- <img class="mb-2" style="width: 23%" src="http://stageofvisualization.local/uploads/order/1698804372@SALE_CHINH/g1BWh-vnpost.jpg">
+                    <img class="mb-2" style="width: 23%" src="http://stageofvisualization.local/uploads/order/1698804372@SALE_CHINH/g1BWh-vnpost.jpg">
+                    <img class="mb-2" style="width: 23%" src="http://stageofvisualization.local/uploads/order/1698804372@SALE_CHINH/g1BWh-vnpost.jpg">
+                    <img class="mb-2" style="width: 23%" src="http://stageofvisualization.local/uploads/order/1698804372@SALE_CHINH/g1BWh-vnpost.jpg"> -->
+                </div>
+
+                <div class="mt-2 input-group">
+                    <span class="input-group-append">
+                        <button type="button" class="btn btn-warning" onclick="//ajax_discuss_add(this)"><i class="fa fa-paperclip"></i></button>
+                    </span>
+
                     <input type="text" name="message" placeholder="Type Message ..." class="form-control content_discuss">
                     <input type="hidden" class="file_discuss">
+                    
                     <span class="input-group-append">
                         <button type="button" class="btn btn-primary" onclick="ajax_discuss_add(this)">Send</button>
                     </span>
                 </div>
+
             </div>
         </div>
     </div>
@@ -105,6 +118,25 @@
                     let html = ``;
                     for (const [key, discuss] of Object.entries(list_discuss)) {
 
+                        let html_file = ``;
+                        for (const [id_file, file] of Object.entries(discuss.file_list)) {
+                            html_file += `
+                                <div class="p-1 w-25 mb-2" 
+                                    onclick="downloadURI('<?=url_image('', $FDR_ORDER)?>${file}', '${file}')"
+                                    style="cursor: pointer;" title="Bấm để tải xuống"
+                                >   ${
+                                        (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
+                                        ? `<img class="w-100" src="<?=url_image('', $FDR_ORDER)?>${file}">`
+                                        : `
+                                        <div width="100%" class="rounded border p-2 text-truncate shadow bg-light" style="height: 100px;line-break: anywhere; text-align:center">
+                                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                            <span style="font-size:12px;">${file}</span>
+                                        </div>
+                                        `
+                                    }
+                                </div>
+                            `;
+                        }
                         html += `
                         
                             <div class="direct-chat-msg">
@@ -115,15 +147,12 @@
 
                                 <img class="direct-chat-img" src="${discuss.avatar_url}" alt="message user image">
 
-                                <div class="direct-chat-text">
+                                <div class="direct-chat-text p-2">
                                     
-                                    <div class="d-flex" style="display: none !important">
-                                        <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
-                                        <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
-                                        <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
-                                        <div class="p-1 w-25"><img class="w-100" src="http://stageofvisualization.local//uploads/tmp/7j134-comfortable-contemporary-bath01800x600.jpg"></div> 
+                                    <div class="d-flex" style="">
+                                        ${html_file}
                                     </div>
-                                    <p>${discuss.content}</p>
+                                    <p class="bg-light m-0 px-2 py-1 rounded">${discuss.content}</p>
                                     
                                 </div>
                             </div> `;
