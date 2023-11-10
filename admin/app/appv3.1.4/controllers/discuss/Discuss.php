@@ -86,6 +86,7 @@ class Discuss extends MY_Controller
 
         //validate file đính kèm
         $db_attach = [];
+        $attach = is_array($attach) ? $attach : [];
         foreach ($attach as $i => $url_file) {
             $parse = parse_url($url_file);
             !isset($parse['host'])              ? resError('url file không hợp lệ (1)') : '';
@@ -129,6 +130,7 @@ class Discuss extends MY_Controller
        
         //validate file đính kèm
         $db_attach = [];
+        $attach = is_array($attach) ? $attach : [];
         foreach ($attach as $i => $url_file) {
             $parse = parse_url($url_file);
             !isset($parse['host'])              ? resError('url file không hợp lệ (1)') : '';

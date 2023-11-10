@@ -178,7 +178,7 @@
                                 <div class="d-flex" style="">
                                     ${html_file}
                                 </div>
-                                <p class="m-0 px-2 py-1 rounded" style="white-space: pre-line background: aliceblue;">${discuss.content}</p>
+                                <p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; background: aliceblue;">${discuss.content}</p>
                                 
                             </div>
                         </div> `;
@@ -187,7 +187,7 @@
                         .append(new_html)
                         .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
 
-                    $('#discuss_khach .content_discuss').val('');
+                    $('#discuss_khach .content_discuss').val('').height(60);
                     $('#discuss_khach .chat_list_attach').html('');
                     set_height_chat_list_and_height_input(`#discuss_khach`);
                 } else {
