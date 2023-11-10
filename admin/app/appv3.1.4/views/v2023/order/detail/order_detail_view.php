@@ -40,7 +40,7 @@
 
         <!-- CHAT BOX -->
         <section>
-            <div class="card card-tabs card-primary" style="height: 100vh;" id="card_chat_lich_su">
+            <div class="card card-tabs card-primary" style="height: 90vh;" id="card_chat_lich_su">
                 <div class="card-header p-0 pt-1 border-bottom-0">
                     <ul class="nav nav-tabs" role="tablist">
                         <?php if ($role == ADMIN || $role == SALE) { ?>
