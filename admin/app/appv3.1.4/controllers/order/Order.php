@@ -457,6 +457,9 @@ class Order extends MY_Controller
         $role == EDITOR && $as_uinfo['role'] == SALE     ? resError('ED không có quyền gán người cấp SALE') : '';
         $role == EDITOR && $as_uinfo['role'] == QC       ? resError('ED không có quyền gán người cấp QC') : '';
 
+        // gán type_service để lưu vào db
+        $db_type_service = @$order['job'][$id_job]['type_service'];
+
         // WORKING_EDITOR
         if ($working_type == WORKING_EDITOR) {
             $role == EDITOR && $order['status'] == ORDER_PENDING    ? resError('ED không thể tham gia vào đơn hàng đang PENDING') : '';
@@ -480,6 +483,7 @@ class Order extends MY_Controller
         }
         // WORKING_CUSTOM
         else if ($working_type == WORKING_CUSTOM) {
+            $db_type_service = SERVICES_CUSTOM;
             $id_job = 0; // mặc định
             $role == EDITOR ? resError('ED không có quyền thực hiện chức năng này.') : '';
         } else {
@@ -515,8 +519,7 @@ class Order extends MY_Controller
         }
         // user gán chưa tồn tại thì INSERT bản ghi mới
         else {
-            $type_service = @$order['job'][$id_job]['type_service'];
-            $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $type_service, $working_type, $status, $time_join, 1);
+            $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $db_type_service, $working_type, $status, $time_join, 1);
         }
         
         //LOG

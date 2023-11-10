@@ -538,8 +538,8 @@ function no_count_down_time(time, timeDone, elId) {
     document.getElementById(elId).innerHTML = html;
 }
 
-function scroll_to(selector) {
+function scroll_to(selector, offset=200) {
     $([document.documentElement, document.body]).animate({
-        scrollTop: $(selector).offset().top - 200
+        scrollTop: $(selector).offset().top - offset
     }, "fast");
 }

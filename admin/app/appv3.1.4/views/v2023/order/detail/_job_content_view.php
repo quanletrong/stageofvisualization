@@ -24,7 +24,7 @@
     }
 </style>
 
-<div class="card card-tabs card-primary">
+<div class="card card-tabs card-primary" style="height: 98%;">
     <div class="card-header p-0 pt-1 border-bottom-0">
         <ul class="nav nav-tabs" id="tab_job" role="tablist">
             <?php $active = 'active' ?>
@@ -269,7 +269,7 @@
                     $(target).remove(); // xóa file cũ
 
                     $(`#box_main_file_${id_job}`).append(fileview); // thay bằng file mới
-                    
+
                 } else {
                     toasts_danger(kq.error);
                 }

@@ -114,7 +114,7 @@
                     <?php } ?>
                 </div>
 
-                <textarea class="form-control mt-2" id="requirement_rework_<?= $id_rework ?>" rows="5"><?= $rework['note'] ?></textarea>
+                <textarea class="form-control mt-2" id="requirement_rework_<?= $id_rework ?>" rows="5" cols="50"><?= $rework['note'] ?></textarea>
             </div>
 
         </div>
@@ -141,7 +141,7 @@
         </div>
         <div class="mt-2">
             <b>Requirements</b>
-            <textarea class="txt_note_rework_add form-control" rows="5"></textarea>
+            <textarea class="txt_note_rework_add form-control" cols="50" rows="5"></textarea>
         </div>
         <div class="mt-2 text-center">
             <button class="btn btn-warning btn-sm mt-2" onclick="ajax_add_rework(this, '<?= $id_job ?>')" style="width: 100px;">Save Rework</button>
@@ -158,10 +158,6 @@
 <?php } ?>
 
 <script>
-    $(document).ready(function() {
-
-    })
-
     function ajax_add_rework(btn, id_job) {
         let note = $(`#card_new_rework_${id_job} .txt_note_rework_add`).val();
         let attach = [];
@@ -661,7 +657,4 @@
         }
     }
     // END ATTACH REWORK
-    function isImage(url_image) {
-        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
-    }
 </script>

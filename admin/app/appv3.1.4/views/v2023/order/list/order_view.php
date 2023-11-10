@@ -56,7 +56,7 @@
                         <tr class="text-default">
                             <td class="align-middle text-center" style="max-width: 200px; line-break: anywhere"><?= $order['code_order'] == '' ? 'OID' . $order['id_order'] : $order['code_order'] ?></td>
                             <td class="align-middle text-center"><?= $order['code_user'] == '' ? 'UID' . $order['id_user'] :  $order['code_user'] ?></td>
-                            <td class="align-middle text-center"><span title="<?= timeSince($order['create_time']) ?> trước"><?= $order['create_time'] ?> </span></td>
+                            <td class="align-middle text-center"><span title="<?= $order['create_time'] ?>"><?= timeSince($order['create_time']) ?> trước </span></td>
                             <td class="align-middle text-center">
                                 <?php foreach ($order['type_service'] as $val) { ?>
                                     <small class="badge badge-danger"><?= $val ?></small>
@@ -81,9 +81,9 @@
                                 <span id="cdt_<?= $order['id_order'] ?>"><?= count_down_time_order($order) ?></span>
 
                             </td>
-                            <td class="align-middle text-center" style="max-width: 350px;">
+                            <td class="align-middle" style="max-width: 150px;">
                                 <?php foreach ($order['team'] as $id_user => $user) { ?>
-                                    <img src="<?= url_image($user['avatar'], 'uploads/avatar/') ?>" title="<?= $user['username'] . ' - ' . $user['fullname'] ?>" alt="<?= $user['username'] ?>" class="img-circle shadow" style="width: 36px; aspect-ratio: 1; object-fit: cover;">
+                                    <img src="<?= url_image($user['avatar'], 'uploads/avatar/') ?>" title="<?= $user['username'] . ' - ' . $user['fullname'] ?>" alt="<?= $user['username'] ?>" class="img-circle shadow" style="margin-bottom: 5px; width: 36px; aspect-ratio: 1; object-fit: cover;">
                                 <?php } ?>
 
                             </td>
@@ -92,16 +92,17 @@
                                     <div class="dropdown">
                                         <button class="btn dropdown-toggle" type="button" id="drop_change_don_ed_type_<?= $order['id_order'] ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <?php if ($order['ed_type'] == ED_NOI_BO) { ?>
-                                                <i class="fas fa-lock text-secondary" title="ED nội bộ"></i>
+                                                <span class="text-secondary">ED nội bộ</span>
                                             <?php } else { ?>
-                                                <i class="fas fa-globe-europe text-success" title="ED cộng tác viên"></i>
+                                                <span class="text-success">ED cộng tác</span>
                                             <?php } ?>
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="drop_change_don_ed_type_<?= $order['id_order'] ?>">
                                             <button class="dropdown-item" type="button" onclick="drop_change_don_ed_type(<?= ED_NOI_BO ?>, <?= $order['id_order'] ?>)">
-                                                <i class="fas fa-lock text-secondary" title="Nội bộ"></i> ED Nội bộ</button>
+                                                <span class="text-secondary">ED Nội bộ</span>
+                                            </button>
                                             <button class="dropdown-item" type="button" onclick="drop_change_don_ed_type(<?= ED_CTV ?>, <?= $order['id_order'] ?>)">
-                                                <i class="fas fa-globe-europe text-success" title="Cộng tác viên"></i> ED cộng tác viên
+                                                <span class="text-success">ED cộng tác</span>
                                             </button>
                                         </div>
                                     </div>
@@ -121,6 +122,11 @@
 </div>
 
 <script>
+    // sau 5 phut sẽ load lại trang
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000 * 60 * 5);
+
     $(function() {
 
         $("#example1").DataTable({
@@ -152,10 +158,10 @@
                     if (resData.status) {
 
                         if (ed_type == <?= ED_NOI_BO ?>) {
-                            $('#drop_change_don_ed_type_' + id_order).html('<i class="fas fa-lock text-secondary" title="Nội bộ"></i>');
+                            $('#drop_change_don_ed_type_' + id_order).html('<span class="text-secondary">ED nội bộ</span>');
 
                         } else {
-                            $('#drop_change_don_ed_type_' + id_order).html('<i class="fas fa-globe-europe text-success" title="Cộng tác viên"></i>');
+                            $('#drop_change_don_ed_type_' + id_order).html('<span class="text-success">ED cộng tác</span<');
                         }
                         toasts_success();
                     } else {
