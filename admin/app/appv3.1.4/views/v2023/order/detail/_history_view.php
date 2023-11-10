@@ -1,4 +1,4 @@
-<div class="timeline">
+<div class="timeline" style="overflow-y: auto; height: 100%;">
     <?php foreach ($logs as $id_log => $log) { ?>
         <div>
             <img class="direct-chat-img" src="<?= $log['avatar'] ?>" alt="message user image" style="left: 18px;position: absolute;width: 30px;height: 30px;">
