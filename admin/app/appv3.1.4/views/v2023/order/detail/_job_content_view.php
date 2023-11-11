@@ -230,7 +230,7 @@
     function cb_upload_edit_main_file(url_image, target, file_name, btn_upload) {
 
         let btn_upload_old = $(btn_upload).html();
-        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
         let id_job = $(target).data('id');
 
@@ -285,7 +285,7 @@
 
     function cb_upload_edit_attach_file(url_image, target, file_name, btn_upload) {
 
-        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
         let id_job = $(target).data('id-job');
@@ -355,7 +355,7 @@
 
     function cb_upload_add_attach_file(url_image, target, file_name, btn_upload) {
 
-        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
         let id_job = $(btn_upload).data('job');
@@ -517,7 +517,7 @@
 
     function cb_upload_add_file_complete(url_image, target, file_name, btn_upload) {
 
-        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
         let id_job = $(target).data('id-job');
@@ -592,7 +592,7 @@
     function cb_upload_edit_file_complete(url_image, target, file_name, btn_upload) {
 
         let btn_upload_old = $(btn_upload).html();
-        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
         let id_job = $(target).data('id-job');

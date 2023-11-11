@@ -280,7 +280,7 @@
     function cb_upload_add_file_complete_rework(url_image, target, file_name, btn_upload) {
 
         let btn_upload_old = $(btn_upload).html();
-        $(btn_upload).html(`<i class = "fas fa-sync fa-spin" ></i>`);
+        $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
         let id_rework = $(target).data('id-rework');
@@ -356,7 +356,7 @@
     function cb_upload_edit_file_complete_rework(url_image, target, file_name, btn_upload) {
 
         let btn_upload_old = $(btn_upload).html();
-        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
         let id_rework = $(target).data('id-rework');
@@ -449,7 +449,7 @@
 
     function cb_upload_add_file_attach_rework(url_image, target, file_name, btn_upload) {
 
-        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
         let id_rework = $(target).data('id-rework');
@@ -526,7 +526,7 @@
     function cb_upload_edit_file_attach_rework(url_image, target, file_name, btn_upload) {
 
         let btn_upload_old = $(btn_upload).html();
-        $(btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
+        $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
         let id_attach = $(target).data('id-attach');
