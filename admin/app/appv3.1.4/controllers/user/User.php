@@ -53,6 +53,7 @@ class User extends MY_Controller
             $type         = removeAllTags($this->input->post('type'));
             $user_service = $this->input->post('user_service[]');
             $status       = removeAllTags($this->input->post('status'));
+            $hdd_avatar   = removeAllTags($this->input->post('hdd_avatar'));
             $status       = $status == 'on' ? 1 : 0;
             $id_user      = removeAllTags($this->input->post('id_user'));
             $id_user      = is_numeric($id_user) && $id_user > 0 ? $id_user : 0;
@@ -95,11 +96,11 @@ class User extends MY_Controller
 
                 // check username
                 $preg_match_username = preg_match('/^[a-zA-Z0-9_]+$/', $username);
-                if(!$preg_match_username) {
+                if (!$preg_match_username) {
                     $this->session->set_flashdata('flsh_msg', 'Username chỉ bao gồm chữ hoa, chữ thường, chữ số và dấu gạch dưới');
                     redirect('user');
                 }
-                
+
                 // check passwork
                 $check_match = preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password);
                 if (!$check_match) {
@@ -108,7 +109,7 @@ class User extends MY_Controller
                 }
 
                 // check code user đã tồn tại =>  báo lỗi
-                if (!empty($user_by_code)) {
+                if ($code_user != '' && !empty($user_by_code)) {
                     $this->session->set_flashdata('flsh_msg', 'Code user đã tồn tại!');
                     redirect('user');
                 }
@@ -125,10 +126,18 @@ class User extends MY_Controller
                     redirect('user');
                 }
 
+                // check avatar == mặc định
+                $avatar = AVATAR_DEFAULT;
+                if (basename($hdd_avatar) != AVATAR_DEFAULT) {
+                    $copy_attach = copy_image_to_public_upload($hdd_avatar, FOLDER_AVATAR);
+                    if ($copy_attach['status']) {
+                        $avatar = $copy_attach['basename'];
+                    }
+                }
 
                 // add user
                 $password_hash = PasswordHash::hash($username, md5($password));
-                $newid = $this->User_model->add($code_user, $username, $password_hash, $fullname, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, AVATAR_DEFAULT);
+                $newid = $this->User_model->add($code_user, $username, $password_hash, $fullname, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $avatar);
 
                 //error
                 $this->session->set_flashdata('flsh_msg', $newid ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
@@ -156,10 +165,11 @@ class User extends MY_Controller
                     }
 
                     // check code user đã tồn tại =>  báo lỗi
-                    if ($info['code_user'] != $code_user && !empty($user_by_code)) {
+                    if ($code_user != '' && $info['code_user'] != $code_user && !empty($user_by_code)) {
                         $this->session->set_flashdata('flsh_msg', 'Code user đã tồn tại!');
                         redirect('user');
                     }
+
 
                     // check phone đã tồn tại =>  báo lỗi
                     if ($info['phone'] != $phone && !empty($user_by_phone)) {
@@ -173,8 +183,17 @@ class User extends MY_Controller
                         redirect('user');
                     }
 
+                    // check avatar == mặc định
+                    $new_avatar = $info['avatar'];
+                    if (basename($hdd_avatar) != AVATAR_DEFAULT && basename($hdd_avatar) != $info['avatar']) {
+                        $copy_attach = copy_image_to_public_upload($hdd_avatar, FOLDER_AVATAR);
+                        if ($copy_attach['status']) {
+                            $new_avatar = $copy_attach['basename'];
+                        }
+                    }
+
                     // update voucher
-                    $exc = $this->User_model->edit($code_user, $fullname, $password_hash, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $id_user);
+                    $exc = $this->User_model->edit($code_user, $fullname, $password_hash, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $id_user, $new_avatar);
 
                     //error
                     $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');

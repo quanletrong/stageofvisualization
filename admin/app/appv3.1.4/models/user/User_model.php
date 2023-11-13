@@ -37,6 +37,7 @@ class User_model extends CI_Model
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $row['user_service'] = json_decode($row['user_service'], true);
+                        $row['avatar'] = url_image($row['avatar'], FOLDER_AVATAR);
                         $data[$row['id_user']] = $row;
                     }
                 }
@@ -69,16 +70,17 @@ class User_model extends CI_Model
         return $new_id;
     }
 
-    function edit($code_user, $fullname, $pass_hash, $phone, $email, $status, $role, $type, $user_service_db, $update_time, $id_user)
+    function edit($code_user, $fullname, $pass_hash, $phone, $email, $status, $role, $type, $user_service_db, $update_time, $id_user, $avatar)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = "UPDATE tbl_user 
-        SET code_user=?, fullname=?, `password`=?, phone=?, email=?, `status`=?, `role`=?, `type`=?, `user_service`=?, update_time=? 
+        SET code_user=?, fullname=?, `password`=?, phone=?, email=?, `status`=?, `role`=?, `type`=?, `user_service`=?, update_time=?, `avatar`=? 
         WHERE id_user=?";
+
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([$code_user, $fullname, $pass_hash, $phone, $email, $status, $role, $type, $user_service_db, $update_time, $id_user])) {
+            if ($stmt->execute([$code_user, $fullname, $pass_hash, $phone, $email, $status, $role, $type, $user_service_db, $update_time, $avatar, $id_user])) {
                 $execute = true;
             } else {
                 var_dump($stmt->errorInfo());

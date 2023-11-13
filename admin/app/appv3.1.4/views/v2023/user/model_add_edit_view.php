@@ -29,7 +29,8 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="name"> <span class="text-red">*</span> Password</label>
+                                    <label for="name"> <span class="text-red">*</span> Password</label> <br>
+                                    <small>Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*</small>
                                     <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu">
                                 </div>
 
@@ -59,7 +60,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="sapo"> <span class="text-red">*</span> Role</label>
+                                    <label> <span class="text-red">*</span> Role</label>
                                     <div>
                                         <select class="form-control select2" id="role" name="role" style="width: 100%;">
                                             <option value="<?= ADMIN ?>">ADMIN</option>
@@ -73,7 +74,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="sapo">Loại tài khoản</label>
+                                    <label>Loại tài khoản</label>
                                     <div>
                                         <select class="form-control select2" id="type" name="type" style="width: 100%;">
                                             <option value="1">Nội bộ</option>
@@ -83,7 +84,7 @@
 
                                 </div>
                                 <div class="form-group">
-                                    <label for="sapo">Cấp quyền làm đơn</label>
+                                    <label>Cấp quyền làm đơn</label>
                                     <div>
                                         <select class="form-control select2" id="user_service" multiple="multiple" name="user_service[]" style="width: 100%;">
                                             <?php foreach ($list_service as $id_service => $service) { ?>
@@ -95,6 +96,20 @@
                                             <label class="form-check-label" for="chk_all_user_service">
                                                 Select All
                                             </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Ảnh đại diện</label>
+                                    <div style="display: flex; justify-content: center;">
+                                        <div class="w-25" style="position: relative; cursor: pointer;">
+                                            <img src="" id="imgAccountAvatar" class="w-100 rounded-circle border" style="aspect-ratio: 1; object-fit: cover;">
+                                            <div class="btn" style="position: absolute; bottom: 0px; right: 15%; font-size: 0.85rem; border-radius: 15px; background: gray; padding: 5px; line-height: 1; color: white;" onclick="quanlt_upload(this);" data-callback="cb_upload_image_ava" data-target="#hdd_avatar">
+                                                <i class="fas fa-camera"></i>
+                                            </div>
+                                            <input type="hidden" id="hdd_avatar" name="hdd_avatar" value="">
                                         </div>
                                     </div>
 
@@ -245,6 +260,8 @@
                 modal.find('.modal-body #role').val(user.role);
                 modal.find('.modal-body #type').val(user.type);
                 modal.find('.modal-body #user_service').val(user_service);
+                modal.find('.modal-body #hdd_avatar').val(user.avatar);
+                modal.find('.modal-body #imgAccountAvatar').attr('src', user.avatar);
             } else {
                 $('#frm_user input[name=action]').val('add');
                 $('#frm_user input[name=id_user]').val('');
@@ -263,6 +280,8 @@
                 modal.find('.modal-body #role').val('');
                 modal.find('.modal-body #type').val(1);
                 modal.find('.modal-body #user_service').val([]);
+                modal.find('.modal-body #hdd_avatar').val('');
+                modal.find('.modal-body #imgAccountAvatar').attr('src', '<?= url_image(AVATAR_DEFAULT, FOLDER_AVATAR) ?>');
             }
 
             $("#role").trigger("change");
@@ -270,4 +289,9 @@
             $("#user_service").trigger("change");
         });
     });
+
+    function cb_upload_image_ava(link, target, name) {
+        $("#imgAccountAvatar").attr('src', link);
+        $("#hdd_avatar").val(link);
+    }
 </script>
