@@ -58,9 +58,31 @@ class Order extends MY_Controller
         }
 
         $box = $this->Order_model->box_count($list_order);
-
+        $all_status = button_status_order_by_role($this->_session_role());
+        $all_service = $this->Service_model->get_list(1);
         $data['box'] = $box;
         $data['list_order'] = $list_order;
+
+        ### FORM FILTER
+        $filter_order_code = 'XXXX';
+        $filter_user_code = 'ZZZZZ';
+        $filter_order_ed_type = [ED_NOI_BO];
+        $filter_status = [ORDER_PENDING,ORDER_AVAIABLE, ORDER_QC_CHECK];
+        $filter_services = [1,2,3,4,5];
+
+        # END FORM FILTER
+
+        ### FILTER DATA
+        $data['filter_order_code']    = $filter_order_code;
+        $data['filter_user_code']     = $filter_user_code;
+        $data['filter_order_ed_type'] = $filter_order_ed_type;
+        $data['filter_services']      = $filter_services;
+        $data['filter_status']        = $filter_status;
+
+        $data['all_service']       = $all_service;
+        $data['all_status']        = $all_status;
+        # END FILTER DATA
+
         $header = [
             'title' => 'Quản lý đơn hàng',
             'header_page_css_js' => 'order'

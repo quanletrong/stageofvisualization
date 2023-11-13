@@ -32,6 +32,8 @@
             }
             ?>
 
+            <?php $this->load->view(TEMPLATE_FOLDER . 'order/list/bo_loc_view.php'); ?>
+
             <!-- BẢNG DỮ LIỆU -->
             <table id="example1" class="table table-bordered table-striped">
                 <thead class="thead-danger">
@@ -124,7 +126,7 @@
 <script>
     // sau 5 phut sẽ load lại trang
     setTimeout(() => {
-        window.location.reload();
+        // window.location.reload();
     }, 1000 * 60 * 5);
 
     $(function() {
