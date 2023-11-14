@@ -31,12 +31,6 @@ class Order_model extends CI_Model
                     $data['list_type_service']     = [];
                     $data['working_custom_active'] = [];
                     $data['working_custom_block']  = [];
-                    $data['working_ed_active']     = [];
-                    $data['working_ed_block']      = [];
-                    $data['working_qc_in_active']  = [];
-                    $data['working_qc_in_block']   = [];
-                    $data['working_qc_out_active'] = [];
-                    $data['working_qc_out_block']  = [];
                     $data['total_custom_used']     = 0;   // số lượng custom đã dùng trong đơn
 
                     foreach ($data['job'] as $id_job => $job) {
@@ -52,14 +46,6 @@ class Order_model extends CI_Model
 
                         // get rework
                         $data['job'][$id_job]['rework'] = $this->_get_list_rework_user_by_job($id_job, $iconn);
-
-
-                        // !empty($working['working_ed_active'])      ? $data['working_ed_active'][]     = $working['working_ed_active']     : '';
-                        // !empty($working['working_ed_block'])       ? $data['working_ed_block'][]      = $working['working_ed_block']      : '';
-                        // !empty($working['working_qc_in_active'])   ? $data['working_qc_in_active'][]  = $working['working_qc_in_active']  : '';
-                        // !empty($working['working_qc_in_block'])    ? $data['working_qc_in_block'][]   = $working['working_qc_in_block']   : '';
-                        // !empty($working['working_qc_out_active'])  ? $data['working_qc_out_active'][] = $working['working_qc_out_active'] : '';
-                        // !empty($working['working_qc_out_block'])   ? $data['working_qc_out_block'][]  = $working['working_qc_out_block']  : '';
 
                         // danh sach type_service cua order
                         $data['list_type_service'][$job['type_service']][] = $id_job;
