@@ -357,12 +357,12 @@
                     toasts_danger(kq.error);
                 }
 
-                $('#team_action_overlay').toggleClass('d-none');
+                // $('#team_action_overlay').toggleClass('d-none');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
                 alert('Error');
-                $('#team_action_overlay').toggleClass('d-none');
+                // $('#team_action_overlay').toggleClass('d-none');
             }
         });
     }
@@ -381,12 +381,12 @@
                 } else {
                     toasts_danger(kq.error);
                 }
-                $('#team_action_overlay').toggleClass('d-none');
+                // $('#team_action_overlay').toggleClass('d-none');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
                 alert('Error');
-                $('#team_action_overlay').toggleClass('d-none');
+                // $('#team_action_overlay').toggleClass('d-none');
             }
         });
     }

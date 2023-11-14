@@ -29,60 +29,48 @@ class Order_model extends CI_Model
                     $data['job'] = $list_job;
                     $data['total_type_service']    = 0;
                     $data['list_type_service']     = [];
-                    $data['list_type_service']     = [];
                     $data['working_custom_active'] = [];
                     $data['working_custom_block']  = [];
                     $data['working_ed_active']     = [];
                     $data['working_ed_block']      = [];
                     $data['working_qc_in_active']  = [];
-                    $data['working_qc_out_active'] = [];
                     $data['working_qc_in_block']   = [];
+                    $data['working_qc_out_active'] = [];
                     $data['working_qc_out_block']  = [];
                     $data['total_custom_used']     = 0;   // số lượng custom đã dùng trong đơn
 
                     foreach ($data['job'] as $id_job => $job) {
-                        // gán working ed
-                        $data['job'][$id_job]['working_ed_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_EDITOR, $iconn);
-                        $data['job'][$id_job]['working_ed_block']  = $this->_get_list_job_user_by_job($id_order, $id_job, 0, WORKING_EDITOR, $iconn);
 
-                        // gán working qc in
-                        $data['job'][$id_job]['working_qc_in_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_QC_IN, $iconn);
-                        $data['job'][$id_job]['working_qc_in_block']  = $this->_get_list_job_user_by_job($id_order, $id_job, 0, WORKING_QC_IN, $iconn);
-                        // gán working qc out
-                        $data['job'][$id_job]['working_qc_out_active'] = $this->_get_list_job_user_by_job($id_order, $id_job, 1, WORKING_QC_OUT, $iconn);
-                        $data['job'][$id_job]['working_qc_out_block']  = $this->_get_list_job_user_by_job($id_order, $id_job, 0, WORKING_QC_OUT, $iconn);
+                        // get working
+                        $working = $this->_get_working_job_v2($id_order, $id_job, $iconn);
+                        $data['job'][$id_job]['working_ed_active']     = $working['working_ed_active'];
+                        $data['job'][$id_job]['working_ed_block']      = $working['working_ed_block'];
+                        $data['job'][$id_job]['working_qc_in_active']  = $working['working_qc_in_active'];
+                        $data['job'][$id_job]['working_qc_in_block']   = $working['working_qc_in_block'];
+                        $data['job'][$id_job]['working_qc_out_active'] = $working['working_qc_out_active'];
+                        $data['job'][$id_job]['working_qc_out_block']  = $working['working_qc_out_block'];
 
-                        // gán rework
-                        $data['job'][$id_job]['rework']  = $this->_get_list_rework_user_by_job($id_job, $iconn);
+                        // get rework
+                        $data['job'][$id_job]['rework'] = $this->_get_list_rework_user_by_job($id_job, $iconn);
 
-                        if (!empty($data['job'][$id_job]['working_ed_active'])) {
-                            $data['working_ed_active'][]   = $data['job'][$id_job]['working_ed_active'];
-                        }
-                        if (!empty($data['job'][$id_job]['working_ed_block'])) {
-                            $data['working_ed_block'][]   = $data['job'][$id_job]['working_ed_block'];
-                        }
-                        if (!empty($data['job'][$id_job]['working_qc_in_active'])) {
-                            $data['working_qc_in_active'][]   = $data['job'][$id_job]['working_qc_in_active'];
-                        }
-                        if (!empty($data['job'][$id_job]['working_qc_out_active'])) {
-                            $data['working_qc_out_active'][]   = $data['job'][$id_job]['working_qc_out_active'];
-                        }
-                        if (!empty($data['job'][$id_job]['working_qc_in_block'])) {
-                            $data['working_qc_in_block'][]   = $data['job'][$id_job]['working_qc_in_block'];
-                        }
-                        if (!empty($data['job'][$id_job]['working_qc_out_block'])) {
-                            $data['working_qc_out_block'][]   = $data['job'][$id_job]['working_qc_out_block'];
-                        }
 
-                        // gán type_service to order
+                        // !empty($working['working_ed_active'])      ? $data['working_ed_active'][]     = $working['working_ed_active']     : '';
+                        // !empty($working['working_ed_block'])       ? $data['working_ed_block'][]      = $working['working_ed_block']      : '';
+                        // !empty($working['working_qc_in_active'])   ? $data['working_qc_in_active'][]  = $working['working_qc_in_active']  : '';
+                        // !empty($working['working_qc_in_block'])    ? $data['working_qc_in_block'][]   = $working['working_qc_in_block']   : '';
+                        // !empty($working['working_qc_out_active'])  ? $data['working_qc_out_active'][] = $working['working_qc_out_active'] : '';
+                        // !empty($working['working_qc_out_block'])   ? $data['working_qc_out_block'][]  = $working['working_qc_out_block']  : '';
+
+                        // danh sach type_service cua order
                         $data['list_type_service'][$job['type_service']][] = $id_job;
                         $data['total_type_service'] += 1;
                     }
 
                     // gán working custom
-                    $data['working_custom_active'] = $this->_get_list_job_user_by_job($id_order, 0, 1, WORKING_CUSTOM, $iconn);
-                    $data['working_custom_block']  = $this->_get_list_job_user_by_job($id_order, 0, 0, WORKING_CUSTOM, $iconn);
-                    foreach ($data['working_custom_active'] as $custom_active) {
+                    $working_custom = $this->_get_working_job_v2($id_order, 0, $iconn);
+                    $data['working_custom_active'] = $working_custom['working_custom_active'];
+                    $data['working_custom_block']  = $working_custom['working_custom_block'];
+                    foreach ($working_custom['working_custom_active'] as $custom_active) {
                         $data['total_custom_used'] += $custom_active['custom'];
                     }
                 }
@@ -473,24 +461,47 @@ class Order_model extends CI_Model
         return $data;
     }
 
-    function _get_list_job_user_by_job($id_order, $id_job, $status, $type_working, $iconn)
+    function _get_working_job_v2($id_order, $id_job, $iconn)
     {
-        $data = [];
+        $working['working_ed_active']     = [];
+        $working['working_ed_block']      = [];
+        $working['working_qc_in_active']  = [];
+        $working['working_qc_in_block']   = [];
+        $working['working_qc_out_active'] = [];
+        $working['working_qc_out_block']  = [];
+        $working['working_custom_active'] = [];
+        $working['working_custom_block']  = [];
+
         $sql = "SELECT A.*
-        FROM tbl_job_user as A
-        WHERE id_order = $id_order AND id_job = $id_job AND status = $status AND type_job_user = $type_working";
+        FROM tbl_job_user A
+        WHERE id_order = $id_order AND id_job = $id_job";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt->execute()) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $data[$row['id_user']] = $row;
+
+                $id_user       = $row['id_user'];
+                $type_job_user = $row['type_job_user'];
+                $status        = $row['status'];
+
+                $type_job_user == WORKING_EDITOR && $status == 1 ? $working['working_ed_active'][$id_user] = $row : '';
+                $type_job_user == WORKING_EDITOR && $status == 0 ? $working['working_ed_block'][$id_user] = $row : '';
+
+                $type_job_user == WORKING_QC_IN && $status == 1 ? $working['working_qc_in_active'][$id_user] = $row : '';
+                $type_job_user == WORKING_QC_IN && $status == 0 ? $working['working_qc_in_block'][$id_user] = $row : '';
+
+                $type_job_user == WORKING_QC_OUT && $status == 1 ? $working['working_qc_out_active'][$id_user] = $row : '';
+                $type_job_user == WORKING_QC_OUT && $status == 0 ? $working['working_qc_out_block'][$id_user] = $row : '';
+
+                $type_job_user == WORKING_CUSTOM && $status == 1 ? $working['working_custom_active'][$id_user] = $row : '';
+                $type_job_user == WORKING_CUSTOM && $status == 0 ? $working['working_custom_block'][$id_user] = $row : '';
             }
         } else {
             var_dump($stmt->errorInfo());
             die;
         }
 
-        return $data;
+        return $working;
     }
     //  END LẤY DANH SÁCH ĐƠN THEO USER
 
