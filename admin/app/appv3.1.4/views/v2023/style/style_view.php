@@ -104,6 +104,7 @@
     $(function() {
 
         $("#example1").DataTable({
+            "searching": false,
             "lengthChange": true,
             "pageLength": 100,
             "responsive": true,

@@ -133,11 +133,12 @@
 
         $("#example1").DataTable({
             "order": [],
-            "lengthChange": true,
+            "lengthChange": false,
             "pageLength": 50,
             "responsive": true,
-            "lengthChange": true,
+            "lengthChange": false,
             "autoWidth": false,
+            "searching": false
             // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 

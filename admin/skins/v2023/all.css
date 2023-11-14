@@ -1,18 +1,45 @@
 @font-face {
-    font-family: Lexend;
-    src: url(fonts/Lexend_Deca/LexendDeca-VariableFont_wght.ttf);
+  font-family: Lexend;
+  src: url(fonts/Lexend_Deca/LexendDeca-VariableFont_wght.ttf);
 }
-
 
 /* table style */
 
 .table .thead-danger th {
-    color: #fff;
-    background-color: #dc3545;
-    border-color: #ffffff;
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #ffffff;
 }
 .table .thead-success th {
-    color: #fff;
-    background-color: #28a745;
-    border-color: #ffffff;
+  color: #fff;
+  background-color: #28a745;
+  border-color: #ffffff;
 }
+
+/* CUSTOM SELECT2 */
+.select2 {
+  width: 100% !important;
+}
+
+.select2-container--default
+  .select2-results__option--highlighted[aria-selected],
+.select2-container--default
+  .select2-results__option--highlighted[aria-selected]:hover {
+  background-color: #eee;
+  color: black;
+}
+
+/* Đã chọn chưa hover */
+/* Đã chọn hover */
+.select2-container--default .select2-results__option[aria-selected="true"],
+.select2-container--default
+  .select2-results__option[aria-selected="true"]:hover {
+  color: #007bff;
+  background-color: #dee2e6;
+}
+
+.select2-container--default .select2-results > .select2-results__options {
+  max-height: 600px;
+  overflow-y: auto;
+}
+/* END CUSTOM SELECT2 */

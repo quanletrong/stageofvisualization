@@ -3,6 +3,8 @@
 class Order extends MY_Controller
 {
 
+    // private $_status_working = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+
     function __construct()
     {
         $this->_module = trim(strtolower(__CLASS__));
@@ -40,48 +42,131 @@ class Order extends MY_Controller
         $data = [];
         $role = $this->_session_role();
         $uid = $this->_session_uid();
-        switch ($role) {
-            case ADMIN:
-                $list_order = $this->Order_model->get_list(); //lấy tất cả đơn
-                break;
-            case SALE:
-                $list_order = $this->Order_model->get_list(); //lấy tất cả đơn
-                break;
-            case QC:
-                $list_order = $this->Order_model->get_list_for_qc($uid); //lấy tất cả đơn khác pending hoặc những đơn qc đã active
-                break;
-            case EDITOR:
-                $list_order = $this->Order_model->get_list_order_by_id_user($uid); //lấy những đơn ed đã active
-                break;
-            default:
-                break;
-        }
 
-        $box = $this->Order_model->box_count($list_order);
-        $all_status = button_status_order_by_role($this->_session_role());
-        $all_service = $this->Service_model->get_list(1);
-        $data['box'] = $box;
-        $data['list_order'] = $list_order;
+        ### DU LIEU LAM FILTER
+        $all_status     = button_status_order_by_role($this->_session_role());
+        $all_service    = $this->Service_model->get_list(1);
+        $all_user       = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $all_ed_type    = [ED_NOI_BO => 'Editor nội bộ', ED_CTV => 'Editor cộng tác viên'];
+        $all_order_type = [DON_KHACH_TAO => 'Đơn khách tạo', DON_NOI_BO => 'Đơn nội bộ', DON_TAO_HO => 'Đơn tạo hộ'];
+
+        $all_status[ORDER_PROGRESS] = status_order(ORDER_PROGRESS); // bỏ sung thêm trạng thái đang xử lý
+        # 
 
         ### FORM FILTER
-        $filter_order_code = 'XXXX';
-        $filter_user_code = 'ZZZZZ';
-        $filter_order_ed_type = [ED_NOI_BO];
-        $filter_status = [ORDER_PENDING,ORDER_AVAIABLE, ORDER_QC_CHECK];
-        $filter_services = [1,2,3,4,5];
+        $filter_code_order    = removeAllTags($this->input->get('filter_code_order'));
+        $filter_user_code     = removeAllTags($this->input->get('filter_user_code'));
+        $filter_order_ed_type = $this->input->get('filter_order_ed_type');
+        $filter_status        = $this->input->get('filter_status');
+        $filter_service       = $this->input->get('filter_service');
+        $filter_order_type    = $this->input->get('filter_order_type');
+        $filter_fdate         = $this->input->get('filter_fdate');
+        $filter_tdate         = $this->input->get('filter_tdate');
+        $filter_id_user       = $this->input->get('filter_id_user');
+
+        ### DU LIEU MAC DINH
+        if ($role == ADMIN || $role == SALE) {
+            $status_mac_dinh = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+        } else if ($role == QC) {
+            $status_mac_dinh = [ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+            $filter_id_user[] = $uid;
+        } else if ($role == EDITOR) {
+            $status_mac_dinh = [ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+            $filter_id_user = [$uid];
+        }
+
+        // QC chi duoc xem DON cua minh 
+
+        //validate filter_order_ed_type
+        $filter_order_ed_type = is_array($filter_order_ed_type) ? $filter_order_ed_type : [];
+        foreach ($filter_order_ed_type as $ed_type) {
+            if (!isset($all_ed_type[$ed_type])) {
+                $filter_order_ed_type = [];
+                break;
+            }
+        }
+
+        //validate filter_status
+        $filter_status = is_array($filter_status) ? $filter_status : $status_mac_dinh;
+        foreach ($filter_status as $status) {
+            if (!isset($all_status[$status])) {
+                $filter_status = [];
+                break;
+            }
+        }
+
+        //validate filter_service
+        $filter_service = is_array($filter_service) ? $filter_service : [];
+        foreach ($filter_service as $service) {
+            if (!isset($all_service[$service])) {
+                $filter_service = [];
+                break;
+            }
+        }
+
+        //validate filter_order_type
+        $filter_order_type = is_array($filter_order_type) ? $filter_order_type : [];
+        foreach ($filter_order_type as $order_type) {
+            if (!isset($all_order_type[$order_type])) {
+                $filter_order_type = [];
+                break;
+            }
+        }
+
+        //validate filter_id_user
+        $filter_id_user = is_array($filter_id_user) ? $filter_id_user : [];
+        foreach ($filter_id_user as $id_user) {
+            if (!isset($all_user[$id_user])) {
+                $filter_id_user = [];
+                break;
+            }
+        }
+
+        //validate filter date
+        $ngay_hien_tai = date("Y-m-d");
+        $ba_muoi_ngay_truoc = date("Y-m-d H:i:s", strtotime('today - 29 days'));
+        $filter_fdate = !is_date($filter_fdate) ? $ba_muoi_ngay_truoc : $filter_fdate;
+        $filter_tdate = !is_date($filter_tdate) ? $ngay_hien_tai : $filter_tdate;
+
+
 
         # END FORM FILTER
 
-        ### FILTER DATA
-        $data['filter_order_code']    = $filter_order_code;
+        ### CALL DATABASE
+        $filter['code_order']   = $filter_code_order;
+        $filter['user_code']    = $filter_user_code;
+        $filter['ed_type']      = implode(',', $filter_order_ed_type);
+        $filter['status']       = implode(',', $filter_status);
+        $filter['type_service'] = implode(',', $filter_service);
+        $filter['order_type']   = implode(',', $filter_order_type);
+        $filter['fdate']        = date("Y-m-d H:i:s", strtotime($filter_fdate));
+        $filter['tdate']        = date("Y-m-d H:i:s", strtotime($filter_tdate));
+        $filter['id_user']      = implode(',', $filter_id_user);
+
+        $list_order = $this->Order_model->get_list($filter);       //lấy tất cả đơn
+        $box        = $this->Order_model->box_count($list_order);
+
+        # END CALL DATABASE
+
+        ### DATA
+        $data['box']                  = $box;
+        $data['list_order']           = $list_order;
+        $data['filter_code_order']    = $filter_code_order;
         $data['filter_user_code']     = $filter_user_code;
         $data['filter_order_ed_type'] = $filter_order_ed_type;
-        $data['filter_services']      = $filter_services;
+        $data['filter_service']       = $filter_service;
         $data['filter_status']        = $filter_status;
+        $data['filter_order_type']    = $filter_order_type;
+        $data['filter_fdate']         = $filter_fdate;
+        $data['filter_tdate']         = $filter_tdate;
+        $data['filter_id_user']       = $filter_id_user;
 
-        $data['all_service']       = $all_service;
-        $data['all_status']        = $all_status;
-        # END FILTER DATA
+        $data['all_service']    = $all_service;
+        $data['all_status']     = $all_status;
+        $data['all_user']       = $all_user;
+        $data['all_ed_type']    = $all_ed_type;
+        $data['all_order_type'] = $all_order_type;
+        # END DATA
 
         $header = [
             'title' => 'Quản lý đơn hàng',
@@ -543,18 +628,15 @@ class Order extends MY_Controller
         else {
             $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $db_type_service, $working_type, $status, $time_join, 1);
         }
-        
+
         //LOG
         if ($working_type == WORKING_EDITOR) {
             $log_type = LOG_ED_ADD;
-        }
-        else if ($working_type == WORKING_QC_IN) {
+        } else if ($working_type == WORKING_QC_IN) {
             $log_type = LOG_QC_IN_ADD;
-        }
-        else if ($working_type == WORKING_QC_OUT) {
+        } else if ($working_type == WORKING_QC_OUT) {
             $log_type = LOG_QC_OUT_ADD;
-        }
-        else if ($working_type == WORKING_CUSTOM) {
+        } else if ($working_type == WORKING_CUSTOM) {
             $log_type = LOG_CUSTOM_ADD;
         }
 
@@ -653,14 +735,11 @@ class Order extends MY_Controller
         //LOG
         if ($working_type == WORKING_EDITOR) {
             $log_type = LOG_ED_REMOVE;
-        }
-        else if ($working_type == WORKING_QC_IN) {
+        } else if ($working_type == WORKING_QC_IN) {
             $log_type = LOG_QC_IN_REMOVE;
-        }
-        else if ($working_type == WORKING_QC_OUT) {
+        } else if ($working_type == WORKING_QC_OUT) {
             $log_type = LOG_QC_OUT_REMOVE;
-        }
-        else if ($working_type == WORKING_CUSTOM) {
+        } else if ($working_type == WORKING_CUSTOM) {
             $log_type = LOG_CUSTOM_REMOVE;
         }
 
@@ -721,7 +800,7 @@ class Order extends MY_Controller
         }
 
         // price custom cũ
-        $old_custom = $order['working_custom_active'][$id_user]['custom']; 
+        $old_custom = $order['working_custom_active'][$id_user]['custom'];
 
         // kiểm tra đã vượt quá tổng custom hay chưa
         $order['working_custom_active'][$id_user]['custom'] = $custom;
@@ -1412,7 +1491,7 @@ class Order extends MY_Controller
         $log['type']     = LOG_RW_NOTE_EDIT;
         $log['id_order'] = $rework['id_order'];
         $log['id_job']   = $rework['id_job'];
-        $log['id_rework']= $id_rework;
+        $log['id_rework'] = $id_rework;
         $log['old']      = $rework['note'];
         $log['new']      = $requirement;
         $this->Log_model->log_add($log);
@@ -1458,7 +1537,7 @@ class Order extends MY_Controller
         $log['type']     = LOG_RW_FILE_COMPLETE_ADD;
         $log['id_order'] = $rework['id_order'];
         $log['id_job']   = $rework['id_job'];
-        $log['id_rework']= $id_rework;
+        $log['id_rework'] = $id_rework;
         $log['new']      = $copy['basename'];
         $this->Log_model->log_add($log);
 
@@ -1508,7 +1587,7 @@ class Order extends MY_Controller
         $log['type']     = LOG_RW_FILE_COMPLETE_EDIT;
         $log['id_order'] = $rework['id_order'];
         $log['id_job']   = $rework['id_job'];
-        $log['id_rework']= $id_rework;
+        $log['id_rework'] = $id_rework;
         $log['old']      = $old_file;
         $log['new']      = $copy['basename'];
         $this->Log_model->log_add($log);
@@ -1548,7 +1627,7 @@ class Order extends MY_Controller
         $log['type']     = LOG_RW_FILE_COMPLETE_REMOVE;
         $log['id_order'] = $rework['id_order'];
         $log['id_job']   = $rework['id_job'];
-        $log['id_rework']= $id_rework;
+        $log['id_rework'] = $id_rework;
         $log['new']      = $old_file;
         $this->Log_model->log_add($log);
 
@@ -1656,7 +1735,7 @@ class Order extends MY_Controller
      * Chức năng lấy danh sách log
      */
 
-    function ajax_log_order($id_order) {
-    
+    function ajax_log_order($id_order)
+    {
     }
 }

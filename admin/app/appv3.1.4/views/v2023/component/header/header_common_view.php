@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="dist/css/adminlte.min.css">
 
 <!-- all CSS -->
-<link rel="stylesheet" href="skins/v2023/all.css">
+<link rel="stylesheet" href="skins/v2023/all.css?v=1">
 
 
 

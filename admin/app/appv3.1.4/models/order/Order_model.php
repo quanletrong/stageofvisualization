@@ -100,19 +100,67 @@ class Order_model extends CI_Model
         return $data;
     }
 
-    function get_list($status = '')
+    function get_list($filter = [])
     {
         $list_order = [];
         $iconn = $this->db->conn_id;
 
-        $sql = "SELECT A.*, B.code_user as code_user
-        FROM tbl_order as A
-        INNER JOIN tbl_user B ON A.id_user = B.id_user 
-        ORDER BY FIELD(A.status, ".implode(',', $this->_status_sort)."), A.create_time DESC";
+        $filter_code_order   = isset($filter['code_order'])     ? $filter['code_order']     : '';
+        $filter_user_code    = isset($filter['user_code'])      ? $filter['user_code']      : '';
+        $filter_status       = isset($filter['status'])         ? $filter['status']         : '';
+        $filter_type_service = isset($filter['type_service'])   ? $filter['type_service']   : '';      // vs vr ...
+        $filter_order_type   = isset($filter['order_type'])     ? $filter['order_type']     : '';      // khách tạo, nội bộ, tạo hộ
+        $filter_ed_type      = isset($filter['ed_type'])        ? $filter['ed_type']        : '';      // nội bộ, ctv
+        $filter_fdate        = isset($filter['fdate'])          ? $filter['fdate']          : '';
+        $filter_tdate        = isset($filter['tdate'])          ? $filter['tdate']          : '';
+        $filter_id_user      = isset($filter['id_user'])        ? $filter['id_user']        : '';
 
-        $stmt = $iconn->prepare($sql);
+        $SQL['query'] = '';
+        $SQL['param'] = [];
+
+        // SELECT
+        $SQL['query'] = " SELECT A.*, B.code_user as code_user ";
+
+        // TABLE
+        $SQL['query'] .= " FROM tbl_order as A ";
+
+        //INNER JOIN
+        $SQL['query'] .= " INNER JOIN tbl_user B ON A.id_user = B.id_user ";
+        $SQL['query'] .= " INNER JOIN tbl_job C ON C.id_order = A.id_order ";
+
+        // WHERE
+        $SQL['query'] .= " WHERE 1=1 ";
+        $SQL = sql_like($filter_code_order, 'A.code_order', $SQL);
+        $SQL = sql_in($filter_status, 'A.status', $SQL);
+        $SQL = sql_in($filter_order_type, 'A.order_type', $SQL);
+        $SQL = sql_in($filter_ed_type, 'A.ed_type', $SQL);
+        $SQL = sql_in($filter_ed_type, 'A.ed_type', $SQL);
+        $SQL = sql_between_number($filter_fdate, $filter_tdate, 'A.create_time', $SQL);
+
+        $SQL = sql_like($filter_user_code, 'B.code_user', $SQL);
+
+        $SQL = sql_in($filter_type_service, 'C.id_service', $SQL);
+
+        // lọc theo tài khoản
+        if ($filter_id_user != '') {
+            $list_id_order = $this->_get_list_id_order_by_user_id($filter_id_user, $iconn);
+
+            // return luôn nếu filter_user không có đơn hàng 
+            if (empty($list_id_order)) {
+                return $list_order;
+            }
+            // user không có đơn hàng 
+            else {
+                $SQL = sql_in(implode(',', $list_id_order), 'A.id_order', $SQL);
+            }
+        }
+
+        //ORDER BY
+        $SQL['query'] .= " ORDER BY FIELD(A.status, " . implode(',', $this->_status_sort) . "), A.create_time DESC; ";
+
+        $stmt = $iconn->prepare($SQL['query']);
         if ($stmt) {
-            if ($stmt->execute()) {
+            if ($stmt->execute($SQL['param'])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         // gán list type_service vào đơn
@@ -158,7 +206,7 @@ class Order_model extends CI_Model
             $sql .= " OR A.id_order IN ($str_id_order) ";
         }
 
-        $sql .= " ORDER BY FIELD(A.status, ".implode(',', $this->_status_sort)."), A.create_time DESC ";
+        $sql .= " ORDER BY FIELD(A.status, " . implode(',', $this->_status_sort) . "), A.create_time DESC ";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -242,7 +290,7 @@ class Order_model extends CI_Model
             FROM tbl_order as A
             INNER JOIN tbl_user B ON A.id_user = B.id_user 
             WHERE id_order IN ($str_id_order)
-            ORDER BY FIELD(A.status, ".implode(',', $this->_status_sort)."), A.create_time DESC";
+            ORDER BY FIELD(A.status, " . implode(',', $this->_status_sort) . "), A.create_time DESC";
 
             $stmt = $iconn->prepare($sql);
             if ($stmt) {
@@ -287,7 +335,7 @@ class Order_model extends CI_Model
             $str_id_order = implode(',', $list_id_order);
             $sql = "SELECT count(*) as total_order
             FROM tbl_order as A
-            WHERE id_order IN ($str_id_order) AND status IN (".implode(',', $this->_status_working).")";
+            WHERE id_order IN ($str_id_order) AND status IN (" . implode(',', $this->_status_working) . ")";
 
             $stmt = $iconn->prepare($sql);
             if ($stmt) {
@@ -311,12 +359,12 @@ class Order_model extends CI_Model
         // lấy list id order theo user từ bảng `tbl_job_user`
         $sql = "SELECT A.id_order
         FROM tbl_job_user as A
-        WHERE A.id_user= $id_user AND A.status = 1
+        WHERE A.id_user IN (?) AND A.status = 1
         GROUP BY A.id_order";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute()) {
+            if ($stmt->execute([$id_user])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $list_id_order[] = $row['id_order'];
