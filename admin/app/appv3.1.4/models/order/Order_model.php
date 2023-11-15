@@ -120,11 +120,13 @@ class Order_model extends CI_Model
 
         $SQL = sql_in($filter_type_service, 'C.id_service', $SQL);
 
+        // Lấy danh sách đơn cho admin sale
         if ($role == ADMIN || $role == SALE) {
 
             $SQL = sql_in($filter_id_user, 'D.id_user', $SQL);
-            
-        } else if ($role == QC) {
+        } 
+        // Lấy danh sách đơn cho QC
+        else if ($role == QC) {
             // Lấy tất cả đơn ĐANG LÀM hoặc đơn KHÁC PENDING
             if ($filter_id_user == '') {
 
@@ -141,6 +143,13 @@ class Order_model extends CI_Model
 
                 $SQL = sql_in($ds_don, 'A.id_order', $SQL);
             }
+        }
+        // Lấy danh sách đơn cho EDITOR
+         else if ($role == EDITOR) {
+
+            $ds_don = "SELECT id_order FROM tbl_job_user WHERE `status` = 1 AND id_user = $filter_id_user GROUP BY id_order";
+
+            $SQL = sql_in($ds_don, 'A.id_order', $SQL);
         }
 
         //GROUP BY

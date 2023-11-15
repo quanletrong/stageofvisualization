@@ -44,13 +44,21 @@ class Order extends MY_Controller
         $uid = $this->_session_uid();
 
         ### DU LIEU LAM FILTER
-        $all_status     = button_status_order_by_role($this->_session_role());
         $all_service    = $this->Service_model->get_list(1);
         $all_user       = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
         $all_ed_type    = [ED_NOI_BO => 'Editor nội bộ', ED_CTV => 'Editor cộng tác viên'];
         $all_order_type = [DON_KHACH_TAO => 'Đơn khách tạo', DON_NOI_BO => 'Đơn nội bộ', DON_TAO_HO => 'Đơn tạo hộ'];
 
-        $all_status[ORDER_PROGRESS] = status_order(ORDER_PROGRESS); // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_PENDING]   = status_order(ORDER_PENDING);    // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_QC_CHECK]  = status_order(ORDER_QC_CHECK);   // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_AVAIABLE]  = status_order(ORDER_AVAIABLE);   // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_PROGRESS]  = status_order(ORDER_PROGRESS);   // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_DONE]      = status_order(ORDER_DONE);       // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_FIX]       = status_order(ORDER_FIX);        // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_REWORK]    = status_order(ORDER_REWORK);     // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);  // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_COMPLETE]  = status_order(ORDER_COMPLETE);   // bỏ sung thêm trạng thái đang xử lý
+        $all_status[ORDER_CANCLE]    = status_order(ORDER_CANCLE);     // bỏ sung thêm trạng thái đang xử lý
         # 
 
         ### FORM FILTER
@@ -65,14 +73,10 @@ class Order extends MY_Controller
         $filter_id_user       = $this->input->get('filter_id_user');
 
         ### DU LIEU MAC DINH
-        if ($role == ADMIN || $role == SALE) {
-            $status_mac_dinh = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
-        } else if ($role == QC) {
-            $status_mac_dinh = [ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
-            $filter_id_user[] = $uid;
-        } else if ($role == EDITOR) {
-            $status_mac_dinh = [ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+        $status_filter_default = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+        if ($role == EDITOR) {
             $filter_id_user = [$uid];
+
         }
 
         // QC chi duoc xem DON cua minh 
@@ -87,7 +91,7 @@ class Order extends MY_Controller
         }
 
         //validate filter_status
-        $filter_status = is_array($filter_status) ? $filter_status : $status_mac_dinh;
+        $filter_status = is_array($filter_status) ? $filter_status : $status_filter_default;
         foreach ($filter_status as $status) {
             if (!isset($all_status[$status])) {
                 $filter_status = [];
@@ -123,7 +127,7 @@ class Order extends MY_Controller
         }
 
         //validate filter date
-        $ngay_hien_tai = date("Y-m-d");
+        $ngay_hien_tai = date("Y-m-d H:i:s");
         $ba_muoi_ngay_truoc = date("Y-m-d H:i:s", strtotime('today - 29 days'));
         $filter_fdate = !is_date($filter_fdate) ? $ba_muoi_ngay_truoc : $filter_fdate;
         $filter_tdate = !is_date($filter_tdate) ? $ngay_hien_tai : $filter_tdate;
