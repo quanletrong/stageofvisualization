@@ -1,3 +1,18 @@
+<style>
+    .select2-selection__choice {
+        font-size: 0.75rem;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        padding: 0 4px;
+        margin-top: 0.55rem;
+    }
+
+    /* ẩn nút search */
+    /* .select2-search {
+        display: none;
+    } */
+</style>
 <div class="my-3">
     <h4>Bộ lọc <small onclick="$('#filter_form').slideToggle()" style="cursor: pointer;"> [Ẩn/hiện]</small></h4>
 </div>
@@ -45,16 +60,18 @@
             <!-- END STATUS -->
 
             <!-- TÌM ED NỘI BỘ hoặc ED CTV -->
-            <div class="col-md-4 mb-2">
-                <small>Phân đơn - Đơn giành cho loại ED</small>
-                <select class="select2" name="filter_order_ed_type[]" multiple="multiple" data-minimum-results-for-search="Infinity">
-                    <?php foreach ($all_ed_type as $id => $text) { ?>
-                        <option value="<?= $id ?>" <?= in_array($id, $filter_order_ed_type) ? 'selected' : '' ?>>
-                            <?= $text ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
+            <?php if ($role != EDITOR) { ?>
+                <div class="col-md-4 mb-2">
+                    <small>Phân đơn - Đơn giành cho loại ED</small>
+                    <select class="select2" name="filter_order_ed_type[]" multiple="multiple" data-minimum-results-for-search="Infinity">
+                        <?php foreach ($all_ed_type as $id => $text) { ?>
+                            <option value="<?= $id ?>" <?= in_array($id, $filter_order_ed_type) ? 'selected' : '' ?>>
+                                <?= $text ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
 
             <!-- ĐƠN KHÁCH TẠO/ĐƠN NỘI BỘ/ĐƠN TẠO HỘ -->
             <div class="col-md-4 mb-2">
@@ -85,7 +102,7 @@
             <?php if ($role != EDITOR) { ?>
                 <div class="col-md-4 mb-2">
                     <small>Team working - Lọc theo tài khoản</small>
-                    <select class="select2" name="filter_id_user[]" multiple="multiple">
+                    <select class="select2" name="filter_id_user[]" multiple="multiple" id="filter_id_user">
                         <?php foreach ($all_user as $id => $it) { ?>
                             <option value="<?= $id ?>" <?= in_array($id, $filter_id_user) ? 'selected' : '' ?>>
                                 <?= $it['username'] ?>
@@ -114,7 +131,9 @@
 
         //select 2
         $('#filter_form .select2').select2({
-            closeOnSelect: false
+            closeOnSelect: false,
+            allowClear: true,
+            placeholder: 'select..'
         });
 
 
