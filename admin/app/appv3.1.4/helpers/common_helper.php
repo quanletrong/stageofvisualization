@@ -1312,10 +1312,10 @@ function sql_like($keywwork, $filed, $SQL)
     return $SQL;
 }
 
-function sql_in($id_string, $filed, $SQL, $dk = "AND")
+function sql_in($id_string, $filed, $SQL, $AND_OR = "AND")
 {
     if ($id_string !== '') {
-        $SQL['query'] .= " $dk $filed IN ($id_string) ";
+        $SQL['query'] .= " $AND_OR $filed IN ($id_string) ";
         // $SQL['param'][] = $id_string;
     }
 

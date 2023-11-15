@@ -74,7 +74,7 @@ class Order_model extends CI_Model
         return $data;
     }
 
-    function get_list($filter = [])
+    function get_list($filter = [], $role)
     {
         $list_order = [];
         $iconn = $this->db->conn_id;
@@ -93,14 +93,19 @@ class Order_model extends CI_Model
         $SQL['param'] = [];
 
         // SELECT
-        $SQL['query'] = " SELECT A.*, B.code_user as code_user ";
+        $SQL['query'] = " SELECT A.*, 
+            B.code_user as code_user, 
+            COUNT(DISTINCT C.id_job) as total_job,
+            GROUP_CONCAT(DISTINCT D.id_user) as working_active ";
 
         // TABLE
         $SQL['query'] .= " FROM tbl_order as A ";
 
         //INNER JOIN
-        $SQL['query'] .= " INNER JOIN tbl_user B ON A.id_user = B.id_user ";
+        $SQL['query'] .= " INNER JOIN tbl_user B ON B.id_user = A.id_user ";
         $SQL['query'] .= " INNER JOIN tbl_job C ON C.id_order = A.id_order ";
+        $SQL['query'] .= " LEFT JOIN tbl_job_user D ON ( D.id_order = A.id_order AND D.`status` = 1 ) ";
+        $SQL['query'] .= " INNER JOIN tbl_service E ON E.id_service = C.id_service ";
 
         // WHERE
         $SQL['query'] .= " WHERE 1=1 ";
@@ -115,23 +120,34 @@ class Order_model extends CI_Model
 
         $SQL = sql_in($filter_type_service, 'C.id_service', $SQL);
 
-        // lọc theo tài khoản
-        if ($filter_id_user != '') {
-            $list_id_order = $this->_get_list_id_order_by_user_id($filter_id_user, $iconn);
+        if ($role == ADMIN || $role == SALE) {
 
-            // return luôn nếu filter_user không có đơn hàng 
-            if (empty($list_id_order)) {
-                return $list_order;
+            $SQL = sql_in($filter_id_user, 'D.id_user', $SQL);
+            
+        } else if ($role == QC) {
+            // Lấy tất cả đơn ĐANG LÀM hoặc đơn KHÁC PENDING
+            if ($filter_id_user == '') {
+
+                $ORDER_PENDING = ORDER_PENDING;
+
+                $ds_don = "SELECT id_order FROM tbl_job_user WHERE `status` = 1 GROUP BY id_order";
+
+                $SQL['query'] .= " AND ( A.id_order IN ($ds_don) OR A.`status` NOT IN ($ORDER_PENDING) ) ";
             }
-            // user không có đơn hàng 
+            // Lấy tất cả theo filter user
             else {
-                $SQL = sql_in(implode(',', $list_id_order), 'A.id_order', $SQL);
+
+                $ds_don = "SELECT id_order FROM tbl_job_user WHERE `status` = 1 AND id_user IN ($filter_id_user) GROUP BY id_order";
+
+                $SQL = sql_in($ds_don, 'A.id_order', $SQL);
             }
         }
 
+        //GROUP BY
+        $SQL['query'] .= " GROUP BY C.id_order, D.id_order";
+
         //ORDER BY
         $SQL['query'] .= " ORDER BY FIELD(A.status, " . implode(',', $this->_status_sort) . "), A.create_time DESC; ";
-
         $stmt = $iconn->prepare($SQL['query']);
         if ($stmt) {
             if ($stmt->execute($SQL['param'])) {
@@ -140,10 +156,6 @@ class Order_model extends CI_Model
                         // gán list type_service vào đơn
                         $type_service = $this->_get_type_service_job_by_id_order($row['id_order'], $iconn);
                         $row['type_service'] = $type_service;
-
-                        // gán total job vào đơn
-                        $total_job = $this->_get_total_job_by_id_order($row['id_order'], $iconn);
-                        $row['total_job'] = $total_job;
 
                         // gán danh sách qc, ed, custom vào đơn
                         $team = $this->_get_list_editor_by_id_order($row['id_order'], $iconn);

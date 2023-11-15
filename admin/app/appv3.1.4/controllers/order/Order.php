@@ -143,7 +143,7 @@ class Order extends MY_Controller
         $filter['tdate']        = date("Y-m-d H:i:s", strtotime($filter_tdate));
         $filter['id_user']      = implode(',', $filter_id_user);
 
-        $list_order = $this->Order_model->get_list($filter);       //lấy tất cả đơn
+        $list_order = $this->Order_model->get_list($filter, $role);       //lấy tất cả đơn
         $box        = $this->Order_model->box_count($list_order);
 
         # END CALL DATABASE
