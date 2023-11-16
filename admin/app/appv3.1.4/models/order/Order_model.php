@@ -124,7 +124,7 @@ class Order_model extends CI_Model
         if ($role == ADMIN || $role == SALE) {
 
             $SQL = sql_in($filter_id_user, 'D.id_user', $SQL);
-        } 
+        }
         // Lấy danh sách đơn cho QC
         else if ($role == QC) {
             // Lấy tất cả đơn ĐANG LÀM hoặc đơn KHÁC PENDING
@@ -145,7 +145,7 @@ class Order_model extends CI_Model
             }
         }
         // Lấy danh sách đơn cho EDITOR
-         else if ($role == EDITOR) {
+        else if ($role == EDITOR) {
 
             $ds_don = "SELECT id_order FROM tbl_job_user WHERE `status` = 1 AND id_user = $filter_id_user GROUP BY id_order";
 
@@ -179,6 +179,85 @@ class Order_model extends CI_Model
             }
         }
 
+        $stmt->closeCursor();
+        return $list_order;
+    }
+
+    function get_list_v2($filter = [], $role)
+    {
+        $list_order = [];
+        $iconn = $this->db->conn_id;
+
+        $filter_code_order   = isset($filter['code_order'])     ? $filter['code_order']     : '';
+        $filter_user_code    = isset($filter['user_code'])      ? $filter['user_code']      : '';
+        $filter_status       = isset($filter['status'])         ? $filter['status']         : '';
+        $filter_type_service = isset($filter['type_service'])   ? $filter['type_service']   : '';      // vs vr ...
+        $filter_order_type   = isset($filter['order_type'])     ? $filter['order_type']     : '';      // khách tạo, nội bộ, tạo hộ
+        $filter_ed_type      = isset($filter['ed_type'])        ? $filter['ed_type']        : '';      // nội bộ, ctv
+        $filter_fdate        = isset($filter['fdate'])          ? $filter['fdate']          : '';
+        $filter_tdate        = isset($filter['tdate'])          ? $filter['tdate']          : '';
+        $filter_id_user      = isset($filter['id_user'])        ? $filter['id_user']        : '';
+
+        $this->session->set_flashdata('PARAMS', []);
+        // SELECT
+        $SQL =
+            "SELECT
+                tbl_order.*,
+                tbl_user.code_user,
+                tbl_tam.list_job,
+                tbl_tam.list_service,
+                tbl_tam.list_user 
+            FROM
+                tbl_order
+                INNER JOIN tbl_user ON tbl_user.id_user = tbl_order.id_user 
+                LEFT JOIN (
+                    SELECT
+                        tbl_job.id_order,
+                        GROUP_CONCAT( DISTINCT tbl_job.id_job ) AS list_job,
+                        GROUP_CONCAT( DISTINCT tbl_job.id_service ) AS list_service,
+                        GROUP_CONCAT( DISTINCT tbl_job_user.id_user ) AS list_user 
+                    FROM
+                        tbl_job
+                        LEFT JOIN tbl_job_user ON tbl_job.id_order = tbl_job_user.id_order 
+                        AND tbl_job_user.`status` = 1 
+                    GROUP BY
+                        tbl_job.id_order 
+                ) AS tbl_tam ON tbl_tam.id_order = tbl_order.id_order 
+            WHERE
+                1 = 1 
+                AND " . QSQL_IN('tbl_order.`status`', $filter_status, $this) . " 
+                AND " . QSQL_IN('tbl_order.order_type', $filter_order_type, $this) . "
+                AND " . QSQL_IN('tbl_order.ed_type', $filter_ed_type, $this) . "
+                
+                AND " . QSQL_LIKE('tbl_order.code_order', $filter_code_order, $this) . "
+                AND " . QSQL_LIKE('tbl_user.code_user', $filter_user_code, $this) . "
+
+                AND (" . QSQL_LIKE_OR('concat(",", tbl_tam.list_user, ",")', $filter_id_user, $this) . ")
+                AND (" . QSQL_LIKE_OR('concat(",", tbl_tam.list_service, ",")', $filter_type_service, $this) . ") 
+                AND " . QSQL_BETWEEN('tbl_order.create_time', $filter_fdate, $filter_tdate, $this) . "
+
+            ORDER BY 
+                FIELD(tbl_order.status, " . implode(',', $this->_status_sort) . "), tbl_order.create_time DESC; 
+        ";
+
+        $PARAMS = $this->session->flashdata('PARAMS');
+        $stmt = $iconn->prepare($SQL);
+        if ($stmt) {
+            if ($stmt->execute($PARAMS)) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                        $row['list_service'] = $row['list_service'] == '' ? [] : explode(",", $row['list_service']);
+                        $row['list_job']     = $row['list_job']     == '' ? [] : explode(",", $row['list_job']);
+                        $row['list_user']    = $row['list_user']    == '' ? [] : explode(",", $row['list_user']);
+                        $list_order[$row['id_order']] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
         $stmt->closeCursor();
         return $list_order;
     }

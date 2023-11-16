@@ -709,7 +709,8 @@ function getImageSizeFromUrl($url)
     return $rel;
 }
 
-function get_remote_file_info($url) {
+function get_remote_file_info($url)
+{
     $rel = 0;
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -881,7 +882,7 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
 
         if (file_exists($dir_save)) {
             $rdt = generateRandomString(5);
-            $basename = $rdt ."-". $basename;
+            $basename = $rdt . "-" . $basename;
             $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
         }
 
@@ -1334,7 +1335,7 @@ function handle_zip_files($filename, $files)
 
     // Create ZIP file
     $zip = new ZipArchive();
-    
+
     if ($zip->open($filename, ZipArchive::CREATE) !== TRUE) {
         $result = "cannot open <$filename>\n";
     }
@@ -1374,33 +1375,101 @@ function handle_zip_files($filename, $files)
     return $result;
 }
 
-function sec2time($sec){
+function sec2time($sec)
+{
     $returnstring = " ";
-    $days = intval($sec/86400);
-    $hours = intval ( ($sec/3600) - ($days*24));
-    $minutes = intval( ($sec - (($days*86400)+ ($hours*3600)))/60);
-    $seconds = $sec - ( ($days*86400)+($hours*3600)+($minutes * 60));
-    
-    $returnstring .= ($days)?(($days == 1)? "1 ngày ":"$days ngày "):"";
-    $returnstring .= ($hours)?( ($hours == 1)?"1 giờ ":"$hours giờ "):"";
-    $returnstring .= ($minutes)?( ($minutes == 1)?"1 phút ":"$minutes phút "):"";
-    $returnstring .= ($seconds)?( ($seconds == 1)?"1 giây ":"$seconds giây"):"";
+    $days = intval($sec / 86400);
+    $hours = intval(($sec / 3600) - ($days * 24));
+    $minutes = intval(($sec - (($days * 86400) + ($hours * 3600))) / 60);
+    $seconds = $sec - (($days * 86400) + ($hours * 3600) + ($minutes * 60));
+
+    $returnstring .= ($days) ? (($days == 1) ? "1 ngày " : "$days ngày ") : "";
+    $returnstring .= ($hours) ? (($hours == 1) ? "1 giờ " : "$hours giờ ") : "";
+    $returnstring .= ($minutes) ? (($minutes == 1) ? "1 phút " : "$minutes phút ") : "";
+    $returnstring .= ($seconds) ? (($seconds == 1) ? "1 giây " : "$seconds giây") : "";
     return ($returnstring);
 }
 
-function stringIsImage($string){
+function stringIsImage($string)
+{
     $extension = strtolower(pathinfo($string, PATHINFO_EXTENSION));
     $imgExtArr = ['apng', 'gif', 'ico', 'cur', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'png', 'svg'];
-    if(in_array($extension, $imgExtArr)){
+    if (in_array($extension, $imgExtArr)) {
         return true;
     }
     return false;
 }
 
-function stringIsFile($string){
+function stringIsFile($string)
+{
     $extension = pathinfo($string, PATHINFO_EXTENSION);
-    if($extension != ''){
+    if ($extension != '') {
         return true;
     }
     return false;
+}
+
+// SQLBUIDER
+
+function QSQL_BETWEEN($filed, $from, $to, $CI)
+{
+    $PARAMS = $CI->session->flashdata("PARAMS");
+    if ($from !== '' && $to === '') {
+        $PARAMS[] = $from;
+        $query = " $filed >= ? ";
+    } elseif ($from === '' && $to !== '') {
+        $PARAMS[] = $to;
+        $query = " $filed <= ? ";
+    } elseif ($from !== '' && $to !== '') {
+        $PARAMS[] = $from;
+        $PARAMS[] = $to;
+        $query = " $filed BETWEEN ? AND ? ";
+    } else {
+        $query = " 1=1 ";
+    }
+
+    $CI->session->set_flashdata("PARAMS", $PARAMS);
+    return $query;
+}
+
+function QSQL_LIKE($filed, $keywwork, $CI)
+{
+    if ($keywwork !== '') {
+        $PARAMS = $CI->session->flashdata("PARAMS");
+        $PARAMS[] = "%$keywwork%";
+
+        $CI->session->set_flashdata("PARAMS", $PARAMS);
+        return " $filed LIKE ? ";
+    } else {
+        return ' 1=1 ';
+    }
+}
+
+function QSQL_LIKE_OR($filed, $list_keywwork, $CI)
+{
+    if ($list_keywwork !== '') {
+        $arr = explode(',', $list_keywwork);
+        $PARAMS = $CI->session->flashdata("PARAMS");
+        $query = [];
+        foreach ($arr as $keywwork) {
+
+            $query[] = " $filed LIKE ? ";
+            $PARAMS[] = "%$keywwork%";
+        }
+        $CI->session->set_flashdata("PARAMS", $PARAMS);
+
+        return implode(" OR ", $query);
+    } else {
+        return ' 1=1 ';
+    }
+}
+
+
+function QSQL_IN($filed, $id_string, $CI)
+{
+    if ($id_string !== '') {
+        return " $filed IN ($id_string) ";
+    } else {
+        return ' 1=1 ';
+    }
 }
