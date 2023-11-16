@@ -25,9 +25,7 @@
                 <small>Status - Trạng thái đơn hàng</small>
                 <select class="select2" name="filter_status[]" multiple="multiple">
                     <?php foreach ($all_status as $id => $it) { ?>
-                        <option value="<?= $id ?>" <?= in_array($id, $filter_status) ? 'selected' : '' ?>>
-                            <?= $it['text'] ?>
-                        </option>
+                        <option value="<?= $id ?>" <?= in_array($id, $filter_status) ? 'selected' : '' ?>><?= trim($it['text']) ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -51,9 +49,7 @@
                 <small>Job type - Loại dịch vụ </small>
                 <select class="select2" name="filter_service[]" multiple="multiple">
                     <?php foreach ($all_service as $id => $it) { ?>
-                        <option value="<?= $id ?>" <?= in_array($id, $filter_service) ? 'selected' : '' ?>>
-                            <?= $it['type_service'] ?>
-                        </option>
+                        <option value="<?= $id ?>" <?= in_array($id, $filter_service) ? 'selected' : '' ?>><?= $it['type_service'] ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -65,9 +61,7 @@
                     <small>Phân đơn - Đơn giành cho loại ED</small>
                     <select class="select2" name="filter_order_ed_type[]" multiple="multiple" data-minimum-results-for-search="Infinity">
                         <?php foreach ($all_ed_type as $id => $text) { ?>
-                            <option value="<?= $id ?>" <?= in_array($id, $filter_order_ed_type) ? 'selected' : '' ?>>
-                                <?= $text ?>
-                            </option>
+                            <option value="<?= $id ?>" <?= in_array($id, $filter_order_ed_type) ? 'selected' : '' ?>><?= $text ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -78,9 +72,7 @@
                 <small>Loại đơn hàng</small>
                 <select class="select2" name="filter_order_type[]" multiple="multiple" data-minimum-results-for-search="Infinity">
                     <?php foreach ($all_order_type as $id => $text) { ?>
-                        <option value="<?= $id ?>" <?= in_array($id, $filter_order_type) ? 'selected' : '' ?>>
-                            <?= $text ?>
-                        </option>
+                        <option value="<?= $id ?>" <?= in_array($id, $filter_order_type) ? 'selected' : '' ?>><?= $text ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -104,9 +96,7 @@
                     <small>Team working - Lọc theo tài khoản</small>
                     <select class="select2" name="filter_id_user[]" multiple="multiple" id="filter_id_user">
                         <?php foreach ($all_user as $id => $it) { ?>
-                            <option value="<?= $id ?>" <?= in_array($id, $filter_id_user) ? 'selected' : '' ?>>
-                                <?= $it['username'] ?>
-                            </option>
+                            <option value="<?= $id ?>" <?= in_array($id, $filter_id_user) ? 'selected' : '' ?>><?= $it['username'] ?></option>
                         <?php } ?>
                     </select>
                 </div>
