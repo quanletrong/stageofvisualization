@@ -197,7 +197,7 @@
                 success: function(data, textStatus, jqXHR) {
                     console.log(data);
                     alert('Bạn đã tạo thành công đơn hàng.');
-                    window.location.href = '<?= site_url(LINK_ORDER) ?>';
+                    window.location.href = '<?= site_url(LINK_USER_ORDER) ?>';
 
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -227,14 +227,24 @@
     }
 
     // cb_upload_image_job
-    function cb_upload_image_job(link, target, name) {
+    function cb_upload_image_job(link, target, name, btn) {
         let job_id = $(target).data('id');
-        $(target + '_pre').attr('src', link);
+
+        if (isImage(link)) {
+            $(btn).html(`<img class="img-fluid w-100" alt="${name}" src="${link}">`);
+        } else {
+            $(btn).html(
+                `<div>
+                    <i class="fa fa-paperclip" aria-hidden="true"></i>
+                    <p style="font-size:12px" class="text-truncate">${name}</p>
+                </div>`
+            );
+        }
         STATE.job[job_id].image = link;
     }
 
     // cb_upload_image_attach
-    function cb_upload_attach(link, target, name) {
+    function cb_upload_attach(link, target, name, btn) {
         let job_id = $(target).data('id');
         let attach_id = Date.now() + Object.keys(STATE.job[job_id].attach).length;
 
@@ -242,13 +252,13 @@
         if (isImage(link)) {
             attach_html = `
             <div style="position:relative" class="mt-2">
-                <img src="${link}"  style="width:100px;aspect-ratio: 1; object-fit: cover;" >
+                <img src="${link}"  style="width:100px;aspect-ratio: 1; object-fit: cover;" class="shadow">
                 <i class="fa-solid fa-xmark" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
             </div>`;
         } else {
             attach_html = `
             <div style="position:relative" class="mt-2">
-                <div style="width:100px;aspect-ratio: 1; object-fit: cover; text-align:center" class="border p-2 pt-4" >
+                <div style="width:100px;aspect-ratio: 1; object-fit: cover; text-align:center" class="border p-2 pt-4 shadow" >
                     <i class="fa fa-paperclip" aria-hidden="true"></i>
                     <p style="font-size:12px" class="text-truncate">${name}</p>
                 </div>
@@ -271,11 +281,21 @@
     function add_job() {
         let job_id = Date.now();
         let job_new = `<div class="border p-4 shadow mb-2 div_main_2" id="${job_id}">
-                <div class="position-relative">
-                    <button type="button" class="btn_upload_image d-none" onclick="quanlt_upload(this);" data-callback="cb_upload_image_job" data-target="#image_${job_id}"></button>
+                <div class="position-relative mb-3">
+                    <label for="exampleFormControlInput1" class="form-label fw-bold">File main:</label>
                     <input type="hidden" id="image_${job_id}" data-id="${job_id}"/>
-                    <img id="image_${job_id}_pre" class="img-fluid w-100" alt="">
-                    <div class="position-absolute" style="top:10px; right: 10px; cursor: pointer;">
+                    <button 
+                        type="button"
+                        class="btn_upload_image btn btn-default w-100 border-0 shadow d-flex " 
+                        style="min-height:150px; justify-content: center;align-items: center" 
+                        onclick="quanlt_upload(this);" 
+                        data-callback="cb_upload_image_job" 
+                        data-target="#image_${job_id}"
+                    >
+                        CLICK TO ADD FILE
+                    </button>
+                    
+                    <div class="position-absolute" style="top:20px; right: 20px; cursor: pointer;">
                         <i class="fa-solid fa-xmark fs-3" onclick="step2_remove_job(${job_id})"></i>
                     </div>
                 </div>
@@ -328,7 +348,7 @@
                             Attach Reference Files
                         </button>
 
-                        <div id="${job_id}_attach_pre" class="d-flex" style="gap:10px"></div>
+                        <div id="${job_id}_attach_pre" class="d-flex flex-wrap" style="gap:10px"></div>
 
                     </div>
                 </div>
@@ -342,6 +362,10 @@
 
         // upload image luôn
         $(`#${job_id} .btn_upload_image`).click();
+
+        $(`#${job_id} textarea`).on('keyup', function() {
+            $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
+        })
     }
 
     // add_or_remove_service

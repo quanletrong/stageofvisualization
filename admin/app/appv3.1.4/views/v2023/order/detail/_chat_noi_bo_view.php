@@ -69,7 +69,7 @@
                                     style="cursor: pointer;" title="Bấm để tải xuống"
                                 >   ${
                                         (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                                        ? `<img class="w-100" src="<?= url_image('', $FDR_ORDER) ?>${file}">`
+                                        ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" height="150">`
                                         : `
                                         <div width="100%" class="rounded border p-2 text-truncate shadow bg-light" style="height: 100px;line-break: anywhere; text-align:center">
                                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
@@ -90,12 +90,12 @@
 
                                 <img class="direct-chat-img" src="${discuss.avatar_url}" alt="message user image">
 
-                                <div class="direct-chat-text p-2 ${<?= $curr_uid ?> == discuss.id_user ? 'bg-light' : '' }">
+                                <div class="direct-chat-text p-2 ${<?= $curr_uid ?> == discuss.id_user ? 'bg-success' : '' }">
                                     
                                     <div class="d-flex" style="">
                                         ${html_file}
                                     </div>
-                                    <p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; background: aliceblue;">${discuss.content}</p>
+                                    ${discuss.content != '' ? `<p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; ">${discuss.content}</p>` : ''}
                                     
                                 </div>
                             </div> `;
@@ -150,7 +150,7 @@
                                 style="cursor: pointer;" title="Bấm để tải xuống"
                             >   ${
                                     (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                                    ? `<img class="w-100" src="<?= url_image('', $FDR_ORDER) ?>${file}">`
+                                    ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" height="150">`
                                     : `
                                     <div width="100%" class="rounded border p-2 text-truncate shadow bg-light" style="height: 100px;line-break: anywhere; text-align:center">
                                         <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
@@ -171,12 +171,12 @@
 
                             <img class="direct-chat-img" src="${discuss.avatar_url}" alt="message user image">
 
-                            <div class="direct-chat-text p-2 ${<?= $curr_uid ?> == discuss.id_user ? 'bg-light' : '' }">
+                            <div class="direct-chat-text p-2 ${<?= $curr_uid ?> == discuss.id_user ? 'bg-success' : '' }">
                                 
                                 <div class="d-flex" style="">
                                     ${html_file}
                                 </div>
-                                <p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; background: aliceblue;">${discuss.content}</p>
+                                ${discuss.content != '' ? `<p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; ">${discuss.content}</p>` : ''}
                                 
                             </div>
                         </div> `;

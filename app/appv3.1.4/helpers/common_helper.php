@@ -1145,3 +1145,13 @@ function handle_zip_files($filename, $files)
 
     return $result;
 }
+
+function stringIsImage($string)
+{
+    $extension = strtolower(pathinfo($string, PATHINFO_EXTENSION));
+    $imgExtArr = ['apng', 'gif', 'ico', 'cur', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'png', 'svg'];
+    if (in_array($extension, $imgExtArr)) {
+        return true;
+    }
+    return false;
+}

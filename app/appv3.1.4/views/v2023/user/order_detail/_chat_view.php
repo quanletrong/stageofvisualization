@@ -1,67 +1,4 @@
 <script src="js/v2023/moment_2.29.4.min.js"></script>
-<style>
-    .direct-chat-contacts,
-    .direct-chat-messages {
-        transition: -webkit-transform .5s ease-in-out;
-        transition: transform .5s ease-in-out;
-        transition: transform .5s ease-in-out, -webkit-transform .5s ease-in-out;
-    }
-
-    .direct-chat-messages {
-        -webkit-transform: translate(0, 0);
-        transform: translate(0, 0);
-        height: 250px;
-        overflow: auto;
-        padding: 10px;
-    }
-
-    .direct-chat-msg {
-        margin-bottom: 10px;
-    }
-
-    .direct-chat-infos {
-        display: block;
-        font-size: .875rem;
-        margin-bottom: 2px;
-    }
-
-    .direct-chat-name {
-        font-weight: 600;
-    }
-
-    .float-left {
-        float: left !important;
-    }
-
-    .direct-chat-timestamp {
-        color: #697582;
-    }
-
-    .float-right {
-        float: right !important;
-    }
-
-    .direct-chat-img {
-        border-radius: 50%;
-        float: left;
-        height: 40px;
-        width: 40px;
-        box-shadow: 3px 2px 7px 0px #888888;
-        vertical-align: middle;
-        border-style: none;
-    }
-
-    .direct-chat-text {
-        border-radius: 0.3rem;
-        background-color: #d2d6de;
-        border: 1px solid #d2d6de;
-        color: #444;
-        margin: 5px 0 0 50px;
-        padding: 5px 10px;
-        position: relative;
-        display: block;
-    }
-</style>
 <div class="row">
     <!-- TRAO ĐỔI KHÁCH -->
     <div class="col-12 col-lg-12">
@@ -74,32 +11,60 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="direct-chat-messages" style="height: auto;max-height: 600px;">
-                    <i class="fas fa-sync fa-spin"></i>
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="input-group">
-                    <input type="text" name="message" placeholder="Type Message ..." class="form-control content_discuss">
-                    <span class="input-group-append">
-                        <button type="button" class="btn btn-primary" onclick="ajax_discuss_add(this)">Send</button>
-                    </span>
+                <div id="discuss_khach" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="list-chat" style="height: auto; overflow-y: auto;">
+                        <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
+                    </div>
+                    <div class="mt-2 nhap_du_lieu_chat">
+                        <div style="position:relative" class="rounded border">
+                            <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
+                            <div class="chat_list_attach d-flex flex-wrap"></div>
+
+                            <!-- NHẬP DỮ LIỆU -->
+                            <div style="height: fit-content; position: absolute; bottom: 10px; left:10px">
+                                <button type="button" class="btn btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_khach">
+                                    <i class="fa fa-paperclip"></i>
+                                </button>
+                            </div>
+
+                            <textarea class="form-control content_discuss" name="message" placeholder="Type Message ..." onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" style="padding-left:60px; padding-right: 100px; resize: none;"></textarea>
+
+                            <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
+                                <button type="button" class="btn btn-primary" onclick="ajax_discuss_khach_add(this)">Send</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- END TRAO ĐÔI KHÁCH  -->
 </div>
+
+
+
 
 <script>
     $(document).ready(function() {
-        // trao doi voi khach
         ajax_discuss_list();
         setInterval(() => {
-            ajax_discuss_list();
+            if ($('#tab_chat_khach').hasClass('active')) {
+                ajax_discuss_list();
+            }
         }, 15000);
-        // END trao doi voi khach
+
+        set_height_chat_list_and_height_input(`#discuss_khach`);
+
     })
+
+    function onclick_tab_chat_khach(tab) {
+
+        scroll_to(tab, 0)
+
+        set_height_chat_list_and_height_input(`#discuss_khach`);
+
+
+        // ajax_discuss_list();
+    }
 
     function ajax_discuss_list() {
         $.ajax({
@@ -117,30 +82,51 @@
                     let html = ``;
                     for (const [key, discuss] of Object.entries(list_discuss)) {
 
+                        let html_file = ``;
+                        for (const [id_file, file] of Object.entries(discuss.file_list)) {
+                            html_file += `
+                                <div class="p-1 w-25 mb-2" 
+                                    onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
+                                    style="cursor: pointer;" title="Bấm để tải xuống"
+                                >   ${
+                                        (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
+                                        ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" height="150">`
+                                        : `
+                                        <div width="100%" class="rounded border p-2 text-truncate shadow bg-light" style="height: 100px;line-break: anywhere; text-align:center">
+                                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                            <span style="font-size:12px;">${file}</span>
+                                        </div>
+                                        `
+                                    }
+                                </div>
+                            `;
+                        }
                         html += `
-                
-                    <div class="direct-chat-msg">
-                        <div class="direct-chat-infos clearfix">
-                            <span class="direct-chat-name float-left">${discuss.fullname}</span>
-                            <span class="direct-chat-timestamp float-right">${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}</span>
-                        </div>
+                        
+                            <div class="direct-chat-msg">
+                                <div class="direct-chat-infos clearfix">
+                                    <span class="direct-chat-name float-left">${discuss.fullname}</span>
+                                    <span class="direct-chat-timestamp float-right">${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}</span>
+                                </div>
 
-                        <img class="direct-chat-img" src="${discuss.avatar_url}" alt="message user image">
+                                <img class="direct-chat-img" src="${discuss.avatar_url}" alt="message user image">
 
-                        <div class="direct-chat-text">
-                            ${discuss.content}
-                        </div>
-                    </div> `;
+                                <div class="direct-chat-text" ${<?= $cur_uid ?> == discuss.id_user ? 'bg-success' : '' }">
+                                    
+                                    <div class="d-flex" style="">
+                                        ${html_file}
+                                    </div>
+                                    ${discuss.content != '' ? `<p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; ">${discuss.content}</p>` : ''}
+                                    
+                                </div>
+                            </div> `;
                     }
 
-                    $('#discuss_khach .total-discuss').html(Object.keys(list_discuss).length);
-                    $('#discuss_khach .direct-chat-messages')
+                    $('#tab_chat_khach .total').html(Object.keys(list_discuss).length);
+
+                    $('#discuss_khach .list-chat')
                         .html(html)
-                        .scrollTop($('#discuss_khach .direct-chat-messages')[0].scrollHeight);
-                    $('#discuss_khach .direct-chat-messages')
-
-
-
+                        .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -152,13 +138,16 @@
         });
     }
 
-    function ajax_discuss_add(btn) {
-        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+    function ajax_discuss_khach_add(btn) {
+        $(btn).html(' <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>');
         $(btn).prop("disabled", true);
 
         let content = $('#discuss_khach .content_discuss').val();
-        // let file = $('#discuss_noi_bo .file_discuss').val();
-        let file = {};
+        let attach = [];
+        $('#discuss_khach .chat_list_attach > div').each(function(index) {
+            let file = $(this).data('file');
+            attach.push(file);
+        });
 
         $.ajax({
             url: `discuss/ajax_discuss_add`,
@@ -166,13 +155,33 @@
             data: {
                 'id_order': <?= $order['id_order'] ?>,
                 'content': content,
-                'file': file,
+                'attach': attach,
             },
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
                     let discuss = kq.data;
+
+                    let html_file = ``;
+                    for (const [id_file, file] of Object.entries(discuss.file_list)) {
+                        html_file += `
+                            <div class="p-1 w-25 mb-2" 
+                                onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
+                                style="cursor: pointer;" title="Bấm để tải xuống"
+                            >   ${
+                                    (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
+                                    ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" height="150">`
+                                    : `
+                                    <div width="100%" class="rounded border p-2 text-truncate shadow bg-light" style="height: 100px;line-break: anywhere; text-align:center">
+                                        <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                                        <span style="font-size:12px;">${file}</span>
+                                    </div>
+                                    `
+                                }
+                            </div>
+                        `;
+                    }
 
                     let new_html = `
                         <div class="direct-chat-msg">
@@ -183,19 +192,23 @@
 
                             <img class="direct-chat-img" src="${discuss.avatar_url}" alt="message user image">
 
-                            <div class="direct-chat-text">
-                                ${discuss.content}
+                            <div class="direct-chat-text p-2 ${<?= $cur_uid ?> == discuss.id_user ? 'bg-success' : '' }">
+                                
+                                <div class="d-flex" style="">
+                                    ${html_file}
+                                </div>
+                                ${discuss.content != '' ? `<p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; ">${discuss.content}</p>` : ''}
+                                
                             </div>
-                        </div>`;
+                        </div> `;
 
-                    $('#discuss_khach .card-body .direct-chat-messages')
+                    $('#discuss_khach .list-chat')
                         .append(new_html)
-                        .scrollTop($('#discuss_khach .card-body .direct-chat-messages')[0].scrollHeight);
+                        .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
 
-                    $('#discuss_khach .content_discuss').val('');
-                    $('#discuss_khach .file_discuss').val('');
-
-
+                    $('#discuss_khach .content_discuss').val('').height(60);
+                    $('#discuss_khach .chat_list_attach').html('');
+                    set_height_chat_list_and_height_input(`#discuss_khach`);
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -207,5 +220,70 @@
                 alert('Error');
             }
         });
+    }
+
+    function remove_chat_khach_attach(id) {
+        if (confirm("Are you sure you want to delete this file?") == true) {
+            $(id).remove();
+            set_height_chat_list_and_height_input(`#discuss_khach`);
+        }
+    }
+
+    // tham số bắt buộc [link_file, target, file_name, btn]
+    function cb_upload_add_file_attach_chat_khach(link_file, target, file_name, btn) {
+        let id_attach = Date.now();
+
+        let html = ``;
+        if (isImage(link_file)) {
+            html = `
+            <div class="position-relative image-hover p-2" style="width:150px" id="file_attach_${id_attach}" data-file="${link_file}">
+                <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%;">
+                    <button class="btn btn-sm btn-warning" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')" style="font-size: 10px; padding: 3px 5px;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <img id="img_attach_${id_attach}" src="${link_file}" class="img_attach" alt="" width="100%">
+            </div>`;
+        } else {
+            html = `
+            <div class="position-relative image-hover p-2" style="width:150px" id="file_attach_${id_attach}" title="${file_name}" data-file="${link_file}">
+                <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%;">
+                    <button class="btn btn-sm btn-warning" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')" style="font-size: 10px; padding: 3px 5px;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+
+                <div id="img_attach_${id_attach}" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center">
+                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br>
+                    <span style="font-size:12px;">${file_name}</span>
+                </div>
+            </div>`;
+        }
+
+        $('#discuss_khach .chat_list_attach').append(html);
+
+        set_height_chat_list_and_height_input(`#discuss_khach`);
+    }
+
+    function set_height_chat_list_and_height_input(parent) {
+        setTimeout(() => {
+            $(`${parent} .list-chat`).css('height', `auto`);
+            $(`${parent} .nhap_du_lieu_chat`).css('height', `auto`);
+
+            let height_chat_tab_content = $('#card_chat_lich_su .card-body .tab-content').height();
+            let height_nhap_du_lieu_chat = $(`${parent} .nhap_du_lieu_chat`).height();
+
+            let h_list_chat = height_chat_tab_content - height_nhap_du_lieu_chat;
+
+            $(`${parent} .list-chat`).css('height', `${h_list_chat}px`);
+            $(`${parent} .nhap_du_lieu_chat`).css('height', `${height_nhap_du_lieu_chat}px`);
+
+            $(`${parent} .list-chat`).scrollTop($(`${parent} .list-chat`)[0].scrollHeight);
+        }, 100);
+    }
+
+    
+    function isImage(url_image) {
+        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
     }
 </script>

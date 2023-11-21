@@ -62,6 +62,7 @@ class User extends MY_Controller
         $data['list_type_service']  =  $order['list_type_service'];
         $data['list_job'] = $order['job'];
         $data['order'] = $order;
+        $data['cur_uid'] = $cur_uid;
         $data['FDR_ORDER'] = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
 
         $this->_loadHeader($header);

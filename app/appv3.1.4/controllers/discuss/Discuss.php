@@ -47,7 +47,7 @@ class Discuss extends MY_Controller
 
         $id_order = $this->input->post('id_order');
         $content = removeAllTags($this->input->post('content'));
-        $file = $this->input->post('file');
+        $attach = $this->input->post('attach');
 
         // validate đơn
         $id_order = isIdNumber($id_order)    ? $id_order : 0;
@@ -56,27 +56,27 @@ class Discuss extends MY_Controller
         $order['id_user'] != $cur_uid ? resError('Tài khoản không có quyền truy cập đơn hàng này') : '';
        
         //validate file đính kèm
-        $db_file = [];
-        // !is_array($file)      ? resError('Đính kèm không hợp lệ (001)') : '';
-        // foreach ($file as $i => $url_image) {
-        //     $parse = parse_url($url_image);
-        //     !isset($parse['host'])              ? resError('Đính kèm không hợp lệ (002)') : '';
-        //     $parse['host'] != DOMAIN_NAME       ? resError('Đính kèm không hợp lệ (003)') : '';
-        //     !strpos($url_image, 'uploads/tmp')  ? resError('Đính kèm không hợp lệ (004)') : '';
+        $db_attach = [];
+        $attach = is_array($attach) ? $attach : [];
+        foreach ($attach as $i => $url_file) {
+            $parse = parse_url($url_file);
+            !isset($parse['host'])              ? resError('url file không hợp lệ (1)') : '';
+            $parse['host'] != DOMAIN_NAME       ? resError('url file không hợp lệ (2)') : '';
+            !strpos($url_file, 'uploads/tmp')  ? resError('url file không hợp lệ (3)') : '';
 
-        //     $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
-        //     $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
+            $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+            $copy = copy_image_to_public_upload($url_file, $FDR_ORDER);
 
-        //     !$copy['status'] ? resError($copy['error']) : '';
-        //     $id_file = time() + $i;
-        //     $db_file[$id_file] = $copy['basename'];
-        // }
+            !$copy['status'] ? resError($copy['error']) : '';
+            $id_attach = generateRandomNumber();
+            $db_attach[$id_attach] = $copy['basename'];
+        }
 
         // get list discuss theo order
         $create_time = date('Y-m-d H:i:s');
         $status = 1;
 
-        $newid = $this->Discuss_model->discuss_add($cur_uid, $id_order, $content, json_encode($db_file, JSON_FORCE_OBJECT), $create_time, $status, CHAT_KHACH);
+        $newid = $this->Discuss_model->discuss_add($cur_uid, $id_order, $content, json_encode($db_attach, JSON_FORCE_OBJECT), $create_time, $status, CHAT_KHACH);
 
         $info = $this->Discuss_model->discuss_info($newid);
 

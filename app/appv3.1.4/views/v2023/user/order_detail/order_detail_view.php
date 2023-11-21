@@ -1,14 +1,4 @@
 <style>
-    #TabContentImage img {
-        border-radius: 5px;
-        box-shadow: 3px 2px 7px 0px #888888;
-    }
-
-    .tab-content img {
-        border-radius: 5px;
-        box-shadow: 3px 2px 7px 0px #888888;
-    }
-
     .card-header {
         padding: 0.3rem 0.8rem;
     }
@@ -64,27 +54,45 @@
                                         <div class="card shadow">
                                             <div class="card-header">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <h6 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                                                    <h6 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%; gap:5px">
                                                         <div>ORIGINAL FILE(S)</div>
                                                     </h6>
                                                 </div>
                                             </div>
                                             <div class="card-body">
                                                 <div class="position-relative image-hover">
-                                                    <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%">
+                                                    <b>Files main</b>
+                                                    <?php if (stringIsImage($job['image'])) { ?>
+                                                        <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="mt-2 shadow" alt="<?= $job['image'] ?>" width="100%">
+                                                    <?php } else { ?>
+                                                        <div class="border shadow" style="text-align: center;width: 100%; padding: 30px 0;" title="<?= $job['image'] ?>">
+                                                            <i class="fa fa-paperclip" aria-hidden="true"></i>
+                                                            <div style="font-size:12px;"><?= $job['image'] ?></div>
+                                                        </div>
+                                                    <?php } ?>
                                                 </div>
                                                 <div class="mt-3">
                                                     <b>Attach Reference Files</b>
-                                                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                                    <div class="mt-2" style="display: flex; gap: 10px; flex-wrap: wrap;">
                                                         <?php $list_attach = json_decode($job['attach'], true); ?>
                                                         <?php foreach ($list_attach as $key => $item) { ?>
+
                                                             <div class="position-relative">
-                                                                <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" width="100">
+                                                                <?php if (stringIsImage($item)) { ?>
+                                                                    <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="<?= $item ?>" class="shadow" width="100">
+                                                                <?php } else { ?>
+                                                                    <div style="width:100px;aspect-ratio: 1; object-fit: cover; text-align:center" class="border p-2 pt-4 shadow" title="<?= $item ?>">
+                                                                        <i class="fa fa-paperclip" aria-hidden="true"></i>
+                                                                        <p style="font-size:12px" class="text-truncate"><?= $item ?></p>
+                                                                    </div>
+                                                                <?php } ?>
+
+
                                                             </div>
                                                         <?php } ?>
                                                     </div>
                                                 </div>
-
+                                                <hr>
                                                 <div class="mt-3">
                                                     <div class="d-flex">
                                                         <div style="min-width: 130px; font-weight: bold;">Room Type</div>
@@ -99,7 +107,7 @@
                                                         <div><?= $job['style'] ?></div>
                                                     </div>
                                                 </div>
-
+                                                <hr>
                                                 <div class="mt-3">
                                                     <b>Requirements:</b>
                                                     <textarea class="form-control" rows="5" disabled><?= $job['requirement'] ?></textarea>
@@ -233,3 +241,12 @@
 
 
 </div>
+
+<script>
+    $(document).ready(function() {
+        // TODO: có vấn đề
+        $("textarea").each(function(textarea) {
+            $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
+        });
+    })
+</script>
