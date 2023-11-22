@@ -123,8 +123,8 @@ class Voucher extends MY_Controller
                     // thêm xóa user khỏi voucher
                     $voucher_user_new = array_merge($voucher_user_khach, $voucher_user_sale);
                     $voucher_user_old = [];
-                    foreach ($info['voucher_user'] as $id_user => $item) {
-                        $voucher_user_old[] = $id_user;
+                    foreach ($info['voucher_user'] as $user) {
+                        $voucher_user_old[] = $user['id_user'];
                     }
                     $new = array_diff($voucher_user_new, $voucher_user_old);
                     $del = array_diff($voucher_user_old, $voucher_user_new);
@@ -210,5 +210,14 @@ class Voucher extends MY_Controller
             $list =  $this->Voucher_model->get_list2($id_voucher, $f_price, $t_price, $price_unit, $code, $f_expire, $t_expire, $status, $f_create_time, $t_create_time, $note, $create_by, $limit, $offset);
 
         }
+    }
+
+    function ajax_get_list_voucher_for_create_order_by_sale() {
+        $id_sale = 987654342;
+        $now = date("Y-m-d H:s:i");
+
+        $list =  $this->Voucher_model->get_list_voucher_for_create_order_by_sale($id_sale, $now);
+
+        var_dump($list);
     }
 }
