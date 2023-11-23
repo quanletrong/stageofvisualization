@@ -46,7 +46,7 @@
 
                     <!-- submit -->
                     <div class="mt-3">
-                        <div class="d-flex">
+                        <div class="d-flex" style="gap:10px">
                             <button type="button" class="btn btn-lg btn-secondary w-25 me-3" id="step-2-back">Back</button>
                             <button type="button" class="btn btn-lg btn-danger w-75" id="step-2-next">NEXT</button>
                         </div>

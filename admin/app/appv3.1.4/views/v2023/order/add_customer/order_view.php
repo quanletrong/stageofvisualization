@@ -15,6 +15,9 @@
     // step 2
     STATE.job = {};
     STATE.style = '';
+
+    //step 3
+    STATE.voucher = '';
     
 </script>
 
@@ -138,6 +141,7 @@
                 }
                 $('#list-price').html(price_html);
                 $('#total_price').html(total_price);
+                $('#thanh_toan_price').html(total_price);
             } else {
                 scroll_to(error);
             }

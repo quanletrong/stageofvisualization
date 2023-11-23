@@ -14,7 +14,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <div class="d-flex">
+                    <div class="d-flex" style="gap:10px">
                         <button type="button" class="btn btn-lg btn-secondary w-25 me-3" id="step-3-back">Back</button>
                         <button type="button" id="submit-order" class="btn btn-lg btn-danger w-75">Hoàn Thành</button>
                     </div>

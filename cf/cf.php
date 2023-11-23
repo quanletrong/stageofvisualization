@@ -78,6 +78,7 @@ define('ORDER_REWORK', '7');     //vàng
 define('ORDER_CANCLE', '8');     //đỏ
 define('ORDER_COMPLETE', '9');   //xanh lá
 define('ORDER_FIX', '10');      //đỏ
+define('ORDER_PAY_WAITING', '11');      //đỏ
 
 // SERVICE
 define('SERVICE_RUN', 1);
@@ -189,3 +190,7 @@ const LOG = [
         LOG_RW_REF_REMOVE           => 'Xóa file đính kèm cho <b>Rework</b>',
         LOG_RW_NOTE_EDIT            => 'Sửa yêu cầu cho <b>Rework</b>',
 ];
+
+
+// Phương thức thanh toán
+define('PAYPAL', 1);

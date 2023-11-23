@@ -35,6 +35,7 @@ define('LINK_USER_REGISTER', 'register');
 
 define('PAY_DANG_CHO', 0); // chưa thanh toán
 define('PAY_HOAN_THANH', 1); // đa thanh toán
+define('PAY_HUY', 2); // hủy thanh toán hoặc có lỗi
 
 
 define('LOGO_FOLDER', 'logo'); // uploads/images/logo

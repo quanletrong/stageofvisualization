@@ -186,7 +186,7 @@ class Voucher extends MY_Controller
 
         // lấy thông tin voucher từ ID trên
         if (!empty($list_voucher)) {
-            
+
             $arr_id = [];
             foreach ($list_voucher as $voucher) {
                 $arr_id[] = $voucher['id_voucher'];
@@ -208,16 +208,23 @@ class Voucher extends MY_Controller
             $offset        = 0;
 
             $list =  $this->Voucher_model->get_list2($id_voucher, $f_price, $t_price, $price_unit, $code, $f_expire, $t_expire, $status, $f_create_time, $t_create_time, $note, $create_by, $limit, $offset);
-
         }
     }
 
-    function ajax_get_list_voucher_for_create_order_by_sale() {
-        $id_sale = 987654342;
+    function ajax_get_list_voucher_for_create_order_by_sale()
+    {
+
+        $cur_uid = $this->_session_uid();
+
+        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+            resError('not_permit', 'Bạn không có quyền thực hiện.');
+        }
+
+        $id_sale = 987654342; //TODO: fix tạm
         $now = date("Y-m-d H:s:i");
 
         $list =  $this->Voucher_model->get_list_voucher_for_create_order_by_sale($id_sale, $now);
 
-        var_dump($list);
+        resSuccess($list);
     }
 }

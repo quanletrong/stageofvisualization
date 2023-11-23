@@ -333,6 +333,8 @@ class Voucher_model extends CI_Model
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         if ($row['limit'] > $row['total']) {
+                            $str_exprire  = strtotime($row['expire_date']);
+                            $row['expire_view'] = date('H:i', $str_exprire) . " ngày " . date('d-m-Y', $str_exprire);
                             $data[$row['id_voucher']] = $row;
                         }
                     }
