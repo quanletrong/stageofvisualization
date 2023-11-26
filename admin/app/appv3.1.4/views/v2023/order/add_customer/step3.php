@@ -133,16 +133,16 @@
 
     function ap_dung_voucher(id_voucher, code, price_voucher) {
 
+        price_voucher = parseFloat(price_voucher);
+        let total_price = parseFloat($('#total_price').text());
+
         $('#button_voucher .code_voucher').text(code);
         $('#button_voucher .price_voucher').text(price_voucher);
         $('#button_voucher').show();
 
-        let total_price = $('#total_price').text();
-
         let thanh_toan_price = 0;
-
         if (total_price > price_voucher) {
-            let thanh_toan_price = total_price - price_voucher;
+            thanh_toan_price = total_price - price_voucher;
         }
 
         $('#thanh_toan_price').text(thanh_toan_price)

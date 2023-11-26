@@ -41,6 +41,8 @@
                             echo '<small class="badge bg-danger">CANCLE</small>';
                         } else if ($order['status'] == ORDER_REWORK) {
                             echo '<small class="badge bg-danger">REWORK</small>';
+                        } else if ($order['status'] == ORDER_PAY_WAITING) {
+                            echo '<small class="badge bg-danger">UNPAID</small>';
                         } else {
                             echo '<small class="badge bg-warning">IN PROGRESS</small>';
                         }

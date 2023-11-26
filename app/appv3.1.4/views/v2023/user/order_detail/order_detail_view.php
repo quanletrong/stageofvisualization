@@ -195,6 +195,9 @@
                         } else if ($order['status'] == ORDER_REWORK) {
                             echo '<button class="btn btn-danger w-100">REWORK</button>';
                             echo '<p>Đơn hàng của bạn đang được làm lại!</p>';
+                        } else if ($order['status'] == ORDER_PAY_WAITING) {
+                            echo '<button class="btn btn-danger w-100" onclick="open_popup_pay('.$order['id_order'].')">CLICK TO PAY!</button>';
+                            echo '<p>Đơn hàng của bạn chưa thanh toán!</p>';
                         } else {
                             echo '<button class="btn btn-warning w-100">IN PROGRESS</button>';
                             echo '<p>Đơn hàng của bạn đang được xử lý.</p>';
@@ -249,4 +252,37 @@
             $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
         });
     })
+
+    function open_popup_pay(id_order) {
+        
+        let LOCAL_PAY = Date.now();
+        localStorage.setItem(LOCAL_PAY, "RUNING")
+
+        let url = `<?= site_url('order/ajax_popup_payment/') ?>/${id_order}?l=${LOCAL_PAY}`;
+        newwindow = window.open(url, 'Payment Order', 'height=800,width=500');
+
+        let kiem_tra_trang_thai_pay = setInterval(() => {
+            var trang_thai_pay = localStorage.getItem(LOCAL_PAY);
+
+            if (trang_thai_pay == "RUNING") {
+                console.log(trang_thai_pay);
+            } else {
+
+                localStorage.removeItem(LOCAL_PAY);
+                clearInterval(kiem_tra_trang_thai_pay)
+
+                if (trang_thai_pay == '<?= PAY_HUY ?>') {
+                    alert('Thanh toán không thành công');
+                } else if (trang_thai_pay == '<?= PAY_HOAN_THANH ?>') {
+                    alert('Thanh toán thành công');
+                    window.location.reload();
+                }
+            }
+
+        }, 2000);
+        if (window.focus) {
+            newwindow.focus()
+        }
+        return false;
+    }
 </script>

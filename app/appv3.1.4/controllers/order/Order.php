@@ -16,6 +16,7 @@ class Order extends MY_Controller
         $this->load->model('job/Job_model');
         $this->load->model('login/Login_model');
         $this->load->model('account/Account_model');
+        $this->load->model('payment/Payment_model');
     }
 
     function index()
@@ -109,9 +110,8 @@ class Order extends MY_Controller
         // END VALIDATE
 
         // Tạo đơn vào tbl_order
-        // TODO: dòng bên dưới tạm fix PAY_HOAN_THANH, sau bổ sung paypal sẽ thay bằng PAY_DANG_CHO
         $create_id_user = $id_user;
-        $new_order = $this->Order_model->add_order($style, $create_time, $id_user, PAY_HOAN_THANH, ORDER_PENDING, DON_KHACH_TAO, $create_id_user, ED_NOI_BO);
+        $new_order = $this->Order_model->add_order($style, $create_time, $id_user, ORDER_PAY_WAITING, DON_KHACH_TAO, $create_id_user, ED_NOI_BO);
 
         $flag_error = false;
         if ($new_order) {
@@ -318,5 +318,76 @@ class Order extends MY_Controller
         //TODO: THIẾU GHI LOG
         $this->Job_model->update_requirement_rework($id_rework, $requirement);
         resSuccess('Thành công');
+    }
+
+    function ajax_popup_payment($id_order)
+    {
+        $cur_uid     = $this->_session_uid();
+        $id_order = isIdNumber($id_order) ? $id_order : 0;
+
+        $LOCAL_PAY = $this->input->get('l');
+
+        $order = $this->Order_model->get_info_order($id_order);
+        if (empty($order) || $order['id_user'] != $cur_uid) {
+            resError('Bạn không có quyền truy cập đến đơn hàng này');
+        }
+
+
+        $list_payment = $this->Payment_model->get_list_payment_by_order($id_order);
+
+        // tong tien can thanh toan cua don hang
+        $total_price_pay = 0;
+        foreach ($list_payment as $pay) {
+            if ($pay['is_payment'] == PAY_DANG_CHO) {
+                $price = floatval($pay['price']);
+                $price_vou = floatval($pay['price_voucher']);
+                $price_pay = $price > $price_vou ? ($price - $price_vou) : 0;
+                $total_price_pay += $price_pay;
+            }
+        }
+
+        if ($total_price_pay > 0) {
+            redirect('order/ajax-call-api-pay?id_order=' . $id_order . '&amount=' . $total_price_pay . '&l=' . $LOCAL_PAY);
+        } else {
+            echo "<script>localStorage.setItem('local_storage_pay', " . PAY_HOAN_THANH . ");window.close()</script>";
+            die();
+        }
+    }
+
+    function ajax_call_api_pay()
+    {
+        $id_order = $this->input->get('id_orderr');
+        $amount = $this->input->get('amountt');
+        $LOCAL_PAY = $this->input->get('l');
+
+        if ($id_order != '' && $amount != '') {
+            // $status = PAY_HUY;
+            $status = PAY_HOAN_THANH;
+            redirect('order/ajax_callback_payment?id_order=' . $id_order . '&status=' . $status . '&l=' . $LOCAL_PAY);
+        } else {
+            $this->load->view($this->_template_f . 'user/order_detail/_form_paypal.php');
+        }
+    }
+
+    function ajax_callback_payment()
+    {
+        $id_order = $this->input->get('id_order');
+        $status = $this->input->get('status');
+        $LOCAL_PAY = $this->input->get('l');
+
+
+        $trancsion = 'xxxxxx';
+        $type_pay = PAYPAL;
+        $update_time = date('Y-m-d H:i:s');
+        if ($status == PAY_HOAN_THANH) {
+            $this->Payment_model->update_status_payment_by_id_order($id_order, PAY_HOAN_THANH, $type_pay, $trancsion, $update_time);
+            $this->Order_model->update_status_order($id_order, ORDER_PENDING);
+
+            $local_storage_pay = PAY_HOAN_THANH;
+        } else {
+            $local_storage_pay = PAY_HUY;
+        }
+
+        echo "<script>localStorage.setItem($LOCAL_PAY, $local_storage_pay);window.close()</script>";
     }
 }

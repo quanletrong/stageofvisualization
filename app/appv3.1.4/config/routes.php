@@ -96,3 +96,8 @@ $route[LINK_USER_REGISTER]            = 'signup/signup/index';
 //discuss
 $route['discuss/ajax_discuss_list'] = 'discuss/discuss/ajax_discuss_list';
 $route['discuss/ajax_discuss_add'] = 'discuss/discuss/ajax_discuss_add';
+
+//payment
+$route['order/ajax-popup-payment/(:num)'] = 'order/order/ajax_popup_payment/$1';
+$route['order/ajax-call-api-pay'] = 'order/order/ajax_call_api_pay';
+$route['order/ajax-callback-payment'] = 'order/order/ajax_callback_payment';

@@ -400,7 +400,8 @@ class Order extends MY_Controller
         // END VALIDATE
 
         // Tạo đơn vào tbl_order
-        $new_order = $this->Order_model->add_order($style, $create_time, $for_user, PAY_HOAN_THANH, ORDER_PAY_WAITING, DON_NOI_BO, $create_id_user, ED_NOI_BO);
+        $type_order = $type == 'private' ? DON_NOI_BO : DON_TAO_HO;
+        $new_order = $this->Order_model->add_order($style, $create_time, $for_user, ORDER_PAY_WAITING, $type_order, $create_id_user, ED_NOI_BO);
 
         $flag_error = false;
         if ($new_order) {
@@ -455,7 +456,7 @@ class Order extends MY_Controller
                     $new_payment =  $this->Order_model->add_payment_order($new_order, $id_voucher, $code_vou, $total_price, $price_vou, $cur_uid, PAY_DANG_CHO, PAYPAL, $create_time);
                 }
 
-                $flag_error = !$new_payment;
+                $flag_error = $new_payment == false ? true : false;
             }
 
             if ($flag_error) {
@@ -465,9 +466,11 @@ class Order extends MY_Controller
                 resError('Loi luu job');
             } else {
                 resSuccess([
-                    'tien_thanh_toan' => ($total_price - $price_vou),
-                    'new_id_order'    => $new_order,
-                    'new_id_payment'  => $new_payment
+                    'price' => (float) $total_price,
+                    'price_vou' => (float) $price_vou,
+                    'price_payment' => (float) ($total_price > $price_vou ? ($total_price - $price_vou) : 0),
+                    'new_id_order'    => (int) $new_order,
+                    'new_id_payment'  => (int) $new_payment
                 ]);
             }
         } else {
