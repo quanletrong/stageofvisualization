@@ -32,7 +32,10 @@ class User extends MY_Controller
             'header_page_css_js' => 'user'
         ];
         $uid = $this->_session_uid();
-        $list_order = $this->Order_model->get_list_order_by_id_user($uid);
+        
+        $filter['order_user'] = $uid;
+        $list_order = $this->Order_model->get_list_v2($filter);
+
         $data['list_order'] = $list_order;
         $this->_loadHeader($header);
         $this->load->view($this->_template_f . 'user/order_view', $data);

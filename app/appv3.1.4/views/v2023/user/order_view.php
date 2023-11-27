@@ -10,45 +10,52 @@
     <table class="table border table-striped table-hover">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">DATE CREATE</th>
+                <th scope="col" class="text-center">#</th>
+                <th scope="col" width="150">DATE CREATE</th>
                 <th scope="col">JOB TYPE</th>
-                <th scope="col">TOTAL IMAGE</th>
-                <th scope="col">STATUS</th>
-                <th scope="col">[VIEW]</th>
+                <th scope="col" class="text-center">TOTAL IMAGE</th>
+                <th scope="col" class="text-center">STATUS</th>
+                <th scope="col" class="text-center">[VIEW]</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($list_order as $id_order => $order) { ?>
                 <tr>
-                    <th scope="row">OID<?= $id_order ?></th>
-                    <td><?= $order['create_time'] ?></td>
+                    <th scope="row" class="text-center">OID<?= $id_order ?></th>
+                    <td onclick="$('.time_since, .time_date').toggleClass('d-none');" style="cursor: pointer;">
+                        <div class="time_since">
+                            <?= timeSince($order['create_time']) ?> trước
+                        </div>
+                        <div class="time_date d-none">
+                            <?= date('H:s | d-m-Y', strtotime($order['create_time'])) ?>
+                        </div>
+                    </td>
                     <td>
-                        <?php foreach ($order['type_service'] as $val) { ?>
+                        <?php foreach ($order['list_service'] as $val) { ?>
                             <span class="badge text-bg-danger"><?= $val ?></span>
                         <?php } ?>
                     </td>
-                    <td><?= $order['total_job'] ?></td>
-                    <td>
+                    <td class="text-center"><?= count($order['list_job']) ?></td>
+                    <td class="text-center">
                         <?php
                         if ($order['status'] == ORDER_PENDING) {
-                            echo '<small class="badge" style="color:white;background-color: deeppink">PENDING</small>';
+                            echo '<small class="badge" style="color:white;background-color: deeppink" data-bs-toggle="tooltip" data-bs-placement="top" title="Đơn hàng đang chờ duyệt!">PENDING</small>';
                         } else if ($order['status'] == ORDER_DELIVERED) {
-                            echo '<small class="badge bg-info">DELIVERED</small>';
+                            echo '<small class="badge bg-info" data-bs-toggle="tooltip" data-bs-placement="top" title="Đơn hàng đã được giao!">DELIVERED</small>';
                         } else if ($order['status'] == ORDER_COMPLETE) {
-                            echo '<small class="badge bg-success">COMPLETE</small>';
+                            echo '<small class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Đơn hàng đã hoàn thành!">COMPLETE</small>';
                         } else if ($order['status'] == ORDER_CANCLE) {
-                            echo '<small class="badge bg-danger">CANCLE</small>';
+                            echo '<small class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Đơn hàng đã hủy!">CANCLE</small>';
                         } else if ($order['status'] == ORDER_REWORK) {
-                            echo '<small class="badge bg-danger">REWORK</small>';
+                            echo '<small class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Đơn hàng đang làm lại!">REWORK</small>';
                         } else if ($order['status'] == ORDER_PAY_WAITING) {
-                            echo '<small class="badge bg-danger">UNPAID</small>';
+                            echo '<small class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Đơn hàng chờ thanh toán!">UNPAID</small>';
                         } else {
-                            echo '<small class="badge bg-warning">IN PROGRESS</small>';
+                            echo '<small class="badge bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Đơn hàng đang trong quá trình làm!">IN PROGRESS</small>';
                         }
                         ?>
                     </td>
-                    <td><a href="user/orderdetail/<?= $id_order ?>">[VIEW JOB]</a></td>
+                    <td class="text-center "><a href="user/orderdetail/<?= $id_order ?>" class="link-primary">[VIEW JOB]</a></td>
                 </tr>
             <?php } ?>
         </tbody>

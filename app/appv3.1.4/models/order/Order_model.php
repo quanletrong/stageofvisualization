@@ -3,7 +3,7 @@
 class Order_model extends CI_Model
 {
     private $_status_sort = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK, ORDER_DONE, ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE];
-    
+
     public function __construct()
     {
         // Call the CI_Model constructor
@@ -80,7 +80,7 @@ class Order_model extends CI_Model
         $sql = "SELECT A.*
             FROM tbl_order as A
             WHERE id_user = $id_user
-            ORDER BY FIELD(A.status, ".implode(',', $this->_status_sort)."), A.create_time DESC";
+            ORDER BY FIELD(A.status, " . implode(',', $this->_status_sort) . "), A.create_time DESC";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -151,6 +151,86 @@ class Order_model extends CI_Model
 
         return $data;
     }
+
+    function get_list_v2($filter = [])
+    {
+        $list_order = [];
+        $iconn = $this->db->conn_id;
+
+        $filter_code_order   = isset($filter['code_order'])     ? $filter['code_order']     : '';
+        $filter_user_code    = isset($filter['user_code'])      ? $filter['user_code']      : '';
+        $filter_status       = isset($filter['status'])         ? $filter['status']         : '';
+        $filter_type_service = isset($filter['type_service'])   ? $filter['type_service']   : '';      // vs vr ...
+        $filter_order_type   = isset($filter['order_type'])     ? $filter['order_type']     : '';      // khách tạo, nội bộ, tạo hộ
+        $filter_ed_type      = isset($filter['ed_type'])        ? $filter['ed_type']        : '';      // nội bộ, ctv
+        $filter_fdate        = isset($filter['fdate'])          ? $filter['fdate']          : '';
+        $filter_tdate        = isset($filter['tdate'])          ? $filter['tdate']          : '';
+        $filter_id_user      = isset($filter['id_user'])        ? $filter['id_user']        : '';
+        $filter_order_user   = isset($filter['order_user'])     ? $filter['order_user']     : '';
+
+        $this->session->set_flashdata('PARAMS', []);
+        // SELECT
+        $SQL =
+            "SELECT
+                tbl_order.*,
+                tbl_user.code_user,
+                tbl_tam.list_job,
+                tbl_tam.list_service,
+                tbl_tam.list_user 
+            FROM
+                tbl_order
+                INNER JOIN tbl_user ON tbl_user.id_user = tbl_order.id_user 
+                LEFT JOIN (
+                    SELECT
+                        tbl_job.id_order,
+                        GROUP_CONCAT( DISTINCT tbl_job.id_job ) AS list_job,
+                        GROUP_CONCAT( DISTINCT tbl_job.type_service ) AS list_service,
+                        GROUP_CONCAT( DISTINCT tbl_job_user.id_user ) AS list_user 
+                    FROM
+                        tbl_job
+                        LEFT JOIN tbl_job_user ON tbl_job.id_order = tbl_job_user.id_order AND tbl_job_user.`status` = 1 
+                    GROUP BY
+                        tbl_job.id_order 
+                ) AS tbl_tam ON tbl_tam.id_order = tbl_order.id_order 
+            WHERE
+                1 = 1 
+                AND " . QSQL_IN('tbl_order.`status`', $filter_status, $this) . " 
+                AND " . QSQL_IN('tbl_order.order_type', $filter_order_type, $this) . "
+                AND " . QSQL_IN('tbl_order.ed_type', $filter_ed_type, $this) . "
+                AND " . QSQL_IN('tbl_order.id_user', $filter_order_user, $this) . "
+                
+                AND " . QSQL_LIKE('tbl_order.code_order', $filter_code_order, $this) . "
+                AND " . QSQL_LIKE('tbl_user.code_user', $filter_user_code, $this) . "
+
+                AND (" . QSQL_LIKE_OR('concat(",", tbl_tam.list_user, ",")', $filter_id_user, $this) . ")
+                AND (" . QSQL_LIKE_OR('concat(",", tbl_tam.list_service, ",")', $filter_type_service, $this) . ") 
+                AND " . QSQL_BETWEEN('tbl_order.create_time', $filter_fdate, $filter_tdate, $this) . "
+
+            ORDER BY 
+                FIELD(tbl_order.status, " . implode(',', $this->_status_sort) . "), tbl_order.create_time DESC; 
+        ";
+
+        $PARAMS = $this->session->flashdata('PARAMS');
+        $stmt = $iconn->prepare($SQL);
+        if ($stmt) {
+            if ($stmt->execute($PARAMS)) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                        $row['list_service'] = $row['list_service'] == '' ? [] : explode(",", $row['list_service']);
+                        $row['list_job']     = $row['list_job']     == '' ? [] : explode(",", $row['list_job']);
+                        $row['list_user']    = $row['list_user']    == '' ? [] : explode(",", $row['list_user']);
+                        $list_order[$row['id_order']] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $list_order;
+    }
     //  END LẤY DANH SÁCH ĐƠN THEO USER
 
     // Cập nhât trạng thái đơn
@@ -175,8 +255,8 @@ class Order_model extends CI_Model
         return $execute;
     }
     // end cập nhật trạng thái đơn
-    
-    function get_info_order($id_order)
+
+    function get_info_order_old($id_order)
     {
         $data = [];
         $iconn = $this->db->conn_id;
@@ -263,6 +343,112 @@ class Order_model extends CI_Model
         $stmt->closeCursor();
         return $data;
     }
+
+    function get_info_order($id_order)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+        $sql = "SELECT A.*, B.code_user, B.username FROM tbl_order A
+        INNER JOIN tbl_user B ON A.id_user = B.id_user
+        WHERE A.id_order = ? LIMIT 1";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$id_order])) {
+
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                if (!empty($data)) {
+                    $list_job = $this->_get_list_job_by_order($data['id_order'], $iconn);
+                    $data['job'] = $list_job;
+                    $data['total_type_service']    = 0;
+                    $data['list_type_service']     = [];
+                    $data['working_custom_active'] = [];
+                    $data['working_custom_block']  = [];
+                    $data['total_custom_used']     = 0;   // số lượng custom đã dùng trong đơn
+
+                    foreach ($data['job'] as $id_job => $job) {
+
+                        // get working (chưa cần)
+                        // $working = $this->_get_working_job_v2($id_order, $id_job, $iconn);
+                        // $data['job'][$id_job]['working_ed_active']     = $working['working_ed_active'];
+                        // $data['job'][$id_job]['working_ed_block']      = $working['working_ed_block'];
+                        // $data['job'][$id_job]['working_qc_in_active']  = $working['working_qc_in_active'];
+                        // $data['job'][$id_job]['working_qc_in_block']   = $working['working_qc_in_block'];
+                        // $data['job'][$id_job]['working_qc_out_active'] = $working['working_qc_out_active'];
+                        // $data['job'][$id_job]['working_qc_out_block']  = $working['working_qc_out_block'];
+
+                        // get rework
+                        $data['job'][$id_job]['rework'] = $this->_get_list_rework_user_by_job($id_job, $iconn);
+
+                        // danh sach type_service cua order
+                        $data['list_type_service'][$job['type_service']][] = $id_job;
+                        $data['total_type_service'] += 1;
+                    }
+
+                    // gán working custom (chưa cần)
+                    // $working_custom = $this->_get_working_job_v2($id_order, 0, $iconn);
+                    // $data['working_custom_active'] = $working_custom['working_custom_active'];
+                    // $data['working_custom_block']  = $working_custom['working_custom_block'];
+                    // foreach ($working_custom['working_custom_active'] as $custom_active) {
+                    //     $data['total_custom_used'] += $custom_active['custom'];
+                    // }
+                }
+
+                // gán danh sách qc, ed, custom vào đơn (chưa cần)
+                // if (!empty($data)) {
+                //     $data['team'] =  $this->_get_list_editor_by_id_order($data['id_order'], $iconn);
+                // }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function _get_working_job_v2($id_order, $id_job, $iconn)
+    {
+        $working['working_ed_active']     = [];
+        $working['working_ed_block']      = [];
+        $working['working_qc_in_active']  = [];
+        $working['working_qc_in_block']   = [];
+        $working['working_qc_out_active'] = [];
+        $working['working_qc_out_block']  = [];
+        $working['working_custom_active'] = [];
+        $working['working_custom_block']  = [];
+
+        $sql = "SELECT A.*
+        FROM tbl_job_user A
+        WHERE id_order = $id_order AND id_job = $id_job";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                $id_user       = $row['id_user'];
+                $type_job_user = $row['type_job_user'];
+                $status        = $row['status'];
+
+                $type_job_user == WORKING_EDITOR && $status == 1 ? $working['working_ed_active'][$id_user] = $row : '';
+                $type_job_user == WORKING_EDITOR && $status == 0 ? $working['working_ed_block'][$id_user] = $row : '';
+
+                $type_job_user == WORKING_QC_IN && $status == 1 ? $working['working_qc_in_active'][$id_user] = $row : '';
+                $type_job_user == WORKING_QC_IN && $status == 0 ? $working['working_qc_in_block'][$id_user] = $row : '';
+
+                $type_job_user == WORKING_QC_OUT && $status == 1 ? $working['working_qc_out_active'][$id_user] = $row : '';
+                $type_job_user == WORKING_QC_OUT && $status == 0 ? $working['working_qc_out_block'][$id_user] = $row : '';
+
+                $type_job_user == WORKING_CUSTOM && $status == 1 ? $working['working_custom_active'][$id_user] = $row : '';
+                $type_job_user == WORKING_CUSTOM && $status == 0 ? $working['working_custom_block'][$id_user] = $row : '';
+            }
+        } else {
+            var_dump($stmt->errorInfo());
+            die;
+        }
+
+        return $working;
+    }
+
 
     function _get_list_job_by_order($id_order, $iconn)
     {

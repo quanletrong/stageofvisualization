@@ -48,7 +48,7 @@
                     <div class="tab-content" id="TabContentImage">
                         <?php $active = 'active show' ?>
                         <?php foreach ($list_job as $id_job => $job) { ?>
-                            <div class="tab-pane fade <?= $active ?>" id="tab_content_job_<?= $id_job ?>" role="tabpanel" aria-labelledby="tab_job_<?= $id_job ?>" tabindex="0">
+                            <div class="tab-pane <?= $active ?>" id="tab_content_job_<?= $id_job ?>" role="tabpanel" aria-labelledby="tab_job_<?= $id_job ?>" tabindex="0">
                                 <div class="row">
                                     <div class="col-12 col-lg-6">
                                         <div class="card shadow">
@@ -139,7 +139,7 @@
                                                     </div>
                                                 <?php } else { ?>
                                                     <div class="alert alert-warning" role="alert">
-                                                        Orders are being processed!
+                                                        Your orders are being processed!
                                                     </div>
                                                 <?php } ?>
 
@@ -182,16 +182,16 @@
                         <?php
                         if ($order['status'] == ORDER_PENDING) {
                             echo '<button class=" btn w-100" style="color:white;background-color: deeppink" >PENDING</button>';
-                            echo '<p>Đơn hàng của bạn đang đợi duyệt!</p>';
+                            echo '<p>Đơn hàng của bạn đang chờ duyệt!</p>';
                         } else if ($order['status'] == ORDER_DELIVERED) {
                             echo '<button class=" btn btn-info w-100">DELIVERED</button>';
                             echo '<p>Đơn hàng của bạn đã được giao. Vui lòng kiểm tra lại!</p>';
                         } else if ($order['status'] == ORDER_COMPLETE) {
                             echo '<button class="btn btn-success w-100">COMPLETE</button>';
-                            echo '<p>Bạn đã nhận được đơn hàng!</p>';
+                            echo '<p>Đơn hàng này đã hoàn thành!</p>';
                         } else if ($order['status'] == ORDER_CANCLE) {
                             echo '<button class="btn btn-danger w-100">CANCLE</button>';
-                            echo '<p>Đơn hàng của bạn đã bị xóa!</p>';
+                            echo '<p>Đơn hàng của bạn đã hủy!</p>';
                         } else if ($order['status'] == ORDER_REWORK) {
                             echo '<button class="btn btn-danger w-100">REWORK</button>';
                             echo '<p>Đơn hàng của bạn đang được làm lại!</p>';

@@ -1155,3 +1155,93 @@ function stringIsImage($string)
     }
     return false;
 }
+
+
+function QSQL_BETWEEN($filed, $from, $to, $CI)
+{
+    $PARAMS = $CI->session->flashdata("PARAMS");
+    if ($from !== '' && $to === '') {
+        $PARAMS[] = $from;
+        $query = " $filed >= ? ";
+    } elseif ($from === '' && $to !== '') {
+        $PARAMS[] = $to;
+        $query = " $filed <= ? ";
+    } elseif ($from !== '' && $to !== '') {
+        $PARAMS[] = $from;
+        $PARAMS[] = $to;
+        $query = " $filed BETWEEN ? AND ? ";
+    } else {
+        $query = " 1=1 ";
+    }
+
+    $CI->session->set_flashdata("PARAMS", $PARAMS);
+    return $query;
+}
+
+function QSQL_LIKE($filed, $keywwork, $CI)
+{
+    if ($keywwork !== '') {
+        $PARAMS = $CI->session->flashdata("PARAMS");
+        $PARAMS[] = "%$keywwork%";
+
+        $CI->session->set_flashdata("PARAMS", $PARAMS);
+        return " $filed LIKE ? ";
+    } else {
+        return ' 1=1 ';
+    }
+}
+
+function QSQL_LIKE_OR($filed, $list_keywwork, $CI)
+{
+    if ($list_keywwork !== '') {
+        $arr = explode(',', $list_keywwork);
+        $PARAMS = $CI->session->flashdata("PARAMS");
+        $query = [];
+        foreach ($arr as $keywwork) {
+
+            $query[] = " $filed LIKE ? ";
+            $PARAMS[] = "%$keywwork%";
+        }
+        $CI->session->set_flashdata("PARAMS", $PARAMS);
+
+        return implode(" OR ", $query);
+    } else {
+        return ' 1=1 ';
+    }
+}
+
+
+function QSQL_IN($filed, $id_string, $CI)
+{
+    if ($id_string !== '') {
+        return " $filed IN ($id_string) ";
+    } else {
+        return ' 1=1 ';
+    }
+}
+
+function timeSince($date)
+{
+    $seconds = time() - strtotime($date);
+    $interval = floor($seconds / 31536000);
+    if ($interval >= 1) {
+        return $interval . " năm";
+    }
+    $interval = floor($seconds / 2592000);
+    if ($interval >= 1) {
+        return $interval . " tháng";
+    }
+    $interval = floor($seconds / 86400);
+    if ($interval >= 1) {
+        return $interval . " ngày";
+    }
+    $interval = floor($seconds / 3600);
+    if ($interval >= 1) {
+        return $interval . " giờ";
+    }
+    $interval = floor($seconds / 60);
+    if ($interval >= 1) {
+        return $interval . " phút";
+    }
+    return floor($seconds) . " giây";
+}
