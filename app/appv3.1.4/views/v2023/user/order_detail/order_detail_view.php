@@ -169,7 +169,7 @@
 
         <!-- CỘT PHẢI -->
         <div class="col-12 col-lg-3">
-            <div class="card card-primary">
+            <div class="card card-primary" style="height: 100%;">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">

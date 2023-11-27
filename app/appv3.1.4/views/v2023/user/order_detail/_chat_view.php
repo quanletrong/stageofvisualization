@@ -1,15 +1,16 @@
 <script src="js/v2023/moment_2.29.4.min.js"></script>
+<h4 class="mt-5">TRAO ĐỔI VỚI SALE</h4>
 <div class="row">
     <!-- TRAO ĐỔI KHÁCH -->
     <div class="col-12 col-lg-12">
         <div id="discuss_khach" class="card card-primary mt-3">
-            <div class="card-header">
+            <!-- <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                         <div>TRAO ĐỔI VỚI SALE</div>
                     </h6>
                 </div>
-            </div>
+            </div> -->
             <div class="card-body">
                 <div id="discuss_khach" style="display: flex; flex-direction: column; justify-content: space-between;">
                     <div class="list-chat" style="height: auto; overflow-y: auto;">
@@ -22,12 +23,12 @@
 
                             <!-- NHẬP DỮ LIỆU -->
                             <div style="height: fit-content; position: absolute; bottom: 10px; left:10px">
-                                <button type="button" class="btn btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_khach">
-                                    <i class="fa fa-paperclip"></i>
+                                <button type="button" class="btn btn-warning" style="width: 80px; font-size: 0.875rem;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_khach">
+                                    <i class="fa fa-paperclip"></i> File
                                 </button>
                             </div>
 
-                            <textarea class="form-control content_discuss" name="message" placeholder="Type Message ..." onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" style="padding-left:60px; padding-right: 100px; resize: none;"></textarea>
+                            <textarea class="form-control content_discuss" name="message" placeholder="Type Message ..." onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" style="padding-left:100px; padding-right: 100px; resize: none;"></textarea>
 
                             <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
                                 <button type="button" class="btn btn-primary" onclick="ajax_discuss_khach_add(this)">Send</button>
@@ -40,19 +41,20 @@
     </div>
 </div>
 
-
-
-
 <script>
     $(document).ready(function() {
         ajax_discuss_list();
         setInterval(() => {
             if ($('#tab_chat_khach').hasClass('active')) {
-                ajax_discuss_list();
+                // ajax_discuss_list();
             }
         }, 15000);
 
         set_height_chat_list_and_height_input(`#discuss_khach`);
+
+        $(`textarea`).on('keyup', function() {
+        $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
+    })
 
     })
 
@@ -81,45 +83,7 @@
 
                     let html = ``;
                     for (const [key, discuss] of Object.entries(list_discuss)) {
-
-                        let html_file = ``;
-                        for (const [id_file, file] of Object.entries(discuss.file_list)) {
-                            html_file += `
-                                <div class="p-1 w-25 mb-2" 
-                                    onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
-                                    style="cursor: pointer;" title="Bấm để tải xuống"
-                                >   ${
-                                        (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                                        ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" height="150">`
-                                        : `
-                                        <div width="100%" class="rounded border p-2 text-truncate shadow bg-light" style="height: 100px;line-break: anywhere; text-align:center">
-                                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
-                                            <span style="font-size:12px;">${file}</span>
-                                        </div>
-                                        `
-                                    }
-                                </div>
-                            `;
-                        }
-                        html += `
-                        
-                            <div class="direct-chat-msg">
-                                <div class="direct-chat-infos clearfix">
-                                    <span class="direct-chat-name float-left">${discuss.fullname}</span>
-                                    <span class="direct-chat-timestamp float-right">${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}</span>
-                                </div>
-
-                                <img class="direct-chat-img" src="${discuss.avatar_url}" alt="message user image">
-
-                                <div class="direct-chat-text" ${<?= $cur_uid ?> == discuss.id_user ? 'bg-success' : '' }">
-                                    
-                                    <div class="d-flex" style="">
-                                        ${html_file}
-                                    </div>
-                                    ${discuss.content != '' ? `<p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; ">${discuss.content}</p>` : ''}
-                                    
-                                </div>
-                            </div> `;
+                        html += html_item_chat(discuss)
                     }
 
                     $('#tab_chat_khach .total').html(Object.keys(list_discuss).length);
@@ -128,7 +92,7 @@
                         .html(html)
                         .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
                 } else {
-                    toasts_danger(kq.error);
+                    alert(kq.error);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -163,44 +127,7 @@
                 if (kq.status) {
                     let discuss = kq.data;
 
-                    let html_file = ``;
-                    for (const [id_file, file] of Object.entries(discuss.file_list)) {
-                        html_file += `
-                            <div class="p-1 w-25 mb-2" 
-                                onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
-                                style="cursor: pointer;" title="Bấm để tải xuống"
-                            >   ${
-                                    (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                                    ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" height="150">`
-                                    : `
-                                    <div width="100%" class="rounded border p-2 text-truncate shadow bg-light" style="height: 100px;line-break: anywhere; text-align:center">
-                                        <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
-                                        <span style="font-size:12px;">${file}</span>
-                                    </div>
-                                    `
-                                }
-                            </div>
-                        `;
-                    }
-
-                    let new_html = `
-                        <div class="direct-chat-msg">
-                            <div class="direct-chat-infos clearfix">
-                                <span class="direct-chat-name float-left">${discuss.fullname}</span>
-                                <span class="direct-chat-timestamp float-right">${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}</span>
-                            </div>
-
-                            <img class="direct-chat-img" src="${discuss.avatar_url}" alt="message user image">
-
-                            <div class="direct-chat-text p-2 ${<?= $cur_uid ?> == discuss.id_user ? 'bg-success' : '' }">
-                                
-                                <div class="d-flex" style="">
-                                    ${html_file}
-                                </div>
-                                ${discuss.content != '' ? `<p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; ">${discuss.content}</p>` : ''}
-                                
-                            </div>
-                        </div> `;
+                    let new_html = html_item_chat(discuss);
 
                     $('#discuss_khach .list-chat')
                         .append(new_html)
@@ -210,7 +137,7 @@
                     $('#discuss_khach .chat_list_attach').html('');
                     set_height_chat_list_and_height_input(`#discuss_khach`);
                 } else {
-                    toasts_danger(kq.error);
+                    alert(kq.error);
                 }
 
                 $(btn).prop("disabled", false).text('Send');
@@ -220,6 +147,47 @@
                 alert('Error');
             }
         });
+    }
+
+    function html_item_chat(discuss) {
+
+        let list_file = ``;
+        for (const [id_file, file] of Object.entries(discuss.file_list)) {
+            list_file += `
+                <div class="p-1 mb-2" 
+                    onclick="//downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
+                    style="cursor: pointer; max-width:250px"
+                    title="Bấm để tải xuống"
+                >   ${
+                        (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
+                        ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" height="150">`
+                        : `
+                        <div width="100%" class="rounded border p-2 text-truncate shadow bg-light" style="height: 100px;line-break: anywhere; text-align:center">
+                            <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                            <span style="font-size:12px;">${file}</span>
+                        </div>
+                        `
+                    }
+                </div>`;
+        }
+
+        let html = `
+            <div class="d-flex" style="gap:15px" class="${<?= $cur_uid ?> == discuss.id_user ? '' : '' }">
+                <img class="rounded-circle shadow" style="width:60px;aspect-ratio: 1;object-fit: cover;height: 60px;" src="${discuss.avatar_url}" alt="avatar">
+                <div class="w-100">
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="fw-bold fs-6">${discuss.fullname}</div>
+                        <div class="">${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}</div>
+                    </div>
+                    
+                    <div class="" style="white-space: pre-line; ">${discuss.content != '' ? `${discuss.content}` : ''}</div>
+
+                    <div class="d-flex" style="">${list_file}</div>
+                </div>
+            </div>
+            <hr>`;
+
+        return html;
     }
 
     function remove_chat_khach_attach(id) {
@@ -237,8 +205,8 @@
         if (isImage(link_file)) {
             html = `
             <div class="position-relative image-hover p-2" style="width:150px" id="file_attach_${id_attach}" data-file="${link_file}">
-                <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%;">
-                    <button class="btn btn-sm btn-warning" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')" style="font-size: 10px; padding: 3px 5px;">
+                <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
+                    <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -247,8 +215,8 @@
         } else {
             html = `
             <div class="position-relative image-hover p-2" style="width:150px" id="file_attach_${id_attach}" title="${file_name}" data-file="${link_file}">
-                <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%;">
-                    <button class="btn btn-sm btn-warning" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')" style="font-size: 10px; padding: 3px 5px;">
+                <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
+                    <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -282,7 +250,7 @@
         }, 100);
     }
 
-    
+
     function isImage(url_image) {
         return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
     }
