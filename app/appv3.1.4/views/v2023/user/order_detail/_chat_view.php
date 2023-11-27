@@ -1,37 +1,47 @@
 <script src="js/v2023/moment_2.29.4.min.js"></script>
-<h4 class="mt-5">TRAO ĐỔI VỚI SALE</h4>
-<div class="row">
-    <!-- TRAO ĐỔI KHÁCH -->
-    <div class="col-12 col-lg-12">
-        <div id="discuss_khach" class="card card-primary mt-3">
-            <!-- <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                        <div>TRAO ĐỔI VỚI SALE</div>
-                    </h6>
-                </div>
-            </div> -->
-            <div class="card-body">
-                <div id="discuss_khach" style="display: flex; flex-direction: column; justify-content: space-between;">
-                    <div class="list-chat" style="height: auto; overflow-y: auto;">
-                        <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
+
+<div style="position: fixed; right: 10px; bottom: 0px;" id="small_trao_doi_sale" class="">
+    <button class="btn btn-danger" onclick="open_close_chat()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
+        <i class="fa-solid fa-comment"></i> TRAO ĐỔI VỚI SALE
+    </button>
+</div>
+
+<div style="position: fixed;right: 10px;bottom: 0px; width: 60%; max-width:800px; display: none;" id="box_trao_doi_sale">
+    <!-- <h4 class="mt-5">TRAO ĐỔI VỚI SALE</h4> -->
+    <div class="row">
+        <!-- TRAO ĐỔI KHÁCH -->
+        <div class="col-12 col-lg-12">
+            <div id="discuss_khach" class="card card-primary ">
+                <div class="card-header" onclick="open_close_chat()" style="cursor: pointer;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                            <div>TRAO ĐỔI VỚI SALE</div>
+                            <div>x</div>
+                        </h6>
                     </div>
-                    <div class="mt-2 nhap_du_lieu_chat">
-                        <div style="position:relative" class="rounded border">
-                            <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
-                            <div class="chat_list_attach d-flex flex-wrap"></div>
+                </div>
+                <div class="card-body">
+                    <div id="discuss_khach" style="display: flex; flex-direction: column; height: 80vh; justify-content: space-between;">
+                        <div class="list-chat" style="height: auto; overflow-y: auto;">
+                            <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
+                        </div>
+                        <div class="mt-2 nhap_du_lieu_chat">
+                            <div style="position:relative" class="rounded border">
+                                <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
+                                <div class="chat_list_attach d-flex flex-wrap"></div>
 
-                            <!-- NHẬP DỮ LIỆU -->
-                            <div style="height: fit-content; position: absolute; bottom: 10px; left:10px">
-                                <button type="button" class="btn btn-warning" style="width: 80px; font-size: 0.875rem;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_khach">
-                                    <i class="fa fa-paperclip"></i> File
-                                </button>
-                            </div>
+                                <!-- NHẬP DỮ LIỆU -->
+                                <div style="height: fit-content; position: absolute; bottom: 10px; left:10px">
+                                    <button type="button" class="btn btn-warning" style="width: 80px; font-size: 0.875rem;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_khach">
+                                        <i class="fa fa-paperclip"></i> File
+                                    </button>
+                                </div>
 
-                            <textarea class="form-control content_discuss" name="message" placeholder="Type Message ..." onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" style="padding-left:100px; padding-right: 100px; resize: none;"></textarea>
+                                <textarea class="form-control content_discuss" name="message" placeholder="Type Message ..." onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" style="padding-left:100px; padding-right: 100px; resize: none;"></textarea>
 
-                            <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
-                                <button type="button" class="btn btn-primary" onclick="ajax_discuss_khach_add(this)">Send</button>
+                                <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
+                                    <button type="button" class="btn btn-primary" onclick="ajax_discuss_khach_add(this)">Send</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -45,16 +55,12 @@
     $(document).ready(function() {
         ajax_discuss_list();
         setInterval(() => {
-            if ($('#tab_chat_khach').hasClass('active')) {
-                ajax_discuss_list();
-            }
+            // ajax_discuss_list();
         }, 15000);
 
-        set_height_chat_list_and_height_input(`#discuss_khach`);
-
         $(`textarea`).on('keyup', function() {
-        $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
-    })
+            $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
+        })
 
     })
 
@@ -91,6 +97,8 @@
                     $('#discuss_khach .list-chat')
                         .html(html)
                         .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+
+                    tooltipTriggerList('#discuss_khach');
                 } else {
                     alert(kq.error);
                 }
@@ -136,6 +144,8 @@
                     $('#discuss_khach .content_discuss').val('').height(60);
                     $('#discuss_khach .chat_list_attach').html('');
                     set_height_chat_list_and_height_input(`#discuss_khach`);
+
+                    tooltipTriggerList('#discuss_khach');
                 } else {
                     alert(kq.error);
                 }
@@ -155,8 +165,9 @@
         for (const [id_file, file] of Object.entries(discuss.file_list)) {
             list_file += `
                 <div class="p-1 mb-2" 
-                    onclick="//downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
+                    onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
                     style="cursor: pointer; max-width:250px"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
                     title="Bấm để tải xuống"
                 >   ${
                         (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
@@ -177,12 +188,12 @@
                 <div class="w-100">
                     <div class="d-flex justify-content-between w-100">
                         <div class="fw-bold fs-6">${discuss.fullname}</div>
-                        <div class="">${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}</div>
+                        <div class="" style="font-size: 0.875rem" data-bs-toggle="tooltip" data-bs-placement="top" title="${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}">${moment(discuss.create_time).fromNow()}</div>
                     </div>
 
                     <div class="" style="white-space: pre-line; ">${discuss.content != '' ? `${discuss.content}` : ''}</div>
 
-                    <div class="d-flex" style="">${list_file}</div>
+                    <div class="d-flex" style="flex-wrap: wrap;">${list_file}</div>
                 </div>
             </div>
             <hr>`;
@@ -253,5 +264,11 @@
 
     function isImage(url_image) {
         return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
+    }
+
+    function open_close_chat() {
+        $('#box_trao_doi_sale').slideToggle('fast', 'swing');
+        $('#small_trao_doi_sale').toggleClass('d-none');
+        set_height_chat_list_and_height_input(`#discuss_khach`);
     }
 </script>

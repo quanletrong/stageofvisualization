@@ -505,16 +505,6 @@
         });
     }
 
-    function downloadURI(uri, name) {
-        var link = document.createElement("a");
-        link.download = name;
-        link.href = uri;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        delete link;
-    }
-
     function cb_upload_add_file_complete(url_image, target, file_name, btn_upload) {
 
         $(btn_upload).html(`99 %`);
