@@ -46,7 +46,7 @@
         ajax_discuss_list();
         setInterval(() => {
             if ($('#tab_chat_khach').hasClass('active')) {
-                // ajax_discuss_list();
+                ajax_discuss_list();
             }
         }, 15000);
 
@@ -179,7 +179,7 @@
                         <div class="fw-bold fs-6">${discuss.fullname}</div>
                         <div class="">${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}</div>
                     </div>
-                    
+
                     <div class="" style="white-space: pre-line; ">${discuss.content != '' ? `${discuss.content}` : ''}</div>
 
                     <div class="d-flex" style="">${list_file}</div>
