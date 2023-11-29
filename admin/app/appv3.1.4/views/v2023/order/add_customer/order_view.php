@@ -18,7 +18,6 @@
 
     //step 3
     STATE.voucher = '';
-    
 </script>
 
 <div class="content-wrapper">
@@ -28,12 +27,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1><?=$title?></h1>
+                        <h1><?= $title ?></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
-                            <li class="breadcrumb-item active"><?=$title?></li>
+                            <li class="breadcrumb-item active"><?= $title ?></li>
                         </ol>
                     </div>
                 </div>
@@ -87,8 +86,8 @@
 
         // step-1-next-2
         $("#step-1-next").click(function() {
-            if($('#list_customer').val() == '') {
-                alert ('Hãy chọn khách hàng cần tạo đơn!');
+            if ($('#list_customer').val() == '') {
+                alert('Hãy chọn khách hàng cần tạo đơn!');
                 return;
             }
             $("#step-1").addClass('d-none');
@@ -223,10 +222,23 @@
     }
 
     // cb_upload_image_job
-    function cb_upload_image_job(link, target, name) {
+    function cb_upload_image_job(link, target, name, btn) {
+
+        console.log('first')
         let job_id = $(target).data('id');
-        $(target + '_pre').attr('src', link);
+
+        if (isImage(link)) {
+            $(btn).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file">`);
+        } else {
+            $(btn).html(
+                `<div>
+            <i class="fa fa-paperclip" aria-hidden="true"></i>
+            <p style="font-size:12px" class="text-truncate">${name}</p>
+        </div>`
+            );
+        }
         STATE.job[job_id].image = link;
+        tooltipTriggerList('body');
     }
 
     // cb_upload_image_attach
@@ -251,15 +263,28 @@
     // add_job
     function add_job() {
         let job_id = Date.now();
-        let job_new = `<div class="border p-4 shadow mb-2 div_main_2" id="${job_id}">
-                <div class="position-relative text-center">
-                    <button type="button" class="btn_upload_image d-none" onclick="quanlt_upload(this);" data-callback="cb_upload_image_job" data-target="#image_${job_id}"></button>
-                    <input type="hidden" id="image_${job_id}" data-id="${job_id}"/>
-                    <img id="image_${job_id}_pre" class="img-fluid w-50" alt="" >
-                    <div class="position-absolute" style="top:10px; right: 10px; cursor: pointer;">
-                        <i class="fa-solid fa-xmark fs-3" onclick="step2_remove_job(${job_id})"></i>
-                    </div>
+        let job_new = `
+            <div class="position-relative border p-4 shadow mb-4 div_main_2" id="${job_id}">
+                
+                <div class="position-absolute" style="top: -15px;right: -15px;cursor: pointer;">
+                    <btn class="btn btn-sm btn-danger rounded-circle shadow" onclick="step2_remove_job(${job_id})"> <i class="fas fa-trash"></i></btn>
                 </div>
+
+                <label for="exampleFormControlInput1" class="form-label fw-bold">File main:</label>
+                <input type="hidden" id="image_${job_id}" data-id="${job_id}"/>
+                <button 
+                    type="button"
+                    class="btn_upload_image btn btn-default w-100 border-0 shadow d-flex " 
+                    style="min-height:150px; justify-content: center;align-items: center" 
+                    onclick="quanlt_upload(this);" 
+                    data-callback="cb_upload_image_job" 
+                    data-target="#image_${job_id}"
+                >
+                    CLICK TO ADD FILE
+                </button>
+
+                <small>Thumbnail shown. The full quality photo <span class="link-color" style="cursor: pointer;">(preview)</span> will be received when the order is placed.</small>
+
                 <div class="my-3">
                     <label for="exampleFormControlInput1" class="form-label fw-bold">Room Type:</label>
                     <select title="Please select room type." class="form-control room" onchange="STATE.job[${job_id}].room = this.value">
@@ -334,5 +359,9 @@
             .siblings('.form-check')
             .find('.form-check-input')
             .prop('checked', false)
+    }
+
+    function isImage(url_image) {
+        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
     }
 </script>
