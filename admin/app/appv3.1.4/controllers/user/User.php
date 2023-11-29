@@ -236,12 +236,12 @@ class User extends MY_Controller
         $code    = $this->input->post('code');
 
         $code = removeAllTags($code);
-        $code = str_replace(' ', '_', $code);
+        // $code = str_replace(' ', '_', $code);
         $user = $this->User_model->get_user_info_by_id($id_user);
-        $infoUserCode = $this->User_model->get_user_info_by_code($code);
+        // $infoUserCode = $this->User_model->get_user_info_by_code($code);
 
         $user == []                     ? resError('User không tồn tại') : '';
-        $infoUserCode != []             ? resError('Code Customer đã tồn tại') : '';
+        // $infoUserCode != []             ? resError('Code Customer đã tồn tại') : '';
 
         $this->User_model->update_code_user($id_user, $code);
         resSuccess('Thành công');

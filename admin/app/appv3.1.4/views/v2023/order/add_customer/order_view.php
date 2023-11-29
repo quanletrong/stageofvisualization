@@ -15,6 +15,8 @@
     // step 2
     STATE.job = {};
     STATE.style = '';
+    STATE.cid = '';
+    STATE.jid = '';
 
     //step 3
     STATE.voucher = '';
@@ -190,10 +192,27 @@
                     order: STATE
                 },
                 success: function(data, textStatus, jqXHR) {
-                    console.log(data);
-                    alert('Bạn đã tạo thành công đơn hàng.');
-                    window.location.href = '<?= site_url(LINK_ORDER) ?>';
+                    let res = JSON.parse(data);
+                    if (res.status) {
+                        if (res.data.price_payment > 0) {
 
+                            $("#modal-payment .username").val($('#user_username').val());
+                            $("#modal-payment .fullname").val($('#user_fullname').val());
+                            $("#modal-payment .email").val($('#user_email').val());
+
+                            $("#modal-payment .money-payment").val(`${res.data.price_payment} $`);
+                            $("#modal-payment .link-payment").val(`<?= DOMAIN_NAME ?>/user/orderdetail/${res.data.new_id_order}`);
+                            
+                            $("#modal-payment").modal('show');
+                        } else {
+                            alert('Đơn hàng tạo thành công');
+                            window.location.href = '<?= site_url(LINK_ORDER) ?>';
+                        }
+                    } else {
+                        alert(`Lỗi: ${res.data}`)
+                    }
+
+                    console.log(data);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(data);

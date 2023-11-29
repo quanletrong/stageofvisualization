@@ -45,6 +45,11 @@
                         </label>
                     </div>
 
+                    <div class="mb-3 mt-3">
+                        <label for="phone" class="form-label">SET JID</label>
+                        <textarea type="tel" id="jid" class="form-control" onchange="STATE.jid = this.value" rows="4"></textarea>
+                    </div>
+
                     <!-- submit -->
                     <div class="mt-3">
                         <div class="d-flex">

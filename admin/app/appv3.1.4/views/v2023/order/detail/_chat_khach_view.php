@@ -97,7 +97,7 @@
                                     <div class="d-flex" style="">
                                         ${html_file}
                                     </div>
-                                    ${discuss.content != '' ? '<p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; ">${discuss.content}</p>' : ''}
+                                    ${discuss.content != '' ? `<p class="m-0 px-2 py-1 rounded" style="white-space: pre-line; ">${discuss.content}</p>` : ''}
                                     
                                 </div>
                             </div> `;

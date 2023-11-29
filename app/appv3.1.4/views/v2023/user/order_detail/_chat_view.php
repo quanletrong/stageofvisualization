@@ -55,7 +55,7 @@
     $(document).ready(function() {
         ajax_discuss_list();
         setInterval(() => {
-            // ajax_discuss_list();
+            ajax_discuss_list();
         }, 15000);
 
         $(`textarea`).on('keyup', function() {

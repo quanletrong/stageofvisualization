@@ -220,7 +220,7 @@ class Voucher extends MY_Controller
             resError('not_permit', 'Bạn không có quyền thực hiện.');
         }
 
-        $id_sale = 987654342; //TODO: fix tạm
+        $id_sale = $cur_uid;
         $now = date("Y-m-d H:s:i");
 
         $list =  $this->Voucher_model->get_list_voucher_for_create_order_by_sale($id_sale, $now);

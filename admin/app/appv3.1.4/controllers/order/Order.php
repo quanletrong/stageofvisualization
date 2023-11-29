@@ -322,20 +322,23 @@ class Order extends MY_Controller
         $all_style   = $this->Style_model->get_list(1);
 
         $order       = $this->input->post('order');
+        $jid         = removeAllTags($order['jid']);
+        $cid         = removeAllTags($order['cid']);
         $style       = $order['style'];
         $for_user    = $order['for_user'];
         $create_time = date('Y-m-d H:i:s');
         $list_job    = $order['job'];
-        $id_voucher  = isset($order['voucher']) ? $order['voucher'] : 0;
+        $id_voucher  = isset($order['voucher']) ? $order['voucher'] : 0; 
 
         // VALIDATE
 
         # check private
         if ($type == 'private') {
-            $create_id_user = $cur_uid;
-            $for_user       = $cur_uid;
-            $info_user = $this->User_model->get_user_info_by_id($cur_uid);
-            $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) . '@' . $info_user['username'];
+            $create_id_user = $cur_uid;  //mặc định
+            $for_user       = $cur_uid;  //mặc định
+            $cid            = ''; //mặc định
+            $info_user      = $this->User_model->get_user_info_by_id($cur_uid);
+            $FDR_ORDER      = FOLDER_ORDER . strtotime($create_time) . '@' . $info_user['username'];
         }
         # check customer
         else if ($type == 'customer') {
@@ -401,10 +404,16 @@ class Order extends MY_Controller
 
         // Tạo đơn vào tbl_order
         $type_order = $type == 'private' ? DON_NOI_BO : DON_TAO_HO;
-        $new_order = $this->Order_model->add_order($style, $create_time, $for_user, ORDER_PAY_WAITING, $type_order, $create_id_user, ED_NOI_BO);
+        $new_order = $this->Order_model->add_order($style, $create_time, $for_user, ORDER_PAY_WAITING, $type_order, $create_id_user, ED_NOI_BO, $jid);
 
         $flag_error = false;
         if ($new_order) {
+
+            // LUU CODE USER 
+            if($type == 'customer' && $cid != $info_user['code_user']) {
+                $this->User_model->update_code_user($for_user, $cid);
+            }
+
             // LƯU JOB SAU KHI TẠO XONG ORDER
             $total_price = 0;
             foreach ($list_job as $job) {
@@ -943,15 +952,14 @@ class Order extends MY_Controller
         !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $id_order = $this->input->post('id_order');
-        $code    = $this->input->post('code');
-        $code = removeAllTags($code);
-        $code = str_replace(' ', '_', $code);
+        $code     = $this->input->post('code');
+        $code     = removeAllTags($code);
 
         $order         = $this->Order_model->get_info_order($id_order);
-        $infoOrderCode = $this->Order_model->get_order_info_by_code($code);
+        // $infoOrderCode = $this->Order_model->get_order_info_by_code($code);
 
         $order == []            ? resError('Đơn hàng không tồn tại') : '';
-        $infoOrderCode != []    ? resError('Code Order đã tồn tại') : '';
+        // $infoOrderCode != []    ? resError('Code Order đã tồn tại') : '';
 
         $this->Order_model->update_code_order($id_order, $code);
 

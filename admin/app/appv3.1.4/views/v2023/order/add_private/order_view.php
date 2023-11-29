@@ -10,6 +10,9 @@
 
     let STATE = {};
 
+    STATE.cid = '';
+    STATE.jid = '';
+
     // step 2
     STATE.job = {};
     STATE.style = '';

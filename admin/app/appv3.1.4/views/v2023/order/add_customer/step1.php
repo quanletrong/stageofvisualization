@@ -15,10 +15,6 @@
             <img src="" id="user_avatar" class="img-circle" width="100" height="100" style="background-color: #eee;">
         </div>
         <div class="mb-3">
-            <label for="lastname" class="form-label">Code User</label>
-            <input type="text" id="user_code" class="form-control" value="" disabled>
-        </div>
-        <div class="mb-3">
             <label for="lastname" class="form-label">Full Name</label>
             <input type="text" id="user_fullname" class="form-control" value="" disabled>
         </div>
@@ -33,6 +29,11 @@
         <div class="mb-3">
             <label for="phone" class="form-label">Phone Number (10 Digits)</label>
             <input type="tel" id="user_phone" class="form-control" value="" disabled>
+        </div>
+
+        <div class="mb-3">
+            <label for="phone" class="form-label">Set CID</label>
+            <textarea type="tel" id="cid" class="form-control" onchange="STATE.cid = this.value"></textarea>
         </div>
 
         <div class="mt-3 mb-3">
@@ -61,11 +62,11 @@
                         let data = result.data;
                         
                         $('#user_avatar').attr('src', data.avatar_url);
-                        $('#user_code').val(data.code);
                         $('#user_fullname').val(data.fullname);
                         $('#user_username').val(data.username);
                         $('#user_email').val(data.email);
                         $('#user_phone').val(data.phone);
+                        $('#cid').val(data.code);
                     } catch (error) {
                         console.log(error);
                     }
@@ -77,11 +78,11 @@
             });
         } else {
             $('#user_avatar').attr('src', '');
-            $('#user_code').val(data.code);
-            $('#user_fullname').val(data.fullname);
-            $('#user_username').val(data.username);
-            $('#user_email').val(data.email);
-            $('#user_phone').val(data.phone);
+            $('#user_fullname').val('');
+            $('#user_username').val('');
+            $('#user_email').val('');
+            $('#user_phone').val('');
+            $('#cid').val('');
         }
     }
 </script>

@@ -92,6 +92,50 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-payment">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h6 class="modal-title"><i class="fas fa-wallet"></i> YÊU CẦU KHÁCH HÀNG THANH THANH TOÁN</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="link-payment">Tài khoản khách hàng</label>
+                    <input class="form-control username"  disabled style="font-size: 1rem;">
+                </div>
+
+                <div class="form-group">
+                    <label for="link-payment">Tên khách hàng</label>
+                    <input class="form-control fullname" disabled style="font-size: 1rem;">
+                </div>
+
+                <div class="form-group">
+                    <label for="link-payment">Email khách hàng</label>
+                    <input class="form-control email" disabled style="font-size: 1rem;">
+                </div>
+
+                <div class="form-group">
+                    <label for="link-payment">Số tiền cần thanh toán</label>
+                    <input class="form-control money-payment"  value="" disabled style="font-size: 2rem;">
+                </div>
+
+                <div class="form-group">
+                    <label for="link-payment">Copy link đơn hàng gửi cho khách</label>
+                    <textarea class="form-control link-payment"  placeholder="" disabled></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Quay lại</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- js bước 3 -->
 <script>
     function ajax_get_list_voucher_for_create_order_by_sale() {
