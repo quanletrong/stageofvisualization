@@ -15,7 +15,7 @@
         border-radius: 0;
     }
 </style>
-<div class="card card-primary">
+<div class="card card-primary" style="height: 100%;">
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">
             <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">

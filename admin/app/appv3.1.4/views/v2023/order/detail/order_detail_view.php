@@ -39,7 +39,7 @@
         </section>
 
         <!-- CHAT BOX -->
-        <section>
+        <section class="mt-3">
             <div class="card card-tabs card-primary" style="height: 90vh;" id="card_chat_lich_su">
                 <div class="card-header p-0 pt-1 border-bottom-0">
                     <ul class="nav nav-tabs" role="tablist">
