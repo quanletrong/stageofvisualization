@@ -2,11 +2,7 @@
 
 <base href="<?php echo $base_url; ?>" />
 <title>
-    <?=$role==ADMIN? 'Admin' : ''?> 
-    <?=$role==SALE? 'Sale' : ''?> 
-    <?=$role==QC? 'QC' : ''?> 
-    <?=$role==EDITOR? 'Editor' : ''?> 
-    - <?php echo $title ?>
+    <?= $role == ADMIN ? 'Admin' : ($role == SALE ? 'Sale' : ($role == QC ? 'QC' : 'Editor')) ?> - <?php echo $title ?>
 </title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
