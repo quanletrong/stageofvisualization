@@ -1054,6 +1054,9 @@ function status_order($status)
     } else if ($status == ORDER_COMPLETE) {
         $data['text'] = 'COMPLETE';
         $data['bg'] = 'darkgreen';
+    } else if ($status == ORDER_PAY_WAITING) {
+        $data['text'] = 'PAYMENT REQUEST';
+        $data['bg'] = 'deeppink';
     }
 
     return $data;
@@ -1486,4 +1489,8 @@ function get_role_name($role) {
     } else if($role == CUSTOMER) {
         return 'CUSTOMER';
     }  
+}
+
+function password_streng($password) {
+    return preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password);
 }

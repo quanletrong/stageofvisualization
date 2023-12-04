@@ -102,7 +102,7 @@ class User extends MY_Controller
                 }
 
                 // check passwork
-                $check_match = preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password);
+                $check_match = password_streng($password);
                 if (!$check_match) {
                     $this->session->set_flashdata('flsh_msg', 'Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*');
                     redirect('user');
@@ -154,7 +154,7 @@ class User extends MY_Controller
 
                     if ($password != $info['password']) {
                         // check passwork
-                        $check_match = preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password);
+                        $check_match = password_streng($password);
                         if (!$check_match) {
                             $this->session->set_flashdata('flsh_msg', 'Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*');
                             redirect('user');
@@ -257,7 +257,6 @@ class User extends MY_Controller
         $user = $this->User_model->get_user_info_by_id($id_user);
         $user == [] ? resError('User không tồn tại') : '';
 
-        $data['avatar_url'] = ROOT_DOMAIN . FOLDER_AVATAR . $user['avatar'];
         $data['code'] = $user['code_user'];
         $data['fullname'] = $user['fullname'];
         $data['username'] = $user['username'];
@@ -285,5 +284,105 @@ class User extends MY_Controller
         $this->_loadHeader($header);
         $this->load->view($this->_template_f . 'user/info_view', $data);
         $this->_loadFooter();
+    }
+
+    function ajax_edit_info()
+    {
+        $id_user = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $fullname     = removeAllTags($this->input->post('fullname'));
+        $phone        = removeAllTags($this->input->post('phone'));
+        $email        = removeAllTags($this->input->post('email'));
+        $hdd_avatar   = removeAllTags($this->input->post('hdd_avatar'));
+
+        // VALIDATE DATA
+
+        $info          = $this->User_model->get_user_info_by_id($id_user);
+        $user_by_phone = $this->User_model->get_user_info_by_phone($phone);
+        $user_by_email = $this->User_model->get_user_info_by_email($email);
+
+        // dữ liệu không hợp lệ => báo lỗi
+        if ($fullname == '' || $phone == '' || $email == '') {
+            resError('Dữ liệu không hợp lệ!');
+        }
+        // check phone đã tồn tại =>  báo lỗi
+        if ($info['phone'] != $phone && !empty($user_by_phone)) {
+            resError('Số điện thoại đã tồn tại!');
+        }
+
+        // check email đã tồn tại =>  báo lỗi
+        if ($info['email'] != $email && !empty($user_by_email)) {
+            resError('Email đã tồn tại!');
+        }
+
+        // check avatar == mặc định
+        $new_avatar = $info['avatar'];
+        if (basename($hdd_avatar) != AVATAR_DEFAULT && basename($hdd_avatar) != $info['avatar']) {
+            $copy_attach = copy_image_to_public_upload($hdd_avatar, FOLDER_AVATAR);
+            if ($copy_attach['status']) {
+                $new_avatar = $copy_attach['basename'];
+            }
+        }
+
+        //END VALIDATE
+
+        // update
+        $exc = $this->User_model->edit_info($fullname, $phone, $email, $id_user, $new_avatar);
+
+        //error
+        if ($exc) {
+            resSuccess('ok');
+        } else {
+            resError('Lưu không thành công vui lòng thử lại!');
+        }
+    }
+
+    function ajax_edit_password()
+    {
+        $id_user = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $password     = removeAllTags($this->input->post('password'));
+        $new_password = removeAllTags($this->input->post('new_password'));
+        $re_password  = removeAllTags($this->input->post('re_password'));
+
+
+        // VALIDATE DATA
+        $info = $this->User_model->get_user_info_by_id($id_user);
+
+        empty($info) ? resError('User không tồn tại') : '';
+
+        if ($password == '' || $new_password == '' || $re_password == '') {
+            resError('Chưa nhập đủ dữ liệu!');
+        }
+
+        $new_password != $re_password ? resError('Mật khẩu nhập lại không khớp nhập khẩu mới') : '';
+
+        if (!password_streng($password)) {
+            resError('Mật khẩu cũ tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*');
+        }
+
+        if (!password_streng($new_password)) {
+            resError('Mật khẩu mới tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*');
+        }
+
+        $check_pass_cu = PasswordHash::hash_verify($info['username'], $info['password'], md5($password));
+        !$check_pass_cu ? resError('Bạn đã nhập sai mật khẩu cũ') : '';
+        
+        //END VALIDATE
+
+        // update
+        $new_password_hash = PasswordHash::hash($info['username'], md5($new_password));
+        $exc = $this->User_model->edit_password($new_password_hash, $id_user);
+
+        //error
+        if ($exc) {
+            resSuccess('ok');
+        } else {
+            resError('Lưu không thành công vui lòng thử lại!');
+        }
     }
 }

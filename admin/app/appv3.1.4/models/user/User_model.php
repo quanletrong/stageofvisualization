@@ -91,6 +91,48 @@ class User_model extends CI_Model
         return $execute;
     }
 
+    function edit_info($fullname, $phone, $email, $id_user, $avatar)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_user 
+        SET fullname=?, phone=?, email=?, `avatar`=? 
+        WHERE id_user=?";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$fullname, $phone, $email, $avatar, $id_user])) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function edit_password($pass_hash, $id_user)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_user 
+        SET `password`=?
+        WHERE id_user=?";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$pass_hash, $id_user])) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
     function get_list_user_working($status, $role)
     {
         $data = [];
@@ -127,7 +169,7 @@ class User_model extends CI_Model
         if ($stmt) {
             if ($stmt->execute([$uid])) {
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
-                $data['avatar'] = url_image($data['avatar'], FOLDER_AVATAR);
+                $data['avatar_url'] = url_image($data['avatar'], FOLDER_AVATAR);
                 $data['user_service'] = json_decode($data['user_service'], true);
             } else {
                 var_dump($stmt->errorInfo());

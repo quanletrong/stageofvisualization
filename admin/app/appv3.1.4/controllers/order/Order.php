@@ -60,6 +60,10 @@ class Order extends MY_Controller
         $all_status[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);  // bỏ sung thêm trạng thái đang xử lý
         $all_status[ORDER_COMPLETE]  = status_order(ORDER_COMPLETE);   // bỏ sung thêm trạng thái đang xử lý
         $all_status[ORDER_CANCLE]    = status_order(ORDER_CANCLE);     // bỏ sung thêm trạng thái đang xử lý
+        
+        if ($role == ADMIN || $role == SALE) {
+            $all_status[ORDER_PAY_WAITING]    = status_order(ORDER_PAY_WAITING);     // bỏ sung thêm trạng thái đang xử lý
+        }
         # 
 
         ### FORM FILTER

@@ -53,6 +53,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
+                                    <b>Main Files</b>
                                     <div class="position-relative image-hover" id="box_main_file_<?= $id_job ?>">
                                         <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
                                             <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
