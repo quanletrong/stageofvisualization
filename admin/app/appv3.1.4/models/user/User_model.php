@@ -127,6 +127,8 @@ class User_model extends CI_Model
         if ($stmt) {
             if ($stmt->execute([$uid])) {
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                $data['avatar'] = url_image($data['avatar'], FOLDER_AVATAR);
+                $data['user_service'] = json_decode($data['user_service'], true);
             } else {
                 var_dump($stmt->errorInfo());
                 die;

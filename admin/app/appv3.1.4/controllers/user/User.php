@@ -266,4 +266,24 @@ class User extends MY_Controller
 
         resSuccess($data, 'Thành công');
     }
+
+    function info()
+    {
+        $id_user = $this->_session_uid();
+        $role = $this->_session_role();
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $header = [
+            'title' => 'Thông tin tài khoản',
+            'header_page_css_js' => 'voucher'
+        ];
+
+        $data['list_service'] = $this->Service_model->get_list();
+        $data['info'] = $this->User_model->get_user_info_by_id($id_user);
+        // var_dump($data['info']);die;
+
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'user/info_view', $data);
+        $this->_loadFooter();
+    }
 }

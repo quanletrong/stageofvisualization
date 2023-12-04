@@ -1473,3 +1473,17 @@ function QSQL_IN($filed, $id_string, $CI)
         return ' 1=1 ';
     }
 }
+
+function get_role_name($role) {
+    if($role == ADMIN) {
+        return 'ADMIN';
+    } else if($role == SALE) {
+        return 'SALE';
+    } else if($role == QC) {
+        return 'QC';
+    } else if($role == EDITOR) {
+        return 'EDITOR';
+    } else if($role == CUSTOMER) {
+        return 'CUSTOMER';
+    }  
+}

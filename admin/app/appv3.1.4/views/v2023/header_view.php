@@ -63,6 +63,11 @@
 						</a>
 						<div class="dropdown-divider"></div>
 
+						<a href="user/info" class="dropdown-item">
+							<i class="fas fa-user" style="color: #858c93;"></i> Thông tin cá nhân
+						</a>
+						<div class="dropdown-divider"></div>
+
 						<a href="<?= ROOT_DOMAIN . 'logout' ?>" class="dropdown-item">
 							<i class="fas fa-sign-out-alt" style="color: #858c93;"></i> Thoát khỏi hệ thống
 						</a>
@@ -108,8 +113,7 @@
 				<!-- Sidebar Menu -->
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-						<!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
+						<!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
 						<li class="nav-item d-none">
 							<a href="home" class="nav-link">
 								<i class="nav-icon fas fa-tachometer-alt"></i>
@@ -119,6 +123,7 @@
 							</a>
 
 						</li>
+
 						<!-- QUẢN LÝ ĐƠN -->
 						<li class="nav-header">QUẢN LÝ ĐƠN</li>
 						<li class="nav-item">
@@ -154,45 +159,48 @@
 								<?php } ?>
 							</ul>
 						</li>
-						<?php if (in_array($role, [ADMIN])) { ?>
-							<!-- QUẢN LÝ DANH MỤC -->
+
+						<!-- QUẢN LÝ DANH MỤC -->
+						<?php if (in_array($role, [ADMIN, SALE])) { ?>
 							<li class="nav-header">QUẢN LÝ DANH MỤC</li>
-							<li class="nav-item">
-								<a href="service" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
-									<p>
-										Dịch vụ thiết kế
-										<!-- <i class="right fas fa-angle-left"></i> -->
-									</p>
-								</a>
-							</li>
+							<?php if (in_array($role, [ADMIN])) { ?>
+								<li class="nav-item">
+									<a href="service" class="nav-link">
+										<i class="nav-icon fas fa-th"></i>
+										<p>
+											Dịch vụ thiết kế
+											<!-- <i class="right fas fa-angle-left"></i> -->
+										</p>
+									</a>
+								</li>
 
-							<li class="nav-item">
-								<a href="style" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
-									<p>
-										Phong cách thiết kế
-									</p>
-								</a>
-							</li>
+								<li class="nav-item">
+									<a href="style" class="nav-link">
+										<i class="nav-icon fas fa-th"></i>
+										<p>
+											Phong cách thiết kế
+										</p>
+									</a>
+								</li>
 
-							<li class="nav-item">
-								<a href="room" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
-									<p>
-										Loại phòng thiết kế
-									</p>
-								</a>
-							</li>
+								<li class="nav-item">
+									<a href="room" class="nav-link">
+										<i class="nav-icon fas fa-th"></i>
+										<p>
+											Loại phòng thiết kế
+										</p>
+									</a>
+								</li>
 
-							<li class="nav-item">
-								<a href="library" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
-									<p>
-										Thư viện
-									</p>
-								</a>
-							</li>
+								<li class="nav-item">
+									<a href="library" class="nav-link">
+										<i class="nav-icon fas fa-th"></i>
+										<p>
+											Thư viện
+										</p>
+									</a>
+								</li>
+							<?php } ?>
 
 							<li class="nav-item">
 								<a href="voucher" class="nav-link">
@@ -203,27 +211,31 @@
 									</p>
 								</a>
 							</li>
+						<?php } ?>
 
-							<!-- QUẢN LÝ NGƯỜI DÙNG -->
+						<!-- QUẢN LÝ NGƯỜI DÙNG -->
+						<?php if (in_array($role, [ADMIN, SALE])) { ?>
 							<li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
 
-							<li class="nav-item">
-								<a href="withdraw" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
-									<p>
-										Yêu cầu rút tiền
-									</p>
-								</a>
-							</li>
+							<?php if (in_array($role, [ADMIN])) { ?>
+								<li class="nav-item">
+									<a href="withdraw" class="nav-link">
+										<i class="nav-icon fas fa-th"></i>
+										<p>
+											Yêu cầu rút tiền
+										</p>
+									</a>
+								</li>
 
-							<li class="nav-item">
-								<a href="user" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
-									<p>
-										Danh sách tài khoản
-									</p>
-								</a>
-							</li>
+								<li class="nav-item">
+									<a href="user" class="nav-link">
+										<i class="nav-icon fas fa-th"></i>
+										<p>
+											Danh sách tài khoản
+										</p>
+									</a>
+								</li>
+							<?php } ?>
 
 							<li class="nav-item">
 								<a href="contact" class="nav-link">
@@ -233,8 +245,10 @@
 									</p>
 								</a>
 							</li>
+						<?php } ?>
 
-							<!-- CÀI ĐẶT WEBSITE -->
+						<!-- CÀI ĐẶT WEBSITE -->
+						<?php if (in_array($role, [ADMIN])) { ?>
 							<li class="nav-header">CÀI ĐẶT WEBSITE</li>
 							<li class="nav-item">
 								<a href="setting" class="nav-link">
@@ -245,7 +259,7 @@
 									</p>
 								</a>
 								<ul class="nav nav-treeview">
-								<li class="nav-item">
+									<li class="nav-item">
 										<a href="setting/max_order_working" class="nav-link">
 											<i class="far fa-circle nav-icon"></i>
 											<p>Điều kiện JOIN đơn mới</p>
