@@ -46,7 +46,7 @@
                 <small>&nbsp;</small>
                 <div class="d-flex" style="gap:5px; align-items: center;">
                     <button type="submit" class="btn btn-primary" title="Tìm kiếm"><i class="fas fa-search"></i> Lọc đơn</button>
-                    <a href="order" class="btn" title="Làm mới bộ lọc"><i class="fas fa-sync-alt"></i></a>
+                    <a href="order" class="btn" title="Xóa bộ lọc"><i class="fas fa-sync-alt"></i></a>
                     <button type="button" class="btn" title="Thêm option tìm kiếm" onclick="$('#filter-expand').slideToggle()"><i class="fas fa-sliders-h"></i></button>
                 </div>
             </div>

@@ -29,16 +29,26 @@ class User extends MY_Controller
         $role = $this->_session_role();
         !in_array($role, [ADMIN]) ? redirect(site_url('', $this->_langcode)) : '';
 
-        $code_user = '';
-        $username = '';
-        $fullname = '';
-        $phone = '';
-        $email = '';
-        $role = [ADMIN, SALE, QC, EDITOR, CUSTOMER];
-        $status = [0, 1]; // 1 active; 0 unactive
+        $all_role = [ADMIN, SALE, QC, EDITOR, CUSTOMER];
         $limit = 10000; //fix
         $offset = 0; // fix
-        $list = $this->User_model->get_list_user($code_user, $username, $fullname, $phone, $email, implode(',', $role), implode(',', $status), $limit, $offset);
+
+        $filter_username = removeAllTags($this->input->get('filter_username'));
+        $filter_fullname = removeAllTags($this->input->get('filter_fullname'));
+        $filter_code     = removeAllTags($this->input->get('filter_code'));
+        $filter_phone    = removeAllTags($this->input->get('filter_phone'));
+        $filter_email    = removeAllTags($this->input->get('filter_email'));
+        $filter_role     = removeAllTags($this->input->get('filter_role'));
+        $filter_status   = removeAllTags($this->input->get('filter_status'));
+
+        //validate role
+        $filter_role = in_array($filter_role, $all_role) ? $filter_role : '';
+
+        //validate role
+        $filter_status = in_array($filter_status, ['1', '0']) ? $filter_status : '';
+
+        $list = $this->User_model->get_list_user($filter_code, $filter_username, $filter_fullname, $filter_phone, $filter_email, $filter_role, $filter_status, $limit, $offset);
+
         $list_service = $this->Service_model->get_list();
 
         // SUBMIT FORM (nếu có)
@@ -206,16 +216,17 @@ class User extends MY_Controller
 
         $data = [];
         $data['list']     = $list;
-        $data['code']     = $code_user;
-        $data['username'] = $username;
-        $data['fullname'] = $fullname;
-        $data['phone']    = $phone;
-        $data['email']    = $email;
-        $data['role']     = $role;
-        $data['status']   = $status;
+        $data['list_service']  = $list_service;
+
+        $data['filter_status']   = $filter_status;
+        $data['filter_username'] = $filter_username;
+        $data['filter_fullname'] = $filter_fullname;
+        $data['filter_code']     = $filter_code;
+        $data['filter_phone']    = $filter_phone;
+        $data['filter_email']    = $filter_email;
+        $data['filter_role']     = $filter_role;
         $data['limit']    = $limit;
         $data['offset']   = $offset;
-        $data['list_service']  = $list_service;
 
         $header = [
             'title' => 'Quản lý tài khoản',
@@ -371,7 +382,7 @@ class User extends MY_Controller
 
         $check_pass_cu = PasswordHash::hash_verify($info['username'], $info['password'], md5($password));
         !$check_pass_cu ? resError('Bạn đã nhập sai mật khẩu cũ') : '';
-        
+
         //END VALIDATE
 
         // update

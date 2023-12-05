@@ -116,10 +116,11 @@
 
                             </td>
                             <td class="align-middle" style="max-width: 150px;">
-                                <?php foreach ($order['list_user'] as $id_user) { ?>
-                                    <img src="<?= url_image($all_user[$id_user]['avatar'], 'uploads/avatar/') ?>" title="<?= $all_user[$id_user]['username'] . ' - ' . $all_user[$id_user]['fullname'] ?>" alt="<?= $all_user[$id_user]['username'] ?>" class="img-circle shadow" style="margin-bottom: 5px; width: 36px; aspect-ratio: 1; object-fit: cover;">
-                                <?php } ?>
-
+                                <div class="d-flex flex-wrap" style="gap:5px">
+                                    <?php foreach ($order['list_user'] as $id_user) { ?>
+                                        <img src="<?= url_image($all_user[$id_user]['avatar'], 'uploads/avatar/') ?>" title="<?= $all_user[$id_user]['username'] . ' - ' . $all_user[$id_user]['fullname'] ?>" alt="<?= $all_user[$id_user]['username'] ?>" class="img-circle shadow" style="margin-bottom: 5px; width: 36px; aspect-ratio: 1; object-fit: cover;">
+                                    <?php } ?>
+                                </div>
                             </td>
                             <?php if (in_array($role, [ADMIN, SALE])) { ?>
                                 <td class="align-middle text-center">

@@ -65,7 +65,7 @@
                             <small>&nbsp;</small>
                             <div class="d-flex" style="gap:5px; align-items: center;">
                                 <button type="submit" class="btn btn-primary" title="Tìm kiếm"><i class="fas fa-search"></i> Tìm kiếm</button>
-                                <a href="kpi" class="btn" title="Làm mới bộ lọc"><i class="fas fa-sync-alt"></i></a>
+                                <a href="kpi" class="btn" title="Xóa bộ lọc"><i class="fas fa-sync-alt"></i></a>
                             </div>
 
                         </div>
