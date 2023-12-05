@@ -37,7 +37,8 @@
                                     </button>
                                 </div>
 
-                                <textarea class="form-control content_discuss" name="message" placeholder="Type Message ..." onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" style="padding-left:100px; padding-right: 100px; resize: none;"></textarea>
+                                <textarea class="form-control content_discuss" id="input_discuss_khach" name="message" placeholder="Type Message ..." 
+                                onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" style="padding-left:100px; padding-right: 100px; resize: none;" data-callback="cb_upload_add_file_attach_chat_khach"></textarea>
 
                                 <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
                                     <button type="button" class="btn btn-primary" onclick="ajax_discuss_khach_add(this)">Send</button>
@@ -63,6 +64,10 @@
         })
 
     })
+
+    window.onload = function() {
+        document.getElementById("input_discuss_khach").addEventListener("paste", quanlt_handle_paste_image);
+    };
 
     function onclick_tab_chat_khach(tab) {
 

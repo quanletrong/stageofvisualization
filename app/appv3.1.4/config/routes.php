@@ -63,7 +63,8 @@ $route[LINK_ORDER . '/ajax_edit_file_attach_rework']   = 'order/order/ajax_edit_
 $route[LINK_ORDER . '/ajax_update_requirement_rework'] = 'order/order/ajax_update_requirement_rework';
 
 // upload
-$route['upload']      = 'upload/upload/index';
+$route['upload']              = 'upload/upload/index';
+$route['upload/paste'] = 'upload/upload/paste';
 
 $route[LINK_ABOUT]    = 'about/about/index';
 $route[LINK_CAREERS]  = 'careers/careers/index';
