@@ -76,7 +76,7 @@ class Upload extends MY_Controller
         }
     }
 
-    function paste()
+    function siglefile()
     {
         // SUBMIT FORM (nếu có)
         if (isset($_FILES['file'])) {

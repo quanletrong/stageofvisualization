@@ -117,39 +117,39 @@
 
 <!-- paste image -->
 <script>
-	function quanlt_handle_paste_image(e) {
-		for (var i = 0; i < e.clipboardData.items.length; i++) {
-			var item = e.clipboardData.items[i];
+	function quanlt_handle_paste_image(ev) {
+		for (var i = 0; i < ev.clipboardData.items.length; i++) {
+			var item = ev.clipboardData.items[i];
 			if (item.type.indexOf("image") != -1) {
-				quanlt_paste_submit_file_form(e, item.getAsFile(), 'paste');
+				quanlt_paste_submit_file_form(ev, item.getAsFile(), 'paste');
 			} else {
 				console.log("Discarding non-image paste data");
 			}
 		}
 	}
 
-	function quanlt_paste_submit_file_form(e, file, type) {
+	function quanlt_paste_submit_file_form(ev, file, type) {
 		var extension = file.type.match(/\/([a-z0-9]+)/i)[1].toLowerCase();
 		var formData = new FormData();
-		formData.append('file', file, `${Date.now()}.${extension}`);
+		formData.append('file', file, file.name);
 		formData.append('extension', extension);
 		formData.append("mimetype", file.type);
 		formData.append('submission-type', type);
 
 		var xhr = new XMLHttpRequest();
 		xhr.responseType = "json";
-		xhr.open('POST', 'upload/paste');
+		xhr.open('POST', 'upload/siglefile');
 		xhr.onload = function() {
 			if (xhr.status == 200) {
 				try {
-					let cb = e.target.dataset.callback;
-					let target = e.target.dataset.target;
+					let cb = ev.target.dataset.callback;
+					let target = ev.target.dataset.target;
 					let status = xhr.response.data.status
 					let link_file = xhr.response.data.link
 					let name_file = xhr.response.data.name
 
 					if (status) {
-						window[cb](link_file, target, name_file, e.target);
+						window[cb](link_file, target, name_file, ev.target);
 					} else {
 						alert(xhr.response.error)
 					}
@@ -167,6 +167,66 @@
 	}
 </script>
 <!-- /.paste image -->
+
+
+<!-- drop file -->
+<script>
+	function quanlt_handle_drop_file(ev) {
+		ev.preventDefault();
+
+		if (ev.dataTransfer.items) {
+			[...ev.dataTransfer.items].forEach((item, i) => {
+				if (item.kind === "file") {
+					const file = item.getAsFile();
+					quanlt_drop_submit_file_form(ev, file, 'drop');
+				}
+			});
+		} else {
+			[...ev.dataTransfer.files].forEach((file, i) => {
+				quanlt_drop_submit_file_form(ev, file, 'drop');
+			});
+		}
+	}
+
+	function quanlt_drop_submit_file_form(ev, file, type) {
+		var extension = file.type.match(/\/([a-z0-9]+)/i)[1].toLowerCase();
+		var formData = new FormData();
+		formData.append('file', file, file.name);
+		formData.append('extension', extension);
+		formData.append("mimetype", file.type);
+		formData.append('submission-type', type);
+
+		var xhr = new XMLHttpRequest();
+		xhr.responseType = "json";
+		xhr.open('POST', 'upload/siglefile');
+		xhr.onload = function() {
+			if (xhr.status == 200) {
+				try {
+					let cb = ev.target.dataset.callback;
+					let target = ev.target.dataset.target;
+					let status = xhr.response.data.status
+					let link_file = xhr.response.data.link
+					let name_file = xhr.response.data.name
+
+					if (status) {
+						window[cb](link_file, target, name_file, ev.target);
+					} else {
+						alert(xhr.response.error)
+					}
+				} catch (error) {
+					alert('Upload failed (ERR001)!');
+					console.log(error)
+				}
+			} else {
+				alert('Upload failed (ERR002)!');
+				console.log(xhr.status)
+			}
+		};
+
+		xhr.send(formData);
+	}
+</script>
+<!-- /.drop file -->
 </body>
 
 </html>
