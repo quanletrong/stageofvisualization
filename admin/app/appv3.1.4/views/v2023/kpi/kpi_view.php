@@ -22,55 +22,57 @@
     <section class="content">
         <div class="container-fluid">
             <form method="GET" action="kpi" id="filter_form">
-                <div class="row">
-                    <!-- Lọc Khoảng ngày-->
-                    <div class="col-md-3 mb-2">
-                        <small>Khoảng ngày</small>
-                        <div class="input-group">
-                            <input type="text" class="form-control daterange-btn" placeholder="Nhập khoảng ngày" id="create_time" value="">
-                            <input type="hidden" name="filter_fdate" value="<?= $filter_fdate ?>">
-                            <input type="hidden" name="filter_tdate" value="<?= $filter_tdate ?>">
-                            <div class="input-group-append daterange-btn" id="">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                <div class="rounded px-2 py-1 pb-0 mb-2" style="background-color: #dee2e6;">
+                    <div class="row">
+                        <!-- Lọc Khoảng ngày-->
+                        <div class="col-md-3 mb-2">
+                            <small>Khoảng ngày</small>
+                            <div class="input-group">
+                                <input type="text" class="form-control daterange-btn" placeholder="Nhập khoảng ngày" id="create_time" value="">
+                                <input type="hidden" name="filter_fdate" value="<?= $filter_fdate ?>">
+                                <input type="hidden" name="filter_tdate" value="<?= $filter_tdate ?>">
+                                <div class="input-group-append daterange-btn" id="">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Lọc theo user -->
-                    <div class="col-md-3 mb-2">
-                        <small>Tìm theo tài khoản</small>
-                        <select class="select2" name="filter_id_user" id="filter_id_user">
-                            <option value=""></option>
-                            <?php foreach ($all_user as $id => $it) { ?>
-                                <option value="<?= $id ?>" <?= $id == $filter_id_user ? 'selected' : '' ?>><?= $it['username'] ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-
-                    <!-- Lọc theo user -->
-                    <div class="col-md-2 mb-2">
-                        <small>Role</small>
-                        <select class="select2" name="filter_role" id="filter_role">
-                            <option value=""></option>
-                            <option value="<?= ADMIN ?>" <?= ADMIN == $filter_role ? 'selected' : '' ?>>ADMIN</option>
-                            <option value="<?= SALE ?>" <?= SALE == $filter_role ? 'selected' : '' ?>>SALE</option>
-                            <option value="<?= QC ?>" <?= QC == $filter_role ? 'selected' : '' ?>>QC</option>
-                            <option value="<?= EDITOR ?>" <?= EDITOR == $filter_role ? 'selected' : '' ?>>EDITOR</option>
-                        </select>
-                    </div>
-
-                    <!-- search -->
-                    <div class="col-md-2 mb-2 ">
-                        <small>&nbsp;</small>
-                        <div class="d-flex" style="gap:5px">
-                            <button type="submit" class="btn btn-primary" title="Tìm kiếm"><i class="fas fa-search"></i> Tìm kiếm</button>
-                            <a href="kpi" class="btn btn-danger" title="Làm mới bộ lọc"><i class="fas fa-sync-alt"></i></a>
+                        <!-- Lọc theo user -->
+                        <div class="col-md-3 mb-2">
+                            <small>Tìm theo tài khoản</small>
+                            <select class="select2" name="filter_id_user" id="filter_id_user">
+                                <option value=""></option>
+                                <?php foreach ($all_user as $id => $it) { ?>
+                                    <option value="<?= $id ?>" <?= $id == $filter_id_user ? 'selected' : '' ?>><?= $it['username'] ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
 
-                    </div>
+                        <!-- Lọc theo user -->
+                        <div class="col-md-2 mb-2">
+                            <small>Role</small>
+                            <select class="select2" name="filter_role" id="filter_role">
+                                <option value=""></option>
+                                <option value="<?= ADMIN ?>" <?= ADMIN == $filter_role ? 'selected' : '' ?>>ADMIN</option>
+                                <option value="<?= SALE ?>" <?= SALE == $filter_role ? 'selected' : '' ?>>SALE</option>
+                                <option value="<?= QC ?>" <?= QC == $filter_role ? 'selected' : '' ?>>QC</option>
+                                <option value="<?= EDITOR ?>" <?= EDITOR == $filter_role ? 'selected' : '' ?>>EDITOR</option>
+                            </select>
+                        </div>
 
-                    <!-- vị trí nút export table -->
-                    <div class="col-md-2 mb-2 d-flex align-items-end justify-content-end"></div>
+                        <!-- search -->
+                        <div class="col-md-2 mb-2 ">
+                            <small>&nbsp;</small>
+                            <div class="d-flex" style="gap:5px; align-items: center;">
+                                <button type="submit" class="btn btn-primary" title="Tìm kiếm"><i class="fas fa-search"></i> Tìm kiếm</button>
+                                <a href="kpi" class="btn" title="Làm mới bộ lọc"><i class="fas fa-sync-alt"></i></a>
+                            </div>
+
+                        </div>
+
+                        <!-- vị trí nút export table -->
+                        <div class="col-md-2 mb-2 d-flex align-items-end justify-content-end"></div>
+                    </div>
                 </div>
             </form>
             <table id="example1" class="table table-bordered table-striped">

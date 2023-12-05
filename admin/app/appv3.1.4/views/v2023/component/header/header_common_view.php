@@ -7,7 +7,8 @@
 <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
 <!-- Theme style -->
 <link rel="stylesheet" href="dist/css/adminlte.min.css">
-
+<!-- Icheck -->
+<link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 <!-- all CSS -->
 <link rel="stylesheet" href="skins/v2023/all.css?v=1">
 

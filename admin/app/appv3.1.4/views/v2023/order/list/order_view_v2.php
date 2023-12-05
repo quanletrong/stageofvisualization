@@ -23,6 +23,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
+
             <!-- SMALL BOX -->
             <?php
             if ($role == ADMIN || $role == SALE) {
@@ -32,13 +33,24 @@
             }
             ?>
 
+            <!-- BỘ LỌC -->
             <?php $this->load->view(TEMPLATE_FOLDER . 'order/list/bo_loc_view.php'); ?>
-            <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-            <!-- BẢNG DỮ LIỆU -->
-            <div id="action_button" class="d-flex" style="gap:10px">
-                <button id="cancle_order" class="btn btn-sm btn-danger" style="display: none;" onclick="ajax_cancle_order(this)">Xóa đơn hàng đã chọn</button>
 
+            <!-- ACTION BUTTON -->
+            <div class="d-flex mt-2" style="gap:10px">
+
+                <button id="cancle_order" class="btn btn-sm btn-danger" style="display: none;" onclick="ajax_cancle_order(this)"><i class="fas fa-trash"></i> Xóa đơn hàng đã chọn</button>
+
+                <?php if ($role == EDITOR) { ?>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()"> <i class="fas fa-play"></i> START</button>
+                <?php } ?>
+
+                <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance" onclick="ajax_get_rut_tien()"> <i class="fas fa-wallet"></i> RÚT TIỀN</button>
+
+                <div style="display: flex; justify-content: flex-end;" id="export"></div>
             </div>
+
+            <!-- BẢNG DỮ LIỆU -->
             <table id="example1" class="table table-bordered table-striped">
                 <thead class="thead-danger">
                     <tr>
@@ -72,7 +84,7 @@
                                 <td class="align-middle text-center">
                                     <div class="icheck-primary d-inline">
                                         <input type="checkbox" id="checkbox_<?= $id_order ?>" class="checkox_order" data-order="<?= $id_order ?>">
-                                        <label for="checkbox_<?= $id_order ?>"><?=$index++?></label>
+                                        <label for="checkbox_<?= $id_order ?>"><?= $index++ ?></label>
                                     </div>
                                 </td>
                             <?php } ?>
@@ -158,8 +170,8 @@
             "lengthChange": false,
             "autoWidth": false,
             "searching": false,
-            "buttons": ["excel", "print", "colvis"]
-        }).buttons().container().appendTo('#action_button');
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#export');
 
         $('.checkox_order').on('change', function() {
             let total = $('.checkox_order').length;

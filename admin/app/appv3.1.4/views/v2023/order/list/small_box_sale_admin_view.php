@@ -4,13 +4,6 @@
     }
 </style>
 
-<div class="d-flex mb-3" style="justify-content: space-between;">
-    <?php if ($role == EDITOR) { ?>
-        <button class="btn btn-success" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()"> <i class="fas fa-wallet"></i> START</button>
-    <?php } ?>
-    <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance" onclick="ajax_get_rut_tien()"> <i class="fas fa-wallet"></i> WITHDRAW BALANCE</button>
-</div>
-
 <div class="row">
     <div class="col-lg-2 col-6">
         <div class="info-box">

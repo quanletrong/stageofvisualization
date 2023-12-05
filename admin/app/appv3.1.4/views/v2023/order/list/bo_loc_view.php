@@ -13,16 +13,13 @@
         display: none;
     } */
 </style>
-<div class="my-3">
-    <h4>Bộ lọc <small onclick="$('#filter_form').slideToggle()" style="cursor: pointer;"> [Ẩn/hiện]</small></h4>
-</div>
-<form method="GET" action="order" id="filter_form">
-    <div class="rounded px-2 pt-2 pb-0 mb-2" style="background-color: #dee2e6;">
-        <div class="row">
 
+<form method="GET" action="order" id="filter_form">
+    <div class="rounded px-2 py-1 pb-0 mb-2" style="background-color: #dee2e6;">
+        <div class="row">
             <!-- STATUS -->
-            <div class="col-md-4 mb-2">
-                <small>Status - Trạng thái đơn hàng</small>
+            <div class="col-md-6 mb-2">
+                <small>Status - Trạng thái đơn hàng</small> <br>
                 <select class="select2" name="filter_status[]" multiple="multiple">
                     <?php foreach ($all_status as $id => $it) { ?>
                         <option value="<?= $id ?>" <?= in_array($id, $filter_status) ? 'selected' : '' ?>><?= trim($it['text']) ?></option>
@@ -30,23 +27,49 @@
                 </select>
             </div>
             <!-- END STATUS -->
+
+            <!-- ngày tạo -->
+            <div class="col-md-3 mb-2">
+                <small>Date - Ngày tạo đơn hàng</small><br>
+                <div class="input-group">
+                    <input type="text" class="form-control daterange-btn" placeholder="Nhập khoảng ngày" id="create_time" value="">
+                    <input type="hidden" name="filter_fdate" value="<?= $filter_fdate ?>">
+                    <input type="hidden" name="filter_tdate" value="<?= $filter_tdate ?>">
+                    <div class="input-group-append daterange-btn" id="">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- search -->
+            <div class="col-md-3 mb-2 ">
+                <small>&nbsp;</small>
+                <div class="d-flex" style="gap:5px; align-items: center;">
+                    <button type="submit" class="btn btn-primary" title="Tìm kiếm"><i class="fas fa-search"></i> Lọc đơn</button>
+                    <a href="order" class="btn" title="Làm mới bộ lọc"><i class="fas fa-sync-alt"></i></a>
+                    <button type="button" class="btn" title="Thêm option tìm kiếm" onclick="$('#filter-expand').slideToggle()"><i class="fas fa-sliders-h"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="filter-expand" style="display: none;">
             <!-- TÌM ORDER CODE -->
             <div class="col-md-4 mb-2">
-                <small>JID - Code đơn hàng</small>
+                <small>JID - Code đơn hàng</small><br>
                 <input type="text" class="form-control" placeholder="Nhập Code đơn hàng" value="<?= htmlentities($filter_code_order) ?>" name="filter_code_order" autocomplete="off">
             </div>
             <!-- END TÌM ORDER CODE -->
 
             <!-- TÌM USER CODE -->
             <div class="col-md-4 mb-2">
-                <small>Cid - Code khách hàng</small>
+                <small>Cid - Code khách hàng</small><br>
                 <input type="text" class="form-control" placeholder="Nhập Code khách hàng" value="<?= htmlentities($filter_user_code) ?>" name="filter_user_code" autocomplete="off">
             </div>
             <!-- END TÌM USER CODE -->
 
             <!-- SERVICES -->
             <div class="col-md-4 mb-2">
-                <small>Job type - Loại dịch vụ </small>
+                <small>Job type - Loại dịch vụ </small><br>
                 <select class="select2" name="filter_service[]" multiple="multiple">
                     <?php foreach ($all_service as $id => $it) { ?>
                         <option value="<?= $id ?>" <?= in_array($id, $filter_service) ? 'selected' : '' ?>><?= $it['type_service'] ?></option>
@@ -58,7 +81,7 @@
             <!-- TÌM ED NỘI BỘ hoặc ED CTV -->
             <?php if ($role != EDITOR) { ?>
                 <div class="col-md-4 mb-2">
-                    <small>Phân đơn - Đơn giành cho loại ED</small>
+                    <small>Phân đơn - Đơn giành cho loại ED</small><br>
                     <select class="select2" name="filter_order_ed_type[]" multiple="multiple" data-minimum-results-for-search="Infinity">
                         <?php foreach ($all_ed_type as $id => $text) { ?>
                             <option value="<?= $id ?>" <?= in_array($id, $filter_order_ed_type) ? 'selected' : '' ?>><?= $text ?></option>
@@ -69,7 +92,7 @@
 
             <!-- ĐƠN KHÁCH TẠO/ĐƠN NỘI BỘ/ĐƠN TẠO HỘ -->
             <div class="col-md-4 mb-2">
-                <small>Loại đơn hàng</small>
+                <small>Loại đơn hàng</small><br>
                 <select class="select2" name="filter_order_type[]" multiple="multiple" data-minimum-results-for-search="Infinity">
                     <?php foreach ($all_order_type as $id => $text) { ?>
                         <option value="<?= $id ?>" <?= in_array($id, $filter_order_type) ? 'selected' : '' ?>><?= $text ?></option>
@@ -77,23 +100,10 @@
                 </select>
             </div>
 
-            <!-- ngày tạo -->
-            <div class="col-md-4 mb-2">
-                <small>Date - Ngày tạo đơn hàng</small>
-                <div class="input-group">
-                    <input type="text" class="form-control daterange-btn" placeholder="Nhập khoảng ngày" id="create_time" value="">
-                    <input type="hidden" name="filter_fdate" value="<?= $filter_fdate ?>">
-                    <input type="hidden" name="filter_tdate" value="<?= $filter_tdate ?>">
-                    <div class="input-group-append daterange-btn" id="">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Lọc theo user -->
             <?php if ($role != EDITOR) { ?>
                 <div class="col-md-4 mb-2">
-                    <small>Team working - Lọc theo tài khoản</small>
+                    <small>Team working - Lọc theo tài khoản</small><br>
                     <select class="select2" name="filter_id_user[]" multiple="multiple" id="filter_id_user">
                         <?php foreach ($all_user as $id => $it) { ?>
                             <option value="<?= $id ?>" <?= in_array($id, $filter_id_user) ? 'selected' : '' ?>><?= $it['username'] ?></option>
@@ -101,17 +111,6 @@
                     </select>
                 </div>
             <?php } ?>
-
-
-            <!-- search -->
-            <div class="col-md-4 mb-2 ">
-                <small>&nbsp;</small>
-                <div class="d-flex" style="gap:5px">
-                    <button type="submit" class="btn btn-primary w-75" title="Tìm kiếm"><i class="fas fa-search"></i> Tìm kiếm</button>
-                    <a href="order" class="btn btn-danger w-25" title="Làm mới bộ lọc"><i class="fas fa-sync-alt"></i></a>
-                </div>
-
-            </div>
         </div>
     </div>
 </form>
