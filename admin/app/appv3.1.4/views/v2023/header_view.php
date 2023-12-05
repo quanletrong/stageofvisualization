@@ -217,6 +217,14 @@
 						<?php if (in_array($role, [ADMIN, SALE])) { ?>
 							<li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
 
+							<li class="nav-item">
+								<a href="kpi" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										KPI
+									</p>
+								</a>
+							</li>
 							<?php if (in_array($role, [ADMIN])) { ?>
 								<li class="nav-item">
 									<a href="withdraw" class="nav-link">

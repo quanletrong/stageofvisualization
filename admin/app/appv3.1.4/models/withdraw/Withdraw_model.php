@@ -107,7 +107,7 @@ class Withdraw_model extends CI_Model
                         $data['all'][$row['id_withdraw']] = $row;
 
                         // cộng type_service giống nhau
-                        
+
                         $row['type_service'] = $row['type_service'] == '' ? 'CUSTOM' : $row['type_service'];
 
                         if (isset($data['tong_hop'][$row['type_service']])) {
@@ -135,7 +135,7 @@ class Withdraw_model extends CI_Model
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = "UPDATE tbl_withdraw SET status = 1 WHERE id_withdraw IN ($str_id_withdraw);";
-        $sql .= "UPDATE tbl_job_user SET withdraw_status = 2 WHERE id_job_user IN ($str_id_job_user);"; 
+        $sql .= "UPDATE tbl_job_user SET withdraw_status = 2 WHERE id_job_user IN ($str_id_job_user);";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -148,5 +148,73 @@ class Withdraw_model extends CI_Model
         }
         // $stmt->closeCursor(); CLOSE BÊN CONTROLLER
         return $execute;
+    }
+
+    function get_kpi($filter)
+    {
+        $data['user'] = [];
+        $data['list_service'] = [];
+        $iconn = $this->db->conn_id;
+
+        $filter_fdate   = isset($filter['fdate'])   ? $filter['fdate']  : '';
+        $filter_tdate   = isset($filter['tdate'])   ? $filter['tdate']  : '';
+        $filter_id_user = isset($filter['id_user']) ? $filter['id_user'] : '';
+        $filter_role    = isset($filter['role'])    ? $filter['role']   : '';
+
+        $this->session->set_flashdata('PARAMS', []);
+        $sql =
+            "SELECT
+                tbl_user.username,
+                tbl_user.fullname,
+                tbl_user.role,
+                tbl_user.avatar,
+                tbl_withdraw.id_user,
+                GROUP_CONCAT( DISTINCT tbl_withdraw.type_service ) AS `service`,
+                sum( tbl_withdraw.custom ) AS total 
+            FROM
+                `tbl_withdraw`
+                INNER  JOIN tbl_user ON tbl_user.id_user = tbl_withdraw.id_user 
+            WHERE
+                tbl_withdraw.`status` = 0 
+                AND " . QSQL_IN('tbl_withdraw.`id_user`', $filter_id_user, $this) . " 
+                AND " . QSQL_IN('tbl_user.`role`', $filter_role, $this) . " 
+                AND " . QSQL_BETWEEN('tbl_withdraw.create_time', $filter_fdate, $filter_tdate, $this) . " 
+            GROUP BY
+                tbl_withdraw.id_user,
+                tbl_withdraw.type_service";
+
+        $PARAMS = $this->session->flashdata('PARAMS');
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute($PARAMS)) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                        $id_user = $row['id_user'];
+
+                        $data['user'][$id_user]['id_user']    = $row['id_user'];
+                        $data['user'][$id_user]['username']   = $row['username'];
+                        $data['user'][$id_user]['fullname']   = $row['fullname'];
+                        $data['user'][$id_user]['role']       = $row['role'];
+                        $data['user'][$id_user]['avatar_url'] = url_image($row['avatar'], FOLDER_AVATAR);
+
+                        if(isset($data['user'][$id_user]['total'])) {
+                            $data['user'][$id_user]['total'] += $row['total'];
+                        } else {
+                            $data['user'][$id_user]['total'] = $row['total'];
+                        }
+
+                        $data['user'][$id_user]['list_service'][$row['service']] = $row['total'];
+                        $data['list_service'][$row['service']] = $row['service'];
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
     }
 }
