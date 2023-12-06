@@ -1,8 +1,7 @@
 <script src="js/v2023/moment_2.29.4.min.js"></script>
 <style>
-
     /* ẩn thanh cuộn */
-    textarea {
+    #tab_content_job textarea {
         overflow: hidden;
     }
 </style>
@@ -79,10 +78,10 @@
 
                         <div class="tab-pane fade" id="tab_panel_chat_noi_bo" role="tabpanel" aria-labelledby="tab_chat_noi_bo">
                             <?php
-                            $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_noi_bo_view.php', [
-                                'order' => $order,
-                                'role' => $role
-                            ]);
+                            // $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_noi_bo_view.php', [
+                            //     'order' => $order,
+                            //     'role' => $role
+                            // ]);
                             ?>
                         </div>
 
@@ -105,12 +104,12 @@
     $(document).ready(function() {
 
         // TODO: có vấn đề
-        $('textarea').on('keyup', function() {
+        $('#tab_content_job textarea').on('keyup', function() {
             $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
         })
 
         // TODO: có vấn đề
-        $("textarea").each(function(textarea) {
+        $("#tab_content_job textarea").each(function(textarea) {
             $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
         });
     })

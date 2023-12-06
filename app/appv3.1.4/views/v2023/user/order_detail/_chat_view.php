@@ -6,7 +6,7 @@
     </button>
 </div>
 
-<div style="position: fixed;right: 10px;bottom: 0px; width: 60%; max-width:800px; display: none;" id="box_trao_doi_sale">
+<div style="position: fixed;right: 10px;bottom: 0px; width: 60%; max-width:800px; display: none; z-index: 2;" id="box_trao_doi_sale">
     <!-- <h4 class="mt-5">TRAO ĐỔI VỚI SALE</h4> -->
     <div class="row">
         <!-- TRAO ĐỔI KHÁCH -->
@@ -132,6 +132,7 @@
 
                     $('#discuss_khach .list-chat').html(html).scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
 
+                    // TODO:
                     // var audio = new Audio('images/Tieng-ting-www_tiengdong_com.mp3');
                     // audio.play();
 
@@ -187,7 +188,7 @@
                     alert(kq.error);
                 }
 
-                $(btn).prop("disabled", false).text('Send');
+                $(btn).prop("disabled", false).html('<i class="fas fa-paper-plane"></i>');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
@@ -278,6 +279,7 @@
         $('#discuss_khach .chat_list_attach').append(html);
     }
 
+    //TODO:
     function isImage(url_image) {
         return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
     }
