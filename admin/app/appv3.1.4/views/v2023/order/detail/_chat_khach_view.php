@@ -1,21 +1,21 @@
 <script src="js/v2023/moment_2.29.4.min.js"></script>
 
 <div style="position: fixed; right: 10px; bottom: 0px;" id="small_trao_doi_sale" class="">
-    <button class="btn btn-danger" onclick="open_close_chat()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
+    <button class="btn btn-danger" onclick="open_close_chat_khach()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
         <i class="fas fa-comment"></i> TRAO ĐỔI VỚI KHÁCH
     </button>
 </div>
 
 <div style="position: fixed;right: 10px;bottom: 0px; width: 60%; max-width:800px; display: none; z-index: 2;" id="box_trao_doi_sale">
-    <!-- <h4 class="mt-5">TRAO ĐỔI VỚI SALE</h4> -->
+    <!-- <h4 class="mt-5">TRAO ĐỔI VỚI KHÁCH</h4> -->
     <div class="row">
         <!-- TRAO ĐỔI KHÁCH -->
         <div class="col-12 col-lg-12">
             <div id="discuss_khach" class="card card-primary ">
-                <div class="card-header bg-danger text-white" onclick="open_close_chat()" style="cursor: pointer;">
+                <div class="card-header bg-danger text-white" onclick="open_close_chat_khach()" style="cursor: pointer;">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                            <div><i class="fas fa-comment"></i> TRAO ĐỔI VỚI SALE</div>
+                            <div><i class="fas fa-comment"></i> TRAO ĐỔI VỚI KHÁCH</div>
                             <div>x</div>
                         </h6>
                     </div>
@@ -279,7 +279,7 @@
         $('#discuss_khach .chat_list_attach').append(html);
     }
 
-    function open_close_chat() {
+    function open_close_chat_khach() {
         $('#box_trao_doi_sale').slideToggle('fast', 'swing');
         $('#small_trao_doi_sale').toggleClass('d-none');
         $('#discuss_khach .content_discuss').focus();

@@ -67,22 +67,12 @@
 
                         <?php if ($role == ADMIN || $role == SALE) { ?>
                             <div class="tab-pane fade active show" id="tab_panel_chat_khach" role="tabpanel" aria-labelledby="tab_chat_khach">
-                                <?php
-                                $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_khach_view.php', [
-                                    'order' => $order,
-                                    'role' => $role
-                                ]);
-                                ?>
+
                             </div>
                         <?php } ?>
 
                         <div class="tab-pane fade" id="tab_panel_chat_noi_bo" role="tabpanel" aria-labelledby="tab_chat_noi_bo">
-                            <?php
-                            // $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_noi_bo_view.php', [
-                            //     'order' => $order,
-                            //     'role' => $role
-                            // ]);
-                            ?>
+
                         </div>
 
                         <!-- PANEL HISTORY -->
@@ -94,6 +84,26 @@
             </div>
         </section>
     </div>
+</div>
+
+<!-- _chat_khach_view -->
+<div>
+    <?php if ($role == ADMIN || $role == SALE) {
+        $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_khach_view.php', [
+            'order' => $order,
+            'role' => $role
+        ]);
+    }
+    ?>
+</div>
+<!-- _chat_noi_bo_view -->
+<div>
+    <?php
+    $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_noi_bo_view.php', [
+        'order' => $order,
+        'role' => $role
+    ]);
+    ?>
 </div>
 
 <script>
