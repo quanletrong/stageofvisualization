@@ -11,7 +11,7 @@
     <div class="row">
         <!-- TRAO ĐỔI KHÁCH -->
         <div class="col-12 col-lg-12">
-            <div id="discuss_noi_bo" class="card card-primary ">
+            <div id="discuss_noi_bo" class="card card-primary mb-0">
                 <div class="card-header bg-danger text-white" onclick="open_close_chat_noi_bo()" style="cursor: pointer;">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
@@ -281,7 +281,7 @@
 
     function open_close_chat_noi_bo() {
         $('#box_trao_doi_noi_bo').slideToggle('fast', 'swing');
-        $('#small_trao_doi_noi_bo').toggleClass('d-none');
+        // $('#small_trao_doi_noi_bo').toggleClass('d-none');
         $('#discuss_noi_bo .content_discuss').focus();
         $('#discuss_noi_bo .list-chat').scrollTop($('#discuss_noi_bo .list-chat')[0].scrollHeight);
     }

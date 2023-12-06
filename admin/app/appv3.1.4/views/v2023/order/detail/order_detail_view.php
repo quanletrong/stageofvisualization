@@ -36,57 +36,11 @@
                 </div>
             </div>
         </section>
-
-        <!-- CHAT BOX -->
-        <section class="mt-3">
-            <div class="card card-tabs card-primary" style="height: 90vh;" id="card_chat_lich_su">
-                <div class="card-header p-0 pt-1 border-bottom-0">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <?php if ($role == ADMIN || $role == SALE) { ?>
-                            <li class="nav-item" onclick="onclick_tab_chat_khach(this)">
-                                <a class="nav-link active" id="tab_chat_khach" data-toggle="pill" href="#tab_panel_chat_khach" role="tab" aria-controls="tab_panel_chat_khach" aria-selected="true">
-                                    TRAO ĐỔI VỚI KHÁCH (<span class="total">0</span>)
-                                </a>
-                            </li>
-                        <?php } ?>
-                        <li class="nav-item" onclick="onclick_tab_chat_noi_bo(this)">
-                            <a class="nav-link" id="tab_chat_noi_bo" data-toggle="pill" href="#tab_panel_chat_noi_bo" role="tab" aria-controls="tab_panel_chat_noi_bo" aria-selected="false">
-                                TRAO ĐỔI NỘI BỘ (<span class="total">0</span>)
-                            </a>
-                        </li>
-                        <li class="nav-item" onclick="onclick_tab_lich_su(this)">
-                            <a class="nav-link" id="tab_lich_su" data-toggle="pill" href="#tab_panel_lich_su" role="tab" aria-controls="tab_panel_lich_su" aria-selected="false">
-                                LỊCH SỬ (<?= count($logs) ?>)
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card-body">
-                    <div class="tab-content h-100">
-
-                        <?php if ($role == ADMIN || $role == SALE) { ?>
-                            <div class="tab-pane fade active show" id="tab_panel_chat_khach" role="tabpanel" aria-labelledby="tab_chat_khach">
-
-                            </div>
-                        <?php } ?>
-
-                        <div class="tab-pane fade" id="tab_panel_chat_noi_bo" role="tabpanel" aria-labelledby="tab_chat_noi_bo">
-
-                        </div>
-
-                        <!-- PANEL HISTORY -->
-                        <div class="tab-pane fade h-100" id="tab_panel_lich_su" role="tabpanel" aria-labelledby="tab_lich_su">
-                            <?php $this->load->view(TEMPLATE_FOLDER . 'order/detail/_history_view.php'); ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 </div>
 
-<!-- _chat_khach_view -->
+
+<!--  box chat khach -->
 <div>
     <?php if ($role == ADMIN || $role == SALE) {
         $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_khach_view.php', [
@@ -96,7 +50,9 @@
     }
     ?>
 </div>
-<!-- _chat_noi_bo_view -->
+
+
+<!-- box chat noi bo -->
 <div>
     <?php
     $this->load->view(TEMPLATE_FOLDER . 'order/detail/_chat_noi_bo_view.php', [
@@ -105,6 +61,14 @@
     ]);
     ?>
 </div>
+
+
+<!-- box lịch sử -->
+<div>
+    <?php $this->load->view(TEMPLATE_FOLDER . 'order/detail/_history_view.php'); ?>
+</div>
+
+
 
 <script>
     function isImage(url_image) {
