@@ -12,10 +12,10 @@
         <!-- TRAO ĐỔI KHÁCH -->
         <div class="col-12 col-lg-12">
             <div id="discuss_khach" class="card card-primary ">
-                <div class="card-header" onclick="open_close_chat()" style="cursor: pointer;">
+                <div class="card-header bg-danger text-white" onclick="open_close_chat()" style="cursor: pointer;">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                            <div>TRAO ĐỔI VỚI SALE</div>
+                        <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                            <div><i class="fa-solid fa-comment"></i> TRAO ĐỔI VỚI SALE</div>
                             <div>x</div>
                         </h6>
                     </div>
@@ -207,9 +207,9 @@
                     title="Bấm để tải xuống"
                 >   ${
                         (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                        ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" class="rounded shadow"  style="width:100%; aspect-ratio: 1;object-fit: cover;">`
+                        ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" class="rounded border"  style="width:100%; aspect-ratio: 1;object-fit: cover;">`
                         : `
-                        <div class="rounded border p-2 text-truncate shadow bg-light" style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
+                        <div class="rounded border p-2 text-truncate bg-light" style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                             <span style="font-size:12px;">${file}</span>
                         </div>
@@ -219,20 +219,20 @@
         }
 
         let html = `
-            <div class="d-flex" style="gap:15px" class="${<?= $cur_uid ?> == discuss.id_user ? '' : '' }">
-                <img class="rounded-circle shadow" style="width:60px;aspect-ratio: 1;object-fit: cover;height: 60px;" src="${discuss.avatar_url}" alt="avatar">
-                <div class="w-100">
+            <div class="d-flex mb-2 me-2" style="gap:15px;" class="${<?= $cur_uid ?> == discuss.id_user ? '' : '' }">
+                <img class="rounded-circle border" style="width:40px;aspect-ratio: 1;object-fit: cover;height: 40px;" src="${discuss.avatar_url}" alt="avatar">
+                <div class="w-100 rounded" style="background: #f0f0f0;padding: 5px 10px;">
                     <div class="d-flex justify-content-between w-100">
                         <div class="fw-bold fs-6">${discuss.fullname}</div>
                         <div class="" style="font-size: 0.875rem" data-bs-toggle="tooltip" data-bs-placement="top" title="${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}">${moment(discuss.create_time).fromNow()}</div>
                     </div>
 
-                    <div class="" style="white-space: pre-line; ">${discuss.content != '' ? `${discuss.content}` : ''}</div>
+                    <div style="white-space: pre-line;">${discuss.content != '' ? `${discuss.content}` : ''}</div>
 
-                    <div class="d-flex" style="flex-wrap: wrap;">${list_file}</div>
+                    <div class="rounded d-flex mt-2" style="flex-wrap: wrap;">${list_file}</div>
                 </div>
             </div>
-            <hr>`;
+            `;
 
         return html;
     }
@@ -251,7 +251,7 @@
         let html = ``;
         if (isImage(link_file)) {
             html = `
-            <div class="position-relative image-hover p-2" style="width:100px" id="file_attach_${id_attach}" data-file="${link_file}">
+            <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" data-file="${link_file}">
                 <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
                     <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')">
                         <i class="fas fa-trash"></i>
@@ -261,7 +261,7 @@
             </div>`;
         } else {
             html = `
-            <div class="position-relative image-hover p-2" style="width:100px" id="file_attach_${id_attach}" title="${file_name}" data-file="${link_file}">
+            <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" title="${file_name}" data-file="${link_file}">
                 <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
                     <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')">
                         <i class="fas fa-trash"></i>
@@ -295,7 +295,7 @@
             $(`${parent} .nhap_du_lieu_chat`).css('height', `${height_nhap_du_lieu_chat}px`);
 
             $(`${parent} .list-chat`).scrollTop($(`${parent} .list-chat`)[0].scrollHeight);
-        }, 100);
+        }, 0);
     }
 
 
