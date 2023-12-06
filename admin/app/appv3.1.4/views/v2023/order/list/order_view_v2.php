@@ -49,7 +49,7 @@
 
                 <div style="display: flex; justify-content: flex-end;" id="export"></div>
 
-                <button id="btn_export" class="btn btn-sm btn-secondary " onclick="export_file(this)">Excel</button>
+                <button id="btn_export" class="btn btn-sm btn-secondary " onclick="export_file(this)" title="Xuất báo cáo"><i class="fas fa-file-excel"></i> Excel</button>
             </div>
 
             <!-- BẢNG DỮ LIỆU -->
@@ -179,7 +179,7 @@
             "lengthChange": false,
             "autoWidth": false,
             "searching": false,
-            "buttons": ["excel", "pdf"]
+            // "buttons": ["excel", "pdf"]
         }).buttons().container().appendTo('#export');
 
         $('.checkox_order').on('change', function() {
