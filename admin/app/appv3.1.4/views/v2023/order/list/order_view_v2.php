@@ -39,7 +39,7 @@
             <!-- ACTION BUTTON -->
             <div class="d-flex mt-2" style="gap:10px">
 
-                <button id="cancle_order" class="btn btn-sm btn-danger" style="display: none;" onclick="ajax_cancle_order(this)"><i class="fas fa-trash"></i> Xóa đơn hàng đã chọn</button>
+                <button id="cancle_order" class="btn btn btn-danger" style="display: none;" onclick="ajax_cancle_order(this)"><i class="fas fa-trash"></i> Xóa đơn hàng đã chọn</button>
 
                 <?php if ($role == EDITOR) { ?>
                     <button class="btn btn-success" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()"> <i class="fas fa-play"></i> START</button>
@@ -48,6 +48,8 @@
                 <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance" onclick="ajax_get_rut_tien()"> <i class="fas fa-wallet"></i> RÚT TIỀN</button>
 
                 <div style="display: flex; justify-content: flex-end;" id="export"></div>
+
+                <button id="btn_export" class="btn btn-sm btn-secondary " onclick="export_file(this)">Excel</button>
             </div>
 
             <!-- BẢNG DỮ LIỆU -->
@@ -155,6 +157,12 @@
     </section>
     <!-- /.content -->
 </div>
+
+<form id="frmExp" action="order/export" method="post" style="display: none;">
+    <input type="hidden" id="hdData" name="hdData" value="<?= htmlspecialchars(json_encode($list_order)); ?>" />
+    <input type="hidden" name="fromdate" value="<?= $filter_fdate; ?>" />
+    <input type="hidden" name="todate" value="<?= $filter_tdate; ?>" />
+</form>
 
 <script>
     // sau 5 phut sẽ load lại trang
@@ -286,5 +294,16 @@
                 }
             }
         });
+    }
+
+    function export_file() {
+        const info = $('#hdData').val();
+
+        console.log(info)
+        if (info != "") {
+            $('#frmExp').submit();
+        } else {
+            toasts_danger('Chưa load xong dữ liệu để export');
+        }
     }
 </script>

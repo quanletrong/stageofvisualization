@@ -1088,49 +1088,79 @@ function status_late_order($status_text, $time_create_order, $time_done, $custom
 
 function count_down_time_order($order)
 {
-    $id_order = $order['id_order'];
+    $id_order          = $order['id_order'];
     $thoi_gian_tao_don = strtotime($order['create_time']);
     $thoi_gian_tra_don = strtotime($order['done_qc_time']);
     $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
-    $cong_them_gio = $order['custom_time'];
-    $han_chot = $thoi_gian_tao_don + $cong_them_gio + MIN_TIME_WORKING;
-
+    $cong_them_gio     = $order['custom_time'];
+    $han_chot          = $thoi_gian_tao_don + $cong_them_gio + MIN_TIME_WORKING;
 
     // đã hoàn thành đơn
     if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
-
-        // $ket_qua = 0;
-        // // đúng hạn thì hiển thị tổng thời gian làm (luôn dương)
-        // if ($thoi_gian_tra_don <= $han_chot) {
-        //     $ket_qua = $thoi_gian_tra_don - $thoi_gian_tao_don;
-        // }
-        // // đúng hạn thì hiển thị tổng thời gian quá hạn (luôn âm)
-        // else {
-        //     $ket_qua = $han_chot - $thoi_gian_tra_don;
-        // }
-
-        // $ket_qua_duong = $ket_qua < 0 ? $ket_qua * -1 : $ket_qua;
-        // $ngay = floor($ket_qua_duong / 86400);
-        // $gio = floor(($ket_qua_duong - $ngay * 86400) / 3600);
-        // $phut = floor(($ket_qua_duong - $ngay * 86400 - $gio * 3600) / 60);
-        // $giay = $ket_qua_duong - $ngay * 86400 - $gio * 3600 - $phut * 60;
-
-        // if ($ngay > 0) {
-        //     return ($ket_qua < 0 ? "- " : '') . $ngay . ' ngày : ' . $gio . ' giờ : ' . $phut . ' phút';
-        // } else {
-        //     return ($ket_qua < 0 ? "- " : '') . $gio . ' giờ : ' . $phut . ' phút :' . $giay . ' giây';
-        // }
-
-        // $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
-
         $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
         $DMY_thoi_gian_tra_don = date('Y-m-d H:i:s', $thoi_gian_tra_don);
+
         return "<script>no_count_down_time('$DMY_han_chot', '$DMY_thoi_gian_tra_don', 'cdt_$id_order')</script>";
     }
     // chưa hoàn thành đơn
     else {
         $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
+
         return "<script>count_down_time('$DMY_han_chot', 'cdt_$id_order')</script>";
+    }
+}
+
+function string_time_to_countdown($start, $end)
+{
+    $time_left = $end - $start;
+    $days = floor($time_left / 86400); // 86400 seconds in a day
+    $time_left = $time_left % 86400;
+
+    $hours = floor($time_left / 3600); // 3600 seconds in an hour
+    $time_left = $time_left % 3600;
+
+    $minutes = floor($time_left / 60); // 60 seconds in a minute
+    $seconds = $time_left % 60;
+
+    $days = $days ? "$days ngày" : "";
+    $hours = $days ? "$hours giờ" : ($hours ? "$hours giờ" : "");
+    $minutes = $days ? "$minutes phút" : ($hours ? "$minutes phút" : ($minutes ? "$minutes phút" : ""));
+    $seconds = "$seconds giây";
+
+    return "$days $hours $minutes $seconds";
+}
+
+function count_down_time_order_for_export($order)
+{
+    $thoi_gian_tao_don = strtotime($order['create_time']);
+    $thoi_gian_tra_don = strtotime($order['done_qc_time']);
+    $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
+    $cong_them_gio     = $order['custom_time'];
+    $han_chot          = $thoi_gian_tao_don + $cong_them_gio + MIN_TIME_WORKING;
+
+    // đã hoàn thành đơn
+    if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
+        // hoàn thành đúng hạn
+        if ($thoi_gian_tra_don <= $han_chot) {
+
+            return ["TRƯỚC HẠN", string_time_to_countdown($thoi_gian_tra_don, $han_chot)];
+        }
+        // hoàn thành trễ hạn
+        else {
+            return ["TRỄ HẠN", string_time_to_countdown($han_chot, $thoi_gian_tra_don)];
+        }
+    }
+    // chưa hoàn thành đơn
+    else {
+        $now = time();
+        // chưa đến hạn chót
+        if ($now <= $han_chot) {
+            return ["CÒN HẠN", string_time_to_countdown($now, $han_chot)];
+        }
+        // đã quá hạn chót
+        else {
+            return ["TRỄ HẠN", string_time_to_countdown($han_chot, $now)];
+        }
     }
 }
 
@@ -1477,20 +1507,22 @@ function QSQL_IN($filed, $id_string, $CI)
     }
 }
 
-function get_role_name($role) {
-    if($role == ADMIN) {
+function get_role_name($role)
+{
+    if ($role == ADMIN) {
         return 'ADMIN';
-    } else if($role == SALE) {
+    } else if ($role == SALE) {
         return 'SALE';
-    } else if($role == QC) {
+    } else if ($role == QC) {
         return 'QC';
-    } else if($role == EDITOR) {
+    } else if ($role == EDITOR) {
         return 'EDITOR';
-    } else if($role == CUSTOMER) {
+    } else if ($role == CUSTOMER) {
         return 'CUSTOMER';
-    }  
+    }
 }
 
-function password_streng($password) {
+function password_streng($password)
+{
     return preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password);
 }

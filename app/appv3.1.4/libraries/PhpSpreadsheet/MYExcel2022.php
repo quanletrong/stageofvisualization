@@ -170,7 +170,7 @@ class MYExcel
             ->getAlignment()->setHorizontal('center')->setVertical('bottom');
 
 
-        $logo_left_path   = 'images/adx.png';
+        $logo_left_path   = 'images/logo-2.png';
         $objDrawing = new Drawing();
         $objDrawing->setName('Logo left');
         $objDrawing->setPath('./' . $logo_left_path);
@@ -181,7 +181,7 @@ class MYExcel
         $objDrawing->setOffsetY(10);
         $objDrawing->setWorksheet($this->objPHPExcel->getActiveSheet());
 
-        $logo_right_path   = 'images/admicro.png';
+        $logo_right_path   = 'images/logo-21.png';
         $objDrawing = new Drawing();
         $objDrawing->setName('Logo right');
         $objDrawing->setPath('./' . $logo_right_path);
@@ -192,7 +192,7 @@ class MYExcel
         $objDrawing->setOffsetY(10);
         $objDrawing->setWorksheet($this->objPHPExcel->getActiveSheet());
 
-        $this->objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2', 'Ngày xuất: ' . date('d/m/Y'));
+        $this->objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2', 'Ngày báo cáo: ' . date('d/m/Y H:s:i'));
         $this->objPHPExcel->setActiveSheetIndex(0)->setCellValue('A3', 'Thời gian: ' . date('d/m/Y', strtotime($fromdate)) . ' đến ' . date('d/m/Y', strtotime($todate)));
 
         $this->next_row = 5;

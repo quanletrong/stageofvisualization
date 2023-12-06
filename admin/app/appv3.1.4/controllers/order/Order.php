@@ -60,7 +60,7 @@ class Order extends MY_Controller
         $all_status[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);  // bỏ sung thêm trạng thái đang xử lý
         $all_status[ORDER_COMPLETE]  = status_order(ORDER_COMPLETE);   // bỏ sung thêm trạng thái đang xử lý
         $all_status[ORDER_CANCLE]    = status_order(ORDER_CANCLE);     // bỏ sung thêm trạng thái đang xử lý
-        
+
         if ($role == ADMIN || $role == SALE) {
             $all_status[ORDER_PAY_WAITING]    = status_order(ORDER_PAY_WAITING);     // bỏ sung thêm trạng thái đang xử lý
         }
@@ -332,7 +332,7 @@ class Order extends MY_Controller
         $for_user    = $order['for_user'];
         $create_time = date('Y-m-d H:i:s');
         $list_job    = $order['job'];
-        $id_voucher  = isset($order['voucher']) ? $order['voucher'] : 0; 
+        $id_voucher  = isset($order['voucher']) ? $order['voucher'] : 0;
 
         // VALIDATE
 
@@ -414,7 +414,7 @@ class Order extends MY_Controller
         if ($new_order) {
 
             // LUU CODE USER 
-            if($type == 'customer' && $cid != $info_user['code_user']) {
+            if ($type == 'customer' && $cid != $info_user['code_user']) {
                 $this->User_model->update_code_user($for_user, $cid);
             }
 
@@ -1803,5 +1803,33 @@ class Order extends MY_Controller
 
     function ajax_log_order($id_order)
     {
+    }
+
+
+    function export()
+    {
+        $cur_uname = $this->_session_uname();
+        $role = $this->_session_role();
+
+        // check right
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        $hdData = $this->input->post('hdData');
+        $fromdate = date('Y-m-d', strtotime($this->input->post('fromdate')));
+        $todate = date('Y-m-d', strtotime($this->input->post('todate')));
+
+        $list_order = json_decode($hdData, true);
+
+        $all_service    = $this->Service_model->get_list(1);
+        $all_user       = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
+
+        $data['list_order']  = $list_order;
+        $data['all_service'] = $all_service;
+        $data['all_user']    = $all_user;
+        $data['fromdate']    = $fromdate;
+        $data['todate']      = $todate;
+        $data['cur_uname']   = $cur_uname;
+
+        $this->load->view($this->_template_f . 'order/list/excel.php', $data);
     }
 }
