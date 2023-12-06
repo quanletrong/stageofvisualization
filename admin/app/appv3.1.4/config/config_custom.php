@@ -12,6 +12,9 @@ define('BATIK_LIB_PATH', '../app/appv3.1.4/libraries/batik/');
 // mpdf lib path
 define('MPDF_LIB_PATH', '../app/appv3.1.4/libraries/mpdf/');
 
+// excel library path 2022
+define('PHPEXCEL_LIB_PATH_2022', 'app/appv3.1.4/libraries/PhpSpreadsheet/');
+
 
 // khi day len server se config = rong
 // $config['cf_upload_local'] = 'uploads/images/';
