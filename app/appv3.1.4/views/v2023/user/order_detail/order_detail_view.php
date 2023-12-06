@@ -248,9 +248,9 @@
 <script>
     $(document).ready(function() {
         // TODO: có vấn đề
-        $("textarea").each(function(textarea) {
-            $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
-        });
+        // $("textarea").each(function(textarea) {
+        //     $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
+        // });
     })
 
     function open_popup_pay(id_order) {

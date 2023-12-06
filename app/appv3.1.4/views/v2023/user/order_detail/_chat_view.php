@@ -32,15 +32,15 @@
 
                                 <!-- NHẬP DỮ LIỆU -->
                                 <div style="height: fit-content; position: absolute; bottom: 10px; left:10px">
-                                    <button type="button" class="btn btn-warning" style="width: 80px; font-size: 0.875rem;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_khach">
-                                        <i class="fa fa-paperclip"></i> File
+                                    <button type="button" class="btn" style="width: 80px; font-size: 0.875rem;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_khach">
+                                        <i class="fa fa-paperclip"></i>
                                     </button>
                                 </div>
 
-                                <textarea id="input_discuss_khach" name="message" class="form-control content_discuss" style="padding-left:100px; padding-right: 100px; resize: none;" placeholder="Type Message ..." onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
+                                <textarea id="input_discuss_khach" name="message" class="form-control content_discuss" style="padding-left:100px; padding-right: 100px; resize: none; overflow-y: auto;" placeholder="Type Message ..." onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                                 <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
-                                    <button type="button" class="btn btn-primary" onclick="ajax_discuss_khach_add(this)">Send</button>
+                                    <button type="button" class="btn btn-primary" onclick="ajax_discuss_khach_add(this)"><i class="fas fa-paper-plane"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -55,24 +55,60 @@
     $(document).ready(function() {
         ajax_discuss_list();
         setInterval(() => {
-            ajax_discuss_list();
+            // ajax_discuss_list();
         }, 15000);
 
-        $(`textarea`).on('keyup', function() {
-            $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
+        var _buffer;
+
+        function countLines(textarea) {
+            if (_buffer == null) {
+                _buffer = document.createElement('textarea');
+                _buffer.style.border = 'none';
+                _buffer.style.height = '0';
+                _buffer.style.overflow = 'hidden';
+                _buffer.style.padding = '0';
+                _buffer.style.position = 'absolute';
+                _buffer.style.left = '0';
+                _buffer.style.top = '0';
+                _buffer.style.zIndex = '-1';
+                document.body.appendChild(_buffer);
+            }
+
+            var cs = window.getComputedStyle(textarea);
+            var pl = parseInt(cs.paddingLeft);
+            var pr = parseInt(cs.paddingRight);
+            var lh = parseInt(cs.lineHeight);
+
+            if (isNaN(lh)) lh = parseInt(cs.fontSize);
+            _buffer.style.width = (textarea.clientWidth - pl - pr) + 'px';
+            _buffer.style.font = cs.font;
+            _buffer.style.letterSpacing = cs.letterSpacing;
+            _buffer.style.whiteSpace = cs.whiteSpace;
+            _buffer.style.wordBreak = cs.wordBreak;
+            _buffer.style.wordSpacing = cs.wordSpacing;
+            _buffer.style.wordWrap = cs.wordWrap;
+            _buffer.value = textarea.value;
+
+            var result = Math.floor(_buffer.scrollHeight / lh);
+            if (result == 0) result = 1;
+            return result;
+        }
+
+
+        $(`#input_discuss_khach`).on('keypress keyup', function(e) {
+
+            let line = countLines(e.target);
+
+            line = line > 5 ? 5 : line; // tối đa 10 line
+
+            if (line > 2) {
+                $(this).height(line * 24)
+            } else {
+                $(this).height(48)
+            }
         })
 
     })
-
-    function onclick_tab_chat_khach(tab) {
-
-        scroll_to(tab, 0)
-
-        set_height_chat_list_and_height_input(`#discuss_khach`);
-
-
-        // ajax_discuss_list();
-    }
 
     function ajax_discuss_list() {
         $.ajax({
@@ -244,6 +280,7 @@
         set_height_chat_list_and_height_input(`#discuss_khach`);
     }
 
+    // TODO: XÓA BỚT CODE THỪA HÀM NÀY
     function set_height_chat_list_and_height_input(parent) {
         setTimeout(() => {
             $(`${parent} .list-chat`).css('height', `auto`);
