@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div id="discuss_khach" style="display: flex; flex-direction: column; height: 80vh; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: column; height: 80vh; justify-content: space-between;">
                         <div class="list-chat" style="height: auto; overflow-y: auto;">
                             <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
                         </div>
@@ -37,7 +37,7 @@
                                     </button>
                                 </div>
 
-                                <textarea id="input_discuss_khach" name="message" class="form-control content_discuss" style="padding-left:100px; padding-right: 100px; resize: none; overflow-y: auto;" placeholder="Type Message ..." onkeyup="set_height_chat_list_and_height_input(`#discuss_khach`)" data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
+                                <textarea name="message" class="form-control content_discuss" style="padding-left:100px; padding-right: 100px; resize: none; overflow-y: auto;" placeholder="Type Message ..." data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                                 <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
                                     <button type="button" class="btn btn-primary" onclick="ajax_discuss_khach_add(this)"><i class="fas fa-paper-plane"></i></button>
@@ -55,7 +55,7 @@
     $(document).ready(function() {
         ajax_discuss_list();
         setInterval(() => {
-            // ajax_discuss_list();
+            ajax_discuss_list();
         }, 15000);
 
         var _buffer;
@@ -95,7 +95,7 @@
         }
 
 
-        $(`#input_discuss_khach`).on('keypress keyup', function(e) {
+        $(`#discuss_khach .content_discuss`).on('keypress keyup', function(e) {
 
             let line = countLines(e.target);
 
@@ -130,9 +130,10 @@
 
                     $('#tab_chat_khach .total').html(Object.keys(list_discuss).length);
 
-                    $('#discuss_khach .list-chat')
-                        .html(html)
-                        .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+                    $('#discuss_khach .list-chat').html(html).scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+
+                    // var audio = new Audio('images/Tieng-ting-www_tiengdong_com.mp3');
+                    // audio.play();
 
                     tooltipTriggerList('#discuss_khach');
                 } else {
@@ -179,7 +180,7 @@
 
                     $('#discuss_khach .content_discuss').val('').height(60);
                     $('#discuss_khach .chat_list_attach').html('');
-                    set_height_chat_list_and_height_input(`#discuss_khach`);
+                    $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
 
                     tooltipTriggerList('#discuss_khach');
                 } else {
@@ -240,7 +241,6 @@
     function remove_chat_khach_attach(id) {
         if (confirm("Are you sure you want to delete this file?") == true) {
             $(id).remove();
-            set_height_chat_list_and_height_input(`#discuss_khach`);
         }
     }
 
@@ -276,28 +276,7 @@
         }
 
         $('#discuss_khach .chat_list_attach').append(html);
-
-        set_height_chat_list_and_height_input(`#discuss_khach`);
     }
-
-    // TODO: XÓA BỚT CODE THỪA HÀM NÀY
-    function set_height_chat_list_and_height_input(parent) {
-        setTimeout(() => {
-            $(`${parent} .list-chat`).css('height', `auto`);
-            $(`${parent} .nhap_du_lieu_chat`).css('height', `auto`);
-
-            let height_chat_tab_content = $('#card_chat_lich_su .card-body .tab-content').height();
-            let height_nhap_du_lieu_chat = $(`${parent} .nhap_du_lieu_chat`).height();
-
-            let h_list_chat = height_chat_tab_content - height_nhap_du_lieu_chat;
-
-            $(`${parent} .list-chat`).css('height', `${h_list_chat}px`);
-            $(`${parent} .nhap_du_lieu_chat`).css('height', `${height_nhap_du_lieu_chat}px`);
-
-            $(`${parent} .list-chat`).scrollTop($(`${parent} .list-chat`)[0].scrollHeight);
-        }, 0);
-    }
-
 
     function isImage(url_image) {
         return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
@@ -306,6 +285,7 @@
     function open_close_chat() {
         $('#box_trao_doi_sale').slideToggle('fast', 'swing');
         $('#small_trao_doi_sale').toggleClass('d-none');
-        set_height_chat_list_and_height_input(`#discuss_khach`);
+        $('#discuss_khach .content_discuss').focus();
+        $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
     }
 </script>
