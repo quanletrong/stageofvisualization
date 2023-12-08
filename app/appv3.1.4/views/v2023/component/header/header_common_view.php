@@ -13,5 +13,11 @@
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.plugins.min.js"></script>
 
+<!-- bs5dialog -->
+<!-- https://ymlluo.github.io/bs5dialog/dist/index.html -->
+<link rel="stylesheet" href="skins/v2023/bs5dialog.css" />
+<script src="js/v2023/bs5dialog.js"></script>
+<script> bs5dialog.startup();</script>
+
 <!-- common js -->
 <script src="js/v2023/common.js"></script>

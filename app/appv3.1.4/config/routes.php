@@ -99,6 +99,6 @@ $route['discuss/ajax_discuss_list'] = 'discuss/discuss/ajax_discuss_list';
 $route['discuss/ajax_discuss_add'] = 'discuss/discuss/ajax_discuss_add';
 
 //payment
-$route['checkout/paypal/(:num)'] = 'checkout/checkout/paypal/$1';
-$route['checkout/success']       = 'checkout/checkout/success';
-$route['checkout/cancle']        = 'checkout/checkout/cancle';
+$route['checkout/pay/(:num)'] = 'checkout/checkout/pay/$1';
+$route['checkout/success']    = 'checkout/checkout/success';
+$route['checkout/cancle']     = 'checkout/checkout/cancle';
