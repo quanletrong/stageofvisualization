@@ -258,7 +258,7 @@
         let LOCAL_PAY = Date.now();
         localStorage.setItem(LOCAL_PAY, "RUNING")
 
-        let url = `<?= site_url('order/ajax_popup_payment/') ?>/${id_order}?l=${LOCAL_PAY}`;
+        let url = `<?= site_url('checkout/paypal/') ?>/${id_order}?l=${LOCAL_PAY}`;
         newwindow = window.open(url, 'Payment Order', 'height=800,width=500');
 
         let kiem_tra_trang_thai_pay = setInterval(() => {
