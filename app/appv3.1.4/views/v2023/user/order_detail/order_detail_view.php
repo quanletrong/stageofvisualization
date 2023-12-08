@@ -314,15 +314,14 @@
                     bs5dialog.alert("Your payment has been failed.", {
                         type: 'danger',
                         title: "Payment failed",
-                        backdrop: false,
-                        timeout: 30000
+                        backdrop: true
                     });
-                    return;
                 } else if (trang_thai_pay == '<?= PAY_HOAN_THANH ?>') {
+
                     bs5dialog.alert("Your payment has been successfully submitted.", {
                         type: 'success',
                         title: "Payment succedeed",
-                        backdrop: false
+                        backdrop: true
                     });
                 }
             }
