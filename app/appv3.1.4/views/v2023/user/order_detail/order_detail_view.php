@@ -321,7 +321,10 @@
                     bs5dialog.alert("Your payment has been successfully submitted.", {
                         type: 'success',
                         title: "Payment succedeed",
-                        backdrop: true
+                        backdrop: true,
+                        onOk: () => {
+                            window.location.reload()
+                        }
                     });
                 }
             }
