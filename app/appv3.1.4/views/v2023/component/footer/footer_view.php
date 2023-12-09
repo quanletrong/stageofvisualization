@@ -72,7 +72,8 @@
     function tooltipTriggerList(body) {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll(`${body} [data-bs-toggle="tooltip"]`))
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
+            // return new bootstrap.Tooltip(tooltipTriggerEl) TODO: TAM THOI COMMNET LAI
+            return true;
         })
     }
 </script>
