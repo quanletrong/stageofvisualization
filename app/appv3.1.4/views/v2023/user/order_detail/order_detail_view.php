@@ -18,6 +18,18 @@
         color: red;
     }
 </style>
+<!-- 
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Dropdown button
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#">Action</a></li>
+    <li><a class="dropdown-item" href="#">Another action</a></li>
+    <li><a class="dropdown-item" href="#">Something else here</a></li>
+  </ul>
+</div> -->
+
 <div class="container-fluid">
     <h1 class="fs-4 mt-3">ORDERS DETAIL</h1>
     <nav aria-label="breadcrumb">
@@ -311,21 +323,25 @@
                 clearInterval(kiem_tra_trang_thai_pay)
 
                 if (trang_thai_pay == '<?= PAY_HUY ?>') {
-                    bs5dialog.alert("Your payment has been failed.", {
-                        type: 'danger',
-                        title: "Payment failed",
-                        backdrop: true
-                    });
+                    // bs5dialog.alert("Your payment has been failed.", {
+                    //     type: 'danger',
+                    //     title: "Payment failed",
+                    //     backdrop: true
+                    // });
+                    alert('Thanh toán thất bại');
                 } else if (trang_thai_pay == '<?= PAY_HOAN_THANH ?>') {
-
-                    bs5dialog.alert("Your payment has been successfully submitted.", {
-                        type: 'success',
-                        title: "Payment succedeed",
-                        backdrop: true,
-                        onOk: () => {
-                            window.location.reload()
-                        }
-                    });
+                    alert('Thanh toán thành công');
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 3000);
+                    // bs5dialog.alert("Your payment has been successfully submitted.", {
+                    //     type: 'success',
+                    //     title: "Payment succedeed",
+                    //     backdrop: true,
+                    //     onOk: () => {
+                    //         window.location.reload()
+                    //     }
+                    // });
                 }
             }
 
