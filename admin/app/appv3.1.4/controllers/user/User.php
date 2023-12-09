@@ -273,6 +273,7 @@ class User extends MY_Controller
         $data['username'] = $user['username'];
         $data['email'] = $user['email'];
         $data['phone'] = $user['phone'];
+        $data['avatar_url'] = $user['avatar_url'];
 
         resSuccess($data, 'Thành công');
     }
