@@ -96,8 +96,8 @@
 <div class="modal fade" id="modal-payment">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-warning">
-                <h6 class="modal-title"><i class="fas fa-wallet"></i> YÊU CẦU KHÁCH HÀNG THANH THANH TOÁN</h6>
+            <div class="modal-header bg-success">
+                <h6 class="modal-title"><i class="fas fa-wallet"></i> TẠO ĐƠN THÀNH CÔNG - GỬI YÊU CẦU THANH TOÁN</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -125,13 +125,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="link-payment">Copy link đơn hàng gửi cho khách</label>
-                    <textarea class="form-control link-payment"  placeholder="" disabled></textarea>
+                    <div class="d-flex justify-content-between">
+                        <label for="link-payment">Copy link đơn hàng gửi cho khách</label>
+                        <button type="button" class="btn btn-warning btn-sm" onclick="copyToClipboard(this, $('#modal-payment .link-payment').val())">Copy</button>
+                    </div>
+                    
+                    <textarea class="form-control link-payment mt-2"  placeholder="" disabled></textarea>
                 </div>
 
             </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Quay lại</button>
+            <div class="modal-footer justify-content-center">
+                <a class="btn btn-success back_to_order" href="">Xem chi tiết đơn hàng</a>
             </div>
         </div>
     </div>

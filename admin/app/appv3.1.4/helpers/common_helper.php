@@ -857,9 +857,9 @@ function copy_image_from_file_manager_to_public_upload($url_fmng_image, $yearFol
 
 function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
 {
-    // $imginfo = getImageSizeFromUrl($url_fmng_image);
-    $filesize = get_remote_file_info($url_fmng_image);
-    if ($filesize > 0) {
+    $path_file = $_SERVER["DOCUMENT_ROOT"] . parse_url($url_fmng_image, PHP_URL_PATH);
+
+    if (is_file($path_file)) {
 
         $basename = basename($url_fmng_image);
         $folder_arr = explode('/', $folder_str);
@@ -887,7 +887,7 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
         }
 
         //check move
-        $chkCopy = copy($url_fmng_image, $dir_save);
+        $chkCopy = copy($path_file, $dir_save);
         if (!$chkCopy) return ['status' => false, 'error' => 'CAN_NOT_MOVE_FILE'];
         else return ['status' => true, 'pathname' => $dir_save, 'basename' => $basename];
     } else {

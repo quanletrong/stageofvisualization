@@ -543,3 +543,13 @@ function scroll_to(selector, offset=200) {
         scrollTop: $(selector).offset().top - offset
     }, "fast");
 }
+
+function copyToClipboard(btn, text) {
+    console.log(text)
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(text).select();
+    document.execCommand("copy");
+    $temp.remove();
+    $(btn).html('Đã copy!')
+}

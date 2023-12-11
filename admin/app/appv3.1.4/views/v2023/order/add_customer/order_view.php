@@ -167,7 +167,7 @@
         // 
         $('#submit-order').click(function() {
             if (STATE.card_number != '' && STATE.card_mm != '' && STATE.card_yy != '' && STATE.card_cvv != '') {
-                ajax_order();
+                ajax_order(this);
             } else {
                 valid_order.element(`*[name="card_number"]`)
                 valid_order.element(`*[name="card_mm"]`);
@@ -184,7 +184,9 @@
             $('#step-2 .div_main_4').removeClass('d-none');
         })
 
-        function ajax_order() {
+        function ajax_order(btn) {
+            $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+            $(btn).prop("disabled", true);
             $.ajax({
                 url: 'order/submit_add/customer',
                 type: "POST",
@@ -194,8 +196,8 @@
                 success: function(data, textStatus, jqXHR) {
                     let res = JSON.parse(data);
                     if (res.status) {
+                        $(btn).html('Hoàn thành');
                         if (res.data.price_payment > 0) {
-
                             $("#modal-payment .username").val($('#user_username').val());
                             $("#modal-payment .fullname").val($('#user_fullname').val());
                             $("#modal-payment .email").val($('#user_email').val());
@@ -204,9 +206,13 @@
                             $("#modal-payment .link-payment").val(`<?= DOMAIN_NAME ?>/user/orderdetail/${res.data.new_id_order}`);
                             
                             $("#modal-payment").modal('show');
+
+                            $("#modal-payment .back_to_order").attr('href', `order/detail/${res.data.new_id_order}`)
                         } else {
-                            alert('Đơn hàng tạo thành công');
-                            window.location.href = '<?= site_url(LINK_ORDER) ?>';
+                            toasts_success();
+                            setTimeout(() => {
+                                window.location.href = '<?= site_url(LINK_ORDER) ?>';
+                            }, 2000);
                         }
                     } else {
                         alert(`Lỗi: ${res.data}`)

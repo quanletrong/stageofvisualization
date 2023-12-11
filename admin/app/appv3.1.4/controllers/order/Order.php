@@ -31,6 +31,7 @@ class Order extends MY_Controller
         $this->load->model('setting/Setting_model');
         $this->load->model('log/Log_model');
         $this->load->model('voucher/Voucher_model');
+        $this->load->model('discuss/Discuss_model');
     }
 
     function index()
@@ -447,6 +448,7 @@ class Order extends MY_Controller
 
             $new_payment = 0;
 
+            $amount = (float) ($total_price > $price_vou ? ($total_price - $price_vou) : 0);
             $don_khong_dong = $price_vou >= $total_price;
             $don_noi_bo = $type == 'private' ? true : false;
 
@@ -469,6 +471,22 @@ class Order extends MY_Controller
                     $new_payment =  $this->Order_model->add_payment_order($new_order, $id_voucher, $code_vou, $total_price, $price_vou, $cur_uid, PAY_DANG_CHO, PAYPAL, $create_time);
                 }
 
+                //GUI TIN NHAN DEN KHACH
+                $nguoi_tao = $this->User_model->get_user_info_by_id($cur_uid);
+                $temp = [
+                    'id_order'      => $new_order,
+                    'title'         => 'Bạn có đơn hàng cần thanh toán',
+                    'create_time'   => $create_time,
+                    'by'            => $nguoi_tao,
+                    'price'         => $price,
+                    'price_vouchor' => $price_vou,
+                    'amount'        => $amount
+                ];
+                $content = $this->load->view($this->_template_f . 'order/add_customer/temp_order_request', $temp, true);
+
+                $newid = $this->Discuss_model->discuss_add($cur_uid, $new_order, $content, '{}', $create_time, 1, CHAT_KHACH);
+                //END GUI TIN NHAN DEN KHACH
+
                 $flag_error = $new_payment == false ? true : false;
             }
 
@@ -479,11 +497,11 @@ class Order extends MY_Controller
                 resError('Loi luu job');
             } else {
                 resSuccess([
-                    'price' => (float) $total_price,
-                    'price_vou' => (float) $price_vou,
-                    'price_payment' => (float) ($total_price > $price_vou ? ($total_price - $price_vou) : 0),
-                    'new_id_order'    => (int) $new_order,
-                    'new_id_payment'  => (int) $new_payment
+                    'price'          => (float) $total_price,
+                    'price_vou'      => (float) $price_vou,
+                    'price_payment'  => (float) $amount,
+                    'new_id_order'   => (int) $new_order,
+                    'new_id_payment' => (int) $new_payment
                 ]);
             }
         } else {

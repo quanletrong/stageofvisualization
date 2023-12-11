@@ -2003,3 +2003,13 @@ function scroll_to(selector) {
 function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
+function copyToClipboard(btn, text) {
+    console.log(text)
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(text).select();
+    document.execCommand("copy");
+    $temp.remove();
+    $(btn).html('Đã copy!')
+}
