@@ -147,7 +147,7 @@
 
         // 
         $('#submit-order').click(function() {
-            ajax_order();
+            ajax_order(this);
         })
 
         // STEP 2
@@ -158,7 +158,9 @@
             $('#step-2 .div_main_4').removeClass('d-none');
         })
 
-        function ajax_order() {
+        function ajax_order(btn) {
+            $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
+            $(btn).prop("disabled", true);
             $.ajax({
                 url: 'order/submit_add/private',
                 type: "POST",
@@ -166,9 +168,9 @@
                     order: STATE
                 },
                 success: function(data, textStatus, jqXHR) {
-                    console.log(data);
+                    let res = JSON.parse(data);
                     alert('Bạn đã tạo thành công đơn hàng.');
-                    window.location.href = '<?= site_url(LINK_ORDER) ?>';
+                    window.location.href = 'order/detail/' + res.data.new_id_order;
 
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
