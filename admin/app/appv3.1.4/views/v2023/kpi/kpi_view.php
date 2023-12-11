@@ -86,6 +86,7 @@
                             <th class="text-center" width="100"><?= $sv ?></th>
                         <?php } ?>
                         <th class="text-center" width="50">TOTAL</th>
+                        <th class="text-center" width="100"></th>
                         <!-- <th class="text-center" width="50">[VIEW]</th> -->
                     </tr>
                 </thead>
@@ -107,12 +108,16 @@
 
                             <?php foreach ($list_service as $sv) { ?>
                                 <td class="text-center align-middle" style="font-size: 1.25rem;">
-                                    <?= @$item['list_service'][$sv]['total'] ?>
+                                    <?= isset($item['list_service'][$sv]) ? $item['list_service'][$sv] : 0 ?>
                                 </td>
                             <?php } ?>
 
                             <td class="text-center align-middle font-weight-bold" style="font-size: 1.25rem;">
                                 <?= $item['total'] ?>
+                            </td>
+
+                            <td class="text-center align-middle font-weight-bold" style="font-size: 1.25rem;">
+                                <button class="btn btn-sm btn-success" onclick="ajax_set_rut_tien_ho(this, '<?= $item['id_user'] ?>')"> <i class="fas fa-wallet"></i> RÚT TIỀN</button>
                             </td>
 
                             <!-- <td class="align-middle text-center"> <a href="#"> [VIEW] </a> </td> -->
@@ -186,4 +191,37 @@
             }
         )
     });
+
+    function ajax_set_rut_tien_ho(btn, id_user) {
+        if (confirm('Bạn muốn thực hiện yêu cầu rút tiền cho tài khoản khác?')) {
+            let old_text = $(btn).html();
+
+            $(btn).html('<i class="fas fa-sync fa-spin"></i>');
+            $(btn).prop("disabled", true);
+
+            $.ajax({
+                url: `withdraw/ajax_set_rut_tien_ho`,
+                data: {
+                    id_user: id_user,
+                    fdate: '<?= $filter_fdate ?>',
+                    tdate: '<?= $filter_tdate ?>'
+                },
+                type: "POST",
+                success: function(data, textStatus, jqXHR) {
+                    let kq = JSON.parse(data);
+                    if (kq.status) {
+                        toasts_success();
+                    } else {
+                        toasts_danger(kq.error);
+                    }
+
+                    $(btn).closest('tr').remove();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(data);
+                    alert('Error');
+                }
+            });
+        }
+    }
 </script>

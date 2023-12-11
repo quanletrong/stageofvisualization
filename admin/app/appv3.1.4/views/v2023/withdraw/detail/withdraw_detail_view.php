@@ -43,7 +43,7 @@
 
             <!-- GROUP DATE PENDING -->
             <section>
-                <small onclick="$('#example1').fadeToggle()" style="cursor: pointer;"> [Ẩn/hiện]</small>
+                Chi tiết yêu cầu <small onclick="$('#example1').fadeToggle()" style="cursor: pointer;"> [Ẩn/hiện]</small>
                 <table id="example1" class="table table-bordered">
                     <thead class="thead-danger">
                         <tr>
@@ -64,7 +64,9 @@
                                 <tr class="text-default">
                                     <td class="align-middle text-center"><?= $index++ ?></td>
                                     <td class="align-middle text-center"><?= $item['type_service'] ?></td>
-                                    <td class="align-middle text-center"><?= $item['code_order'] != '' ? $item['code_order'] : 'OID' . $item['id_order'] ?></td>
+                                    <td class="align-middle">
+                                        <a href="order/detail/<?= $item['id_order'] ?>"><?= '[ORDER ' . $item['id_order'] . ']' ?></a> <?= $item['code_order'] != '' ? $item['code_order'] : '' ?>
+                                    </td>
                                     <td class="align-middle text-center"><?= $item['custom'] ?></td>
 
                                     <td class="align-middle text-center">
@@ -121,7 +123,9 @@
                                 <tr class="text-default">
                                     <td class="align-middle text-center"><?= $index++ ?></td>
                                     <td class="align-middle text-center"><?= $item['type_service'] ?></td>
-                                    <td class="align-middle text-center"><?= $item['code_order'] != '' ? $item['code_order'] : 'OID' . $item['id_order'] ?></td>
+                                    <td class="align-middle">
+                                        <a href="order/detail/<?= $item['id_order'] ?>"><?= '[ORDER ' . $item['id_order'] . ']' ?></a> <?= $item['code_order'] != '' ? $item['code_order'] : '' ?>
+                                    </td>
                                     <td class="align-middle text-center"><?= $item['custom'] ?></td>
 
                                     <td class="align-middle text-center">

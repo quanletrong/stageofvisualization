@@ -44,17 +44,18 @@ class Kpi extends MY_Controller
         $filter_role = in_array($filter_role, [ADMIN, SALE, QC, EDITOR]) ? $filter_role : '';
 
         //validate filter date
-        $ngay_hien_tai = date("Y-m-d H:i:s");
-        $ba_muoi_ngay_truoc = date("Y-m-d H:i:s", strtotime('today - 29 days'));
-        $filter_fdate = !is_date($filter_fdate) ? $ba_muoi_ngay_truoc : $filter_fdate;
-        $filter_tdate = !is_date($filter_tdate) ? $ngay_hien_tai : $filter_tdate;
+        $ngay_hien_tai = date("Y-m-d");
+        $ba_muoi_ngay_truoc = date("Y-m-d", strtotime('today - 29 days'));
+        $filter_fdate = strtotime($filter_fdate) === false ? $ba_muoi_ngay_truoc : $filter_fdate;
+        $filter_tdate = strtotime($filter_tdate) === false ? $ngay_hien_tai : $filter_tdate;
 
-        $filter['fdate']   = date("Y-m-d H:i:s", strtotime($filter_fdate));
-        $filter['tdate']   = date("Y-m-d H:i:s", strtotime($filter_tdate));
+        $filter['fdate']   = date("Y-m-d", strtotime($filter_fdate)) . ' 00:00:00';
+        $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' '. date("H:i:s");
         $filter['id_user'] = $filter_id_user;
         $filter['role']    = $filter_role;
 
-        $list_kpi = $this->Withdraw_model->get_kpi($filter);
+        $list_kpi = $this->Withdraw_model->get_kpi_2($filter);
+        // var_dump($list_kpi['user']);die;
 
         $data = [];
         $data['list_kpi']       = $list_kpi['user'];

@@ -208,4 +208,55 @@ class Withdraw extends MY_Controller
         $exc = $this->Withdraw_model->phe_duyet_yeu_cau_rut_tien(implode(',', $arr_id_withdraw), implode(',', $arr_id_job_user));
         resSuccess('ok');
     }
+
+    function ajax_set_rut_tien_ho()
+    {
+
+        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+            resError('Tài khoản không có quyền truy cập!');
+        }
+
+        $create_time = date('Y-m-d H:i:s');
+        $id_user     = $this->input->post('id_user');
+        $fdate       = $this->input->post('fdate');
+        $tdate       = $this->input->post('tdate');
+
+        //validate filter_id_user
+        $all_user = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $id_user = isIdNumber($id_user) ? $id_user : resError('Tài khoản không hợp lệ (1)');
+        $id_user = isset($all_user[$id_user]) ? $id_user : resError('Tài khoản không hợp lệ (2)');
+
+        //validate filter date
+        $fdate = strtotime($fdate) !== false ? $fdate : resError('Ngày bắt đầu không hợp lệ');
+        $tdate = strtotime($tdate) !== false ? $tdate : resError('Ngày kết thúc không hợp lệ');
+
+        // danh sach job chua rut tien
+        $list_job_chua_rut = $this->Withdraw_model->danh_sach_chua_rut_tien($id_user, $fdate .' 00:00:00', $tdate .' '.date('H:s:i'));
+
+        if (empty($list_job_chua_rut)) {
+            resError('Chưa có đơn hàng hoàn thành');
+        } else {
+            foreach ($list_job_chua_rut as $id_job_user => $job_user) {
+                $id_user = $job_user['id_user'];
+                $id_order = $job_user['id_order'];
+                $id_job = $job_user['id_job'];
+                $type_job_user = $job_user['type_job_user'];
+
+                if ($type_job_user == WORKING_QC_IN) {
+                    $type_service = 'CHECK_IN';
+                } else if ($type_job_user == WORKING_QC_OUT) {
+                    $type_service = 'CHECK_OUT';
+                } else {
+                    $type_service = $job_user['type_service'];
+                }
+
+                $custom = $job_user['num']; // số lượng rút
+
+                $this->Withdraw_model->tao_yeu_cau_rut_tien($id_user, $id_order, $id_job, $id_job_user, $type_service, $custom, $create_time);
+            }
+
+            dbClose();
+            resSuccess('ok');
+        }
+    }
 }

@@ -9,18 +9,24 @@ class Withdraw_model extends CI_Model
     }
 
 
-    function danh_sach_chua_rut_tien($id_user)
+    function danh_sach_chua_rut_tien($id_user, $fdate = '', $tdate = '')
     {
         $data = [];
         $iconn = $this->db->conn_id;
 
+        $this->session->set_flashdata('PARAMS', []);
         $sql = "SELECT id_job_user, id_user, id_order, id_job, type_job_user, type_service, (custom-withdraw_custom) as num
         FROM tbl_job_user
-        WHERE id_user = $id_user AND withdraw = 1 AND custom > 0 AND (withdraw_custom < custom);";
+        WHERE 
+            id_user = $id_user 
+            AND withdraw = 1 AND custom > 0 
+            AND (withdraw_custom < custom)
+            AND " . QSQL_BETWEEN('tbl_job_user.time_join', $fdate, $tdate, $this) . " ;";
 
+        $PARAMS = $this->session->flashdata('PARAMS');
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute()) {
+            if ($stmt->execute($PARAMS)) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $data[$row['id_job_user']] = $row;
@@ -129,6 +135,73 @@ class Withdraw_model extends CI_Model
         return $data;
     }
 
+
+    function __withdraw_get_detail($id_user, $status)
+    {
+        $data['tong_hop'] = [];
+        $data['group_date'] = [];
+        $data['all'] = [];
+        $iconn = $this->db->conn_id;
+
+        $sql =
+            "SELECT
+            A.id_order,
+            A.status,
+            A.type_service,
+            A.create_time,
+            sum( A.custom ) AS custom,
+            B.username,
+            B.role,
+            B.code_user,
+            B.avatar,
+            B.fullname,
+            C.code_order 
+        FROM
+            tbl_withdraw AS A
+            INNER JOIN tbl_user AS B ON A.id_user = B.id_user
+            INNER JOIN tbl_order AS C ON A.id_order = C.id_order 
+        WHERE
+            A.id_user = $id_user 
+            AND A.status = $status 
+        GROUP BY
+            A.create_time,
+            A.type_service,
+            A.id_order 
+        ORDER BY
+            A.create_time,  A.id_order ;
+        ";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                        // all
+                        $data['all'][] = $row;
+
+                        // cộng type_service giống nhau
+
+                        $row['type_service'] = $row['type_service'] == '' ? 'CUSTOM' : $row['type_service'];
+
+                        if (isset($data['tong_hop'][$row['type_service']])) {
+                            $data['tong_hop'][$row['type_service']] += $row['custom'];
+                        } else {
+                            $data['tong_hop'][$row['type_service']] = $row['custom'];
+                        }
+
+                        // nhóm tất cả withdraw cùng 1 thời gian
+                        $data['group_date'][$row['create_time']][] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
     function phe_duyet_yeu_cau_rut_tien($str_id_withdraw, $str_id_job_user)
     {
 
@@ -198,7 +271,82 @@ class Withdraw_model extends CI_Model
                         $data['user'][$id_user]['role']       = $row['role'];
                         $data['user'][$id_user]['avatar_url'] = url_image($row['avatar'], FOLDER_AVATAR);
 
-                        if(isset($data['user'][$id_user]['total'])) {
+                        if (isset($data['user'][$id_user]['total'])) {
+                            $data['user'][$id_user]['total'] += $row['total'];
+                        } else {
+                            $data['user'][$id_user]['total'] = $row['total'];
+                        }
+
+                        $data['user'][$id_user]['list_service'][$row['service']] = $row['total'];
+                        $data['list_service'][$row['service']] = $row['service'];
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function get_kpi_2($filter)
+    {
+        $data['user'] = [];
+        $data['list_service'] = [];
+        $iconn = $this->db->conn_id;
+
+        $filter_fdate   = isset($filter['fdate'])   ? $filter['fdate']  : '';
+        $filter_tdate   = isset($filter['tdate'])   ? $filter['tdate']  : '';
+        $filter_id_user = isset($filter['id_user']) ? $filter['id_user'] : '';
+        $filter_role    = isset($filter['role'])    ? $filter['role']   : '';
+
+        $this->session->set_flashdata('PARAMS', []);
+
+        $sql =
+            "SELECT
+                tbl_user.id_user,
+                tbl_user.username,
+                tbl_user.fullname,
+                tbl_user.role,
+                tbl_user.avatar,
+                
+                GROUP_CONCAT( DISTINCT tbl_job_user.type_service ) AS `service`,
+                
+                sum( tbl_job_user.custom ) AS total 
+                
+            FROM
+                `tbl_job_user`
+                INNER JOIN tbl_user ON tbl_user.id_user = tbl_job_user.id_user 
+            WHERE
+                tbl_job_user.withdraw = 1 
+                AND tbl_job_user.custom > 0 
+                AND ( tbl_job_user.withdraw_custom < tbl_job_user.custom ) 
+                AND " . QSQL_IN('tbl_job_user.`id_user`', $filter_id_user, $this) . " 
+                AND " . QSQL_IN('tbl_job_user.`role`', $filter_role, $this) . " 
+                AND " . QSQL_BETWEEN('tbl_job_user.time_join', $filter_fdate, $filter_tdate, $this) . " 
+            GROUP BY
+                tbl_job_user.id_user,
+                tbl_job_user.type_service
+                ";
+
+        $PARAMS = $this->session->flashdata('PARAMS');
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute($PARAMS)) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                        $id_user = $row['id_user'];
+
+                        $data['user'][$id_user]['id_user']    = $row['id_user'];
+                        $data['user'][$id_user]['username']   = $row['username'];
+                        $data['user'][$id_user]['fullname']   = $row['fullname'];
+                        $data['user'][$id_user]['role']       = $row['role'];
+                        $data['user'][$id_user]['avatar_url'] = url_image($row['avatar'], FOLDER_AVATAR);
+
+                        if (isset($data['user'][$id_user]['total'])) {
                             $data['user'][$id_user]['total'] += $row['total'];
                         } else {
                             $data['user'][$id_user]['total'] = $row['total'];
