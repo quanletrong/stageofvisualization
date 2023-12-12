@@ -468,7 +468,7 @@ exports.getDefaultCSSWhiteList = getDefaultCSSWhiteList;
 
 var DEFAULT = require("./default");
 var parser = require("./parser");
-var FilterXSS = require("./xss");
+var FilterXSS = require("./~xss");
 
 /**
  * filter xss function
