@@ -21,10 +21,9 @@
 
 <!-- bs5dialog https://ymlluo.github.io/bs5dialog/dist/index.html -->
 <link rel="stylesheet" href="skins/v2023/bs5dialog.css" />
-
 <script src="js/v2023/bs5dialog.js"></script>
-
 <script> bs5dialog.startup();</script>
+
 
 <!-- common js -->
 <script src="js/v2023/common.js"></script>

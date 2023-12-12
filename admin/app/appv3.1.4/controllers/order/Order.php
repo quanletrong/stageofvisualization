@@ -475,7 +475,7 @@ class Order extends MY_Controller
                 $nguoi_tao = $this->User_model->get_user_info_by_id($cur_uid);
                 $temp = [
                     'id_order'      => $new_order,
-                    'title'         => 'Bạn có đơn hàng cần thanh toán',
+                    'title'         => 'BẠN CÓ ĐƠN HÀNG CẦN THANH TOÁN',
                     'create_time'   => $create_time,
                     'by'            => $nguoi_tao,
                     'price'         => $price,

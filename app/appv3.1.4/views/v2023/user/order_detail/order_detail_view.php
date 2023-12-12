@@ -197,7 +197,7 @@
                             echo '<button class="btn btn-danger w-100">REWORK</button>';
                             echo '<p>Đơn hàng của bạn đang được làm lại!</p>';
                         } else if ($order['status'] == ORDER_PAY_WAITING) {
-                            echo '<button class="btn btn-danger w-100" onclick="open_popup_pay(' . $order['id_order'] . ')">CLICK TO PAY!</button>';
+                            echo '<button class="btn btn-danger w-100" onclick="common.open_popup_pay(' . $order['id_order'] . ')">CLICK TO PAY!</button>';
                             echo '<p>Đơn hàng của bạn chưa thanh toán!</p>';
                         } else {
                             echo '<button class="btn btn-warning w-100">IN PROGRESS</button>';
@@ -253,88 +253,6 @@
         //     $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
         // });
     })
-
-    function PopupCenter(url, title, w, h) {
-        // Fixes dual-screen position                         Most browsers      Firefox  
-        var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
-        var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
-
-        width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
-        height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
-
-        var left = ((width / 2) - (w / 2)) + dualScreenLeft;
-        var top = ((height / 2) - (h / 2)) + dualScreenTop;
-        var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
-
-        // Puts focus on the newWindow  
-        if (window.focus) {
-            newWindow.focus();
-        }
-    }
-
-    function open_popup_pay(id_order) {
-
-        // id popup
-        let ID_POPUP = Date.now();
-        localStorage.setItem(ID_POPUP, "RUNING")
-
-        // set width height popup
-        var h = 800; //screen.height;
-        var w = 500; //screen.width;
-
-        // set dual-screen position                         Most browsers      Firefox  
-        var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
-        var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
-
-        width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
-        height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
-
-        var left = ((width / 2) - (w / 2)) + dualScreenLeft;
-        var top = ((height / 2) - (h / 2)) + dualScreenTop;
-
-        // open popup
-        let url = `<?= site_url('checkout/pay/') ?>/${id_order}?ID_POPUP=${ID_POPUP}`;
-        var newwindow = window.open(url, 'Checkout', `toolbar=no ,location=0, status = no, titlebar = no, menubar = no, width = ${500}, height = ${800}, top= ${top}, left=${left}`);
-
-        if (window.focus) {
-            newwindow.focus()
-        }
-
-        // khi tắt popup
-        let kiem_tra_trang_thai_pay = setInterval(() => {
-            var trang_thai_pay = localStorage.getItem(ID_POPUP);
-
-            if (trang_thai_pay == "RUNING") {
-                console.log(trang_thai_pay);
-            } else {
-
-                localStorage.removeItem(ID_POPUP);
-                clearInterval(kiem_tra_trang_thai_pay)
-
-                if (trang_thai_pay == '<?= PAY_HUY ?>') {
-                    bs5dialog.alert("Your payment has been failed.", {
-                        type: 'danger',
-                        title: "Payment failed",
-                        backdrop: true
-                    });
-                } else if (trang_thai_pay == '<?= PAY_HOAN_THANH ?>') {
-                    bs5dialog.alert("Your payment has been successfully submitted.", {
-                        type: 'success',
-                        title: "Payment succedeed",
-                        backdrop: true,
-                        onOk: () => {
-                            window.location.reload()
-                        }
-                    });
-                }
-            }
-
-        }, 2000);
-        if (window.focus) {
-            newwindow.focus()
-        }
-        return false;
-    }
 
     function downloadURI(uri, name) {
         var link = document.createElement("a");
