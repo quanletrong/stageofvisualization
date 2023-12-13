@@ -158,6 +158,7 @@ define('LOG_RW_REF_ADD', 27);
 define('LOG_RW_REF_EDIT', 28);
 define('LOG_RW_REF_REMOVE', 29);
 define('LOG_RW_NOTE_EDIT', 30);
+define('LOG_CREATE_ORDER', 31);
 const LOG = [
         LOG_TIME_CUSTOM             => 'Sửa thời gian làm đơn hàng',
         LOG_STATUS                  => 'Sửa trạng thái đơn hàng',
@@ -189,6 +190,7 @@ const LOG = [
         LOG_RW_REF_EDIT             => 'Sửa file đính kèm cho <b>Rework</b>',
         LOG_RW_REF_REMOVE           => 'Xóa file đính kèm cho <b>Rework</b>',
         LOG_RW_NOTE_EDIT            => 'Sửa yêu cầu cho <b>Rework</b>',
+        LOG_CREATE_ORDER            => 'Tạo thành công đơn hàng'
 ];
 
 
