@@ -38,6 +38,8 @@ class Checkout extends MY_Controller
 
         $this->load->model('order/Order_model');
         $this->load->model('payment/Payment_model');
+        $this->load->model('log/Log_model');
+        $this->load->model('discuss/Discuss_model');
 
         $this->_apiContext = new ApiContext(
             new OAuthTokenCredential(
@@ -238,6 +240,16 @@ class Checkout extends MY_Controller
                     $update_time = date('Y-m-d H:i:s');
                     $this->Payment_model->update_status_payment_by_id_order($id_order, PAY_HOAN_THANH, PAYPAL, $trancsion_id, $update_time);
                     $this->Order_model->update_status_order($id_order, ORDER_PENDING);
+
+                    // LƯU CHAT
+                    $temp = [];
+                    $content = $this->load->view($this->_template_f . 'component/template_pay_success', $temp, true);
+                    $this->Discuss_model->discuss_add($this->_session_uid(), $id_order, $content, '{}', $update_time, 1, CHAT_KHACH);
+
+                    // LƯU LOG
+                    $log['type']      = LOG_PAYED_ORDER;
+                    $log['id_order']  = $id_order;
+                    $this->Log_model->log_add($log);
 
                     $success = PAY_HOAN_THANH;
                 } else {

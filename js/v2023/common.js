@@ -1,6 +1,6 @@
 const PAY_DANG_CHO = 0;  //chưa thanh toán
-const PAY_HUY = 1;  // đa thanh toán
-const PAY_HOAN_THANH = 2;  // hủy thanh toán hoặc có lỗi
+const PAY_HOAN_THANH = 1;  // hủy thanh toán hoặc có lỗi
+const PAY_HUY = 2;  // đa thanh toán
 
 // arrAllowType:  array('.jpg', '.gif', '.png')
 function uploadValidExtension(fileName, arrAllowType) {

@@ -1,6 +1,7 @@
-<div>
+<div class="d-flex mt-2">
     <style>
         .evenlope-chat {
+            width: 100%;
             border: 0.5rem solid transparent;
             background: linear-gradient(white, white) padding-box,
                 repeating-linear-gradient(-45deg,
@@ -20,7 +21,7 @@
 
         <div class="d-flex justify-content-between mt-2 w-100">
             <div>Người tạo</div>
-            <div><?= $by ?></div>
+            <div><?= $nguoi_tao['fullname'] ?></div>
         </div>
 
         <div class="d-flex justify-content-between mt-2 w-100">

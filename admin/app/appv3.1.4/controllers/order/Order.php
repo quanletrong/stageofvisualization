@@ -475,7 +475,8 @@ class Order extends MY_Controller
                 'id_order'      => $new_order,
                 'title'         => 'BẠN CÓ ĐƠN HÀNG CẦN THANH TOÁN',
                 'create_time'   => $create_time,
-                'by'            => $nguoi_tao,
+                'nguoi_tao'     => $nguoi_tao,
+                'total'         => count($list_job),
                 'price'         => $price,
                 'price_vouchor' => $price_vou,
                 'amount'        => $amount

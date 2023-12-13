@@ -94,14 +94,6 @@
                                     </div>
                                 </div>
                             <?php } ?>
-
-                            <div>
-                                <i class="fas fa-cart-plus bg-blue"></i>
-                                <div class="timeline-item">
-                                    <span class="time"><i class="fas fa-clock"></i> 12:05 30/07/2023</span>
-                                    <h3 class="timeline-header">Tạo thành công đơn hàng</h3>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
