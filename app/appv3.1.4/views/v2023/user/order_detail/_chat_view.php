@@ -37,7 +37,7 @@
                                     </button>
                                 </div>
 
-                                <textarea name="message" class="form-control content_discuss" style="padding-left:100px; padding-right: 100px; resize: none; overflow-y: auto;" placeholder="Type Message ..." data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
+                                <textarea name="message" class="form-control content_discuss bg-white" style="padding-left:100px; padding-right: 100px; resize: none; overflow-y: auto;" placeholder="Type Message ..." data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                                 <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
                                     <button type="button" class="btn btn-primary" onclick="ajax_discuss_khach_add(this)"><i class="fas fa-paper-plane"></i></button>
