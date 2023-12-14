@@ -1,7 +1,7 @@
 <script src="js/v2023/moment_2.29.4.min.js"></script>
 
 <div style="position: fixed; right: 10px; bottom: 0px;" id="small_trao_doi_sale" class="">
-    <button class="btn btn-danger" onclick="open_close_chat()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
+    <button class="btn btn-sm btn-danger" onclick="open_close_chat()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
         <i class="fa-solid fa-comment"></i> TRAO ĐỔI VỚI SALE
     </button>
 </div>
@@ -20,7 +20,7 @@
                         </h6>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body bg-white">
                     <div style="display: flex; flex-direction: column; height: 80vh; justify-content: space-between;">
                         <div class="list-chat" style="height: auto; overflow-y: auto;">
                             <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
@@ -54,9 +54,6 @@
 <script>
     $(document).ready(function() {
         ajax_discuss_list();
-        setInterval(() => {
-            // ajax_discuss_list();
-        }, 15000);
 
         var _buffer;
 
@@ -171,19 +168,7 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    let discuss = kq.data;
-
-                    let new_html = html_item_chat(discuss);
-
-                    $('#discuss_khach .list-chat')
-                        .append(new_html)
-                        .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
-
-                    $('#discuss_khach .content_discuss').val('').height(60);
-                    $('#discuss_khach .chat_list_attach').html('');
-                    $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
-
-                    tooltipTriggerList('#discuss_khach');
+                    socket.emit('update-chat-khach', kq.data)
                 } else {
                     alert(kq.error);
                 }
@@ -202,7 +187,7 @@
         let list_file = ``;
         for (const [id_file, file] of Object.entries(discuss.file_list)) {
             list_file += `
-                <div class="p-1 mb-2" 
+                <div class="" 
                     onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
                     style="cursor: pointer; width:150px"
                     data-bs-toggle="tooltip" data-bs-placement="top"
@@ -220,21 +205,25 @@
                 </div>`;
         }
 
-        let html = `
-            <div class="d-flex mb-2 me-2" style="gap:15px;" class="${<?= $cur_uid ?> == discuss.id_user ? '' : '' }">
-                <img class="rounded-circle border" style="width:40px;aspect-ratio: 1;object-fit: cover;height: 40px;" src="${discuss.avatar_url}" alt="avatar">
-                <div class="w-100 rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                    <div class="d-flex justify-content-between w-100">
-                        <div class="fw-bold fs-6">${discuss.fullname}</div>
-                        <div class="" style="font-size: 0.875rem" data-bs-toggle="tooltip" data-bs-placement="top" title="${moment(discuss.create_time).format('HH:mm, [ngày] DD-MM-YYYY')}">${moment(discuss.create_time).fromNow()}</div>
-                    </div>
-
+        let html = ``;
+        if (<?= $cur_uid ?> == discuss.id_user) {
+            html = `
+            <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${moment(discuss.create_time).fromNow()}">
+                <div class="rounded" style="background: #f0f0f0;padding: 10px; text-align: end;">
                     <div style="white-space: pre-line;">${discuss.content != '' ? `${discuss.content}` : ''}</div>
-
-                    <div class="rounded d-flex mt-2" style="flex-wrap: wrap;">${list_file}</div>
+                    <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
                 </div>
-            </div>
-            `;
+            </div>`;
+        } else {
+            html = `
+            <div class="mb-2 me-2 d-flex" style="gap:10px" title="${moment(discuss.create_time).fromNow()}">
+                <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${discuss.avatar_url}" alt="${discuss.fullname}" title="${discuss.fullname}">
+                <div class="rounded" style="background: #f0f0f0;padding: 10px;">
+                    <div style="white-space: pre-line;">${discuss.content != '' ? `${discuss.content}` : ''}</div>
+                    <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
+                </div>
+            </div>`;
+        }
 
         return html;
     }
@@ -291,3 +280,28 @@
         $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
     }
 </script>
+
+<!-- SOCKET -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    const socket = io('http://103.107.182.125:3001/', {
+        transports: ['websocket']
+    });
+
+    socket.on('update-chat-khach', data => {
+        if (data.id_order == <?= $order['id_order'] ?>) {
+            let new_html = html_item_chat(data);
+
+            $('#discuss_khach .list-chat')
+                .append(new_html)
+                .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+
+            $('#discuss_khach .content_discuss').val('').height(60);
+            $('#discuss_khach .chat_list_attach').html('');
+            $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+
+            tooltipTriggerList('#discuss_khach');
+        }
+    })
+</script>
+<!-- END SOCKET -->

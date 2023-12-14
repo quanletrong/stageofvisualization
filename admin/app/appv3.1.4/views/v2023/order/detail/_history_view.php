@@ -1,9 +1,3 @@
-<div style="position: fixed; right: 500px; bottom: 0px;" id="small_lich_su" class="">
-    <button class="btn btn-danger" onclick="open_close_lich_su()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
-        <i class="fas fa-history"></i> LỊCH SỬ ĐƠN HÀNG
-    </button>
-</div>
-
 <div style="position: fixed;right: 10px;bottom: 0px; width: 80%; max-width:1200px; display: none; z-index: 2;" id="box_lich_su">
     <div class="row">
         <!-- TRAO ĐỔI KHÁCH -->
