@@ -127,8 +127,12 @@
 <!-- SOCKET -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-    const socket = io('http://103.107.182.125:3001/', {
-        transports: ['websocket']
+    const socket = io('http://103.107.182.125:3001', {
+        transports: ['websocket'],
+        withCredentials: true,
+        extraHeaders: {
+            "my-custom-header": "abcd"
+        }
     });
 
     socket.on('update-chat-noi-bo', data => {

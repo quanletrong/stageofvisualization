@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <div class="card-body bg-white">
-                    <div style="display: flex; flex-direction: column; height: 80vh; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: column; height: 80vh; justify-content: flex-end;">
                         <div class="list-chat" style="height: auto; overflow-y: auto;">
                             <i class="fas fa-sync fa-spin"></i>
                         </div>

@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="card-body bg-white">
-                    <div style="display: flex; flex-direction: column; height: 80vh; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: column; height: 80vh; justify-content: flex-end;">
                         <div class="list-chat" style="height: auto; overflow-y: auto;">
                             <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
                         </div>
@@ -284,8 +284,12 @@
 <!-- SOCKET -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-    const socket = io('http://103.107.182.125:3001/', {
-        transports: ['websocket']
+    const socket = io('http://103.107.182.125:3001', {
+        transports: ['websocket'],
+        withCredentials: true,
+        extraHeaders: {
+            "my-custom-header": "abcd"
+        }
     });
 
     socket.on('update-chat-khach', data => {
