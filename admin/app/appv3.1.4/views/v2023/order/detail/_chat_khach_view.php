@@ -1,4 +1,4 @@
-<div style="position: fixed;right: 10px;bottom: 0px; width: 60%; max-width:800px; display: none; z-index: 2;" id="box_trao_doi_sale">
+<div style="position: fixed;right: 10px;bottom: 0px; width: 100%; max-width:800px; display: none; z-index: 2;" id="box_trao_doi_sale">
     <!-- <h4 class="mt-5">TRAO ĐỔI VỚI KHÁCH</h4> -->
     <div class="row">
         <!-- TRAO ĐỔI KHÁCH -->
