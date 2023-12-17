@@ -237,7 +237,6 @@
     // tham số bắt buộc [link_file, target, file_name, btn]
     function cb_upload_add_file_attach_chat_khach(link_file, target, file_name, btn) {
         let id_attach = Date.now();
-
         let html = ``;
         if (isImage(link_file)) {
             html = `
@@ -284,7 +283,7 @@
 <!-- SOCKET -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-    const socket = io('http://103.107.182.125:3001', {
+    const socket = io('<?= SOCKET_SERVICES ?>', {
         transports: ['websocket'],
         withCredentials: true,
         extraHeaders: {
