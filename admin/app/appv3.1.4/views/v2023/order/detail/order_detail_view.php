@@ -138,7 +138,7 @@
     socket.on('update-chat-noi-bo', data => {
         if (data.id_order == <?= $order['id_order'] ?>) {
 
-            let new_html = html_item_chat(data);
+            let new_html = html_item_chat_noi_bo(data);
 
             $('#discuss_noi_bo .list-chat')
                 .append(new_html)
@@ -152,7 +152,7 @@
 
     socket.on('update-chat-khach', data => {
         if (data.id_order == <?= $order['id_order'] ?>) {
-            let new_html = html_item_chat(data);
+            let new_html = html_item_chat_khach(data);
 
             $('#discuss_khach .list-chat')
                 .append(new_html)
