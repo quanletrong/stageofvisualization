@@ -1,40 +1,34 @@
-<div style="position: fixed;right: 10px;bottom: 0px; max-width:800px; display: none; z-index: 2;" id="box_trao_doi_noi_bo">
-    <!-- <h4 class="mt-5">TRAO ĐỔI THÀNH VIÊN TRONG ĐƠN</h4> -->
-    <div class="row">
-        <!-- TRAO ĐỔI KHÁCH -->
-        <div class="col-12 col-lg-12">
-            <div id="discuss_noi_bo" class="card card-primary mb-0">
-                <div class="card-header bg-danger text-white" onclick="open_close_chat_noi_bo()" style="cursor: pointer;">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                            <div><i class="fas fa-comment"></i> TRAO ĐỔI THÀNH VIÊN TRONG ĐƠN</div>
-                            <div>x</div>
-                        </h6>
-                    </div>
+<div style="position: fixed; right:0; width: 100%;bottom: 0px; max-width:600px; display: none; z-index: 2;" id="box_trao_doi_noi_bo">
+    <div id="discuss_noi_bo" class="card card-primary mb-0">
+        <div class="card-header bg-danger text-white" onclick="open_close_chat_noi_bo()" style="cursor: pointer;">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
+                    <div><i class="fas fa-comment"></i> NỘI BỘ</div>
+                    <div>x</div>
+                </h6>
+            </div>
+        </div>
+        <div class="card-body bg-white p-1">
+            <div style="display: flex; flex-direction: column; height: 80vh; justify-content: flex-end;">
+                <div class="list-chat" style="height: auto; overflow-y: auto;">
+                    <i class="fas fa-sync fa-spin"></i>
                 </div>
-                <div class="card-body bg-white">
-                    <div style="display: flex; flex-direction: column; height: 80vh; justify-content: flex-end;">
-                        <div class="list-chat" style="height: auto; overflow-y: auto;">
-                            <i class="fas fa-sync fa-spin"></i>
+                <div class="mt-2 nhap_du_lieu_chat">
+                    <div style="position:relative" class="rounded border">
+                        <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
+                        <div class="chat_list_attach d-flex flex-wrap"></div>
+
+                        <!-- NHẬP DỮ LIỆU -->
+                        <div style="height: fit-content; position: absolute; bottom: 10px;">
+                            <button type="button" class="border-0" style="font-size: 0.875rem; background: none;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_noi_bo">
+                                <i class="fa fa-paperclip"></i>
+                            </button>
                         </div>
-                        <div class="mt-2 nhap_du_lieu_chat">
-                            <div style="position:relative" class="rounded border">
-                                <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
-                                <div class="chat_list_attach d-flex flex-wrap"></div>
 
-                                <!-- NHẬP DỮ LIỆU -->
-                                <div style="height: fit-content; position: absolute; bottom: 10px; left:10px">
-                                    <button type="button" class="btn" style="width: 80px; font-size: 0.875rem;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_noi_bo">
-                                        <i class="fa fa-paperclip"></i>
-                                    </button>
-                                </div>
+                        <textarea name="message" class="form-control content_discuss bg-white" style="padding-left:33px; padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_noi_bo" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
-                                <textarea name="message" class="form-control content_discuss bg-white" style="padding-left:100px; padding-right: 100px; resize: none; overflow-y: auto;" placeholder="Type Message ..." data-callback="cb_upload_add_file_attach_chat_noi_bo" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
-
-                                <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
-                                    <button type="button" class="btn btn-primary" onclick="ajax_discuss_noi_bo_add(this)"><i class="fas fa-paper-plane"></i></button>
-                                </div>
-                            </div>
+                        <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
+                            <button type="button" class="text-primary p-0 border-0" style="background: none;" onclick="ajax_discuss_noi_bo_add(this)"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>

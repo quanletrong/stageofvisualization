@@ -6,7 +6,7 @@
     </button>
 </div>
 
-<div style="position: fixed; right:0; ; width: 100%;bottom: 0px; max-width:600px; display: none; z-index: 2;" id="box_trao_doi_sale">
+<div style="position: fixed; right:0; width: 100%;bottom: 0px; max-width:600px; display: none; z-index: 2;" id="box_trao_doi_sale">
     <!-- TRAO ĐỔI KHÁCH -->
     <div id="discuss_khach" class="card card-primary ">
         <div class="card-header bg-danger text-white" onclick="open_close_chat()" style="cursor: pointer;">
@@ -34,7 +34,7 @@
                             </button>
                         </div>
 
-                        <textarea name="message" class="form-control content_discuss bg-white" style="padding-left:33px; padding-right: 33px; resize: none; overflow-y: auto;" placeholder="" data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
+                        <textarea name="message" class="form-control content_discuss bg-white" style="padding-left:33px; padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                         <div style="height: fit-content; position: absolute; bottom: 10px; right:20px">
                             <button type="button" class="text-primary p-0 border-0" style="background: none;" onclick="ajax_discuss_khach_add(this)"><i class="fas fa-paper-plane"></i></button>

@@ -46,19 +46,19 @@
             <?php if ($role == ADMIN || $role == SALE) { ?>
                 <div id="small_trao_doi_sale" class="">
                     <button class="btn btn-sm btn-danger" onclick="open_close_chat_khach()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
-                        <i class="fas fa-comment"></i> TRAO ĐỔI VỚI KHÁCH
+                        <i class="fas fa-comment"></i> KHÁCH HÀNG
                     </button>
                 </div>
             <?php } ?>
 
             <div id="small_trao_doi_noi_bo" class="">
                 <button class="btn btn-sm btn-danger" onclick="open_close_chat_noi_bo()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
-                    <i class="fas fa-comment"></i> TRAO ĐỔI THÀNH VIÊN TRONG ĐƠN
+                    <i class="fas fa-comment"></i> NỘI BỘ
                 </button>
             </div>
             <div id="small_lich_su" class="">
                 <button class="btn btn-sm btn-danger" onclick="open_close_lich_su()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
-                    <i class="fas fa-history"></i> LỊCH SỬ ĐƠN HÀNG
+                    <i class="fas fa-history"></i> LỊCH SỬ
                 </button>
             </div>
 
