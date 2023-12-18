@@ -1,9 +1,13 @@
 <script src="js/v2023/moment_2.29.4.min.js"></script>
 
 <div style="position: fixed; right: 10px; bottom: 0px;" id="small_trao_doi_sale" class="">
-    <button class="btn btn-sm btn-danger" onclick="open_close_chat()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
-        <i class="fa-solid fa-comment"></i> TRAO ĐỔI VỚI SALE
-    </button>
+    <div style="position: relative;">
+        <button class="btn btn-sm btn-primary" onclick="open_close_chat()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
+            <i class="fa-solid fa-comment"></i> TRAO ĐỔI VỚI SALE
+        </button>
+        <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white;"></div>
+    </div>
+
 </div>
 
 <div style="position: fixed; right:0; width: 100%;bottom: 0px; max-width:600px; display: none; z-index: 2;" id="box_trao_doi_sale">
@@ -123,10 +127,6 @@
                     $('#tab_chat_khach .total').html(Object.keys(list_discuss).length);
 
                     $('#discuss_khach .list-chat').html(html).scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
-
-                    // TODO:
-                    // var audio = new Audio('images/Tieng-ting-www_tiengdong_com.mp3');
-                    // audio.play();
 
                     tooltipTriggerList('#discuss_khach');
                 } else {
@@ -274,6 +274,8 @@
         $('#small_trao_doi_sale').toggleClass('d-none');
         $('#discuss_khach .content_discuss').focus();
         $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+
+        $('#small_trao_doi_sale .tin-nhan-moi').text(0).hide();
     }
 </script>
 
@@ -290,8 +292,15 @@
 
     socket.on('update-chat-khach', data => {
         if (data.id_order == <?= $order['id_order'] ?>) {
-            let new_html = html_item_chat(data);
 
+            var audio = new Audio('images/Tieng-ting-www_tiengdong_com.mp3');
+            audio.play();
+
+            let tin_nhan_moi = parseInt($('#small_trao_doi_sale .tin-nhan-moi').text());
+            tin_nhan_moi = isNaN(tin_nhan_moi) ? 0 : tin_nhan_moi;
+            $('#small_trao_doi_sale .tin-nhan-moi').text(tin_nhan_moi + 1).show();
+
+            let new_html = html_item_chat(data);
             $('#discuss_khach .list-chat')
                 .append(new_html)
                 .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);

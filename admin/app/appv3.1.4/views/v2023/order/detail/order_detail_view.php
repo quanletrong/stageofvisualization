@@ -45,19 +45,26 @@
             <script src="js/v2023/moment_2.29.4.min.js"></script>
             <?php if ($role == ADMIN || $role == SALE) { ?>
                 <div id="small_trao_doi_sale" class="">
-                    <button class="btn btn-sm btn-danger" onclick="open_close_chat_khach()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
-                        <i class="fas fa-comment"></i> KHÁCH HÀNG
-                    </button>
+                    <div style="position: relative;">
+                        <button class="btn btn-sm btn-primary" onclick="open_close_chat_khach()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
+                            <i class="fas fa-comment"></i> KHÁCH HÀNG
+                        </button>
+
+                        <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white;"></div>
+                    </div>
                 </div>
             <?php } ?>
 
             <div id="small_trao_doi_noi_bo" class="">
-                <button class="btn btn-sm btn-danger" onclick="open_close_chat_noi_bo()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
-                    <i class="fas fa-comment"></i> NỘI BỘ
-                </button>
+                <div style="position: relative;">
+                    <button class="btn btn-sm btn-primary" onclick="open_close_chat_noi_bo()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
+                        <i class="fas fa-comment"></i> NỘI BỘ
+                    </button>
+                    <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white;"></div>
+                </div>
             </div>
             <div id="small_lich_su" class="">
-                <button class="btn btn-sm btn-danger" onclick="open_close_lich_su()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
+                <button class="btn btn-sm btn-primary" onclick="open_close_lich_su()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
                     <i class="fas fa-history"></i> LỊCH SỬ
                 </button>
             </div>
@@ -127,7 +134,7 @@
 <!-- SOCKET -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-     const socket = io('<?= SOCKET_SERVICES ?>', {
+    const socket = io('<?= SOCKET_SERVICES ?>', {
         transports: ['websocket'],
         withCredentials: true,
         extraHeaders: {
@@ -138,8 +145,14 @@
     socket.on('update-chat-noi-bo', data => {
         if (data.id_order == <?= $order['id_order'] ?>) {
 
-            let new_html = html_item_chat_noi_bo(data);
+            var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
+            audio.play();
 
+            let tin_nhan_moi = parseInt($('#small_trao_doi_noi_bo .tin-nhan-moi').text());
+            tin_nhan_moi = isNaN(tin_nhan_moi) ? 0 : tin_nhan_moi;
+            $('#small_trao_doi_noi_bo .tin-nhan-moi').text(tin_nhan_moi + 1).show();
+
+            let new_html = html_item_chat_noi_bo(data);
             $('#discuss_noi_bo .list-chat')
                 .append(new_html)
                 .scrollTop($('#discuss_noi_bo .list-chat')[0].scrollHeight);
@@ -152,8 +165,15 @@
 
     socket.on('update-chat-khach', data => {
         if (data.id_order == <?= $order['id_order'] ?>) {
-            let new_html = html_item_chat_khach(data);
 
+            var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
+            audio.play();
+
+            let tin_nhan_moi = parseInt($('#small_trao_doi_sale .tin-nhan-moi').text());
+            tin_nhan_moi = isNaN(tin_nhan_moi) ? 0 : tin_nhan_moi;
+            $('#small_trao_doi_sale .tin-nhan-moi').text(tin_nhan_moi + 1).show();
+
+            let new_html = html_item_chat_khach(data);
             $('#discuss_khach .list-chat')
                 .append(new_html)
                 .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);

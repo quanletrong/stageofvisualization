@@ -90,6 +90,26 @@ class Discuss_model extends CI_Model
         return $new_id;
     }
 
+    //todo: lam sau
+    function discuss_da_xem($id_order, $type_chat)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+
+        $sql = "UPDATE tbl_order_discuss SET da_xem = 1 WHERE id_order=? AND `type` = $type_chat;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
     function discuss_edit($id_discuss, $content, $file, $update_time, $status)
     {
     }

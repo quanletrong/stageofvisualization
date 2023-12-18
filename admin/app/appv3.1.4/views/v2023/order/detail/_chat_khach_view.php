@@ -261,5 +261,7 @@
         // $('#small_trao_doi_sale').toggleClass('d-none');
         $('#discuss_khach .content_discuss').focus();
         $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+
+        $('#small_trao_doi_sale .tin-nhan-moi').text(0).hide();
     }
 </script>

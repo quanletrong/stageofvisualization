@@ -260,5 +260,7 @@
         // $('#small_trao_doi_noi_bo').toggleClass('d-none');
         $('#discuss_noi_bo .content_discuss').focus();
         $('#discuss_noi_bo .list-chat').scrollTop($('#discuss_noi_bo .list-chat')[0].scrollHeight);
+
+        $('#small_trao_doi_noi_bo .tin-nhan-moi').text(0).hide();
     }
 </script>

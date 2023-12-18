@@ -83,6 +83,27 @@ class Discuss extends MY_Controller
         resSuccess($info);
     }
 
+    // TODO: tamj thoiw lam sau
+    function ajax_discuss_khach_da_xem() {
+        // check right
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+
+        $id_order = $this->input->post('id_order');
+
+        // validate đơn
+        $id_order = isIdNumber($id_order)    ? $id_order : 0;
+        $order = $this->Order_model->get_info_order($id_order);
+        $order == [] ? resError('Đơn không tồn tại') : '';
+        $order['id_user'] != $cur_uid ? resError('Tài khoản không có quyền truy cập đơn hàng này') : '';
+
+        //call db
+
+        $exc = $this->Discuss_model->discuss_da_xem($id_order, CHAT_KHACH);
+        resSuccess('ok');
+
+    }
+
     function ajax_discuss_edit()
     {
     }
