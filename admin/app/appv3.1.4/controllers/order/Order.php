@@ -47,7 +47,7 @@ class Order extends MY_Controller
 
         ### DU LIEU LAM FILTER
         $all_service    = $this->Service_model->get_list(1);
-        $all_user       = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $all_user       = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, QC, EDITOR]));
         $all_ed_type    = [ED_NOI_BO => 'Editor nội bộ', ED_CTV => 'Editor cộng tác viên'];
         $all_order_type = [DON_KHACH_TAO => 'Đơn khách tạo', DON_NOI_BO => 'Đơn nội bộ', DON_TAO_HO => 'Đơn tạo hộ'];
 
@@ -203,7 +203,7 @@ class Order extends MY_Controller
         }
         $role = $this->_session_role();
         $uid = $this->_session_uid();
-        $all_user_working = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $all_user_working = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, QC, EDITOR]));
         $order = $this->Order_model->get_info_order($id_order);
         // var_dump($order);die;
         empty($order) ? redirect(site_url('order', $this->_langcode)) : '';
@@ -1863,7 +1863,7 @@ class Order extends MY_Controller
         $list_order = json_decode($hdData, true);
 
         $all_service    = $this->Service_model->get_list(1);
-        $all_user       = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $all_user       = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, QC, EDITOR]));
 
         $data['list_order']  = $list_order;
         $data['all_service'] = $all_service;

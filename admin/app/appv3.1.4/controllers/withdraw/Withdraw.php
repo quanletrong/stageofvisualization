@@ -222,7 +222,7 @@ class Withdraw extends MY_Controller
         $tdate       = $this->input->post('tdate');
 
         //validate filter_id_user
-        $all_user = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $all_user = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, QC, EDITOR]));
         $id_user = isIdNumber($id_user) ? $id_user : resError('Tài khoản không hợp lệ (1)');
         $id_user = isset($all_user[$id_user]) ? $id_user : resError('Tài khoản không hợp lệ (2)');
 

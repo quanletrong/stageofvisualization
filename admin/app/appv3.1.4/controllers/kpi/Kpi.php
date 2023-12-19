@@ -36,7 +36,7 @@ class Kpi extends MY_Controller
         $filter_role = $this->input->get('filter_role');
 
         //validate filter_id_user
-        $all_user = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $all_user = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, QC, EDITOR]));
         $filter_id_user = isIdNumber($filter_id_user) ? $filter_id_user : '';
         $filter_id_user = isset($all_user[$filter_id_user]) ? $filter_id_user : '';
 

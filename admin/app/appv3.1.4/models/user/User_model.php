@@ -139,7 +139,7 @@ class User_model extends CI_Model
         $iconn = $this->db->conn_id;
         $sql = "SELECT *
         FROM tbl_user
-        WHERE status = $status AND role IN ($role) 
+        WHERE status IN ($status) AND role IN ($role) 
         ORDER BY role ASC";
 
         $stmt = $iconn->prepare($sql);

@@ -192,9 +192,9 @@
             var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
             audio.play();
 
-            let content = `Nội dung cập nhật: 
-            <p><strong>${data.content}</strong></p>
-            Bấm cập nhật để làm mới hoặc đóng lại nếu chưa muốn cập nhật`;
+            let content = 
+            `<p><strong>${data.content}</strong></p>
+            <small>Bấm cập nhật để làm mới hoặc đóng lại nếu chưa muốn cập nhật</small>`;
 
             $.confirm({
                 title: 'Cập nhật dữ liệu mới!',
