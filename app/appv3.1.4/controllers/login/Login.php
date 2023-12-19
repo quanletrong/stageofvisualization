@@ -39,25 +39,33 @@ class Login extends MY_Controller
             $passVerify = PasswordHash::hash_verify($userInfo['username'], $userInfo['password'], md5($password));
 
             if ($passVerify) {
-                // unset all session before init
-                session_unset();
-                session_regenerate_id(true);
 
-                $this->session->set_userdata('uname', $userInfo['username']);
-                $this->session->set_userdata('uid', $userInfo['id_user']);
-                $this->session->set_userdata('role', $userInfo['role']);
-                $this->session->set_userdata('phone', $userInfo['phone']);
-                $this->session->set_userdata('email', $userInfo['email']);
-                $this->session->set_userdata('fullname', $userInfo['fullname']);
+                if ($userInfo['status']) {
+                    // unset all session before init
+                    session_unset();
+                    session_regenerate_id(true);
 
-                //Update login date TODO: có dùng
-                // $this->Login_model->user_last_login_log($userInfo['user_id']);
+                    $this->session->set_userdata('uname', $userInfo['username']);
+                    $this->session->set_userdata('uid', $userInfo['id_user']);
+                    $this->session->set_userdata('role', $userInfo['role']);
+                    $this->session->set_userdata('phone', $userInfo['phone']);
+                    $this->session->set_userdata('email', $userInfo['email']);
+                    $this->session->set_userdata('fullname', $userInfo['fullname']);
 
-                if (in_array($userInfo['role'], [ADMIN, SALE, QC, EDITOR])) {
-                    $redirect = 'admin/';
+                    //Update login date TODO: có dùng
+                    // $this->Login_model->user_last_login_log($userInfo['user_id']);
+
+                    if (in_array($userInfo['role'], [ADMIN, SALE, QC, EDITOR])) {
+                        $redirect = 'admin/';
+                    } else {
+                        $redirect = urldecode($currUrl);
+                    }
                 } else {
-                    $redirect = urldecode($currUrl);
+                    //redirect to login
+                $this->session->set_userdata('login_fail', 'Tài khoản đã bị khóa!');
+                $redirect = site_url('login?url=' . urlencode($currUrl), $this->_langcode);
                 }
+
             } else {
                 //redirect to login
                 $this->session->set_userdata('login_fail', 'Sai tài khoản hoặc mật khẩu!');
