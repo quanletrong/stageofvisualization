@@ -271,6 +271,8 @@
 
                     $(`#box_main_file_${id_job}`).append(fileview); // thay bằng file mới
 
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi Main Files'})
+
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -340,6 +342,8 @@
                     $(target).remove(); // xóa file cũ
 
                     $(`#box_attach_${id_attach}`).append(fileview); // thay bằng file mới
+
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi Attach Files'})
 
                 } else {
                     toasts_danger(kq.error);
@@ -426,6 +430,8 @@
 
                     $(`#tab_content_job_${id_job} .list_attach`).append(html);
 
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thêm Attach Files'})
+
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -461,6 +467,8 @@
                 }
                 $(`#attach_file_${id_attach}`).parent().remove();
                 $(btn).prop("disabled", false);
+
+                socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Xóa Attach Files'})
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
@@ -498,6 +506,8 @@
                 }
                 $(btn).html('Save Requirements');
                 $(btn).prop("disabled", false);
+
+                socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Chỉnh sửa Requirement'})
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);
@@ -566,6 +576,8 @@
 
                         </div>`;
                     $(target).append(html)
+
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>,'au': <?= $curr_uid ?>, 'content': 'Thêm Complete Files'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -630,6 +642,8 @@
 
                     $(`#file_complete_${id_complete}`).append(fileview); // thay bằng file mới
 
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi Complete File'})
+
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -665,6 +679,8 @@
                 }
                 $(`#file_complete_${id_complete}`).remove();
                 $(btn).prop("disabled", false);
+
+                socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Xóa Complete File'})
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);

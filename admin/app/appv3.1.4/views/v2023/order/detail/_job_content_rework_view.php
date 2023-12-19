@@ -188,6 +188,7 @@
                 $(btn).prop("disabled", false).html('save');
                 if (kq.status) {
                     toasts_success();
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thêm REWORK'})
                     location.reload();
                 } else {
                     toasts_danger(kq.error);
@@ -263,7 +264,7 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Sửa Requirements Rework'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -339,6 +340,8 @@
                     </div>`;
 
                     $(target).append(html)
+
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thêm Complete File Rework'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -401,6 +404,8 @@
                     $(target).remove(); // xóa file cũ
                     $(`#file_complete_rework_${id_complete_rework}`).append(fileview); // thay bằng file mới
 
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Sửa Complete File Rework'})
+
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -429,7 +434,7 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Xóa Complete File Rework'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -510,6 +515,8 @@
                     </div>`;
 
                     $(target).append(html_main)
+
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thêm Attach File Rework'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -580,6 +587,8 @@
                         .parent()
                         .attr('onclick', `downloadURI('${url_image}', '${file_name}')`)
 
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Sửa Attach File Rework'})
+
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -608,7 +617,7 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Xóa Complete File Rework'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -637,7 +646,7 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Xóa Attach File Rework'})
                 } else {
                     toasts_danger(kq.error);
                 }

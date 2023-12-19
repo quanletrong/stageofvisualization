@@ -185,5 +185,38 @@
             tooltipTriggerList('#discuss_khach');
         }
     })
+
+    socket.on('refresh', data => {
+        if (data.id_order == <?= $order['id_order'] ?> && data.au != <?= $curr_uid ?>) {
+
+            var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
+            audio.play();
+
+            let content = `Nội dung cập nhật: 
+            <p><strong>${data.content}</strong></p>
+            Bấm cập nhật để làm mới hoặc đóng lại nếu chưa muốn cập nhật`;
+
+            $.confirm({
+                title: 'Cập nhật dữ liệu mới!',
+                content: content,
+                type: 'red',
+                typeAnimated: true,
+                closeIcon: true,
+                autoClose: 'refresh|30000',
+                buttons: {
+                    refresh: {
+                        text: 'Cập nhật ngay',
+                        btnClass: 'btn-red',
+                        action: function() {
+                            window.location.reload()
+                        }
+                    },
+                    close: function() {
+                        text: 'Cập nhật sau'
+                    }
+                }
+            });
+        }
+    })
 </script>
 <!-- END SOCKET -->

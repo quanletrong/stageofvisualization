@@ -394,8 +394,52 @@ function htmlEntities(str) {
 
 function count_down_time(time, elId) {
     
-    //before
-    document.getElementById(elId).innerHTML = '<i class="fas fa-sync fa-spin"></i>';
+    //before=
+    let init = `
+    <div class='d-flex' style="gap:10px; justify-content: space-evenly; width:100%; font-weight: bold;">
+        <div class="d-flex" style="flex-direction:column; align-items: center;">
+            <div 
+                class="text-light rounded-circle bg-secondary p-2 d-flex" 
+                style="width: 30px; height: 30px; align-items: center;justify-content: center;"
+            >
+                <span><i class="fas fa-sync fa-spin"></i></span>
+            </div>
+            <span>Ngày</span>
+        </div>
+        
+        <div class="d-flex" style="flex-direction:column; align-items: center;">
+            <div 
+                class="text-light rounded-circle bg-secondary p-2 d-flex" 
+                style="width: 30px; height: 30px; align-items: center;justify-content: center;"
+            >
+                <span><i class="fas fa-sync fa-spin"></i></span>
+            </div>
+            <span>Giờ</span>
+        </div>
+
+        <div class="d-flex" style="flex-direction:column; align-items: center;">
+            <div 
+                class="text-light rounded-circle bg-secondary p-2 d-flex" 
+                style="width: 30px; height: 30px; align-items: center;justify-content: center;"
+            >
+                <span><i class="fas fa-sync fa-spin"></i></span>
+            </div>
+            <span>Phút</span>
+        </div>
+
+        <div class="d-flex" style="flex-direction:column; align-items: center;">
+            <div 
+                class="text-light rounded-circle bg-secondary p-2 d-flex" 
+                style="width: 30px; height: 30px; align-items: center;justify-content: center;"
+            >
+                <span><i class="fas fa-sync fa-spin"></i></span>
+            </div>
+            <span>Giây</span>
+        </div>
+
+    </div>`;
+
+    document.getElementById(elId).innerHTML = init;
 
     var countDownDate = new Date(time).getTime();
     var x = setInterval(function () {
@@ -410,14 +454,6 @@ function count_down_time(time, elId) {
         var hours = Math.floor((distance_abs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var minutes = Math.floor((distance_abs % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance_abs % (1000 * 60)) / 1000);
-
-        // CODE CU
-        // let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
-        // if (IS_EXPIRED) {
-        //     document.getElementById(elId).innerHTML = '<span style="color:red"> - ' + ket_qua + '</span>';
-        // } else {
-        //     document.getElementById(elId).innerHTML = '<span style="color:green">' + ket_qua + '</span>';
-        // }
 
         let bg_color = IS_EXPIRED ? 'bg-danger' : 'bg-success';
         // let am = IS_EXPIRED ? '-' : '';
@@ -467,6 +503,8 @@ function count_down_time(time, elId) {
         `;
         document.getElementById(elId).innerHTML = html;
     }, 1000);
+
+    return x;
 }
 
 function no_count_down_time(time, timeDone, elId) {

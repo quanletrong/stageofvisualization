@@ -352,6 +352,7 @@
 
                 if (kq.status) {
                     toasts_success('Thêm thành công');
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thêm người làm đơn hàng'})
                     location.reload();
                 } else {
                     toasts_danger(kq.error);
@@ -377,6 +378,7 @@
 
                 if (kq.status) {
                     toasts_success('Xóa thành công');
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Xóa người làm đơn hàng'})
                     location.reload();
                 } else {
                     toasts_danger(kq.error);
@@ -410,6 +412,7 @@
                         toasts_success();
                         $('#dropdownStatus').html(new_text);
                         $('#dropdownStatus').css('backgroundColor', new_bg);
+                        socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi trạng thái đơn hàng'})
                         location.reload()
                     } else {
                         $('#dropdownStatus').html(old_text);
@@ -439,6 +442,7 @@
 
                 if (kq.status) {
                     toasts_success()
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi Tổng Custom'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -466,6 +470,7 @@
 
                 if (kq.status) {
                     toasts_success()
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi giá custom cho người làm'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -498,6 +503,7 @@
 
                 if (kq.status) {
                     toasts_success()
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi CODE USER'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -530,6 +536,7 @@
 
                 if (kq.status) {
                     toasts_success()
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi CODE ORDER'})
                 } else {
                     toasts_danger(kq.error);
                 }
@@ -609,6 +616,7 @@
 
                 if (kq.status) {
                     toasts_success()
+                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi CUSTOM TIME'})
                     location.reload();
                 } else {
                     toasts_danger(kq.error);
