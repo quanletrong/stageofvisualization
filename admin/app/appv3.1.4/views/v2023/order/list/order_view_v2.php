@@ -1,5 +1,21 @@
 <?php ?>
 <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<style>
+    .avatar-working {
+        margin-right: -20px;
+        margin-bottom: 5px;
+        width: 36px;
+        aspect-ratio: 1;
+        object-fit: cover;
+        border: 2px solid white;
+    }
+
+    .list-avatar-working:hover .avatar-working {
+        margin-right: 0;
+        transition-property: margin-right;
+        transition-duration: 500ms;
+    }
+</style>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -118,9 +134,9 @@
 
                             </td>
                             <td class="align-middle" style="max-width: 150px;">
-                                <div class="d-flex flex-wrap" style="gap:5px">
+                                <div class="d-flex flex-wrap list-avatar-working" style="gap:5px">
                                     <?php foreach ($order['list_user'] as $id_user) { ?>
-                                        <img src="<?= url_image($all_user[$id_user]['avatar'], 'uploads/avatar/') ?>" title="<?= $all_user[$id_user]['username'] . ' - ' . $all_user[$id_user]['fullname'] ?>" alt="<?= $all_user[$id_user]['username'] ?>" class="img-circle shadow" style="margin-bottom: 5px; width: 36px; aspect-ratio: 1; object-fit: cover;">
+                                        <img src="<?= url_image($all_user[$id_user]['avatar'], 'uploads/avatar/') ?>" title="<?= $all_user[$id_user]['username'] . ' - ' . $all_user[$id_user]['fullname'] ?>" alt="<?= $all_user[$id_user]['username'] ?>" class="avatar-working img-circle shadow bg-white">
                                     <?php } ?>
                                 </div>
                             </td>
