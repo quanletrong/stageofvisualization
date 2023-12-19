@@ -948,6 +948,16 @@ class Order extends MY_Controller
             resError('Đơn không hợp lệ');
         }
 
+        // kiểm tra tài khoản có quyền làm đơn?
+        // lấy danh sách service của đơn - danh sách service của user
+        $user_service = $curr_uinfo['user_service'];
+        $list_type_service = [];
+        foreach($order['list_type_service'] as $type_service => $id_job){
+            $list_type_service[] = $type_service;
+        }
+        $ds_service_khong_duoc_lam = array_diff($list_type_service, $user_service); 
+        count($ds_service_khong_duoc_lam) ? resError('Bạn chưa được cấp quyền làm đơn '. implode(', ', $ds_service_khong_duoc_lam)) : '';
+
         // kiểm tra số lượng đơn đang làm có vượt quá max_working_order trong setting không?
         $total_order_working = $this->Order_model->get_total_order_working_by_id_user($cur_uid);
         $get_setting = $this->Setting_model->get_setting();
@@ -963,12 +973,12 @@ class Order extends MY_Controller
         $time_join = date('Y-m-d H:i:s');
 
         // add user vào custom
-        $da_ton_tai_custom = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, 0, WORKING_CUSTOM, $cur_uid);
-        if ($da_ton_tai_custom) {
-            $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $cur_uid);
-        } else {
-            $this->Order_model->add_job_user($id_order, 0, $cur_uid, $cur_uname, SERVICES_CUSTOM, WORKING_CUSTOM, $status, $time_join, 0);
-        }
+        // $da_ton_tai_custom = $this->Order_model->kiem_tra_user_da_ton_tai_trong_job_chua($id_order, 0, WORKING_CUSTOM, $cur_uid);
+        // if ($da_ton_tai_custom) {
+        //     $this->Order_model->change_status_job_user($status, $id_order, 0, WORKING_CUSTOM, $cur_uid);
+        // } else {
+        //     $this->Order_model->add_job_user($id_order, 0, $cur_uid, $cur_uname, SERVICES_CUSTOM, WORKING_CUSTOM, $status, $time_join, 0);
+        // }
 
         // add user vào job
         foreach ($list_job_no_ed as $id_job_no_ed) {
