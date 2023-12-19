@@ -40,7 +40,7 @@
 </div>
 
 <section>
-    <div style="position: fixed; right: 0; bottom: 0;">
+    <div style="position: fixed; right: 10px; bottom: 0;">
         <div class="d-flex justify-content-end" style="gap:10px; ">
             <script src="js/v2023/moment_2.29.4.min.js"></script>
             <?php if ($role == ADMIN || $role == SALE) { ?>
@@ -64,9 +64,13 @@
                 </div>
             </div>
             <div id="small_lich_su" class="">
-                <button class="btn btn-sm btn-primary" onclick="open_close_lich_su()" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
-                    <i class="fas fa-history"></i> LỊCH SỬ
-                </button>
+                <div style="position: relative;">
+                    <button class="btn btn-sm btn-primary" onclick="open_close_lich_su(); ajax_log_list(<?= $order['id_order'] ?>)" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
+                        <i class="fas fa-history"></i> LỊCH SỬ
+                    </button>
+
+                    <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white;"></div>
+                </div>
             </div>
 
 
@@ -190,32 +194,38 @@
         if (data.id_order == <?= $order['id_order'] ?> && data.au != <?= $curr_uid ?>) {
 
             var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
-            audio.play();
+            // audio.play();
 
-            let content = 
-            `<p><strong>${data.content}</strong></p>
+            let content =
+                `<p><strong>${data.content}</strong></p>
             <small>Bấm cập nhật để làm mới hoặc đóng lại nếu chưa muốn cập nhật</small>`;
 
-            $.confirm({
-                title: 'Cập nhật dữ liệu mới!',
-                content: content,
-                type: 'red',
-                typeAnimated: true,
-                closeIcon: true,
-                autoClose: 'refresh|30000',
-                buttons: {
-                    refresh: {
-                        text: 'Cập nhật ngay',
-                        btnClass: 'btn-red',
-                        action: function() {
-                            window.location.reload()
-                        }
-                    },
-                    close: function() {
-                        text: 'Cập nhật sau'
-                    }
-                }
-            });
+
+            let tin_nhan_moi = parseInt($('#small_lich_su .tin-nhan-moi').text());
+            tin_nhan_moi = isNaN(tin_nhan_moi) ? 0 : tin_nhan_moi;
+            $('#small_lich_su .tin-nhan-moi').text(tin_nhan_moi + 1).show();
+
+
+            // $.confirm({
+            //     title: 'Cập nhật dữ liệu mới!',
+            //     content: content,
+            //     type: 'red',
+            //     typeAnimated: true,
+            //     closeIcon: true,
+            //     autoClose: 'refresh|30000',
+            //     buttons: {
+            //         refresh: {
+            //             text: 'Cập nhật ngay',
+            //             btnClass: 'btn-red',
+            //             action: function() {
+            //                 window.location.reload()
+            //             }
+            //         },
+            //         close: function() {
+            //             text: 'Cập nhật sau'
+            //         }
+            //     }
+            // });
         }
     })
 </script>

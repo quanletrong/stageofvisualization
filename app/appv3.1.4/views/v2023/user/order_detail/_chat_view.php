@@ -13,7 +13,7 @@
 <div style="position: fixed; right:0; width: 100%;bottom: 0px; max-width:600px; display: none; z-index: 2;" id="box_trao_doi_sale">
     <!-- TRAO ĐỔI KHÁCH -->
     <div id="discuss_khach" class="card card-primary ">
-        <div class="card-header bg-danger text-white" onclick="open_close_chat()" style="cursor: pointer;">
+        <div class="card-header bg-primary text-white" onclick="open_close_chat()" style="cursor: pointer;">
             <div class="d-flex justify-content-between align-items-center">
                 <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                     <div><i class="fa-solid fa-comment"></i> TRAO ĐỔI VỚI SALE</div>

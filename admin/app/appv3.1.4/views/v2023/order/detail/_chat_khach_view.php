@@ -1,6 +1,6 @@
 <div style="position: fixed; right:0; width: 100%;bottom: 0px; max-width:600px; display: none; z-index: 2;" id="box_trao_doi_sale">
-    <div id="discuss_khach" class="card card-danger mb-0">
-        <div class="card-header bg-danger text-white" onclick="open_close_chat_khach()" style="cursor: pointer;">
+    <div id="discuss_khach" class="card card-primary  mb-0">
+        <div class="card-header text-white" onclick="open_close_chat_khach()" style="cursor: pointer;">
             <div class="d-flex justify-content-between align-items-center">
                 <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                     <div><i class="fas fa-comment"></i> KHÁCH HÀNG</div>

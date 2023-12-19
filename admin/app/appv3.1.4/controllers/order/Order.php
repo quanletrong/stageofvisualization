@@ -239,11 +239,6 @@ class Order extends MY_Controller
         $data['all_user_working'] = $all_user_working;
         $data['FDR_ORDER']        = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
 
-        ## log
-        $dk['id_order'] = $id_order;
-        $logs = $this->Log_model->log_list($dk);
-        $data['logs'] = $logs;
-
         $header = [
             'title' => 'Chi tiết đơn hàng',
             'header_page_css_js' => 'order'
@@ -952,11 +947,11 @@ class Order extends MY_Controller
         // lấy danh sách service của đơn - danh sách service của user
         $user_service = $curr_uinfo['user_service'];
         $list_type_service = [];
-        foreach($order['list_type_service'] as $type_service => $id_job){
+        foreach ($order['list_type_service'] as $type_service => $id_job) {
             $list_type_service[] = $type_service;
         }
-        $ds_service_khong_duoc_lam = array_diff($list_type_service, $user_service); 
-        count($ds_service_khong_duoc_lam) ? resError('Bạn chưa được cấp quyền làm đơn '. implode(', ', $ds_service_khong_duoc_lam)) : '';
+        $ds_service_khong_duoc_lam = array_diff($list_type_service, $user_service);
+        count($ds_service_khong_duoc_lam) ? resError('Bạn chưa được cấp quyền làm đơn ' . implode(', ', $ds_service_khong_duoc_lam)) : '';
 
         // kiểm tra số lượng đơn đang làm có vượt quá max_working_order trong setting không?
         $total_order_working = $this->Order_model->get_total_order_working_by_id_user($cur_uid);
@@ -1873,5 +1868,33 @@ class Order extends MY_Controller
         $data['cur_uname']   = $cur_uname;
 
         $this->load->view($this->_template_f . 'order/list/excel.php', $data);
+    }
+    function ajax_log_list($id_order)
+    {
+
+        $cur_uid = $this->_session_uid();
+        $role = $this->_session_role();
+
+        // check right
+        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+
+        isIdNumber($id_order) ? $id_order : 0;
+
+        $order = $this->Order_model->get_info_order($id_order);
+        if ($role == QC || $role == EDITOR) {
+            !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
+        }
+
+        // end check right
+
+
+        ## log
+        $dk['id_order']    = $id_order;
+        $logs              = $this->Log_model->log_list($dk);
+        $data['logs']      = $logs;
+        $data['order']     = $order;
+        $data['FDR_ORDER'] = $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+
+        $this->load->view($this->_template_f . 'order/detail/ajax_log_list_view.php', $data);
     }
 }
