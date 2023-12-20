@@ -977,7 +977,7 @@ class Order extends MY_Controller
 
         // add user vào job
         foreach ($list_job_no_ed as $id_job_no_ed) {
-            $type_service = @$order['job'][$id_job]['type_service'];
+            $type_service = @$order['job'][$id_job_no_ed]['type_service'];
             $this->Order_model->add_job_user($id_order, $id_job_no_ed, $cur_uid, $cur_uname, $type_service, WORKING_EDITOR, $status, $time_join, 1);
         }
 
