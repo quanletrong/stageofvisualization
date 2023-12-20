@@ -197,23 +197,16 @@
                     let res = JSON.parse(data);
                     if (res.status) {
                         $(btn).html('Hoàn thành');
-                        if (res.data.price_payment > 0) {
-                            $("#modal-payment .username").val($('#user_username').val());
-                            $("#modal-payment .fullname").val($('#user_fullname').val());
-                            $("#modal-payment .email").val($('#user_email').val());
+                        $("#modal-payment .username").val($('#user_username').val());
+                        $("#modal-payment .fullname").val($('#user_fullname').val());
+                        $("#modal-payment .email").val($('#user_email').val());
 
-                            $("#modal-payment .money-payment").val(`${res.data.price_payment} $`);
-                            $("#modal-payment .link-payment").val(`<?= DOMAIN_NAME ?>/user/orderdetail/${res.data.new_id_order}`);
-                            
-                            $("#modal-payment").modal('show');
+                        $("#modal-payment .money-payment").val(`${res.data.price_payment} $`);
+                        $("#modal-payment .link-payment").val(`<?= DOMAIN_NAME ?>/user/orderdetail/${res.data.new_id_order}`);
 
-                            $("#modal-payment .back_to_order").attr('href', `order/detail/${res.data.new_id_order}`)
-                        } else {
-                            toasts_success();
-                            setTimeout(() => {
-                                window.location.href = '<?= site_url(LINK_ORDER) ?>';
-                            }, 2000);
-                        }
+                        $("#modal-payment").modal('show');
+
+                        $("#modal-payment .back_to_order").attr('href', `order/detail/${res.data.new_id_order}`)
                     } else {
                         alert(`Lỗi: ${res.data}`)
                     }
@@ -292,7 +285,7 @@
             <div class="position-relative border p-4 shadow mb-4 div_main_2" id="${job_id}">
                 
                 <div class="position-absolute" style="top: -15px;right: -15px;cursor: pointer;">
-                    <btn class="btn btn-sm btn-danger rounded-circle shadow" onclick="step2_remove_job(${job_id})"> <i class="fas fa-trash"></i></btn>
+                    <btn class="btn btn-sm btn-danger rounded-circle shadow" style="width:30px; height:30px" onclick="step2_remove_job(${job_id})"> <i class="fas fa-times"></i></btn>
                 </div>
 
                 <label for="exampleFormControlInput1" class="form-label fw-bold">File main:</label>
