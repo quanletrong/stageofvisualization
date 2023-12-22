@@ -2,7 +2,7 @@
     <div class="fw-semibold fs-5 mb-3">THANH TOÁN</div>
     <div class="row">
         <div class="col-12">
-            <div class="border p-4 step-3-box shadow">
+            <div class="border p-4 step-3-box shadow bg-white">
 
                 <!-- Order Summary -->
                 <div class="fw-bold"><strong>Order Summary</strong></div>

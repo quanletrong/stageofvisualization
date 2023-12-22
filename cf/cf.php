@@ -190,7 +190,7 @@ const LOG = [
         LOG_RW_REF_ADD              => 'Thêm file đính kèm cho <b>Rework</b>',
         LOG_RW_REF_EDIT             => 'Sửa file đính kèm cho <b>Rework</b>',
         LOG_RW_REF_REMOVE           => 'Xóa file đính kèm cho <b>Rework</b>',
-        LOG_RW_NOTE_EDIT            => 'Sửa yêu cầu cho <b>Rework</b>',
+        LOG_RW_NOTE_EDIT            => 'Sửa mổ tả <b>Rework</b>',
         LOG_CREATE_ORDER            => 'Tạo thành công đơn hàng',
         LOG_PAYED_ORDER             => 'Đã thanh toán thành công đơn hàng'
 ];

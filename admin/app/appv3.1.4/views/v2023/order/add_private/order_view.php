@@ -53,6 +53,9 @@
 <script>
     $("document").ready(function() {
 
+        // init add_job
+        add_job();
+
         // valid_order
         var valid_order = $('#form_order').validate({
             submitHandler: function(form) {
@@ -147,20 +150,8 @@
 
         // 
         $('#submit-order').click(function() {
-            ajax_order(this);
-        })
-
-        // STEP 2
-        $("#button_upload_image_step_2").click(function() {
-            $('#step-2 .div_main_1').addClass('d-none');
-            $('#step-2 .div_main_2').removeClass('d-none');
-            $('#step-2 .div_main_3').removeClass('d-none');
-            $('#step-2 .div_main_4').removeClass('d-none');
-        })
-
-        function ajax_order(btn) {
-            $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
-            $(btn).prop("disabled", true);
+            $(this).html(' <i class="fas fa-sync fa-spin"></i>');
+            $(this).prop("disabled", true);
             $.ajax({
                 url: 'order/submit_add/private',
                 type: "POST",
@@ -178,25 +169,20 @@
                     alert('Error');
                 }
             });
-        }
+        })
     })
 
     // step2_remove_job
     function step2_remove_job(job_id) {
-
-        if (confirm("Are you sure you want to delete this photo?") == true) {
-            delete STATE.job[job_id];
-            let count_job = Object.keys(STATE.job).length;
-
-            $(`#${job_id}`).remove();
-            if (count_job == 0) {
-                $('#step-2 .div_main_1').removeClass('d-none');
-                $('#step-2 .div_main_2').addClass('d-none');
-                $('#step-2 .div_main_3').addClass('d-none');
-                $('#step-2 .div_main_4').addClass('d-none');
+        let count_job = Object.keys(STATE.job).length;
+        if (count_job == 1) {
+            alert('Không được xóa hết ảnh');
+        } else {
+            if (confirm("Are you sure you want to delete this photo?") == true) {
+                delete STATE.job[job_id];
+                $(`#${job_id}`).remove();
             }
         }
-
     }
 
     // cb_upload_image_job
@@ -222,9 +208,9 @@
     function cb_upload_attach(link, target, name) {
         let job_id = $(target).data('id');
         let attach_id = Date.now() + Object.keys(STATE.job[job_id].attach).length;
-        let attach_html = `<div style="position:relative" class="mt-2">
-            <img src="${link}"  style="width:50px;aspect-ratio: 1; object-fit: cover;" >
-            <i class="fa-solid fa-xmark" style="position:absolute;right: 5px;top: 5px; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
+        let attach_html = `<div style="position:relative" class="m-2">
+            <img src="${link}"  style="width:50px;aspect-ratio: 1; object-fit: cover;" class="shadow" >
+            <i class="fas fa-times" style="position:absolute;right:-10px;top: -10px; color:red; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
         </div>`;
         $(`#${job_id}_attach_pre`).append(attach_html);
         STATE.job[job_id].attach[attach_id] = link;
@@ -237,79 +223,84 @@
         }
     }
 
-    // add_job
     function add_job() {
         let job_id = Date.now();
         let job_new = `
             <div class="position-relative border p-4 shadow mb-4 div_main_2" id="${job_id}">
 
                 <div class="position-absolute" style="top: -15px;right: -15px;cursor: pointer;">
-                    <btn class="btn btn-sm btn-danger rounded-circle shadow" onclick="step2_remove_job(${job_id})"> <i class="fas fa-trash"></i></btn>
+                    <btn class="btn btn-sm btn-danger rounded-circle shadow" onclick="step2_remove_job(${job_id})" style="width:30px; height:30px"> <i class="fas fa-times"></i></btn>
                 </div>
-
-                <label for="exampleFormControlInput1" class="form-label fw-bold">File main:</label>
-                <input type="hidden" id="image_${job_id}" data-id="${job_id}"/>
-                <button 
-                    type="button"
-                    class="btn_upload_image btn btn-default w-100 border-0 shadow d-flex " 
-                    style="min-height:150px; justify-content: center;align-items: center" 
-                    onclick="quanlt_upload(this);" 
-                    data-callback="cb_upload_image_job" 
-                    data-target="#image_${job_id}"
-                >
-                    CLICK TO ADD FILE
-                </button>
-
-                <small>Thumbnail shown. The full quality photo <span class="link-color" style="cursor: pointer;">(preview)</span> will be received when the order is placed.</small>
-                
-                <div class="my-3">
-                    <label for="exampleFormControlInput1" class="form-label fw-bold">Room Type:</label>
-                    <select title="Please select room type." class="form-control room" onchange="STATE.job[${job_id}].room = this.value">
-                        <option value="">Select Room Type</option>
-                        <?php foreach ($list_room as $id => $rm) { ?>
-                            <option value="<?= $id ?>"><?= $rm['name'] ?></option>
-                        <?php } ?>
-                    </select>
-                </div>
-                <div class="my-3">
-                    <label for="exampleFormControlInput1" class="form-label fw-bold">Select Services (Select All
-                        That Apply):
-                    </label>
-                    <span class="error invalid-feedback service-error" style="">This field is required.</span>
-
-                    <?php foreach ($list_service as $id => $sv) { ?>
-                        <div class="form-check">
-                            <input 
-                                class="form-check-input" 
-                                type="radio"
-                                id="flexCheckDefault_${job_id}_<?= $id ?>" 
-                                onchange="add_or_remove_service(${job_id}, '<?= $id ?>', '<?= $sv['price'] ?>')"
-                            >
-                            <label class="form-check-label" for="flexCheckDefault_${job_id}_<?= $id ?>">
-                                <?= $sv['name'] ?> - $<?= $sv['price'] ?> Per Photo
-                            </label>
-                            <i class="fa-solid fa-circle-info text-secondary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModalServices" data-name="<?= $sv['name'] ?>" data-src="<?= $sv['image_path'] ?>" data-sapo="<?= $sv['sapo'] ?>"></i>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="">
+                            <label for="exampleFormControlInput1" class="form-label fw-bold">Room Type:</label>
+                            <select title="Please select room type." class="form-control room" onchange="STATE.job[${job_id}].room = this.value">
+                                <option value="">Select Room Type</option>
+                                <?php foreach ($list_room as $id => $rm) { ?>
+                                    <option value="<?= $id ?>"><?= $rm['name'] ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
-                    <?php } ?>
+                        <div class="my-3">
+                            <label for="exampleFormControlInput1" class="form-label fw-bold">Select Services (Select All
+                                That Apply):
+                            </label>
+                            <span class="error invalid-feedback service-error" style="">This field is required.</span>
 
-                </div>
+                            <?php foreach ($list_service as $id => $sv) { ?>
+                                <div class="form-check">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="radio"
+                                        id="flexCheckDefault_${job_id}_<?= $id ?>" 
+                                        onchange="add_or_remove_service(${job_id}, '<?= $id ?>', '<?= $sv['price'] ?>')"
+                                    >
+                                    <label class="form-check-label" for="flexCheckDefault_${job_id}_<?= $id ?>">
+                                        <?= $sv['name'] ?> - $<?= $sv['price'] ?> Per Photo
+                                    </label>
+                                </div>
+                            <?php } ?>
 
-                <div class="my-3">
-                    <label for="exampleFormControlInput1" class="form-label fw-bold">Your Design Requirements
-                        (Optional):</label><br>
-                    <small>For example, your desired Collection ID from the <span class="link-color">Library</span>
-                        (e.g.
-                        CCBR10), your vision, etc.</small>
-                    <textarea class="form-control" onchange="STATE.job[${job_id}].requirement = $(this).val()"></textarea>
+                        </div>
 
-                    <div class="mb-3 mt-3">
-                        <button type="button" class="form-control form-control-sm" onclick="quanlt_upload(this);" data-callback="cb_upload_attach" data-target="#image_${job_id}" style="width: fit-content;">
-                            <i class="fa-solid fa-paperclip"></i>
-                            Attach Reference Files
-                        </button>
+                        <div class="my-3">
+                            <label for="exampleFormControlInput1" class="form-label fw-bold">Your Design Requirements
+                                (Optional):</label><br>
+                            <small>For example, your desired Collection ID from the <span class="link-color">Library</span>
+                                (e.g.
+                                CCBR10), your vision, etc.</small>
+                            <textarea class="form-control" onchange="STATE.job[${job_id}].requirement = $(this).val()"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div>
+                            <label for="exampleFormControlInput1" class="form-label fw-bold">File main:</label>
+                            <input type="hidden" id="image_${job_id}" data-id="${job_id}"/>
+                            <button 
+                                type="button"
+                                class="btn_upload_image w-100 d-flex p-3 rounded bg-light" 
+                                style="min-height:150px; justify-content: center;align-items: center; border: red 1px dotted;" 
+                                onclick="quanlt_upload(this);" 
+                                data-callback="cb_upload_image_job" 
+                                data-target="#image_${job_id}"
+                            >
+                                Kéo hình ảnh vào đây hoặc <span class="text-primary">Tải tệp lên</span>
+                            </button>
 
-                        <div id="${job_id}_attach_pre" class="d-flex" style="gap:10px"></div>
+                            <small>Thumbnail shown. The full quality photo <span class="link-color" style="cursor: pointer;">(preview)</span> will be received when the order is placed.</small>
+                        </div>
 
+                        <div class="mt-3">
+                            <label for="exampleFormControlInput1" class="form-label fw-bold">Attach Reference Files:</label>
+                            <button type="button" class="form-control form-control-sm" onclick="quanlt_upload(this);" data-callback="cb_upload_attach" data-target="#image_${job_id}" style="width: fit-content;">
+                                <i class="fas fa-paperclip"></i>
+                                Attach Reference Files
+                            </button>
+
+                            <div id="${job_id}_attach_pre" class="d-flex flex-wrap bg-white mt-2" style="gap:10px"></div>
+
+                        </div>
                     </div>
                 </div>
             </div>`;
@@ -319,9 +310,6 @@
         STATE.job[job_id] = {
             ...JOB_COPY
         };
-
-        // upload image luôn
-        $(`#${job_id} .btn_upload_image`).click();
     }
 
     // add_or_remove_service
