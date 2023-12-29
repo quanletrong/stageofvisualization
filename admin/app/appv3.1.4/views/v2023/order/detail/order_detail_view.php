@@ -161,7 +161,7 @@
                 .append(new_html)
                 .scrollTop($('#discuss_noi_bo .list-chat')[0].scrollHeight);
 
-            $('#discuss_noi_bo .content_discuss').val('').height(60);
+            $('#discuss_noi_bo .content_discuss').val('').height(48);
             $('#discuss_noi_bo .chat_list_attach').html('');
             $('#discuss_noi_bo .list-chat').scrollTop($('#discuss_noi_bo .list-chat')[0].scrollHeight);
         }
@@ -182,7 +182,7 @@
                 .append(new_html)
                 .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
 
-            $('#discuss_khach .content_discuss').val('').height(60);
+            $('#discuss_khach .content_discuss').val('').height(48);
             $('#discuss_khach .chat_list_attach').html('');
             $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
 

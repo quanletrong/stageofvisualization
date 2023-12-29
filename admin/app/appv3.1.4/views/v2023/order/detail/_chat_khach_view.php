@@ -28,7 +28,7 @@
                         <textarea name="message" class="form-control content_discuss bg-white" style="padding-left:33px; padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                         <div style="height: fit-content; position: absolute; bottom: 10px; right:20px">
-                            <button type="button" class="text-primary p-0 border-0" style="background: none;" onclick="ajax_discuss_khach_add(this)"><i class="fas fa-paper-plane"></i></button>
+                            <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_discuss_khach_add(this)"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -91,6 +91,14 @@
             }
         })
 
+
+        $("#discuss_khach .content_discuss").keypress(function(e) {
+            if (e.which == 13 && !e.shiftKey) {
+                ajax_discuss_khach_add($(`#discuss_khach .btn-send`));
+                return false;
+            }
+        });
+
     })
 
     function ajax_discuss_list_khach() {
@@ -132,8 +140,6 @@
     }
 
     function ajax_discuss_khach_add(btn) {
-        $(btn).html('<i class="fas fa-sync fa-spin"></i>');
-        $(btn).prop("disabled", true);
 
         let content = $('#discuss_khach .content_discuss').val();
         let attach = [];
@@ -141,6 +147,16 @@
             let file = $(this).data('file');
             attach.push(file);
         });
+
+        // check empty
+        content = $.trim(content);
+        if (content.length === 0 && attach.length === 0) {
+            return false;
+        }
+        // end check empty
+
+        $(btn).html('<i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
 
         $.ajax({
             url: `discuss/ajax_discuss_khach_add`,

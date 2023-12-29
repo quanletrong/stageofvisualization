@@ -28,7 +28,7 @@
                         <textarea name="message" class="form-control content_discuss bg-white" style="padding-left:33px; padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_noi_bo" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                         <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
-                            <button type="button" class="text-primary p-0 border-0" style="background: none;" onclick="ajax_discuss_noi_bo_add(this)"><i class="fas fa-paper-plane"></i></button>
+                            <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_discuss_noi_bo_add(this)"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -90,6 +90,13 @@
             }
         })
 
+        $("#discuss_noi_bo .content_discuss").keypress(function(e) {
+            if (e.which == 13 && !e.shiftKey) {
+                ajax_discuss_noi_bo_add($(`#discuss_noi_bo .btn-send`));
+                return false;
+            }
+        });
+
     })
 
     function ajax_discuss_list_noi_bo() {
@@ -131,15 +138,23 @@
     }
 
     function ajax_discuss_noi_bo_add(btn) {
-        $(btn).html('<i class="fas fa-sync fa-spin"></i>');
-        $(btn).prop("disabled", true);
-
+       
         let content = $('#discuss_noi_bo .content_discuss').val();
         let attach = [];
         $('#discuss_noi_bo .chat_list_attach > div').each(function(index) {
             let file = $(this).data('file');
             attach.push(file);
         });
+
+        // check empty
+        content = $.trim(content);
+        if (content.length === 0 && attach.length === 0) {
+            return false;
+        }
+        // end check empty
+
+        $(btn).html('<i class="fas fa-sync fa-spin"></i>');
+        $(btn).prop("disabled", true);
 
         $.ajax({
             url: `discuss/ajax_discuss_noi_bo_add`,
