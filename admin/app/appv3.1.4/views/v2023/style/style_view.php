@@ -53,7 +53,9 @@
                                             <td class="align-middle text-center"><?= $index++ ?></td>
                                             <td class="align-middle"><?= $item['name'] ?></td>
                                             <td class="align-middle"><?= $item['sapo'] ?></td>
-                                            <td class="align-middle text-center"><img src='<?= $item['image_path'] ?>' height="50" class="rounded"></td>
+                                            <td class="align-middle text-center">
+                                                <img src='<?= $item['image_path'] ?>' height="50" class="rounded" data-toggle="modal" data-target="#modal-full-image" data-src="<?= $item['image_path'] ?>">
+                                            </td>
 
                                             <td class="align-middle text-center">
                                                 <?php

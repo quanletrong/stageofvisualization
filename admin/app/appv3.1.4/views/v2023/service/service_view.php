@@ -56,7 +56,9 @@
                                             <td class="align-middle"><?= $item['name'] ?></td>
                                             <td class="align-middle"><?= $item['sapo'] ?></td>
                                             <td class="align-middle text-center"><?= $item['type_service'] ?></td>
-                                            <td class="align-middle text-center"><img src='<?= $item['image_path'] ?>' width="100" class="rounded"></td>
+                                            <td class="align-middle text-center">
+                                                <img src='<?= $item['image_path'] ?>' width="100" class="rounded" data-toggle="modal" data-target="#modal-full-image" data-src="<?= $item['image_path'] ?>">
+                                            </td>
                                             <td class="align-middle text-center"><?= $item['price'] ?>$</td>
 
                                             <td class="align-middle text-center">

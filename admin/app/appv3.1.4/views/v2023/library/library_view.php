@@ -92,7 +92,9 @@
                                             <td class="align-middle"><?= $item['name'] ?></td>
                                             <td class="align-middle"><?= $item['room_name'] ?></td>
                                             <td class="align-middle"><?= $item['style_name'] ?></td>
-                                            <td class="align-middle text-center"><img data-src='<?= $item['image_path'] ?>' width="100" class="rounded lazy"></td>
+                                            <td class="align-middle text-center">
+                                                <img data-src='<?= $item['image_path'] ?>' width="100" class="rounded lazy" data-toggle="modal" data-target="#modal-full-image">
+                                            </td>
 
                                             <td class="align-middle text-center">
                                                 <?php

@@ -108,6 +108,22 @@
     <!-- /.modal-dialog -->
 </div>
 
+<!-- modal full image -->
+<div class="modal fade" id="modal-full-image" style="display: none" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="" alt="" class="w-100">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     var SLIDE = {};
     $(function() {
@@ -201,6 +217,16 @@
                 modal.find('.modal-body #slide').val('');
             }
         });
+
+        $('#modal-full-image').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var src = button.data('src');
+            if (src === undefined || src === '') {
+                src = button.attr('src');
+            }
+            var modal = $(this);
+            modal.find('.modal-body img').attr('src', src);
+        })
     });
 
     function cb_upload_image_service(link, target) {
@@ -212,6 +238,9 @@
         $(`${target}_pre`).attr('src', link);
         let slide_id = $(target).data('id');
         SLIDE[slide_id].image = link;
+
+        $(`${target}_pre`).data('src', link);
+        $(`#${slide_id} .btn-full-image`).data('src', link);
     }
 
     // <!-- xu lý thêm ảnh slide -->
@@ -225,56 +254,43 @@
                 'image': ''
             }
 
-            let row_new = `<tr id='${slide_id}'>
-                <td class="align-middle">
-                    <input name="" class="form-control border-0" value="" onChange="SLIDE[${slide_id}].name = this.value">
-                </td>
-                <td class="align-middle">
-                    <img src="" alt="" class="img-fluid" id="image_${slide_id}_pre">
-                    <input type="hidden" id="image_${slide_id}" data-id="${slide_id}">
-                </td>
-                <td class="text-right py-0 align-middle">
-                    <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_slide" data-target="#image_${slide_id}" >
-                            <i class="fas fa-upload"></i>
-                        </button>
-                        <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
-                        <button type="button" class="btn btn-danger" onClick="delete SLIDE[${slide_id}]; $('#${slide_id}').remove()"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
-            </tr>`;
-
-            $('#table_add_slide tbody').append(row_new);
+            $('#table_add_slide tbody').append(html_row_image(slide_id));
             $('#table_add_slide tbody tr').last().find('input').focus();
         } else {
             $('#table_add_slide tbody tr').last().find('input').focus();
         }
     }
 
+    function html_row_image(slide_id) {
+        let row_new = `<tr id='${slide_id}'>
+            <td class="align-middle">
+                <input name="" class="form-control border-0" value="${htmlEntities(SLIDE[slide_id].name)}" onChange="SLIDE[${slide_id}].name = this.value">
+            </td>
+            <td class="align-middle">
+                <img src="${SLIDE[slide_id].image_path}" alt="" class="img-fluid" id="image_${slide_id}_pre"
+                    data-toggle="modal" data-target="#modal-full-image" data-src="${SLIDE[slide_id].image_path}"
+                >
+                <input type="hidden" id="image_${slide_id}" data-id="${slide_id}">
+            </td>
+            <td class="text-right py-0 align-middle">
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_slide" data-target="#image_${slide_id}" >
+                        <i class="fas fa-upload"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-danger" onClick="delete SLIDE[${slide_id}]; $('#${slide_id}').remove()"><i class="fas fa-trash"></i></button>
+
+                    <button type="button" class="btn btn-info btn-full-image" data-toggle="modal" data-target="#modal-full-image" data-src="${SLIDE[slide_id].image_path}"><i class="fas fa-eye"></i></button>
+                </div>
+            </td>
+        </tr>`;
+        return row_new;
+    }
+
     function render_slide() {
         $('#table_add_slide tbody').html('');
         for (const slide_id in SLIDE) {
-
-            let row_new = `<tr id='${slide_id}'>
-                <td class="align-middle">
-                    <input name="" class="form-control border-0" value="${htmlEntities(SLIDE[slide_id].name)}" onChange="SLIDE[${slide_id}].name = this.value">
-                </td>
-                <td class="align-middle">
-                    <img src="${SLIDE[slide_id].image_path}" alt="" class="img-fluid" id="image_${slide_id}_pre">
-                    <input type="hidden" id="image_${slide_id}" data-id="${slide_id}">
-                </td>
-                <td class="text-right py-0 align-middle">
-                    <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_slide" data-target="#image_${slide_id}" >
-                            <i class="fas fa-upload"></i>
-                        </button>
-                        <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
-                        <button type="button" class="btn btn-danger" onClick="delete SLIDE[${slide_id}]; $('#${slide_id}').remove()"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
-            </tr>`;
-
-            $('#table_add_slide tbody').append(row_new);
+            $('#table_add_slide tbody').append(html_row_image(slide_id));
         }
     }
 </script>

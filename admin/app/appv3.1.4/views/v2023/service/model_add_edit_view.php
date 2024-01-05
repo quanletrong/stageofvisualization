@@ -124,6 +124,23 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+
+<!-- modal full image -->
+<div class="modal fade" id="modal-full-image" style="display: none" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="" alt="" class="w-100">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     var ROOM = {}; // các hạng mục thiết kế thuộc dịch vụ
     $(function() {
@@ -250,6 +267,16 @@
                 modal.find('.modal-body #room').val('');
             }
         });
+
+        $('#modal-full-image').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var src = button.data('src');
+            if (src === undefined || src === '') {
+                src = button.attr('src');
+            }
+            var modal = $(this);
+            modal.find('.modal-body img').attr('src', src);
+        })
     });
 
     function cb_upload_image_service(link, target) {
@@ -261,6 +288,9 @@
         $(`${target}_pre`).attr('src', link);
         let room_id = $(target).data('id');
         ROOM[room_id].image = link;
+
+        $(`${target}_pre`).data('src', link);
+        $(`#${room_id} .btn-full-image`).data('src', link);
     }
 
     // <!-- xu lý thêm phong -->
@@ -274,57 +304,42 @@
                 'image': ''
             }
 
-            let row_new = `<tr id='${room_id}'>
-                <td class="align-middle">
-                    <input name="" class="form-control border-0" value="" onChange="ROOM[${room_id}].name = this.value">
-                </td>
-                <td class="align-middle">
-                    <img src="" alt="" class="img-fluid" id="image_${room_id}_pre">
-                    <input type="hidden" id="image_${room_id}" data-id="${room_id}">
-                </td>
-                <td class="text-right py-0 align-middle">
-                    <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_room" data-target="#image_${room_id}" >
-                            <i class="fas fa-upload"></i>
-                        </button>
-                        <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
-                        <button type="button" class="btn btn-danger" onClick="delete ROOM[${room_id}]; $('#${room_id}').remove()"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
-            </tr>`;
-
-            $('#table_add_room tbody').append(row_new);
+            $('#table_add_room tbody').append(html_row_image(room_id));
             $('#table_add_room tbody tr').last().find('input').focus();
         } else {
             $('#table_add_room tbody tr').last().find('input').focus();
         }
     }
 
+    function html_row_image(room_id) {
+        let row_new = `<tr id='${room_id}'>
+            <td class="align-middle">
+                <input name="" class="form-control border-0" value="${htmlEntities(ROOM[room_id].name)}" onChange="ROOM[${room_id}].name = this.value">
+            </td>
+            <td class="align-middle">
+                <img src="${ROOM[room_id].image_path}" alt="" class="img-fluid" id="image_${room_id}_pre" 
+                    data-toggle="modal" data-target="#modal-full-image" data-src="${ROOM[room_id].image_path}">
+                <input type="hidden" id="image_${room_id}" data-id="${room_id}">
+            </td>
+            <td class="text-right py-0 align-middle">
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_room" data-target="#image_${room_id}" >
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    
+                    <button type="button" class="btn btn-danger" onClick="delete ROOM[${room_id}]; $('#${room_id}').remove()"><i class="fas fa-trash"></i></button>
+
+                    <button type="button" class="btn btn-info btn-full-image" data-toggle="modal" data-target="#modal-full-image" data-src="${ROOM[room_id].image_path}"><i class="fas fa-eye"></i></button>
+                </div>
+            </td>
+        </tr>`;
+        return row_new;
+    }
+
     function render_room() {
         $('#table_add_room tbody').html('');
-
         for (const room_id in ROOM) {
-
-            let row_new = `<tr id='${room_id}'>
-                <td class="align-middle">
-                    <input name="" class="form-control border-0" value="${htmlEntities(ROOM[room_id].name)}" onChange="ROOM[${room_id}].name = this.value">
-                </td>
-                <td class="align-middle">
-                    <img src="${ROOM[room_id].image_path}" alt="" class="img-fluid" id="image_${room_id}_pre">
-                    <input type="hidden" id="image_${room_id}" data-id="${room_id}">
-                </td>
-                <td class="text-right py-0 align-middle">
-                    <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-warning" onclick="quanlt_upload(this)" data-callback="cb_upload_image_room" data-target="#image_${room_id}" >
-                            <i class="fas fa-upload"></i>
-                        </button>
-                        <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
-                        <button type="button" class="btn btn-danger" onClick="delete ROOM[${room_id}]; $('#${room_id}').remove()"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
-            </tr>`;
-
-            $('#table_add_room tbody').append(row_new);
+            $('#table_add_room tbody').append(html_row_image(room_id));
         }
     }
 </script>

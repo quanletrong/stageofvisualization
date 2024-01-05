@@ -101,6 +101,22 @@
     <!-- /.modal-dialog -->
 </div>
 
+<!-- modal full image -->
+<div class="modal fade" id="modal-full-image" style="display: none" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="" alt="" class="w-100">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     var SLIDE = {};
     $(function() {
@@ -151,6 +167,7 @@
                 };
                 render_image();
                 $('#table_add_image tfoot').hide();
+                $('#image_div .btn-delete-image').hide();
 
             } else {
                 modal.find('.modal-title').text(`Thêm ảnh vào thư viện`);
@@ -168,6 +185,16 @@
                 $('#table_add_image tfoot').show();
             }
         });
+
+        $('#modal-full-image').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var src = button.data('src');
+            if(src === undefined || src === '') {
+                src =  button.attr('src');
+            }
+            var modal = $(this);
+            modal.find('.modal-body img').attr('src', src);
+        })
     });
 
     function cb_upload_add_image_library(link, target, name) {
@@ -198,7 +225,8 @@
                 <input name="" class="form-control border-0 input-name" value="${htmlEntities(SLIDE[image_id].name)}" onChange="SLIDE[${image_id}].name = this.value">
             </td>
             <td class="align-middle text-center">
-                <img src="${SLIDE[image_id].image}" alt="" class="img-fluid w-50" id="image_${image_id}_pre">
+                <img src="${SLIDE[image_id].image}" alt="" class="img-fluid w-50" id="image_${image_id}_pre" 
+                    data-toggle="modal" data-target="#modal-full-image" data-src="${SLIDE[image_id].image}">
                 <input type="hidden" id="image_${image_id}"  data-id="${image_id}">
             </td>
             <td class="text-right py-0 align-middle">
@@ -207,8 +235,13 @@
                         <i class="fas fa-upload"></i>
                     </button>
                     
-                    <button type="button" class="btn btn-info"><i class="fas fa-eye"></i></button>
-                    <button type="button" class="btn btn-danger" onClick="delete SLIDE[${image_id}]; $('#${image_id}').remove()"><i class="fas fa-trash"></i></button>
+                    <button type="button" class="btn btn-danger btn-delete-image" onClick="delete SLIDE[${image_id}]; $('#${image_id}').remove()">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-full-image" data-src="${SLIDE[image_id].image}">
+                        <i class="fas fa-eye"></i>
+                    </button>
                 </div>
             </td>
         </tr>`;
