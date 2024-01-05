@@ -113,4 +113,31 @@ class Library extends MY_Controller
         $this->load->view($this->_template_f . 'library/library_view', $data);
         $this->_loadFooter();
     }
+    function ajax_delete()
+    {
+        if ($this->_session_role() != ADMIN) {
+            resError('Tài khoản không có quyền truy cập!');
+        }
+
+        $id_library  = $this->input->post('id_library');
+        $id_library  = is_numeric($id_library) && $id_library > 0 ? $id_library : 0;
+        $info = $this->Library_model->get_info($id_library);
+        if (empty($info)) {
+            resError('Không tồn tại trong thư viện');
+        }
+
+        // xóa bản ghi
+        $exc = $this->Library_model->delete($id_library);
+
+        if ($exc) {
+            //xóa file ảnh
+            $path_image = $_SERVER["DOCUMENT_ROOT"] .'/'. FOLDER_LIBRARY . $info['image'];
+            if (file_exists($path_image)) {
+                @unlink($path_image);
+            }
+            resSuccess('Xóa thành công');
+        } else {
+            resError('Xóa không thành công');
+        }
+    }
 }

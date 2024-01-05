@@ -12,10 +12,11 @@ class Room_model extends CI_Model
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_room (name, status, id_user, create_time) VALUES (?, ?, ?, ?)";
+        $update_time = $create_time;
+        $sql = "INSERT INTO tbl_room (name, status, id_user, create_time, update_time) VALUES (?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $status, $id_user, $create_time];
+            $param = [$name, $status, $id_user, $create_time, $update_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -41,7 +42,7 @@ class Room_model extends CI_Model
         FROM tbl_room as A 
         LEFT JOIN tbl_user as B ON A.id_user = B.id_user 
         $where
-        ORDER BY sort ASC, status DESC";
+        ORDER BY A.update_time DESC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$status])) {

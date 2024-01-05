@@ -81,7 +81,7 @@
                                         <th style="min-width: 200px; width: 200px;">Phong cách</th>
                                         <th class="text-center" style="min-width: 70px; width: 70px;">Trước/Sau</th>
                                         <th class="text-center" style="min-width: 80px; width: 80px;">Trạng thái</th>
-                                        <th style="min-width: 70px; width: 70px;">Action</th>
+                                        <th class="text-center" style="min-width: 100px; width: 100px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -104,9 +104,13 @@
                                                 ?>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <a href="#" class="btn btn-sm btn-danger w-100" data-toggle="modal" data-target="#modal-library" data-type="edit" data-library="<?= htmlentities(json_encode($item)) ?>">
+                                                <a href="#" class="btn btn-sm btn-danger" style="width: 50px;" data-toggle="modal" data-target="#modal-library" data-type="edit" data-library="<?= htmlentities(json_encode($item)) ?>">
                                                     Sửa
                                                 </a>
+
+                                                <button href="#" class="btn btn-sm btn-danger" style="width: 50px;" onclick="ajax_delete(this, <?= $id_library ?>)">
+                                                    Xóa
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -144,7 +148,7 @@
     $(function() {
 
         $('.lazy').lazy();
-        
+
         $("#example1").DataTable({
             "lengthChange": true,
             "pageLength": 100,
@@ -155,4 +159,35 @@
 
         $('.select2').select2();
     });
+
+    function ajax_delete(btn, id_library) {
+
+        if (confirm('Bạn muốn xóa vĩnh viễn ảnh này?')) {
+            $(btn).html('<i class="fas fa-sync fa-spin"></i>');
+            $(btn).prop("disabled", true);
+
+            $.ajax({
+                url: `library/ajax_delete`,
+                type: "POST",
+                data: {
+                    'id_library': id_library,
+                },
+                success: function(data, textStatus, jqXHR) {
+                    let kq = JSON.parse(data);
+
+                    if (kq.status) {
+                        $(btn).closest('tr').remove();
+                    } else {
+                        alert(kq.error);
+                        $(btn).html('Xóa');
+                        $(btn).prop("disabled", false);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(data);
+                    alert('Error');
+                }
+            });
+        }
+    }
 </script>

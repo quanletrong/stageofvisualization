@@ -13,10 +13,11 @@ class Library_model extends CI_Model
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_library (id_room, id_style, name, image, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $update_time = $create_time;
+        $sql = "INSERT INTO tbl_library (id_room, id_style, name, image, status, id_user, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_room, $id_style, $name, $image, $status, $id_user, $create_time];
+            $param = [$id_room, $id_style, $name, $image, $status, $id_user, $create_time, $update_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -46,7 +47,7 @@ class Library_model extends CI_Model
         LEFT JOIN tbl_style as C ON A.id_style = C.id_style 
         LEFT JOIN tbl_room as D ON A.id_room = D.id_room 
         $where
-        ORDER BY sort ASC";
+        ORDER BY A.update_time DESC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute()) {
@@ -93,6 +94,23 @@ class Library_model extends CI_Model
             $param = [$id_room, $id_style, $name, $image, $status, $update_time, $id_library];
 
             if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+    function delete($id_library)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "DELETE FROM `tbl_library` WHERE `id_library` = $id_library";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
                 $execute = true;
             } else {
                 var_dump($stmt->errorInfo());

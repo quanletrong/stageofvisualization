@@ -12,10 +12,11 @@ class Style_model extends CI_Model
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_style (name, sapo, image, slide, status, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $update_time = $create_time;
+        $sql = "INSERT INTO tbl_style (name, sapo, image, slide, status, id_user, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$name, $sapo, $image, $slide, $status, $id_user, $create_time];
+            $param = [$name, $sapo, $image, $slide, $status, $id_user, $create_time, $update_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -41,7 +42,7 @@ class Style_model extends CI_Model
         FROM tbl_style as A 
         LEFT JOIN tbl_user as B ON A.id_user = B.id_user 
 
-        ORDER BY sort ASC";
+        ORDER BY A.update_time DESC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$status])) {
