@@ -95,6 +95,50 @@ class Log_model extends CI_Model
             }
         }
         $stmt->closeCursor();
+
+        $order = []; // ?
+        $username = ''; //?
+        $by_uname = ''; //?
+
+        // TIME
+        // $body = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>';
+        $body = timeSince($created_time) . " trước " . $by_uname . " ";
+
+        // TITLE
+        $body .= LOG[$type];
+
+        // REWWORK NẾU CÓ
+        $stt_rework = @array_search($id_rework, array_keys($order['job'][$id_job]['rework'])) + 1;
+        $body .= $id_rework > 0 ? " <b>$stt_rework</b> " : '';
+
+        // IMAGE NẾU CÓ
+        $stt_image = @array_search($id_job, array_keys($order['job'])) + 1;
+        $body .= $id_job > 0 ? ' của <b>IMAGE ' . $stt_image . ' (' . $order['job'][$id_job]['type_service'] . ')</b> ' : '';
+
+        // CUSTOM PRICE USER NẾU CÓ
+        $body .= $id_user > 0 ? " <b>$username</b> " : '';
+
+        // CŨ
+        if ($old != '') {
+            $body .= " từ $old ";
+        }
+
+        // MỚI
+        if ($new != '') {
+            $body .= " <span style='color: red'>→</span> $new ";
+        }
+
+        // $body .= "<p><a href='https://stageofvisualization.com/admin/order/detail/$id_order'>Xem chi tiết</a></p>";
+
+        // $body .= "</body></html>";
+
+        $email['to'] = 'lequanltv@gmail.com';
+        $email['subject'] = LOG[$type];
+        $data['body'] = $body;
+
+        $email['body'] = $this->load->view($this->_template_f . 'component/tmpl_email_order', $data, false);
+        @sendmail($email);
+
         return $new_id;
     }
 

@@ -47,7 +47,7 @@ define('CONFIG_ENCRYPTION_KEY', 'sQ8hY7wqECMQrcKm');
 
 // config for send email
 define('EMAIL_SENDER', 'no-reply@quancoder.online');
-define('EMAIL_SENDER_NAME', 'no-reply');
+define('EMAIL_SENDER_NAME', 'Stage of visualization');
 
 // for config session
 define('SESSION_CONFIG_DRIVER', 'files'); // files|redis
