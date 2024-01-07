@@ -66,26 +66,28 @@ class Log_model extends CI_Model
         return $data;
     }
 
-    function log_add($log)
+    function log_add($log, $order)
     {
-        $type         = isset($log['type'])         ? $log['type'] : '';
-        $created_time = isset($log['created_time']) ? $log['created_time'] : date('Y-m-d H:i:s');
-        $by_id_user   = isset($log['by_id_user'])   ? $log['by_id_user'] : $this->_session_uid();
-        $id_order     = isset($log['id_order'])     ? $log['id_order'] : '';
-        $id_job       = isset($log['id_job'])       ? $log['id_job'] : '';
-        $id_rework    = isset($log['id_rework'])    ? $log['id_rework'] : '';
-        $id_user      = isset($log['id_user'])      ? $log['id_user'] : '';
-        $old          = isset($log['old'])          ? $log['old'] : '';
-        $new          = isset($log['new'])          ? $log['new'] : '';
-        $db_old       = isset($log['db_old'])       ? $log['db_old'] : '';
-        $db_new       = isset($log['db_new'])       ? $log['db_new'] : '';
+        $type           = isset($log['type'])         ? $log['type'] : '';
+        $created_time   = isset($log['created_time']) ? $log['created_time'] : date('Y-m-d H:i:s');
+        $by_id_user     = isset($log['by_id_user'])   ? $log['by_id_user'] : $this->_session_uid();
+        $by_username    = isset($log['by_username'])  ? $log['by_username'] : $this->_session_uname();
+        $id_order       = isset($log['id_order'])     ? $log['id_order'] : '';
+        $id_job         = isset($log['id_job'])       ? $log['id_job'] : '';
+        $id_rework      = isset($log['id_rework'])    ? $log['id_rework'] : '';
+        $price_id_user  = isset($log['price_id_user']) ? $log['price_id_user'] : '';
+        $price_username = isset($log['price_username']) ? $log['price_username'] : '';
+        $old            = isset($log['old'])          ? $log['old'] : '';
+        $new            = isset($log['new'])          ? $log['new'] : '';
+        $db_old         = isset($log['db_old'])       ? $log['db_old'] : '';
+        $db_new         = isset($log['db_new'])       ? $log['db_new'] : '';
 
         $new_id = 0;
         $iconn = $this->db->conn_id;
         $sql = "INSERT INTO tbl_log (`type`, created_time, `by_id_user`, id_order, id_job, `id_rework`, `id_user`, `old`, new, db_old, db_new) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$type, $created_time, $by_id_user, $id_order, $id_job, $id_rework, $id_user, $old, $new, $db_old, $db_new];
+            $param = [$type, $created_time, $by_id_user, $id_order, $id_job, $id_rework, $price_id_user, $old, $new, $db_old, $db_new];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -96,13 +98,15 @@ class Log_model extends CI_Model
         }
         $stmt->closeCursor();
 
-        $order = []; // ?
-        $username = ''; //?
-        $by_uname = ''; //?
 
-        // TIME
-        // $body = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>';
-        $body = timeSince($created_time) . " trước " . $by_uname . " ";
+        $this->_sendmail($type, $id_order, $id_rework, $id_job, $order, $price_username, $old, $new, $created_time, $by_username);
+
+        return $new_id;
+    }
+
+    function _sendmail($type, $id_order, $id_rework, $id_job, $order, $price_username, $old, $new, $created_time, $by_username)
+    {
+        $body = "";
 
         // TITLE
         $body .= LOG[$type];
@@ -116,7 +120,7 @@ class Log_model extends CI_Model
         $body .= $id_job > 0 ? ' của <b>IMAGE ' . $stt_image . ' (' . $order['job'][$id_job]['type_service'] . ')</b> ' : '';
 
         // CUSTOM PRICE USER NẾU CÓ
-        $body .= $id_user > 0 ? " <b>$username</b> " : '';
+        $body .= $price_username != '' ? " <b>$price_username</b> " : '';
 
         // CŨ
         if ($old != '') {
@@ -128,18 +132,25 @@ class Log_model extends CI_Model
             $body .= " <span style='color: red'>→</span> $new ";
         }
 
-        // $body .= "<p><a href='https://stageofvisualization.com/admin/order/detail/$id_order'>Xem chi tiết</a></p>";
+        // TIME 
+        $body .= "<p>Vào lúc: " . date("H:s d/m/Y", strtotime($created_time)) . "</p>";
+        $body .= "<p>Bởi: $by_username</p>";
 
-        // $body .= "</body></html>";
+        $data['id_order'] = $id_order;
+        $data['body']     = $body;
 
-        $email['to'] = 'lequanltv@gmail.com';
-        $email['subject'] = LOG[$type];
-        $data['body'] = $body;
+        // gửi mail đến tài khoản.
 
-        $email['body'] = $this->load->view($this->_template_f . 'component/tmpl_email_order', $data, false);
+        # danh sách tài khoản trong order
+        # loại mail
+        # setting nhận loại mail
+        // $order['']
+
+        $email['to']      = 'lequanltv@gmail.com';
+        $email['subject'] = "#$id_order " . LOG[$type];
+        $email['body']    = $this->load->view('v2023/component/tmpl_email_order', $data, true);
+
         @sendmail($email);
-
-        return $new_id;
     }
 
     // function edit($code_user, $fullname, $pass_hash, $phone, $email, $status, $role, $type, $user_service_db, $update_time, $id_user)

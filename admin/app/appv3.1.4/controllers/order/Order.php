@@ -487,9 +487,10 @@ class Order extends MY_Controller
         }
 
         // LƯU LOG
-        $log['type']      = LOG_CREATE_ORDER;
-        $log['id_order']  = $new_order;
-        $exc_log_add = $this->Log_model->log_add($log);
+        $log['type']     = LOG_CREATE_ORDER;
+        $log['id_order'] = $new_order;
+        $order           = $this->Order_model->get_info_order($new_order);
+        $exc_log_add = $this->Log_model->log_add($log, $order);
 
 
         // HOÀN THÀNH QUÁ TRÌNH LƯU ĐƠN HÀNG
@@ -617,7 +618,7 @@ class Order extends MY_Controller
         $log['id_order']  = $order['id_order'];
         $log['old']       = status_order($order['status'])['text'];
         $log['new']       = status_order($new_status)['text'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($kq);
     }
@@ -738,7 +739,7 @@ class Order extends MY_Controller
         $log['id_order']  = $order['id_order'];
         $log['id_job']    = $id_job;
         $log['new']       = $as_uinfo['username'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($kq);
     }
@@ -841,7 +842,7 @@ class Order extends MY_Controller
         $log['id_order']  = $order['id_order'];
         $log['id_job']    = $id_job;
         $log['new']       = $as_uinfo['username'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($kq);
     }
@@ -864,7 +865,7 @@ class Order extends MY_Controller
         $log['id_order']  = $order['id_order'];
         $log['old']       = $order['custom'];
         $log['new']       = $custom;
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($kq);
     }
@@ -909,12 +910,13 @@ class Order extends MY_Controller
 
         $kq = $this->Order_model->update_custom_order_for_user($id_order, $custom, $id_user);
 
-        $log['type']      = LOG_CUSTOM_USER_PRICE_EDIT;
-        $log['id_order']  = $order['id_order'];
-        $log['id_user']   = $id_user;
-        $log['old']       = $old_custom;
-        $log['new']       = $custom;
-        $this->Log_model->log_add($log);
+        $log['type']           = LOG_CUSTOM_USER_PRICE_EDIT;
+        $log['id_order']       = $order['id_order'];
+        $log['price_id_user']  = $id_user;
+        $log['price_username'] = $uinfo['username'];
+        $log['old']            = $old_custom;
+        $log['new']            = $custom;
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($kq);
     }
@@ -1009,7 +1011,7 @@ class Order extends MY_Controller
         $log['id_order']  = $order['id_order'];
         $log['old']       = $order['code_order'];
         $log['new']       = $code;
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess('Thành công');
     }
@@ -1037,7 +1039,7 @@ class Order extends MY_Controller
         $log['id_order']  = $order['id_order'];
         $log['old']       = sec2time($order['custom_time']);
         $log['new']       = sec2time($second);
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess('Thành công');
     }
@@ -1078,7 +1080,7 @@ class Order extends MY_Controller
         $log['id_job']   = $id_job;
         $log['old']      = $log['db_old'] = $order['job'][$id_job]['image'];
         $log['new']      = $log['db_new'] = $copy['basename'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess('Thành công');
     }
@@ -1124,7 +1126,7 @@ class Order extends MY_Controller
         $log['id_order'] = $order['id_order'];
         $log['id_job']   = $id_job;
         $log['new']      = $copy['basename'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($id_attach);
     }
@@ -1162,7 +1164,7 @@ class Order extends MY_Controller
         $log['type']     = LOG_REF_REMOVE;
         $log['id_order'] = $order['id_order'];
         $log['id_job']   = $id_job;
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($id_attach);
     }
@@ -1210,7 +1212,7 @@ class Order extends MY_Controller
         $log['id_job']   = $id_job;
         $log['old'] = $old_attach;
         $log['new'] = $copy['basename'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
         resSuccess('Thành công');
     }
 
@@ -1247,7 +1249,7 @@ class Order extends MY_Controller
         $log['id_job']   = $id_job;
         $log['old']      = $order['job'][$id_job]['requirement'];
         $log['new']      = $requirement;
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
         resSuccess('Thành công');
     }
 
@@ -1290,7 +1292,7 @@ class Order extends MY_Controller
         $log['id_order'] = $order['id_order'];
         $log['id_job']   = $id_job;
         $log['new']      = $copy['basename'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($id_file_complete);
     }
@@ -1337,7 +1339,7 @@ class Order extends MY_Controller
         $log['id_job']   = $id_job;
         $log['old']      = $old_file;
         $log['new']      = $copy['basename'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
         resSuccess($id_complete);
     }
 
@@ -1373,7 +1375,7 @@ class Order extends MY_Controller
         $log['id_order'] = $order['id_order'];
         $log['id_job']   = $id_job;
         $log['new']      = $old_file;
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
         resSuccess($id_complete);
     }
 
@@ -1423,7 +1425,7 @@ class Order extends MY_Controller
             $log['id_order']  = $order['id_order'];
             $log['id_job']    = $id_job;
             $log['id_rework'] = $newid;
-            $this->Log_model->log_add($log);
+            $this->Log_model->log_add($log, $order);
 
             resSuccess('ok');
         } else {
@@ -1471,7 +1473,7 @@ class Order extends MY_Controller
         $log['id_job']    = $info['id_job'];
         $log['id_rework'] = $id_rework;
         $log['new']       = $copy['basename'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($id_attach);
     }
@@ -1522,7 +1524,7 @@ class Order extends MY_Controller
         $log['id_rework'] = $id_rework;
         $log['old']       = $old_file;
         $log['new']       = $copy['basename'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
         resSuccess($id_attach);
     }
 
@@ -1560,7 +1562,7 @@ class Order extends MY_Controller
         $log['id_job']    = $rework['id_job'];
         $log['id_rework'] = $id_rework;
         $log['new']       = $old_file;
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
         resSuccess($id_attach);
     }
 
@@ -1597,7 +1599,7 @@ class Order extends MY_Controller
         $log['id_rework'] = $id_rework;
         $log['old']      = $rework['note'];
         $log['new']      = $requirement;
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess('Thành công');
     }
@@ -1642,7 +1644,7 @@ class Order extends MY_Controller
         $log['id_job']   = $rework['id_job'];
         $log['id_rework'] = $id_rework;
         $log['new']      = $copy['basename'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($id_file_complete);
     }
@@ -1693,7 +1695,7 @@ class Order extends MY_Controller
         $log['id_rework'] = $id_rework;
         $log['old']      = $old_file;
         $log['new']      = $copy['basename'];
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($id_complete_rework);
     }
@@ -1732,7 +1734,7 @@ class Order extends MY_Controller
         $log['id_job']   = $rework['id_job'];
         $log['id_rework'] = $id_rework;
         $log['new']      = $old_file;
-        $this->Log_model->log_add($log);
+        $this->Log_model->log_add($log, $order);
 
         resSuccess($id_complete);
     }
@@ -1890,7 +1892,7 @@ class Order extends MY_Controller
 
         ## log
         $dk['id_order']    = $id_order;
-        $logs              = $this->Log_model->log_list($dk);
+        $logs              = $this->Log_model->log_list($dk, $order);
         $data['logs']      = $logs;
         $data['order']     = $order;
         $data['FDR_ORDER'] = $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';

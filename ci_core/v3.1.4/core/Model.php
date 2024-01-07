@@ -84,4 +84,10 @@ class CI_Model {
         return $user_id;
     }
 
+	protected function _session_uname()
+    {
+        $username= trim($this->session->userdata('uname'));
+        return $username;
+    }
+
 }

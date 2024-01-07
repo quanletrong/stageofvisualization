@@ -496,7 +496,7 @@ class Order_model extends CI_Model
     function _get_list_editor_by_id_order($id_odrer, $iconn)
     {
         $data = [];
-        $sql = "SELECT B.id_user, B.username, B.fullname, B.avatar
+        $sql = "SELECT B.id_user, B.username, B.fullname, B.avatar, B.email
         FROM tbl_job_user as A
         INNER JOIN tbl_user as B ON A.id_user = B.id_user
         WHERE id_order= $id_odrer AND type_job_user IN (2,3,4,5) AND A.status = 1";
