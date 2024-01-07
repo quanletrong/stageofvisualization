@@ -133,7 +133,7 @@ class Log_model extends CI_Model
         }
 
         // TIME 
-        $body .= "<p>Vào lúc: " . date("H:s d/m/Y", strtotime($created_time)) . "</p>";
+        $body .= "<p>Vào lúc: " . date("H:i d/m/Y", strtotime($created_time)) . "</p>";
         $body .= "<p>Bởi: $by_username</p>";
 
         $data['id_order'] = $id_order;
@@ -142,15 +142,71 @@ class Log_model extends CI_Model
         // gửi mail đến tài khoản.
 
         # danh sách tài khoản trong order
-        # loại mail
-        # setting nhận loại mail
-        // $order['']
+        $CI = &get_instance();
+        $CI->load->model('user_model');
+        $all_admin = $CI->User_model->get_list_user_working(1, ADMIN);
+        $all_sale = $CI->User_model->get_list_user_working(1, SALE);
 
-        $email['to']      = 'lequanltv@gmail.com';
-        $email['subject'] = "#$id_order " . LOG[$type];
-        $email['body']    = $this->load->view('v2023/component/tmpl_email_order', $data, true);
+        // var_dump($all_admin);
+        // var_dump($all_sale);die;
+        $to = [];
 
-        @sendmail($email);
+        # tạo đơn hàng
+        // gửi cho all AD, all SALE
+        // gửi cho khách nếu đơn tạo hộ
+        if ($type == LOG_CREATE_ORDER) {
+
+            $to = $all_admin + $all_sale;
+
+            if ($order['order_type'] == DON_TAO_HO) {
+                $info_khach[$order['id_user']] = $CI->User_model->get_user_info_by_id($order['id_user']);
+                $to = $all_admin + $all_sale + $info_khach;
+            }
+        }
+        # thay đổi trạng thái
+        // gửi all team
+        // gửi all admin, all sale
+        // gửi cho khách nếu đơn = tạo hộ và status = DELIVERED, CANCLE, COMPLETE
+        else if ($type == LOG_STATUS) {
+            $to = $order['team'] + $all_admin + $all_sale;
+            if ($order['order_type'] == DON_TAO_HO && in_array($new, ['DELIVERED', 'CANCLE', 'COMPLETE'])) {
+                $info_khach[$order['id_user']] = $CI->User_model->get_user_info_by_id($order['id_user']);
+                $to = $order['team'] + $all_admin + $all_sale + $info_khach;
+            }
+        }
+        # thêm hoặc xóa wk QC_IN QC_OUT ED CUSTOM
+        // gửi all sale, all team
+        else if (in_array($type, [
+            LOG_QC_IN_ADD,
+            LOG_QC_IN_REMOVE,
+            LOG_QC_OUT_ADD,
+            LOG_QC_OUT_REMOVE,
+            LOG_ED_ADD,
+            LOG_ED_REMOVE,
+            LOG_CUSTOM_ADD,
+            LOG_CUSTOM_REMOVE
+        ])) {
+            $to = $order['team'] +  $all_sale;
+        }
+        # thêm mới rework
+        // gửi all admin, all sale, all team
+        else if ($type == LOG_RW_ADD) {
+            $to = $order['team'] + $all_admin + $all_sale;
+        }
+
+        # SEND MAIL
+        if (count($to)) {
+
+            foreach ($to as $val) {
+                $email['to'][] = $val['email'];
+            }
+
+            $email['to'] = implode(',', $email['to']);
+            $email['subject'] = "#$id_order " . LOG[$type];
+            $email['body']    = $this->load->view('v2023/component/tmpl_email_order', $data, true);
+
+            @sendmail($email);
+        }
     }
 
     // function edit($code_user, $fullname, $pass_hash, $phone, $email, $status, $role, $type, $user_service_db, $update_time, $id_user)
