@@ -159,7 +159,7 @@
                 modal.find('.modal-body #image').val(library.image);
                 modal.find('.modal-body #image_pre').attr('src', library.image_path);
 
-                let image_id = Date.now();
+                let image_id = Math.floor(Math.random()*10000)
                 SLIDE = {};
                 SLIDE[image_id] = {
                     'name': library.name,
@@ -199,7 +199,8 @@
 
     function cb_upload_add_image_library(link, target, name) {
 
-        let image_id = Date.now();
+        let image_id = Math.floor(Math.random()*10000)
+        console.log(image_id)
         SLIDE[image_id] = {
             'name': name,
             'image': link
