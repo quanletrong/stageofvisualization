@@ -61,6 +61,9 @@ class Library extends MY_Controller
                 $arr_image = json_decode($image, true);
                 foreach ($arr_image as $id => $it) {
                     $copy = copy_image_to_public_upload($it['image'], FOLDER_LIBRARY);
+
+                    copy_image_to_thumb(url_image($copy['basename'], FOLDER_LIBRARY), FOLDER_LIBRARY_THUMB, 300, 300);
+
                     if ($copy['status']) {
                         $this->Library_model->add($id_room, $id_style, $it['name'], $copy['basename'], $status, $this->_session_uid(), $create_time);
                     }
@@ -90,6 +93,8 @@ class Library extends MY_Controller
                         // copy and validate image
                         if (strpos($it['image'], 'uploads/tmp') !== false) {
                             $copy = copy_image_to_public_upload($it['image'], FOLDER_LIBRARY);
+                            copy_image_to_thumb($copy['pathname'], FOLDER_LIBRARY_THUMB, 300, 300);
+
                             $image_ok = $copy['basename'];
                         }
 
@@ -131,7 +136,7 @@ class Library extends MY_Controller
 
         if ($exc) {
             //xóa file ảnh
-            $path_image = $_SERVER["DOCUMENT_ROOT"] .'/'. FOLDER_LIBRARY . $info['image'];
+            $path_image = $_SERVER["DOCUMENT_ROOT"] . '/' . FOLDER_LIBRARY . $info['image'];
             if (file_exists($path_image)) {
                 @unlink($path_image);
             }
