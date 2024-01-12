@@ -30,8 +30,6 @@ class Login extends MY_Controller
             }
         }
 
-        $currUrl = $currUrl != '' ? $currUrl : site_url('home', $this->_langcode);
-
         $userInfo = $this->Login_model->get_user_info_by_username($userame);
 
         $redirect = '';
@@ -56,9 +54,21 @@ class Login extends MY_Controller
                     // $this->Login_model->user_last_login_log($userInfo['user_id']);
 
                     if (in_array($userInfo['role'], [ADMIN, SALE, QC, EDITOR])) {
-                        $redirect = 'admin/';
+
+                        // nếu currUrl rỗng hoặc không phải link admin => rederect vào /admin
+                        if($currUrl == '' || strpos($currUrl, $_SERVER['HTTP_HOST'] . '/admin') == false){
+                            $redirect = '/admin';
+                        } else {
+                            $redirect = urldecode($currUrl);
+                        }
+
                     } else {
-                        $redirect = urldecode($currUrl);
+                        // nếu currUrl rỗng hoặc là link admin => rederect vào /home
+                        if($currUrl == '' || strpos($currUrl, $_SERVER['HTTP_HOST'] . '/admin')){
+                            $redirect = '/home';
+                        } else {
+                            $redirect = urldecode($currUrl);
+                        }
                     }
                 } else {
                     //redirect to login
