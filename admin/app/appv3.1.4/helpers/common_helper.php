@@ -895,6 +895,117 @@ function copy_image_to_public_upload($url_fmng_image, $folder_str = 'uploads/')
     }
 }
 
+function copy_image_to_thumb($url_image, $folder_str = 'uploads/', $max_width, $max_height)
+{
+    $path_file = $_SERVER["DOCUMENT_ROOT"] . parse_url($url_image, PHP_URL_PATH);
+
+    if (is_file($path_file)) {
+
+        $basename = basename($url_image);
+        $folder_arr = explode('/', $folder_str);
+
+        list($width, $height, $type) = getimagesize($url_image);
+
+        $FULL_FOLDER = '';
+        foreach ($folder_arr as $folder) {
+
+            $localFolder = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $folder . '/';
+
+            if (!is_dir($localFolder)) {
+                $ckMkdirYear = mkdir($localFolder, 755);
+                if (!$ckMkdirYear) return ['status' => false, 'error' => 'CAN_NOT_MKDIR_' + $folder];
+            }
+
+            $FULL_FOLDER .= $folder . '/';
+        }
+
+        // check file exist
+        $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
+
+        if (file_exists($dir_save)) {
+            $rdt = generateRandomString(5);
+            $basename = $rdt . "-" . $basename;
+            $dir_save = $_SERVER["DOCUMENT_ROOT"] . '/' . $FULL_FOLDER . $basename;
+        }
+
+        //copy image to thumb
+        $chkCopy = copy($path_file, $dir_save);
+        if (!$chkCopy) return ['status' => false, 'error' => 'CAN_NOT_MOVE_FILE'];
+        else {
+
+            list($width, $height, $type) = getimagesize($dir_save);
+
+            // giảm dung lương ảnh
+            if ($width > $max_width || $height > $max_height) {
+                resize_image($dir_save, $max_width, $max_height, $width, $height, $type);
+            }
+
+            return ['status' => true, 'pathname' => $dir_save, 'basename' => $basename];
+        }
+    } else {
+        return ['status' => false, 'error' => 'CAN_NOT_GET_IMAGE_INFO'];
+    }
+}
+
+function resize_image($file, $new_w, $new_h, $old_w, $old_h, $type, $crop = FALSE)
+{
+    $r = $old_w / $old_h;
+    if ($crop) {
+        if ($old_w > $old_h) {
+            $old_w = ceil($old_w - ($old_w * abs($r - $new_w / $new_h)));
+        } else {
+            $old_h = ceil($old_h - ($old_h * abs($r - $new_w / $new_h)));
+        }
+        $newwidth = $new_w;
+        $newheight = $new_h;
+    } else {
+        if ($new_w / $new_h > $r) {
+            $newwidth = $new_h * $r;
+            $newheight = $new_h;
+        } else {
+            $newheight = $new_w / $r;
+            $newwidth = $new_w;
+        }
+    }
+    $src = load_image($file, $type);
+
+    $dst = imagecreatetruecolor($newwidth, $newheight);
+    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $old_w, $old_h);
+
+    //save
+    save_image($dst, $file, $type);
+}
+
+function load_image($filename, $type)
+{
+    if ($type == IMAGETYPE_JPEG) {
+        $image = imagecreatefromjpeg($filename);
+    } elseif ($type == IMAGETYPE_PNG) {
+        $image = imagecreatefrompng($filename);
+    } elseif ($type == IMAGETYPE_GIF) {
+        $image = imagecreatefromgif($filename);
+    }
+    return $image;
+}
+
+function save_image($im, $image_path, $type)
+{
+    switch ($type) {
+        case IMAGETYPE_JPEG:
+            imagejpeg($im, $image_path);
+            break;
+        case IMAGETYPE_PNG:
+            imagepng($im, $image_path);
+            break;
+        case IMAGETYPE_GIF:
+            imagegif($im, $image_path);
+            break;
+        default:
+            imagejpeg($im, $image_path);
+    }
+    imagedestroy($im);
+}
+
 function create_slug($string)
 {
     $search = array(
