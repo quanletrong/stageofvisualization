@@ -51,8 +51,8 @@
 
             <?php foreach ($library as $id => $lb) { ?>
                 <div class="col-12 col-md-6 col-lg-3">
-                    <img data-src="<?= $lb['image_path'] ?>" class="w-100 image-library lazy shadow" style="aspect-ratio: 16/9; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-room="<?= $lb['id_room'] ?>" data-style="<?= $lb['id_style'] ?>" data-name="<?= $lb['name'] ?>" onclick="curr_active = $(this).parent().data('index')">
-                    <p class="text-center mt-2"><strong><?= $lb['name'] ?></strong></strong></p>
+                    <img data-src="<?= $lb['image_path_thumb'] ?>" data-image="<?= $lb['image_path'] ?>" class="w-100 image-library lazy shadow" style="aspect-ratio: 16/9; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-room="<?= $lb['id_room'] ?>" data-style="<?= $lb['id_style'] ?>" data-name="<?= $lb['name_show'] ?>" onclick="curr_active = $(this).parent().data('index')">
+                    <p class="text-center mt-2"><strong><?= $lb['name_show'] ?></strong></strong></p>
                 </div>
             <?php } ?>
         </div>
@@ -73,9 +73,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div style="display: flex; align-items: center; justify-content: center;gap: 10px">
+                <div class="image" style="display: flex;align-items: center;justify-content: space-between;gap: 10px;height: 80vh;background-size: contain;background-repeat: no-repeat;background-position: center;">
                     <div onclick="back_image(this)"><i class="fa-solid fa-circle-chevron-left"></i></div>
-                    <img class="image" src="" style="object-fit: cover; cursor: pointer;">
                     <div onclick="next_image(this)"><i class="fa-solid fa-circle-chevron-right"></i></div>
                 </div>
 
@@ -139,12 +138,11 @@
 
         $('#exampleModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
-            var src = button.attr('src');
+            var image = button.data('image');
             var name = button.data('name');
             var modal = $(this);
-            var wh = window.innerHeight;
 
-            modal.find('.modal-body img').attr('src', src).css('height', (wh - 200) + 'px');
+            modal.find('.modal-body .image').css('background-image', `url('${image}')`);
             modal.find('.modal-body .image-name').text(name);
         })
     });
@@ -171,11 +169,11 @@
             if ((id_room == undefined || id_room == '' || id_room == image_room) && (id_style == undefined || id_style == '' || id_style == image_style)) {
                 $(this).parent().show();
                 $(this).parent().data('index', index++)
-                let src = $(this).attr('src');
+                let image = $(this).data('image');
                 let name = $(this).data('name');
                 // list_active.push()
                 list_active = [...list_active, {
-                    'src': src,
+                    'image': image,
                     'name': name
                 }]
             } else {
@@ -192,7 +190,7 @@
         if (curr_active > 0) {
             let back_image = list_active[curr_active - 1];
             curr_active = curr_active - 1
-            $('#exampleModal .image').attr('src', back_image.src);
+            $('#exampleModal .image').css('background-image', `url('${back_image.image}')`);
             $('#exampleModal .image-name').text(back_image.name);
         }
     }
@@ -201,8 +199,27 @@
         if (curr_active + 1 < list_active.length) {
             let next_image = list_active[curr_active + 1];
             curr_active = curr_active + 1
-            $('#exampleModal .image').attr('src', next_image.src);
+            $('#exampleModal .image').css('background-image', `url('${next_image.image}')`);
             $('#exampleModal .image-name').text(next_image.name);
         }
     }
+
+    document.onkeydown = function(e) {
+    switch(e.which) {
+        case 37: back_image();
+        break;
+
+        case 38: // up
+        break;
+
+        case 39: next_image()
+        break;
+
+        case 40: // down
+        break;
+
+        default: return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+};
 </script>

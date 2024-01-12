@@ -53,6 +53,8 @@ class Library_model extends CI_Model
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $row['image_path'] = url_image($row['image'], FOLDER_LIBRARY);
+                        $row['image_path_thumb'] = url_image($row['image'], FOLDER_LIBRARY_THUMB);
+                        $row['name_show'] = pathinfo($row['name'], PATHINFO_FILENAME);
                         $data[$row['id_library']] = $row;
                     }
                 }
