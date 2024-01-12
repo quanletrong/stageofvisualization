@@ -19,7 +19,7 @@
                             <div class="col-12 col-md-4">
                                 <div class="form-group">
                                     <label>Loại phòng</label>
-                                    <select class="select2" style="width: 100%;" name="id_room">
+                                    <select class="select2" style="width: 100%;" name="id_room" id="room">
                                         <?php foreach ($list_room as $id_room => $room) { ?>
                                             <option value="<?= $id_room ?>"><?= $room['name'] ?></option>
                                         <?php } ?>
@@ -29,7 +29,8 @@
                             <div class="col-12 col-md-4">
                                 <div class="form-group">
                                     <label>Phong cách thiết kế</label>
-                                    <select class="select2" style="width: 100%;" name="id_style">
+                                    <select class="select2" style="width: 100%;" name="id_style" id="style">
+                                        <option value="0">--Chọn--</option>
                                         <?php foreach ($list_style as $id_style => $style) { ?>
                                             <option value="<?= $id_style ?>"><?= $style['name'] ?></option>
                                         <?php } ?>
@@ -153,8 +154,8 @@
                 modal.find('.modal-title').text(`Sửa thông tin - ${library.name}`);
                 modal.find('.modal-body input[name=action]').val('edit');
                 modal.find('.modal-body input[name=id_library]').val(library.id_library);
-                modal.find('.modal-body input[name=id_room]').val(library.id_room);
-                modal.find('.modal-body input[name=id_style]').val(library.id_style);
+                modal.find('.modal-body #room').val(library.id_room);
+                modal.find('.modal-body #style').val(library.id_style);
                 modal.find('.modal-body #status').bootstrapSwitch('state', parseInt(library.status));
                 modal.find('.modal-body #image').val(library.image);
                 modal.find('.modal-body #image_pre').attr('src', library.image_path);
@@ -172,8 +173,8 @@
             } else {
                 modal.find('.modal-title').text(`Thêm ảnh vào thư viện`);
                 modal.find('.modal-body input[name=action]').val('add');
-                modal.find('.modal-body input[name=id_room]').val('');
-                modal.find('.modal-body input[name=id_style]').val('');
+                modal.find('.modal-body #room').val('');
+                modal.find('.modal-body #style').val('0');
                 modal.find('.modal-body #status').bootstrapSwitch('state', true);
                 modal.find('.modal-body #image').val('');
                 modal.find('.modal-body #image_pre').attr('src', '');
@@ -184,6 +185,9 @@
 
                 $('#table_add_image tfoot').show();
             }
+
+            $("#room").trigger("change");
+            $("#style").trigger("change");
         });
 
         $('#modal-full-image').on('show.bs.modal', function(event) {
