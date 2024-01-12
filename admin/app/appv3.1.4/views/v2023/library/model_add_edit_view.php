@@ -188,12 +188,12 @@
 
         $('#modal-full-image').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
-            var src = button.data('src');
-            if(src === undefined || src === '') {
-                src =  button.attr('src');
+            var image = button.data('image');
+            if(image === undefined || image === '') {
+                image =  button.attr('src');
             }
             var modal = $(this);
-            modal.find('.modal-body img').attr('src', src);
+            modal.find('.modal-body img').attr('src', image);
         })
     });
 
