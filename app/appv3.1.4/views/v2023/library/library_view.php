@@ -51,7 +51,7 @@
 
             <?php foreach ($library as $id => $lb) { ?>
                 <div class="col-12 col-md-6 col-lg-3">
-                    <img data-src="<?= $lb['image_path_thumb'] ?>" data-image="<?= $lb['image_path'] ?>" class="w-100 image-library lazy shadow" style="aspect-ratio: 16/9; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-room="<?= $lb['id_room'] ?>" data-style="<?= $lb['id_style'] ?>" data-name="<?= $lb['name_show'] ?>" onclick="curr_active = $(this).parent().data('index')">
+                    <img data-src="<?= $lb['image_path_thumb'] ?>" data-image-thumb="<?= $lb['image_path_thumb'] ?>" data-image="<?= $lb['image_path'] ?>" class="w-100 image-library lazy shadow" style="aspect-ratio: 16/9; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-room="<?= $lb['id_room'] ?>" data-style="<?= $lb['id_style'] ?>" data-name="<?= $lb['name_show'] ?>" onclick="curr_active = $(this).parent().data('index')">
                     <p class="text-center mt-2"><strong><?= $lb['name_show'] ?></strong></strong></p>
                 </div>
             <?php } ?>
@@ -138,11 +138,12 @@
 
         $('#exampleModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
+            var image_thumb = button.data('image-thumb');
             var image = button.data('image');
             var name = button.data('name');
             var modal = $(this);
 
-            modal.find('.modal-body .image').css('background-image', `url('${image}')`);
+            modal.find('.modal-body .image').css('background-image', `url('${image}'), url('${image_thumb}')`);
             modal.find('.modal-body .image-name').text(name);
         })
     });
@@ -169,10 +170,12 @@
             if ((id_room == undefined || id_room == '' || id_room == image_room) && (id_style == undefined || id_style == '' || id_style == image_style)) {
                 $(this).parent().show();
                 $(this).parent().data('index', index++)
+                let image_thumb = $(this).data('image-thumb');
                 let image = $(this).data('image');
                 let name = $(this).data('name');
                 // list_active.push()
                 list_active = [...list_active, {
+                    'image_thumb': image_thumb,
                     'image': image,
                     'name': name
                 }]
@@ -190,7 +193,7 @@
         if (curr_active > 0) {
             let back_image = list_active[curr_active - 1];
             curr_active = curr_active - 1
-            $('#exampleModal .image').css('background-image', `url('${back_image.image}')`);
+            $('#exampleModal .image').css('background-image', `url('${back_image.image}'), url('${back_image.image_thumb}')`);
             $('#exampleModal .image-name').text(back_image.name);
         }
     }
@@ -199,7 +202,7 @@
         if (curr_active + 1 < list_active.length) {
             let next_image = list_active[curr_active + 1];
             curr_active = curr_active + 1
-            $('#exampleModal .image').css('background-image', `url('${next_image.image}')`);
+            $('#exampleModal .image').css('background-image', `url('${next_image.image}'), url('${next_image.image_thumb}')`);
             $('#exampleModal .image-name').text(next_image.name);
         }
     }
