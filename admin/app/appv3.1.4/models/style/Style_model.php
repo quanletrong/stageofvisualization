@@ -35,17 +35,17 @@ class Style_model extends CI_Model
         $iconn = $this->db->conn_id;
 
         $where = 'WHERE 1=1 ';
-        $where .= $status !== '' ? " AND A.status = ? " : "";
+        $where .= $status !== '' ? " AND A.status = $status " : "";
 
         $sql = "
         SELECT A.*, B.username 
         FROM tbl_style as A 
         LEFT JOIN tbl_user as B ON A.id_user = B.id_user 
-
-        ORDER BY A.update_time DESC";
+        $where
+        ORDER BY A.update_time DESC;";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([$status])) {
+            if ($stmt->execute()) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         // path image slide
