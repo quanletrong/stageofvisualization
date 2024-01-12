@@ -739,6 +739,8 @@ class Order extends MY_Controller
         $log['id_order']  = $order['id_order'];
         $log['id_job']    = $id_job;
         $log['new']       = $as_uinfo['username'];
+
+        $order['team'][$id_user] = $as_uinfo; // gán người vừa được thêm vào team, để gửi email
         $this->Log_model->log_add($log, $order);
 
         resSuccess($kq);
