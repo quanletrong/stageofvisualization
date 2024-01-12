@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <div style="width:800px; padding: 10px; margin:0 auto">
+    <div style="max-width:800px; padding: 10px; margin:0 auto">
         <div style="text-align: center; margin-top: 15px; margin-bottom: 30px;">
             <img src="https://stageofvisualization.com/images/logo-21.png" alt="" width="200">
         </div>
