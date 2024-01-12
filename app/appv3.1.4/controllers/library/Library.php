@@ -23,8 +23,8 @@ class Library extends MY_Controller
             'header_page_css_js' => 'library'
         ];
 
-        $room = $this->Room_model->get_list(1);
-        $style = $this->Style_model->get_list(1);
+        $room = $this->Library_model->get_list_room_has_image();
+        $style = $this->Library_model->get_list_style_has_image();
         $library = $this->Library_model->get_list(1);
 
         $data['room'] = $room;

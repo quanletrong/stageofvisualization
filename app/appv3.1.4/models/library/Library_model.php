@@ -46,7 +46,7 @@ class Library_model extends CI_Model
         LEFT JOIN tbl_style as C ON A.id_style = C.id_style 
         LEFT JOIN tbl_room as D ON A.id_room = D.id_room 
 
-        ORDER BY sort ASC";
+        ORDER BY A.name DESC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             if ($stmt->execute([$status])) {
@@ -103,5 +103,57 @@ class Library_model extends CI_Model
         }
         $stmt->closeCursor();
         return $execute;
+    }
+
+    function get_list_room_has_image()
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql =
+            "SELECT *
+            FROM tbl_room
+            WHERE tbl_room.id_room IN (SELECT tbl_library.id_room FROM tbl_library GROUP BY tbl_library.id_room)";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[$row['id_room']] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function get_list_style_has_image()
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql =
+            "SELECT *
+            FROM tbl_style
+            WHERE tbl_style.id_style IN (SELECT tbl_library.id_style FROM tbl_library GROUP BY tbl_library.id_style)";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[$row['id_style']] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
     }
 }

@@ -24,14 +24,14 @@
 </style>
 <div class="container-fluid sticky-top" id="filter-library" style="z-index: 1019; background-color: #f0f0f0;">
     <div class="container">
-        <div id="owl-filter-room" class="owl-carousel owl-theme mt-3 ">
+        <div id="owl-filter-room" class="mt-3" style="display: flex; gap:10px; flex-wrap: wrap;">
             <?php foreach ($room as $id => $rm) { ?>
                 <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-room-filter border border-2 border-secondary" onclick="$('.btn-room-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(1)" data-room="<?= $id ?>" style="width: 140px; padding: 2px 0; font-size: 0.8rem; font-weight: 500 !important;">
                     <?= $rm['name'] ?>
                 </button>
             <?php } ?>
         </div>
-        <div id="owl-filter-style" class="owl-carousel mt-1 pb-2" style="gap:20px; width: 100%">
+        <div id="owl-filter-style" class="mt-1 pb-2" style="display: flex; gap:5px; flex-wrap: wrap;">
             <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-1 border-secondary" onclick="$('.btn-style-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(2)" data-style="" style="width: 140px; padding: 0; font-size: 0.7rem; font-weight: 500 !important;">
                 Tất cả phong cách
             </button>
@@ -118,23 +118,47 @@
         });
 
 
-        $("#owl-filter-room").owlCarousel({
-            autoplay: false,
-            margin: 10,
-            responsiveClass: true,
-            nav: false,
-            dots: false,
-            autoWidth: true,
-        });
+        // $("#owl-filter-room").owlCarousel({
+        //     autoplay: false,
+        //     margin: 10,
+        //     responsiveClass: true,
+        //     nav: false,
+        //     dots: false,
+        //     autoWidth: true,
+        // });
 
-        $("#owl-filter-style").owlCarousel({
-            autoplay: false,
-            margin: 10,
-            responsiveClass: true,
-            nav: false,
-            dots: false,
-            autoWidth: true,
-        });
+        // $("#owl-filter-style").owlCarousel({
+        //     autoplay: false,
+        //     margin: 10,
+        //     responsiveClass: true,
+        //     nav: false,
+        //     dots: false,
+        //     autoWidth: true,
+        // });
+
+        init_width_room();
+        init_width_style();
+
+
+        function init_width_room() {
+            let width_owl = $('#owl-filter-room').width();
+            let count_room = <?= count($room) ?>;
+            let total_gap = (count_room - 1) * 10;
+            let width_room = (width_owl - total_gap) / count_room;
+            if(width_room > 140 && width_room < 200) {
+                $('#owl-filter-room button').css('width', width_room + 'px');
+            }
+        }
+
+        function init_width_style() {
+            let width_owl = $('#owl-filter-style').width();
+            let count_style = <?= count($style) ?> + 1;
+            let total_gap = (count_style - 1) * 5;
+            let width_style = (width_owl - total_gap) / count_style;
+            if(width_style > 130 && width_style < 200) {
+                $('#owl-filter-style button').css('width', width_style + 'px');
+            }
+        }
 
         $('#exampleModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
@@ -208,21 +232,24 @@
     }
 
     document.onkeydown = function(e) {
-    switch(e.which) {
-        case 37: back_image();
-        break;
+        switch (e.which) {
+            case 37:
+                back_image();
+                break;
 
-        case 38: // up
-        break;
+            case 38: // up
+                break;
 
-        case 39: next_image()
-        break;
+            case 39:
+                next_image()
+                break;
 
-        case 40: // down
-        break;
+            case 40: // down
+                break;
 
-        default: return; // exit this handler for other keys
-    }
-    e.preventDefault(); // prevent the default action (scroll / move caret)
-};
+            default:
+                return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    };
 </script>
