@@ -24,20 +24,37 @@
 </style>
 <div class="container-fluid sticky-top" id="filter-library" style="z-index: 1019; background-color: #f0f0f0;">
     <div class="container">
-        <div id="owl-filter-room" class="mt-3" style="display: flex; gap:10px; flex-wrap: wrap;">
+        <div id="owl-filter-room" class="mt-3" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
             <?php foreach ($room as $id => $rm) { ?>
-                <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-room-filter border border-2 border-secondary" onclick="$('.btn-room-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(1)" data-room="<?= $id ?>" style="width: 140px; padding: 2px 0; font-size: 0.8rem; font-weight: 500 !important;">
+                <button 
+                    class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-room-filter border border-2 border-secondary" 
+                    onclick="click_room(this)" 
+                    data-room="<?= $id ?>" 
+                    style="width: 140px; padding: 2px 0; font-size: 0.8rem; font-weight: 500 !important;"
+                >
                     <?= $rm['name'] ?>
                 </button>
             <?php } ?>
         </div>
-        <div id="owl-filter-style" class="mt-1 pb-2" style="display: flex; gap:5px; flex-wrap: wrap;">
-            <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-1 border-secondary" onclick="$('.btn-style-filter').removeClass('active-filter');$(this).addClass('active-filter'); filter(2)" data-style="" style="width: 140px; padding: 0; font-size: 0.7rem; font-weight: 500 !important;">
+        <div id="owl-filter-style" class="mt-1 pb-2" style="display: flex; flex-wrap: wrap; gap:11px">
+            <button
+                id="style_0"
+                class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-1 border-secondary"
+                onclick="click_style(this)" 
+                data-style="0" 
+                style="width: 140px; padding: 0; font-size: 0.7rem; font-weight: 500 !important;"
+            >
                 Tất cả phong cách
             </button>
 
             <?php foreach ($style as $id => $st) { ?>
-                <button class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-1 border-secondary" onclick="$('.btn-style-filter').removeClass('active-filter');$(this).addClass('active-filter');filter(2)" data-style="<?= $id ?>" style="width: 140px; padding: 0; font-size: 0.7rem;  font-weight: 500 !important;">
+                <button 
+                    id="style_<?= $id ?>" 
+                    class="btn btn-sm text-uppercase rounded-0 fw-semibold btn-style-filter border border-1 border-secondary"     
+                    onclick="click_style(this)" 
+                    data-style="<?= $id ?>" 
+                    style="width: 140px; padding: 0; font-size: 0.7rem;  font-weight: 500 !important;"
+                >
                     <?= $st['name'] ?>
                 </button>
             <?php } ?>
@@ -100,6 +117,19 @@
 </style>
 
 <script>
+    function click_room(e) {
+        $('.btn-room-filter').removeClass('active-filter');
+        $(e).addClass('active-filter');
+        filter(1);
+    }
+
+    function click_style(e) {
+
+        $('.btn-style-filter').removeClass('active-filter');
+        $(e).addClass('active-filter');
+        filter(2)
+    }
+
     $(document).ready(function() {
 
         $('.lazy').lazy();
@@ -142,22 +172,19 @@
 
         function init_width_room() {
             let width_owl = $('#owl-filter-room').width();
-            let count_room = <?= count($room) ?>;
-            let total_gap = (count_room - 1) * 10;
-            let width_room = (width_owl - total_gap) / count_room;
-            if(width_room > 140 && width_room < 200) {
-                $('#owl-filter-room button').css('width', width_room + 'px');
-            }
+            let count_room = $('#owl-filter-room button').length;
+            let width_room = width_owl / count_room;
+            width_room = width_room < 110 ? 110 : width_room; // min width = 110
+            $('#owl-filter-room button').css('width', (width_room - 10) + 'px');
         }
 
         function init_width_style() {
             let width_owl = $('#owl-filter-style').width();
-            let count_style = <?= count($style) ?> + 1;
-            let total_gap = (count_style - 1) * 5;
-            let width_style = (width_owl - total_gap) / count_style;
-            if(width_style > 130 && width_style < 200) {
-                $('#owl-filter-style button').css('width', width_style + 'px');
-            }
+            let count_style = $('#owl-filter-style button').length;
+            let width_style = width_owl / count_style;
+            console.log(width_owl, count_style, width_style)
+            width_style = width_style < 110 ? 110 : width_style; // min width = 110
+            $('#owl-filter-style button').css('width', (width_style - 10) + 'px');
         }
 
         $('#exampleModal').on('show.bs.modal', function(event) {
@@ -186,12 +213,22 @@
             id_style = $('.btn-style-filter.active-filter').data('style');
         }
 
+        $('.btn-style-filter').hide();
+        $('#style_0').show();
+
         let index = 0;
         $('.image-library').each(function() {
             let image_room = $(this).data('room');
             let image_style = $(this).data('style');
 
-            if ((id_room == undefined || id_room == '' || id_room == image_room) && (id_style == undefined || id_style == '' || id_style == image_style)) {
+            // hiện thị button style
+            if(id_room == undefined || id_room == '' || id_room == image_room) {
+                $(`#style_${image_style}`).show();
+            }
+
+            let ok_room = id_room == undefined || id_room == '' || id_room == image_room;
+            let ok_style = id_style == undefined || id_style == '' || id_style == image_style;
+            if (ok_room && ok_style) {
                 $(this).parent().show();
                 $(this).parent().data('index', index++)
                 let image_thumb = $(this).data('image-thumb');
