@@ -1,6 +1,6 @@
 <div class="container">
     <center class="fw-bold mt-3" style="font-size: 2em;">Virtual Staging Library</center>
-    <center class="fs-5 fw-light">See and shop from Stuccco's vast virtual staging design library</center>
+    <center class="fs-5 fw-light">See and shop from Stageofvisualization's vast virtual staging design library</center>
 </div>
 <style>
     .active-filter,
@@ -51,7 +51,7 @@
 
             <?php foreach ($library as $id => $lb) { ?>
                 <div class="col-12 col-md-6 col-lg-3">
-                    <img src="<?= $lb['image_path'] ?>" class="w-100 image-library lazy shadow" style="aspect-ratio: 16/9; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-room="<?= $lb['id_room'] ?>" data-style="<?= $lb['id_style'] ?>" data-name="<?= $lb['name'] ?>" onclick="curr_active = $(this).parent().data('index')">
+                    <img data-src="<?= $lb['image_path'] ?>" class="w-100 image-library lazy shadow" style="aspect-ratio: 16/9; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-room="<?= $lb['id_room'] ?>" data-style="<?= $lb['id_style'] ?>" data-name="<?= $lb['name'] ?>" onclick="curr_active = $(this).parent().data('index')">
                     <p class="text-center mt-2"><strong><?= $lb['name'] ?></strong></strong></p>
                 </div>
             <?php } ?>
