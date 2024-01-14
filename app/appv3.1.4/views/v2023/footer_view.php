@@ -227,6 +227,13 @@
 	}
 </script>
 <!-- /.drop file -->
+
+<!-- CHAT BOX -->
+<?php
+$this->load->view(TEMPLATE_FOLDER . 'component/_chat_tong_view.php');
+?>
+<!-- END CHAT BOX -->
+
 </body>
 
 </html>

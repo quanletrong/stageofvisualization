@@ -133,6 +133,8 @@ class MY_Controller extends CI_Controller
         $footer = array();
         $footer['setting'] = $this->_settings;
         $footer['is_login'] = $this->_islogin();
+        $footer['username'] = $this->_session_uname();
+        $footer['cur_uid'] = $this->_session_uid();
         $this->load->view($this->_template_f . 'footer_view', $footer );
     }
 

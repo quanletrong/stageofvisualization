@@ -57,3 +57,4 @@ define('FOLDER_STYLE', 'uploads/style/');
 define('FOLDER_LIBRARY', 'uploads/library/');
 define('FOLDER_LIBRARY_THUMB', 'uploads/library/thumb/');
 define('FOLDER_ORDER', 'uploads/order/');
+define('FDR_CHAT_TONG', 'uploads/chat_tong/');

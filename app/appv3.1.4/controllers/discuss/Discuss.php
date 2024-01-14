@@ -7,23 +7,16 @@ class Discuss extends MY_Controller
         $this->_module = trim(strtolower(__CLASS__));
         parent::__construct();
 
-        if (!$this->_isLogin()) {
-            if ($this->input->is_ajax_request()) {
-                echo 'unlogin';
-                die();
-            }
-            $currUrl = getCurrentUrl();
-            dbClose();
-            redirect(site_url('login/?url=' . urlencode($currUrl), $this->_langcode));
-            die();
-        }
-
         $this->load->model('discuss/Discuss_model');
         $this->load->model('order/Order_model');
     }
 
     function ajax_discuss_list()
     {
+        if (!$this->_isLogin()) {
+            resError('unlogin');
+        }
+
         // check right
         $cur_uid = $this->_session_uid();
         $id_order = $this->input->post('id_order');
@@ -41,6 +34,10 @@ class Discuss extends MY_Controller
 
     function ajax_discuss_add()
     {
+        if (!$this->_isLogin()) {
+            resError('unlogin');
+        }
+
         // check right
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
@@ -54,7 +51,7 @@ class Discuss extends MY_Controller
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn không tồn tại') : '';
         $order['id_user'] != $cur_uid ? resError('Tài khoản không có quyền truy cập đơn hàng này') : '';
-       
+
         //validate file đính kèm
         $db_attach = [];
         $attach = is_array($attach) ? $attach : [];
@@ -84,7 +81,12 @@ class Discuss extends MY_Controller
     }
 
     // TODO: tamj thoiw lam sau
-    function ajax_discuss_khach_da_xem() {
+    function ajax_discuss_khach_da_xem()
+    {
+        if (!$this->_isLogin()) {
+            resError('unlogin');
+        }
+
         // check right
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
@@ -101,7 +103,6 @@ class Discuss extends MY_Controller
 
         $exc = $this->Discuss_model->discuss_da_xem($id_order, CHAT_KHACH);
         resSuccess('ok');
-
     }
 
     function ajax_discuss_edit()
@@ -110,5 +111,36 @@ class Discuss extends MY_Controller
 
     function ajax_discuss_delete()
     {
+    }
+
+    function ajax_chat_tong_list()
+    {
+        // if (!$this->_isLogin()) {
+        //     resError('unlogin');
+        // }
+
+        // check right
+        $cur_uid = $this->_session_uid();
+
+        // get list discuss theo order
+        // $list = $this->Discuss_model->discuss_chat_tong_list_by_user_id($cur_uid, CHAT_KHACH);
+        $list = [[
+            "ip" => ip_address(),
+            "id_discuss"=> "225",
+            "id_order"=> "120",
+            "id_user"=> "987654343",
+            "content"=> "Test default",
+            "file"=> [],
+            "create_time"=> "2023-12-21 15:18:38",
+            "status"=> "1",
+            "type"=> "3",
+            "username"=> "KHACH_DEV_01",
+            "role"=> "5",
+            "fullname"=> "KHÁCH DEV 01",
+            "avatar"=> "user-default.png",
+            "avatar_url"=> "http://stageofvisualization.local/uploads/avatar/user-default.png",
+            "file_list"=> []
+        ]];
+        resSuccess($list);
     }
 }
