@@ -1,4 +1,16 @@
 <script src="js/v2023/moment_2.29.4.min.js"></script>
+<style>
+    .image-hover:hover .position-btn {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .position-relative:hover i {
+        cursor: pointer;
+        color: red;
+    }
+</style>
 
 <div style="position: fixed; right: 10px; bottom: 0px;" id="small_trao_doi_sale" class="">
     <div style="position: relative;">

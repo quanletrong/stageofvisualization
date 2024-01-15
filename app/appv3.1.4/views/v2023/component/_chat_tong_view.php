@@ -1,5 +1,16 @@
 <script src="js/v2023/moment_2.29.4.min.js"></script>
+<style>
+    .image-hover:hover .position-btn {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+    }
 
+    .position-relative:hover i {
+        cursor: pointer;
+        color: red;
+    }
+</style>
 <div style="position: fixed; right: 20px; bottom: 20px;" id="small_chat_tong" class="">
     <div style="position: relative;">
         <button class="btn btn-sm btn-primary rounded-circle" onclick="open_close_chat_tong()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm" style="width: 3rem; height:3rem">
@@ -16,7 +27,7 @@
         <div class="card-header bg-primary text-white" onclick="open_close_chat_tong()" style="cursor: pointer;">
             <div class="d-flex justify-content-between align-items-center">
                 <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                    <div><i class="fa-solid fa-comment"></i> Stage Of Visualization</div>
+                    <div><i class="fa-solid fa-comment"></i> Chat với Stage Of Visualization - Hỗ trợ mọi lúc mọi nơi</div>
                     <div>x</div>
                 </h6>
             </div>
@@ -133,7 +144,7 @@
                             "id_discuss": "",
                             "id_order": "",
                             "id_user": "",
-                            "content": "Xin chào! Chúng tôi có thể giúp gì cho bạn.",
+                            "content": "Chúc Quý khách ngày an lành! Tôi là chuyên viên tư vấn thiết kế.<br/> Quý khách đang có nhu cầu thay đổi thiết kế, hãy gửi các hình ảnh thực tế và để lại lời nhắn để tôi hỗ trợ bạn nhé!",
                             "file": "{}",
                             "create_time": moment(),
                             "status": "1",
