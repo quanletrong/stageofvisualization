@@ -15,7 +15,7 @@
 <div style="position: fixed; right: 10px; bottom: 0px;" id="small_trao_doi_sale" class="">
     <div style="position: relative;">
         <button class="btn btn-sm btn-primary" onclick="open_close_chat()" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
-            <i class="fa-solid fa-comment"></i> TRAO ĐỔI VỚI SALE
+            <i class="fa-solid fa-comment"></i> CHAT ĐƠN HÀNG NÀY
         </button>
         <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white;"></div>
     </div>
@@ -28,7 +28,7 @@
         <div class="card-header bg-primary text-white" onclick="open_close_chat()" style="cursor: pointer;">
             <div class="d-flex justify-content-between align-items-center">
                 <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                    <div><i class="fa-solid fa-comment"></i> TRAO ĐỔI VỚI SALE</div>
+                    <div><i class="fa-solid fa-comment"></i> CHAT ĐƠN HÀNG NÀY</div>
                     <div>x</div>
                 </h6>
             </div>

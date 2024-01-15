@@ -27,3 +27,5 @@
 
 <!-- common js -->
 <script src="js/v2023/common.js"></script>
+
+<script src="js/v2023/func.js"></script>

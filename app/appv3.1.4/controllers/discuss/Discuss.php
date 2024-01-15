@@ -126,21 +126,44 @@ class Discuss extends MY_Controller
         // $list = $this->Discuss_model->discuss_chat_tong_list_by_user_id($cur_uid, CHAT_KHACH);
         $list = [[
             "ip" => ip_address(),
-            "id_discuss"=> "225",
-            "id_order"=> "120",
-            "id_user"=> "987654343",
-            "content"=> "Test default",
-            "file"=> [],
-            "create_time"=> "2023-12-21 15:18:38",
-            "status"=> "1",
-            "type"=> "3",
-            "username"=> "KHACH_DEV_01",
-            "role"=> "5",
-            "fullname"=> "KHÁCH DEV 01",
-            "avatar"=> "user-default.png",
-            "avatar_url"=> "http://stageofvisualization.local/uploads/avatar/user-default.png",
-            "file_list"=> []
+            "id_discuss" => "225",
+            "id_order" => "120",
+            "id_user" => "987654343",
+            "content" => "Test default",
+            "file" => [],
+            "create_time" => "2023-12-21 15:18:38",
+            "status" => "1",
+            "type" => "3",
+            "username" => "KHACH_DEV_01",
+            "role" => "5",
+            "fullname" => "KHÁCH DEV 01",
+            "avatar" => "user-default.png",
+            "avatar_url" => "http://stageofvisualization.local/uploads/avatar/user-default.png",
+            "file_list" => []
         ]];
-        resSuccess($list);
+        resSuccess([]);
+    }
+
+    function ajax_chat_tong_add()
+    {
+        $data = [
+            "ip" => ip_address(),
+            "id_discuss" => "_",
+            "id_order" => "_",
+            "id_user" => "987654343",
+            "content" => "Test default",
+            "file" => [],
+            "create_time" => "2023-12-21 15:18:38",
+            "status" => "1",
+            "type" => "3",
+            "username" => "KHACH_DEV_01",
+            "role" => "5",
+            "fullname" => "KHÁCH DEV 01",
+            "avatar" => "user-default.png",
+            "avatar_url" => "http://stageofvisualization.local/uploads/avatar/user-default.png",
+            "file_list" => []
+        ];
+
+        resSuccess($data);
     }
 }

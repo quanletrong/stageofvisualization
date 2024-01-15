@@ -97,7 +97,9 @@ $route[LINK_USER_REGISTER]            = 'signup/signup/index';
 //discuss
 $route['discuss/ajax_discuss_list'] = 'discuss/discuss/ajax_discuss_list';
 $route['discuss/ajax_discuss_add'] = 'discuss/discuss/ajax_discuss_add';
+
 $route['discuss/ajax_chat_tong_list'] = 'discuss/discuss/ajax_chat_tong_list';
+$route['discuss/ajax_chat_tong_add'] = 'discuss/discuss/ajax_chat_tong_add';
 
 //payment
 $route['checkout/pay/(:num)'] = 'checkout/checkout/pay/$1';
