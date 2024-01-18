@@ -113,15 +113,38 @@
 
     $(document).ready(function() {
 
-        // TODO: có vấn đề
-        $('#tab_content_job textarea').on('keyup', function() {
-            $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
+        // update rows của textarea tab đang active
+        $("#tab_content_job .active textarea").each(function() {
+            // console.log(getStyle(this, 'line-height'))
+            // let scrollHeight = $(this).prop("scrollHeight") + 20;
+            // $(this).css('height', scrollHeight + 'px')
+
+            let line = _.calculateNumLines($(this).val(), this);
+            line = line < 2 ? 2 : line // tối thiểu 2 rows
+            $(this).attr('rows', line)
+        });
+
+        // click tab sẽ update rows của textarea trong tab đo
+        $('#tab_job .nav-link').click(function() {
+            setTimeout(() => {
+                $("#tab_content_job .active textarea").each(function() {
+                    // let scrollHeight = $(this).prop("scrollHeight") + 20;
+                    // console.log(scrollHeight)
+                    // $(this).css('height', scrollHeight + 'px')
+
+                    let line = _.calculateNumLines($(this).val(), this);
+                    line = line < 2 ? 2 : line // tối thiểu 2 rows
+                    $(this).attr('rows', line)
+                });
+            }, 100);
         })
 
-        // TODO: có vấn đề
-        $("#tab_content_job textarea").each(function(textarea) {
-            $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
-        });
+        // sự kiện nhập textarea sẽ update rows của tab
+        $('#tab_content_job textarea').on('input', function(e) {
+            let line = _.calculateNumLines(e.target.value, this);
+            line = line < 2 ? 2 : line // tối thiểu 2 rows
+            $(this).attr('rows', line)
+        })
     })
 
     function downloadURI(uri, name) {
@@ -161,7 +184,7 @@
                 .append(new_html)
                 .scrollTop($('#discuss_noi_bo .list-chat')[0].scrollHeight);
 
-            $('#discuss_noi_bo .content_discuss').val('').height(48);
+            $('#discuss_noi_bo .content_discuss').val('').attr('rows', 2);
             $('#discuss_noi_bo .chat_list_attach').html('');
             $('#discuss_noi_bo .list-chat').scrollTop($('#discuss_noi_bo .list-chat')[0].scrollHeight);
         }
@@ -182,7 +205,7 @@
                 .append(new_html)
                 .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
 
-            $('#discuss_khach .content_discuss').val('').height(48);
+            $('#discuss_khach .content_discuss').val('').attr('rows', 2);
             $('#discuss_khach .chat_list_attach').html('');
             $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
 

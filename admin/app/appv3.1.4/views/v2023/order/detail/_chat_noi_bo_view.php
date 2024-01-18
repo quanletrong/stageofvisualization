@@ -14,22 +14,32 @@
                     <i class="fas fa-sync fa-spin"></i>
                 </div>
                 <div class="mt-2 nhap_du_lieu_chat">
-                    <div style="position:relative" class="rounded border">
+                    <div style="position:relative; margin:5px" class="rounded">
                         <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
                         <div class="chat_list_attach d-flex flex-wrap"></div>
 
-                        <!-- NHẬP DỮ LIỆU -->
-                        <div style="height: fit-content; position: absolute; bottom: 10px;">
+                        <textarea name="message" class="form-control content_discuss bg-white" style="padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_noi_bo" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
+
+                        <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
+                            <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_discuss_noi_bo_add(this)"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- NHẬP DỮ LIỆU -->
+                    <div style="margin-top: 5px; display: flex; justify-content: space-between;">
+                        <div>
+                            <button type="button" class="border-0 mr-2" style="font-size: 0.875rem; background: none;">
+                                <i class="fas fa-smile" style="color:#424242"></i>
+                            </button>
+
                             <button type="button" class="border-0" style="font-size: 0.875rem; background: none;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_noi_bo">
                                 <i class="fa fa-paperclip"></i>
                             </button>
                         </div>
 
-                        <textarea name="message" class="form-control content_discuss bg-white" style="padding-left:33px; padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_noi_bo" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
-
-                        <div style="height: fit-content; position: absolute; bottom: 10px; right:10px">
-                            <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_discuss_noi_bo_add(this)"><i class="fas fa-paper-plane"></i></button>
-                        </div>
+                        <button type="button" class="border-0 ml-2" style="font-size: 0.875rem; background: none;">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -40,54 +50,13 @@
 <script>
     $(document).ready(function() {
         ajax_discuss_list_noi_bo();
-        var _buffer;
-
-        function countLines(textarea) {
-            if (_buffer == null) {
-                _buffer = document.createElement('textarea');
-                _buffer.style.border = 'none';
-                _buffer.style.height = '0';
-                _buffer.style.overflow = 'hidden';
-                _buffer.style.padding = '0';
-                _buffer.style.position = 'absolute';
-                _buffer.style.left = '0';
-                _buffer.style.top = '0';
-                _buffer.style.zIndex = '-1';
-                document.body.appendChild(_buffer);
-            }
-
-            var cs = window.getComputedStyle(textarea);
-            var pl = parseInt(cs.paddingLeft);
-            var pr = parseInt(cs.paddingRight);
-            var lh = parseInt(cs.lineHeight);
-
-            if (isNaN(lh)) lh = parseInt(cs.fontSize);
-            _buffer.style.width = (textarea.clientWidth - pl - pr) + 'px';
-            _buffer.style.font = cs.font;
-            _buffer.style.letterSpacing = cs.letterSpacing;
-            _buffer.style.whiteSpace = cs.whiteSpace;
-            _buffer.style.wordBreak = cs.wordBreak;
-            _buffer.style.wordSpacing = cs.wordSpacing;
-            _buffer.style.wordWrap = cs.wordWrap;
-            _buffer.value = textarea.value;
-
-            var result = Math.floor(_buffer.scrollHeight / lh);
-            if (result == 0) result = 1;
-            return result;
-        }
-
 
         $(`#discuss_noi_bo .content_discuss`).on('keypress keyup', function(e) {
 
-            let line = countLines(e.target);
-
-            line = line > 5 ? 5 : line; // tối đa 10 line
-
-            if (line > 2) {
-                $(this).height(line * 24)
-            } else {
-                $(this).height(48)
-            }
+            let line = _.calculateNumLines(e.target.value, this);
+            line = line < 2 ? 2 : line // tối thiểu 2 rows
+            line = line > 5 ? 5 : line; // tối đa 10 rows
+            $(this).attr('rows', line)
         })
 
         $("#discuss_noi_bo .content_discuss").keypress(function(e) {
@@ -138,7 +107,7 @@
     }
 
     function ajax_discuss_noi_bo_add(btn) {
-       
+
         let content = $('#discuss_noi_bo .content_discuss').val();
         let attach = [];
         $('#discuss_noi_bo .chat_list_attach > div').each(function(index) {

@@ -39,23 +39,35 @@
                         <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
                     </div>
                     <div class="mt-2 nhap_du_lieu_chat">
-                        <div style="position:relative" class="rounded border">
+                        <div style="position:relative; margin: 5px" class="rounded">
                             <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
                             <div class="chat_list_attach d-flex flex-wrap"></div>
 
-                            <!-- NHẬP DỮ LIỆU -->
-                            <div style="height: fit-content; position: absolute; bottom: 10px;">
-                                <button type="button" class="border-0" style="font-size: 0.875rem; background: none;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_tong">
-                                    <i class="fa fa-paperclip"></i>
-                                </button>
-                            </div>
-
-                            <textarea name="message" class="form-control content_discuss bg-white" style="padding-left:33px; padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_tong" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
+                            <textarea name="message" class="form-control content_discuss bg-white" rows="2" style="padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_tong" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                             <div style="height: fit-content; position: absolute; bottom: 10px; right:20px">
                                 <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_chat_tong_add(this)"><i class="fas fa-paper-plane"></i></button>
                             </div>
                         </div>
+
+                        <!-- NHẬP DỮ LIỆU -->
+                        <div style="margin-top: 5px; display: flex; justify-content: space-between;">
+                            <div>
+                                <button type="button" class="border-0 mr-2" style="font-size: 0.875rem; background: none;">
+                                    <i class="fa-solid fa-face-smile" style="color:#424242"></i>
+                                </button>
+
+                                <button type="button" class="border-0" style="font-size: 0.875rem; background: none;" onclick="quanlt_upload(this);" data-callback="cb_upload_add_file_attach_chat_tong">
+                                    <i class="fa fa-paperclip"></i>
+                                </button>
+                            </div>
+
+                            <button type="button" class="border-0 ml-2" style="font-size: 0.875rem; background: none;">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -104,16 +116,10 @@
 
 
             $(`#section_chat_tong .chat .content_discuss`).on('keypress keyup', function(e) {
-
-                let line = countLines(e.target);
-
-                line = line > 5 ? 5 : line; // tối đa 10 line
-
-                if (line > 2) {
-                    $(this).height(line * 24)
-                } else {
-                    $(this).height(48)
-                }
+                let line = _.calculateNumLines(e.target.value, this);
+                line = line < 2 ? 2 : line // tối thiểu 2 rows
+                line = line > 5 ? 5 : line; // tối đa 10 rows
+                $(this).attr('rows', line)
             })
 
             $("#section_chat_tong .chat .content_discuss").keypress(function(e) {
@@ -342,7 +348,7 @@
                 let new_html = html_item_chat(data);
 
                 list_chat.append(new_html).scrollTop(list_chat[0].scrollHeight);
-                content_discuss.val('').height(48);
+                content_discuss.attr('rows', 2).val('');
                 chat_list_attach.html('');
                 list_chat.scrollTop(list_chat[0].scrollHeight);
 

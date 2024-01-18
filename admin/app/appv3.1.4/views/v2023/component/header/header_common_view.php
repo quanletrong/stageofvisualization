@@ -35,3 +35,4 @@
 <script src="dist/js/adminlte.min.js"></script>
 <!-- common js -->
 <script src="js/v2023/common.js?v=3"></script>
+<script src="js/v2023/func.js"></script>

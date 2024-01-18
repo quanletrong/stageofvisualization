@@ -248,10 +248,30 @@
 
 <script>
     $(document).ready(function() {
-        // TODO: có vấn đề
-        // $("textarea").each(function(textarea) {
-        //     $(this).height(60).height($(this)[0].scrollHeight < 60 ? 60 : $(this)[0].scrollHeight);
-        // });
+
+
+        // update rows của textarea tab đang active
+        $("#TabContentImage .active textarea").each(function() {
+            let line = _.calculateNumLines($(this).val(), this);
+            line = line < 2 ? 2 : line // tối thiểu 2 rows
+            $(this).attr('rows', line)
+        });
+
+        // sự kiện click tab sẽ update rows của textarea trong tab đo
+        $('#TabImage button.nav-link').click(function() {
+            $("#TabContentImage .active textarea").each(function() {
+                let line = _.calculateNumLines($(this).val(), this);
+                line = line < 2 ? 2 : line // tối thiểu 2 rows
+                $(this).attr('rows', line)
+            });
+        })
+
+        // sự kiện nhập textarea sẽ update rows của tab
+        $('#TabContentImage textarea').on('input', function(e) {
+            let line = _.calculateNumLines(e.target.value, this);
+            line = line < 2 ? 2 : line // tối thiểu 2 rows
+            $(this).attr('rows', line)
+        })
     })
 
     function downloadURI(uri, name) {
