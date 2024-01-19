@@ -156,7 +156,7 @@
                                                 <button class="btn btn-sm btn-warning mt-2" onclick="ajax_update_requirement(this, <?= $id_job ?>)" style="width: 150px;">Save Requirements</button>
                                             <?php } ?>
                                         </div>
-                                        <textarea class="form-control requirement_job mt-2" rows="5" style="resize: none; overflow-y: scroll;" id="requirement_job_<?= $id_job ?>"><?= $job['requirement'] ?></textarea>
+                                        <textarea class="form-control requirement_job mt-2" rows="5" id="requirement_job_<?= $id_job ?>"><?= $job['requirement'] ?></textarea>
 
                                     </div>
 

@@ -141,7 +141,7 @@
         </div>
         <div class="mt-2">
             <b>Requirements</b>
-            <textarea class="txt_note_rework_add form-control" cols="50" rows="5" style="resize: none; overflow-y: scroll;"></textarea>
+            <textarea class="txt_note_rework_add form-control" cols="50" rows="5"></textarea>
         </div>
         <div class="mt-2 text-center">
             <button class="btn btn-warning btn-sm mt-2" onclick="ajax_add_rework(this, '<?= $id_job ?>')" style="width: 100px;">Save Rework</button>
