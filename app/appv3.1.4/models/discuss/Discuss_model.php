@@ -58,7 +58,6 @@ class Discuss_model extends CI_Model
                 if (!empty($data)) {
                     $data['avatar_url'] = url_image($data['avatar'], FOLDER_AVATAR);
                     $data['file_list']  = json_decode($data['file'], true);
-
                 }
             } else {
                 var_dump($stmt->errorInfo());
@@ -117,4 +116,147 @@ class Discuss_model extends CI_Model
     function discuss_delete($id_discuss)
     {
     }
+
+
+    // CHAT TOONGR
+    function chat_list_by_user($id_user)
+    {
+        $list_chat = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT A.*, B.username as username, B.role as role, B.fullname as fullname, B.avatar as avatar
+        FROM tbl_chat as A
+        INNER JOIN tbl_user B ON A.id_user = B.id_user 
+        WHERE A.id_user = $id_user
+        ORDER BY A.id_chat ASC; ";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                        $row['avatar_url'] = url_image($row['avatar'], FOLDER_AVATAR);
+                        $row['file_list']  = json_decode($row['file'], true);
+
+                        $list_chat[] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $list_chat;
+    }
+
+    function chat_list_by_vang_lai($ip)
+    {
+        $list_chat = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT A.*
+        FROM tbl_chat as A
+        WHERE A.ip = '$ip' AND A.id_user = 0
+        ORDER BY A.id_chat ASC; ";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                        $row['avatar_url'] = url_image(AVATAR_DEFAULT, FOLDER_AVATAR);
+                        $row['file_list']  = json_decode($row['file'], true);
+
+                        $list_chat[] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $list_chat;
+    }
+
+
+    function chat_add($id_user, $content, $file, $create_time, $status, $ip, $fullname, $phone, $email)
+    {
+        $new_id = 0;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT INTO tbl_chat (id_user, content, file, create_time, status, ip, fullname, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_user, $content, $file, $create_time, $status, $ip, $fullname, $phone, $email];
+
+            if ($stmt->execute($param)) {
+                $new_id = $iconn->lastInsertId();
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $new_id;
+    }
+
+    function chat_info_by_id_user($id_chat)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT A.*, B.username as username, B.role as role, B.fullname as fullname, B.avatar as avatar
+        FROM tbl_chat as A
+        INNER JOIN tbl_user B ON A.id_user = B.id_user 
+        WHERE A.id_chat = $id_chat;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                if (!empty($data)) {
+                    $data['avatar_url'] = url_image($data['avatar'], FOLDER_AVATAR);
+                    $data['file_list']  = json_decode($data['file'], true);
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function chat_info_by_vang_lai($id_chat)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT A.*
+        FROM tbl_chat as A
+        WHERE A.id_chat = $id_chat;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                if (!empty($data)) {
+                    $data['avatar_url'] = url_image(AVATAR_DEFAULT, FOLDER_AVATAR);
+                    $data['file_list']  = json_decode($data['file'], true);
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
+    }
+    // END CHAT TOONG
 }

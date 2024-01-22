@@ -20,13 +20,13 @@ const _ = {
         context.font = font;
 
         const breaks = str.split(/\r\n|\r|\n/);
-        
+
         let lineCount = 0;
-        
+
         for (let j = 0; j < breaks.length; j++) {
 
-            console.log( `j ${j}`, lineCount)
-            lineCount ++;
+            console.log(`j ${j}`, lineCount)
+            lineCount++;
 
             const words = breaks[j].split(' ');
 
@@ -48,6 +48,16 @@ const _ = {
         lineCount++;
 
         return lineCount;
+    },
+    
+    downloadURI: function (uri, name) {
+        var link = document.createElement("a");
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        delete link;
     }
 }
 
@@ -58,6 +68,5 @@ const CHAT = {
         $(`${el} .chat .content_discuss`).focus();
         $(`${el} .chat .list-chat`).scrollTop($(`${el} .chat .list-chat`)[0].scrollHeight);
         $(`${el} .small_chat .tin-nhan-moi`).text(0).hide();
-        console.log($(`${el} .small_chat .tin-nhan-moi`).length)
     }
 }

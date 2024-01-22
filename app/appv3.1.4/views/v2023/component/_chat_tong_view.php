@@ -233,13 +233,13 @@
             for (const [id_file, file] of Object.entries(discuss.file_list)) {
                 list_file += `
                 <div class="" 
-                    onclick="downloadURI('<?= url_image('', FDR_CHAT_TONG) ?>${file}', '${file}')"
+                    onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')"
                     style="cursor: pointer; width:150px"
                     data-bs-toggle="tooltip" data-bs-placement="top"
                     title="Bấm để tải xuống"
                 >   ${
                         (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                        ? `<img src="<?= url_image('', FDR_CHAT_TONG) ?>${file}" class="rounded border"  style="width:100%; aspect-ratio: 1;object-fit: cover;">`
+                        ? `<img src="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" class="rounded border"  style="width:100%; aspect-ratio: 1;object-fit: cover;">`
                         : `
                         <div class="rounded border p-2 text-truncate bg-light" style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
