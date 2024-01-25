@@ -1,8 +1,8 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
 <link href="<?php echo $base_url . "skins/" . ltrim(URI_PATH . '/', '/') . $template_f; ?>all.css" rel="stylesheet" type="text/css" />
 
@@ -22,10 +22,25 @@
 <!-- bs5dialog https://ymlluo.github.io/bs5dialog/dist/index.html -->
 <link rel="stylesheet" href="skins/v2023/bs5dialog.css" />
 <script src="js/v2023/bs5dialog.js"></script>
-<script> bs5dialog.startup();</script>
+<script>
+    bs5dialog.startup();
+</script>
 
 
 <!-- common js -->
 <script src="js/v2023/common.js"></script>
 
 <script src="js/v2023/func.js"></script>
+
+<!-- SOCKET -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    const socket = io('<?= SOCKET_SERVICES ?>', {
+        transports: ['websocket'],
+        withCredentials: true,
+        extraHeaders: {
+            "my-custom-header": "abcd"
+        }
+    });
+</script>
+<!-- END SOCKET -->

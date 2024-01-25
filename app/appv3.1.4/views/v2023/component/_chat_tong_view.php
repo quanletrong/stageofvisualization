@@ -12,7 +12,7 @@
             color: red;
         }
     </style>
-    <div style="position: fixed; right: 20px; bottom: 20px;" class="small_chat">
+    <div style="position: fixed; right: 10px; bottom: 50px;" class="small_chat">
         <div style="position: relative;">
             <button class="btn btn-sm btn-primary rounded-circle" onclick="CHAT.open_close_chat('#section_chat_tong')" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm" style="width: 3rem; height:3rem">
                 <i class="fa-solid fa-comment" style="font-size: 1.5rem;"></i>
@@ -74,6 +74,54 @@
         </div>
     </div>
 
+    <!-- Modal nhập thông tin cá nhân khi chat -->
+    <div class="modal fade" id="exampleModalCaNhan" tabindex="-1" aria-labelledby="exampleModalCaNhan" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-md-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalCaNhan">Hãy cho tôi biết bạn là ai?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Tên của bạn là gì?</label>
+                        <input type="text" class="form-control fullname" value="" onkeyup="local_storage_set_fullname(this)">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email của bạn là gì?</label>
+                        <input type="email" class="form-control email" value="" onkeyup="local_storage_set_email(this)">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number của bạn là?</label>
+                        <input type="tel" class="form-control phone" value="" onkeyup="local_storage_set_phone(this)">
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="justify-content: space-between;">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Xong</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            function local_storage_set_fullname(input) {
+                let str = $(input).val();
+                localStorage.setItem("chat_fullname", str);
+            }
+
+            function local_storage_set_email(input) {
+                let str = $(input).val();
+                localStorage.setItem("chat_email", str);
+            }
+
+            function local_storage_set_phone(input) {
+                let str = $(input).val();
+                localStorage.setItem("chat_phone", str);
+            }
+        </script>
+    </div>
+    <!-- END Modal nhập thông tin cá nhân khi chat -->
+
     <script>
         $(document).ready(function() {
             ajax_chat_tong_list();
@@ -114,8 +162,8 @@
                             let hello = {
                                 "id_discuss": "",
                                 "id_order": "",
-                                "id_user": "test", 
-                                "content": "Chúc Quý khách ngày an lành! Tôi là chuyên viên tư vấn thiết kế.<br/> Bạn cần tôi hỗ trợ gì không?",
+                                "id_user": "test",
+                                "content": "Xin chào Quý khách! Tôi là chuyên viên tư vấn thiết kế.<br/> Bạn cần tôi hỗ trợ gì không?",
                                 "file": "{}",
                                 "create_time": moment(),
                                 "status": "1",
@@ -148,6 +196,29 @@
 
         function ajax_chat_tong_add(btn) {
 
+            // check thông tin cá nhân
+            let fullname = localStorage.getItem("chat_fullname");
+            let email = localStorage.getItem("chat_email");
+            let phone = localStorage.getItem("chat_phone");
+            if ('<?= $cur_uid ?>' == '0') {
+
+                $('#exampleModalCaNhan .fullname').val(fullname)
+                $('#exampleModalCaNhan .email').val(email)
+                $('#exampleModalCaNhan .phone').val(phone)
+
+                if (fullname == null) {
+                    $('#exampleModalCaNhan').modal('show');
+                    return;
+                } else {
+                    if (email == null && phone == null) {
+                        $('#exampleModalCaNhan').modal('show');
+                        return;
+                    }
+                }
+            }
+
+            // end check thông tin cá nhân
+
             let content = $('#section_chat_tong .chat .content_discuss').val();
             let attach = [];
             $('#section_chat_tong .chat .chat_list_attach > div').each(function(index) {
@@ -171,6 +242,9 @@
                 data: {
                     'content': content,
                     'attach': attach,
+                    'fullname': fullname,
+                    'email': email,
+                    'phone': phone
                 },
                 success: function(data, textStatus, jqXHR) {
                     let kq = JSON.parse(data);
@@ -214,7 +288,7 @@
             }
 
             let html = ``;
-            if (<?= $cur_uid ?> == discuss.id_user) {
+            if ('<?= $cur_uid ?>' == discuss.id_user) {
                 html = `
             <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${discuss.create_time}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
@@ -279,16 +353,7 @@
     </script>
 
     <!-- SOCKET -->
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
-        const socket = io('<?= SOCKET_SERVICES ?>', {
-            transports: ['websocket'],
-            withCredentials: true,
-            extraHeaders: {
-                "my-custom-header": "abcd"
-            }
-        });
-
         socket.on('update-chat-tong', data => {
             let check_username = data.username == '<?= $username ?>';
             let check_ip = data.ip == '<?= ip_address() ?>';
