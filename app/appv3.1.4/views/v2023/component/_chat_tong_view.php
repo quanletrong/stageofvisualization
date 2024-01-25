@@ -114,8 +114,8 @@
                             let hello = {
                                 "id_discuss": "",
                                 "id_order": "",
-                                "id_user": "",
-                                "content": "Chúc Quý khách ngày an lành! Tôi là chuyên viên tư vấn thiết kế.<br/> Quý khách đang có nhu cầu thay đổi thiết kế, hãy gửi các hình ảnh thực tế và để lại lời nhắn để tôi hỗ trợ bạn nhé!",
+                                "id_user": "test", 
+                                "content": "Chúc Quý khách ngày an lành! Tôi là chuyên viên tư vấn thiết kế.<br/> Bạn cần tôi hỗ trợ gì không?",
                                 "file": "{}",
                                 "create_time": moment(),
                                 "status": "1",
@@ -124,7 +124,7 @@
                                 "role": "",
                                 "fullname": "Stage of visualization",
                                 "avatar": "user-default.png",
-                                "avatar_url": "http://stageofvisualization.local/uploads/avatar/user-default.png",
+                                "avatar_url": "uploads/avatar/user-default.png",
                                 "file_list": {}
                             };
 
