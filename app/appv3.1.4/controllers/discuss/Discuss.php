@@ -131,10 +131,6 @@ class Discuss extends MY_Controller
     function ajax_chat_tong_add()
     {
 
-        if (!$this->_isLogin()) {
-            resError('unlogin');
-        }
-
         // check right
         $content = removeAllTags($this->input->post('content'));
         $attach = $this->input->post('attach');
