@@ -55,7 +55,7 @@
                     </div>
                 </div>
                 <div class="col-md-8" id="chat-right">
-                    <?php $this->load->view('v2023/discuss/_chat_right_view.php'); ?>
+                    <?php $this->load->view('v2023/chat/_chat_right_view.php'); ?>
                 </div>
             </div>
         </div>

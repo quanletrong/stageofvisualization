@@ -245,6 +245,17 @@
 								</li>
 							<?php } ?>
 
+							<?php if (in_array($role, [ADMIN, SALE])) { ?>
+							<li class="nav-item">
+								<a href="chat" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										CHAT
+									</p>
+								</a>
+							</li>
+							<?php } ?>
+
 							<li class="nav-item">
 								<a href="contact" class="nav-link">
 									<i class="nav-icon fas fa-th"></i>
