@@ -80,8 +80,8 @@
         let avatar = item_chat_active.find('.avatar').attr('src');
 
 
-        $('#discuss_khach .fullname').text(fullname)
-        $('#discuss_khach .avatar').attr('src', avatar)
+        $('#chat_khach .fullname').text(fullname)
+        $('#chat_khach .avatar').attr('src', avatar)
         if (id_user != '') {
             ajax_chat_list_by_user(id_user);
         }
@@ -94,8 +94,8 @@
             let fullname = $(this).find('.fullname').text();
             let avatar = $(this).find('.avatar').attr('src');
 
-            $('#discuss_khach .fullname').text(fullname)
-            $('#discuss_khach .avatar').attr('src', avatar)
+            $('#chat_khach .fullname').text(fullname)
+            $('#chat_khach .avatar').attr('src', avatar)
         })
     })
 
@@ -119,15 +119,15 @@
             audio.play();
 
             let new_html = html_item_chat(data);
-            $('#discuss_khach .list-chat')
+            $('#chat_khach .list-chat')
                 .append(new_html)
-                .scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+                .scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
 
-            $('#discuss_khach .content_discuss').val('').attr('rows', 2);
-            $('#discuss_khach .chat_list_attach').html('');
-            $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+            $('#chat_khach .content_chat').val('').attr('rows', 2);
+            $('#chat_khach .chat_list_attach').html('');
+            $('#chat_khach .list-chat').scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
 
-            tooltipTriggerList('#discuss_khach');
+            tooltipTriggerList('#chat_khach');
         }
     })
 </script>

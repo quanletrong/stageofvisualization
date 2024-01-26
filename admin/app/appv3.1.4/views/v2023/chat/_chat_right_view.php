@@ -1,4 +1,4 @@
-<div id="discuss_khach" class="card mb-0" style="width: 100%;">
+<div id="chat_khach" class="card mb-0" style="width: 100%;">
     <div class="card-header text-white p-1">
         <div class="d-flex align-items-center">
             <div>
@@ -17,7 +17,7 @@
                     <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
                     <div class="chat_list_attach d-flex flex-wrap"></div>
 
-                    <textarea name="message" class="form-control content_discuss bg-white" style="padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
+                    <textarea name="message" class="form-control content_chat bg-white" style="padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                     <div style="height: fit-content; position: absolute; bottom: 10px; right:20px">
                         <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_chat_add(this)"><i class="fas fa-paper-plane"></i></button>
@@ -48,7 +48,7 @@
 <script>
     $(document).ready(function() {
 
-        $(`#discuss_khach .content_discuss`).on('keypress keyup', function(e) {
+        $(`#chat_khach .content_chat`).on('keypress keyup', function(e) {
 
             let line = _.calculateNumLines(e.target.value, this);
             line = line < 2 ? 2 : line // tối thiểu 2 rows
@@ -56,9 +56,9 @@
             $(this).attr('rows', line)
         })
 
-        $("#discuss_khach .content_discuss").keypress(function(e) {
+        $("#chat_khach .content_chat").keypress(function(e) {
             if (e.which == 13 && !e.shiftKey) {
-                ajax_chat_add($(`#discuss_khach .btn-send`));
+                ajax_chat_add($(`#chat_khach .btn-send`));
                 return false;
             }
         });
@@ -67,25 +67,25 @@
 
     function ajax_chat_list_by_user(id_user) {
 
-        $('#discuss_khach .list-chat').html('<center><i class="fas fa-sync fa-spin"></i></center>')
+        $('#chat_khach .list-chat').html('<center><i class="fas fa-sync fa-spin"></i></center>')
         
         $.ajax({
-            url: `discuss/ajax_chat_list_by_user/${id_user}`,
+            url: `chat/ajax_chat_list_by_user/${id_user}`,
 
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    let list_discuss = kq.data;
+                    let list_chat = kq.data;
 
                     let html = ``;
-                    for (const [key, discuss] of Object.entries(list_discuss)) {
-                        html += html_item_chat(discuss)
+                    for (const [key, chat] of Object.entries(list_chat)) {
+                        html += html_item_chat(chat)
                     }
 
-                    $('#discuss_khach .list-chat').html(html).scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
+                    $('#chat_khach .list-chat').html(html).scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
 
-                    tooltipTriggerList('#discuss_khach');
+                    tooltipTriggerList('#chat_khach');
                 } else {
                     alert(kq.error);
                 }
@@ -99,9 +99,9 @@
 
     function ajax_chat_add(btn) {
 
-        let content = $('#discuss_khach .content_discuss').val();
+        let content = $('#chat_khach .content_chat').val();
         let attach = [];
-        $('#discuss_khach .chat_list_attach > div').each(function(index) {
+        $('#chat_khach .chat_list_attach > div').each(function(index) {
             let file = $(this).data('file');
             attach.push(file);
         });
@@ -121,7 +121,7 @@
         $(btn).prop("disabled", true);
 
         $.ajax({
-            url: `discuss/ajax_chat_add/${chat_user}`,
+            url: `chat/ajax_chat_add/${chat_user}`,
             type: "POST",
             data: {
                 'content': content,
@@ -145,10 +145,10 @@
         });
     }
 
-    function html_item_chat(discuss) {
+    function html_item_chat(chat) {
 
         let list_file = ``;
-        for (const [id_file, file] of Object.entries(discuss.file_list)) {
+        for (const [id_file, file] of Object.entries(chat.file_list)) {
             list_file += `
             <div class="" 
                 onclick="downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')"
@@ -169,23 +169,23 @@
         }
 
         let html = ``;
-        if (<?= $cur_uid ?> == discuss.action_by) {
+        if (<?= $cur_uid ?> == chat.action_by) {
             html = `
-        <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${discuss.create_time}">
+        <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${chat.create_time}">
             <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
-                <div style="white-space: pre-line;">${discuss.content != '' ? `${discuss.content}` : ''}</div>
+                <div style="white-space: pre-line;">${chat.content != '' ? `${chat.content}` : ''}</div>
                 <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                <small style="color:#7c7c7c">${moment(discuss.create_time).fromNow()}</small>
+                <small style="color:#7c7c7c">${moment(chat.create_time).fromNow()}</small>
             </div>
         </div>`;
         } else {
             html = `
-        <div class="mb-2 me-2 d-flex" style="gap:10px" title="${discuss.create_time}">
-            <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${discuss.avatar_url}">
+        <div class="mb-2 me-2 d-flex" style="gap:10px" title="${chat.create_time}">
+            <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${chat.avatar_url}">
             <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                <div style="white-space: pre-line;">${discuss.content != '' ? `${discuss.content}` : ''}</div>
+                <div style="white-space: pre-line;">${chat.content != '' ? `${chat.content}` : ''}</div>
                 <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                <small style="color:#7c7c7c">${moment(discuss.create_time).fromNow()}</small>
+                <small style="color:#7c7c7c">${moment(chat.create_time).fromNow()}</small>
             </div>
         </div>`;
         }
@@ -230,6 +230,6 @@
         </div>`;
         }
 
-        $('#discuss_khach .chat_list_attach').append(html);
+        $('#chat_khach .chat_list_attach').append(html);
     }
 </script>
