@@ -1637,3 +1637,7 @@ function password_streng($password)
 {
     return preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password);
 }
+
+function isIPV4($ip) {
+    return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+}

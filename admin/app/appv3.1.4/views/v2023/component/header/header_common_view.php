@@ -36,3 +36,14 @@
 <!-- common js -->
 <script src="js/v2023/common.js?v=3"></script>
 <script src="js/v2023/func.js"></script>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    const socket = io('<?= SOCKET_SERVICES ?>', {
+        transports: ['websocket'],
+        withCredentials: true,
+        extraHeaders: {
+            "my-custom-header": "abcd"
+        }
+    });
+</script>

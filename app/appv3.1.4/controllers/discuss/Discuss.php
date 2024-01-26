@@ -138,11 +138,13 @@ class Discuss extends MY_Controller
 
         if ($this->_isLogin()) {
             $cur_uid = $this->_session_uid();
+            $action_by = $this->_session_uid();
             $fullname =  '';
             $email = '';
             $phone = '';
         } else {
-            $cur_uid = 0;
+            $cur_uid = ip_address();
+            $action_by = 0;
             $fullname = removeAllTags($this->input->post('fullname'));
             $email = removeAllTags($this->input->post('email'));
             $phone = removeAllTags($this->input->post('phone'));
@@ -169,8 +171,7 @@ class Discuss extends MY_Controller
         $status = 1;
         $db_attach =  json_encode($db_attach, JSON_FORCE_OBJECT);
         $ip = ip_address();
-
-        $newid = $this->Discuss_model->chat_add($cur_uid, $content, $db_attach, $create_time, $status, $ip, $fullname, $phone, $email);
+        $newid = $this->Discuss_model->chat_add($cur_uid, $content, $db_attach, $create_time, $status, $ip, $fullname, $phone, $email, $action_by);
 
         if ($this->_isLogin()) {
             $info = $this->Discuss_model->chat_info_by_id_user($newid);

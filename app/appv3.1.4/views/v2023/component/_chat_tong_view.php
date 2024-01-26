@@ -288,7 +288,7 @@
             }
 
             let html = ``;
-            if ('<?= $cur_uid ?>' == discuss.id_user) {
+            if ('<?= $cur_uid ?>' == discuss.action_by || discuss.action_by == 0 ) {
                 html = `
             <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${discuss.create_time}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
@@ -355,10 +355,10 @@
     <!-- SOCKET -->
     <script>
         socket.on('update-chat-tong', data => {
-            let check_username = data.username == '<?= $username ?>';
-            let check_ip = data.ip == '<?= ip_address() ?>';
+            let check_id_user = data.id_user == '<?= $cur_uid ?>';
+            let check_ip = data.id_user == '<?= ip_address() ?>';
 
-            if (check_username || check_ip) {
+            if (check_id_user || check_ip) {
 
                 var audio = new Audio('images/Tieng-ting-www_tiengdong_com.mp3');
                 audio.play();

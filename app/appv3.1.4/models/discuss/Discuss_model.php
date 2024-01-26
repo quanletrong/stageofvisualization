@@ -126,7 +126,7 @@ class Discuss_model extends CI_Model
 
         $sql = "SELECT A.*, B.username as username, B.role as role, B.fullname as fullname, B.avatar as avatar
         FROM tbl_chat as A
-        INNER JOIN tbl_user B ON A.id_user = B.id_user 
+        INNER JOIN tbl_user B ON A.action_by = B.id_user 
         WHERE A.id_user = $id_user
         ORDER BY A.id_chat ASC; ";
 
@@ -159,7 +159,7 @@ class Discuss_model extends CI_Model
 
         $sql = "SELECT A.*
         FROM tbl_chat as A
-        WHERE A.ip = '$ip' AND A.id_user = 0
+        WHERE A.id_user = '$ip'
         ORDER BY A.id_chat ASC; ";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -184,14 +184,14 @@ class Discuss_model extends CI_Model
     }
 
 
-    function chat_add($id_user, $content, $file, $create_time, $status, $ip, $fullname, $phone, $email)
+    function chat_add($id_user, $content, $file, $create_time, $status, $ip, $fullname, $phone, $email, $action_by)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_chat (id_user, content, file, create_time, status, ip, fullname, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_chat (id_user, content, file, create_time, status, ip, fullname, phone, email, action_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_user, $content, $file, $create_time, $status, $ip, $fullname, $phone, $email];
+            $param = [$id_user, $content, $file, $create_time, $status, $ip, $fullname, $phone, $email, $action_by];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -211,7 +211,7 @@ class Discuss_model extends CI_Model
 
         $sql = "SELECT A.*, B.username as username, B.role as role, B.fullname as fullname, B.avatar as avatar
         FROM tbl_chat as A
-        INNER JOIN tbl_user B ON A.id_user = B.id_user 
+        INNER JOIN tbl_user B ON A.action_by = B.id_user 
         WHERE A.id_chat = $id_chat;";
 
         $stmt = $iconn->prepare($sql);
