@@ -38,7 +38,7 @@
                         <?php foreach ($list_user_chat as $chat) { ?>
                             <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $chat['id_user']?>" onclick="ajax_chat_list_by_user('<?= $chat['id_user'] ?>')">
                                 <div style="width: 15%; max-width: 50px;">
-                                    <img src="<?= $chat['avatar_url'] ?>" class="img-circle elevation-2 avatar" alt="User Image" style="width: 100%;">
+                                    <img src="<?= $chat['avatar_url'] ?>" class="img-circle elevation-2 avatar" alt="User Image" style="width: 100%;object-fit: cover; aspect-ratio: 1;">
                                 </div>
                                 <div style="width: 85%;">
                                     <div style="width: 100%; font-weight: 500;" class="fullname">

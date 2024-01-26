@@ -2,7 +2,7 @@
     <div class="card-header text-white p-1">
         <div class="d-flex align-items-center">
             <div>
-                <img src="" class="img-circle elevation-2 avatar" alt="User Image" style="width: 40px;">
+                <img src="" class="img-circle elevation-2 avatar" alt="User Image" style="width: 40px; object-fit: cover; aspect-ratio: 1;">
             </div>
             <div style="font-weight: 500; color:black; margin-left:15px" class="fullname">...</div>
         </div>
