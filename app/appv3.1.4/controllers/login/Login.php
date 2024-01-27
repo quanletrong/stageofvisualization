@@ -56,15 +56,14 @@ class Login extends MY_Controller
                     if (in_array($userInfo['role'], [ADMIN, SALE, QC, EDITOR])) {
 
                         // nếu currUrl rỗng hoặc không phải link admin => rederect vào /admin
-                        if($currUrl == '' || strpos($currUrl, $_SERVER['HTTP_HOST'] . '/admin') == false){
+                        if ($currUrl == '' || strpos($currUrl, $_SERVER['HTTP_HOST'] . '/admin') == false) {
                             $redirect = '/admin';
                         } else {
                             $redirect = urldecode($currUrl);
                         }
-
                     } else {
                         // nếu currUrl rỗng hoặc là link admin => rederect vào /home
-                        if($currUrl == '' || strpos($currUrl, $_SERVER['HTTP_HOST'] . '/admin')){
+                        if ($currUrl == '' || strpos($currUrl, $_SERVER['HTTP_HOST'] . '/admin')) {
                             $redirect = '/home';
                         } else {
                             $redirect = urldecode($currUrl);
@@ -72,10 +71,9 @@ class Login extends MY_Controller
                     }
                 } else {
                     //redirect to login
-                $this->session->set_userdata('login_fail', 'Tài khoản đã bị khóa!');
-                $redirect = site_url('login?url=' . urlencode($currUrl), $this->_langcode);
+                    $this->session->set_userdata('login_fail', 'Tài khoản đã bị khóa!');
+                    $redirect = site_url('login?url=' . urlencode($currUrl), $this->_langcode);
                 }
-
             } else {
                 //redirect to login
                 $this->session->set_userdata('login_fail', 'Sai tài khoản hoặc mật khẩu!');
@@ -142,6 +140,77 @@ class Login extends MY_Controller
         }
     }
 
+    function ajax_auth()
+    {
+        $currUrl = removeAllTags($this->input->post('url'));
+        $userame = removeAllTags($this->input->post('username'));
+        $password = removeAllTags($this->input->post('password'));
+        // validate current url for redirect
+        if ($currUrl != '') {
+            // check is url
+            if (isUrl($currUrl)) {
+                // check domain of url
+                $currUrl = strtolower(getDomainFromUrl($currUrl)) ==  strtolower(DOMAIN_NAME) ? $currUrl : '';
+            } else {
+                $currUrl = '';
+            }
+        }
+
+        $userInfo = $this->Login_model->get_user_info_by_username($userame);
+
+        $redirect = '';
+        if (!empty($userInfo)) {
+            $passVerify = PasswordHash::hash_verify($userInfo['username'], $userInfo['password'], md5($password));
+
+            if ($passVerify) {
+
+                if ($userInfo['status']) {
+                    // unset all session before init
+                    session_unset();
+                    session_regenerate_id(true);
+
+                    $this->session->set_userdata('uname', $userInfo['username']);
+                    $this->session->set_userdata('uid', $userInfo['id_user']);
+                    $this->session->set_userdata('role', $userInfo['role']);
+                    $this->session->set_userdata('phone', $userInfo['phone']);
+                    $this->session->set_userdata('email', $userInfo['email']);
+                    $this->session->set_userdata('fullname', $userInfo['fullname']);
+
+                    //Update login date TODO: có dùng
+                    // $this->Login_model->user_last_login_log($userInfo['user_id']);
+
+                    if (in_array($userInfo['role'], [ADMIN, SALE, QC, EDITOR])) {
+
+                        // nếu currUrl rỗng hoặc không phải link admin => rederect vào /admin
+                        if ($currUrl == '' || strpos($currUrl, $_SERVER['HTTP_HOST'] . '/admin') == false) {
+                            $redirect = '/admin';
+                        } else {
+                            $redirect = urldecode($currUrl);
+                        }
+
+                        resSuccess($redirect);
+
+                    } else {
+                        // nếu currUrl rỗng hoặc là link admin => rederect vào /home
+                        if ($currUrl == '' || strpos($currUrl, $_SERVER['HTTP_HOST'] . '/admin')) {
+                            $redirect = '/home';
+                        } else {
+                            $redirect = urldecode($currUrl);
+                        }
+
+                        resSuccess($redirect);
+                    }
+
+                } else {
+                    resError('Tài khoản đã bị khóa');
+                }
+            } else {
+                resError('Sai tài khoản hoặc mật khẩu!');
+            }
+        } else {
+            resError('Sai tài khoản hoặc mật khẩu!');
+        }
+    }
     function ggcallback()
     {
         die('dang phat trien');

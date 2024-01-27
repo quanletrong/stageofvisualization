@@ -51,7 +51,7 @@
                     </li>
                 <?php } else { ?>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="<?= LINK_USER_LOGIN ?>">LOGIN</a>
+                        <a class="nav-link active" aria-current="page" data-bs-toggle="modal" data-bs-target="#modal_login" href="#">LOGIN</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="<?= LINK_USER_REGISTER ?>">REGISTER</a>

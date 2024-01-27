@@ -87,11 +87,12 @@ $route[LINK_USER_SETTINGS]               = 'user/user/settings';
 $route[LINK_USER_TRANSACTIONS]           = 'user/user/transactions';
 
 // login
-$route[LINK_USER_LOGIN]               = 'login/login/index';
+$route[LINK_USER_LOGIN]                 = 'login/login/index';
 $route[LINK_USER_LOGIN . '/auth']       = 'login/login/auth';
-$route[LINK_USER_LOGOUT]              = 'logout/logout/index';
+$route[LINK_USER_LOGIN . '/ajax-auth']  = 'login/login/ajax_auth';
+$route[LINK_USER_LOGOUT]                = 'logout/logout/index';
 $route[LINK_USER_LOGIN . '/ggcallback'] = 'login/login/ggcallback';
-$route[LINK_USER_REGISTER]            = 'signup/signup/index';
+$route[LINK_USER_REGISTER]              = 'signup/signup/index';
 
 
 //discuss
