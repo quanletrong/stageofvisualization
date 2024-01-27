@@ -39,6 +39,7 @@
                 <div class="col-md-4" id="chat-left">
                     <div style="overflow-x: hidden; overflow-y: auto; height: 80vh; background: white; border-radius: 5px; padding: 5px;" class="list-chat-user">
 
+
                         <?php foreach ($list_user_chat as $chat) { ?>
                             <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $chat['id_user'] ?>" onclick="click_left_chat_user('<?= $chat['id_user'] ?>')">
                                 <div style="width: 15%; max-width: 50px;">
@@ -49,7 +50,7 @@
                                         <?= isIPV4($chat['id_user']) ?  '(Vãng lai - ' . $chat['id_user'] . ')' : $chat['fullname_user'] ?>
                                     </div>
                                     <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
-                                        <div class="text-truncate content" style="width: 80%; font-weight: 300;"><?= $chat['content'] ?></div>
+                                        <div class="text-truncate content" style="width: 80%; font-weight: <?= $chat['da_xem'] ? 300 : 600 ?>;"><?= $chat['content'] ?></div>
                                         <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;"><?= timeSince($chat['create_time']) ?></div>
                                     </div>
 
@@ -60,6 +61,9 @@
                             </div>
                         <?php } ?>
 
+                        <?php if (count($list_user_chat) == 0) { ?>
+                            <div class="mt-3 text-center alert_empty_chat" style="display: block;">Không có đoạn chat nào</div>
+                        <?php } ?>
                     </div>
                 </div>
                 <div class="col-md-8" id="chat-right">
@@ -90,7 +94,7 @@
 
         $('#chat_khach .fullname').text(fullname)
         $('#chat_khach .avatar').attr('src', avatar)
-        if (id_user != '') {
+        if (id_user != '' && id_user !== undefined) {
             ajax_chat_list_by_user(id_user);
         }
     })
@@ -124,6 +128,12 @@
 
                         // xóa bên trái
                         $(`[id='${chat_user}']`).remove();
+
+                        // hiển thị empty nếu có
+                        if ($('.item-chat').length == 0) {
+                            $('#chat-left .alert_empty_chat').show();
+                            $('#chat_khach').hide();
+                        }
 
                         // xóa bên phải
                         let is_active = $(`[id='${chat_user}']`).hasClass('active');
@@ -182,7 +192,7 @@
 
                 tooltipTriggerList('#chat_khach');
             }
-        } 
+        }
 
         // đoạn chat mới nội dung bên trái
         else {
@@ -209,6 +219,7 @@
             </div>`
 
             $('#chat-left .list-chat-user').prepend(html_new);
+            $('#chat-left .alert_empty_chat').hide();
         }
     })
 </script>

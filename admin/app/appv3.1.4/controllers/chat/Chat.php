@@ -53,6 +53,10 @@ class Chat extends MY_Controller
             resError('Tài khoản không có quyền truy cập!');
         }
 
+        // set tất cả tin nhắn là đã xem
+        $this->Chat_model->da_xem_all_chat_user($chat_user);
+
+        // get lai list
         $chat_list = $this->Chat_model->chat_list_by_user($chat_user);
 
         resSuccess($chat_list);

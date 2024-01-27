@@ -1,4 +1,4 @@
-<div id="chat_khach" class="card mb-0" style="width: 100%;">
+<div id="chat_khach" class="card mb-0" style="width: 100%; display: none;">
     <div class="card-header text-white p-1">
         <div class="d-flex align-items-center">
             <div>
@@ -66,7 +66,7 @@
     })
 
     function ajax_chat_list_by_user(id_user) {
-
+        $('#chat_khach').show();
         $('#chat_khach .list-chat').html('<center><i class="fas fa-sync fa-spin"></i></center>')
         
         $.ajax({
@@ -115,6 +115,9 @@
 
         // get chat user active
         let chat_user = $('.item-chat.active').attr('id');
+        if(chat_user === undefined) {
+            return false;
+        }
         // end chat user
 
         $(btn).html('<i class="fas fa-sync fa-spin"></i>');
