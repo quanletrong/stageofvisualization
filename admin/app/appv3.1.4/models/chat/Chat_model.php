@@ -13,8 +13,8 @@ class Chat_model extends CI_Model
         $list_chat = [];
         $iconn = $this->db->conn_id;
 
-        $sql = 
-        "WITH ranked_chat AS (
+        $sql =
+            "WITH ranked_chat AS (
             SELECT m.*, ROW_NUMBER() OVER (PARTITION BY id_user ORDER BY id_chat DESC) AS rn
             FROM tbl_chat AS m
         )
@@ -51,8 +51,8 @@ class Chat_model extends CI_Model
         $list_chat = [];
         $iconn = $this->db->conn_id;
 
-        $sql = 
-        "WITH ranked_chat AS (
+        $sql =
+            "WITH ranked_chat AS (
             SELECT m.*, ROW_NUMBER() OVER (PARTITION BY ip ORDER BY id_chat DESC) AS rn
             FROM tbl_chat AS m
               WHERE m.id_user = 0
@@ -194,4 +194,22 @@ class Chat_model extends CI_Model
         return $data;
     }
     // END CHAT TONG
+
+    function delete_chat_user($chat_user)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "DELETE FROM `tbl_chat` WHERE `id_user` = '$chat_user' ";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
 }

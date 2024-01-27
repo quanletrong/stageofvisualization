@@ -8,6 +8,10 @@
     .item-chat.active {
         background-color: #f0f0f0;
     }
+
+    .item-chat:hover .delete {
+        display: block !important;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -32,21 +36,25 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-4">
-                    <div style="overflow-x: hidden; overflow-y: auto; height: 80vh; background: white; border-radius: 5px; padding: 5px;">
+                <div class="col-md-4" id="chat-left">
+                    <div style="overflow-x: hidden; overflow-y: auto; height: 80vh; background: white; border-radius: 5px; padding: 5px;" class="list-chat-user">
 
                         <?php foreach ($list_user_chat as $chat) { ?>
-                            <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $chat['id_user']?>" onclick="ajax_chat_list_by_user('<?= $chat['id_user'] ?>')">
+                            <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $chat['id_user'] ?>" onclick="click_left_chat_user('<?= $chat['id_user'] ?>')">
                                 <div style="width: 15%; max-width: 50px;">
                                     <img src="<?= $chat['avatar_url'] ?>" class="img-circle elevation-2 avatar" alt="User Image" style="width: 100%;object-fit: cover; aspect-ratio: 1;">
                                 </div>
-                                <div style="width: 85%;">
+                                <div style="width: 85%; position: relative;">
                                     <div style="width: 100%; font-weight: 500;" class="fullname">
-                                        <?= isIPV4($chat['id_user']) ?  '(Vãng lai - '.$chat['id_user'].')' : $chat['fullname_user'] ?>
+                                        <?= isIPV4($chat['id_user']) ?  '(Vãng lai - ' . $chat['id_user'] . ')' : $chat['fullname_user'] ?>
                                     </div>
                                     <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
                                         <div class="text-truncate content" style="width: 80%; font-weight: 300;"><?= $chat['content'] ?></div>
                                         <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;"><?= timeSince($chat['create_time']) ?></div>
+                                    </div>
+
+                                    <div style="position: absolute;right: 0px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('<?= $chat['id_user'] ?>')">
+                                        <i class="fas fa-times-circle"></i>
                                     </div>
                                 </div>
                             </div>
@@ -85,19 +93,65 @@
         if (id_user != '') {
             ajax_chat_list_by_user(id_user);
         }
-
-        $('.item-chat').click(function() {
-            $('.item-chat').removeClass('active');
-            $(this).addClass('active')
-            $(this).find('.content').css('font-weight', 300)
-
-            let fullname = $(this).find('.fullname').text();
-            let avatar = $(this).find('.avatar').attr('src');
-
-            $('#chat_khach .fullname').text(fullname)
-            $('#chat_khach .avatar').attr('src', avatar)
-        })
     })
+
+    function click_left_chat_user(chat_user) {
+
+        let chat_item = $(`[id='${chat_user}']`);
+
+        $('.item-chat').removeClass('active');
+        chat_item.addClass('active')
+        chat_item.find('.content').css('font-weight', 300)
+
+        let fullname = chat_item.find('.fullname').text();
+        let avatar = chat_item.find('.avatar').attr('src');
+
+        $('#chat_khach .fullname').text(fullname)
+        $('#chat_khach .avatar').attr('src', avatar)
+
+        ajax_chat_list_by_user(chat_user)
+    }
+
+    function ajax_delete_chat_user(chat_user) {
+
+        if (confirm('Bạn muốn xóa đoạn chat này?')) {
+            $.ajax({
+                url: `chat/ajax_delete_chat_user/${chat_user}`,
+                success: function(data, textStatus, jqXHR) {
+                    let kq = JSON.parse(data);
+
+                    if (kq.status) {
+
+                        // xóa bên trái
+                        $(`[id='${chat_user}']`).remove();
+
+                        // xóa bên phải
+                        let is_active = $(`[id='${chat_user}']`).hasClass('active');
+                        if (is_active) {
+
+                            let item_chat_active = $('.item-chat').first();
+                            let id_user = item_chat_active.attr('id');
+                            let fullname = item_chat_active.find('.fullname').text();
+                            let avatar = item_chat_active.find('.avatar').attr('src');
+
+                            item_chat_active.addClass('active')
+
+                            $('#chat_khach .fullname').text(fullname)
+                            $('#chat_khach .avatar').attr('src', avatar)
+                            ajax_chat_list_by_user(id_user);
+                        }
+
+                    } else {
+                        alert(kq.error);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(data);
+                    alert('Error');
+                }
+            });
+        }
+    }
 
     // hứng chat của khách
     socket.on('update-chat-tong', data => {
@@ -105,29 +159,56 @@
         var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
         audio.play();
 
-        let chat_user = data.id_user;
+        let id_user = data.id_user;
+        let chat_user = $(`[id='${data.id_user}']`);
 
-        $(`[id='${chat_user}'] .content`).text(data.content);
-        $(`[id='${chat_user}'] .content`).css('font-weight', 600)
+        // đoạn chat cũ
+        if (chat_user.length) {
 
-        $(`[id='${chat_user}'] .time`).text(moment(data.create_time).fromNow());
+            chat_user.find(`.content`).text(data.content);
+            chat_user.find(`.content`).css('font-weight', 600)
+            chat_user.find(`.time`).text(moment(data.create_time).fromNow());
 
-        let isActive = $(`[id='${chat_user}']`).hasClass('active');
-        if (isActive) {
+            let isActiveRight = chat_user.hasClass('active');
+            if (isActiveRight) {
+                let new_html = html_item_chat(data);
+                $('#chat_khach .list-chat')
+                    .append(new_html)
+                    .scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
 
-            var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
-            audio.play();
+                $('#chat_khach .content_chat').val('').attr('rows', 2);
+                $('#chat_khach .chat_list_attach').html('');
+                $('#chat_khach .list-chat').scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
 
-            let new_html = html_item_chat(data);
-            $('#chat_khach .list-chat')
-                .append(new_html)
-                .scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
+                tooltipTriggerList('#chat_khach');
+            }
+        } 
 
-            $('#chat_khach .content_chat').val('').attr('rows', 2);
-            $('#chat_khach .chat_list_attach').html('');
-            $('#chat_khach .list-chat').scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
+        // đoạn chat mới nội dung bên trái
+        else {
+            let html_new =
+                `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_user}" onclick="click_left_chat_user('${id_user}')">
+                <div style="width: 15%; max-width: 50px;">
+                    <img src="${data.avatar_url}" class="img-circle elevation-2 avatar" alt="User Image" style="width: 100%;object-fit: cover; aspect-ratio: 1;">
+                </div>
+                <div style="width: 85%; position: relative;">
+                    <div style="width: 100%; font-weight: 500;" class="fullname">
+                        ${_.isIPv4(data.id_user) ? `(Vãng lai - ${data.id_user})` : data.fullname_user}
+                    </div>
+                    <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
+                        <div class="text-truncate content" style="width: 80%; font-weight: 600;">${data.content}</div>
+                        <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;">
+                            ${moment(data.create_time).fromNow()}
+                        </div>
+                    </div>
 
-            tooltipTriggerList('#chat_khach');
+                    <div style="position: absolute;right: -17px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('${id_user}')">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                </div>
+            </div>`
+
+            $('#chat-left .list-chat-user').prepend(html_new);
         }
     })
 </script>

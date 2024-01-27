@@ -56,7 +56,7 @@
 <!-- Modal login -->
 <div class="modal fade" id="modal_login" tabindex="-1" aria-labelledby="modal_login" aria-hidden="true">
     <div class="modal-dialog modal-md modal-fullscreen-md-down">
-        <div class="modal-content">
+        <div class="modal-content" style="background-color: white;">
             <div class="modal-body">
                 <form action="<?php echo site_url('login/ajax_auth') ?>" method="post" id="form_login">
 

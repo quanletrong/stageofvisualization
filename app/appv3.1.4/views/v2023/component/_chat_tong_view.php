@@ -83,18 +83,31 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="lastname" class="form-label">Tên của bạn là gì?</label>
-                        <input type="text" class="form-control fullname" value="" onkeyup="local_storage_set_fullname(this)">
+                    <div class="row">
+                        <div class="col-md-6" style="border-right: 1px solid #dedede;">
+                            <div class="mb-3">
+                                <label for="lastname" class="form-label">Tên của bạn là gì?</label>
+                                <input type="text" class="form-control fullname" value="" onkeyup="local_storage_set_fullname(this)">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email của bạn là gì?</label>
+                                <input type="email" class="form-control email" value="" onkeyup="local_storage_set_email(this)">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number của bạn là?</label>
+                                <input type="tel" class="form-control phone" value="" onkeyup="local_storage_set_phone(this)">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modal_login">Đăng nhập</button>
+                            <div class="text-center w-100 mt-3 mb-3">Or</div>
+                            <a href="register?url=<?= site_url('order') ?>">
+                                <button class="btn btn-outline-primary w-100">Đăng ký</button>
+                            </a>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email của bạn là gì?</label>
-                        <input type="email" class="form-control email" value="" onkeyup="local_storage_set_email(this)">
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Phone Number của bạn là?</label>
-                        <input type="tel" class="form-control phone" value="" onkeyup="local_storage_set_phone(this)">
-                    </div>
+
 
                 </div>
                 <div class="modal-footer" style="justify-content: space-between;">
@@ -288,7 +301,7 @@
             }
 
             let html = ``;
-            if ('<?= $cur_uid ?>' == discuss.action_by || discuss.action_by == 0 ) {
+            if ('<?= $cur_uid ?>' == discuss.action_by || discuss.action_by == 0) {
                 html = `
             <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${discuss.create_time}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">

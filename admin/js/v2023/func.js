@@ -20,13 +20,12 @@ const _ = {
         context.font = font;
 
         const breaks = str.split(/\r\n|\r|\n/);
-        
+
         let lineCount = 0;
-        
+
         for (let j = 0; j < breaks.length; j++) {
 
-            console.log( `j ${j}`, lineCount)
-            lineCount ++;
+            lineCount++;
 
             const words = breaks[j].split(' ');
 
@@ -37,7 +36,6 @@ const _ = {
                 const lineWidth = context.measureText(currentLine).width;
 
                 if (lineWidth + wordWidth > textareaWidth) {
-                    // console.log(`i ${i}`, lineCount)
                     lineCount++;
                     currentLine = words[i] + ' ';
                 } else {
@@ -48,6 +46,12 @@ const _ = {
         lineCount++;
 
         return lineCount;
+    },
+    isIPv4: function (ip) {
+        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
+            return (true)
+        }
+        return (false)
     }
 }
 

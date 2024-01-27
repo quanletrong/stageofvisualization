@@ -100,4 +100,19 @@ class Chat extends MY_Controller
 
         resSuccess($info);
     }
+
+    function ajax_delete_chat_user($chat_user) {
+        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+            resError('Tài khoản không có quyền truy cập!');
+        }
+
+        if(isIdNumber($chat_user) || isIPV4($chat_user)) {
+            $exc = $this->Chat_model->delete_chat_user($chat_user);
+
+            resSuccess('ok');
+        } else {
+            resError('Người xóa không hợp lệ');
+        }
+       
+    }
 }
