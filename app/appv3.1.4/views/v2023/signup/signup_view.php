@@ -73,7 +73,7 @@
         white-space: nowrap;
         width: fit-content;
         padding: 14px 0;
-        width: 180px;
+        width: 100%;
         opacity: 1;
     }
 
@@ -223,10 +223,10 @@
                     </div>
 
                     <div class="d-flex justify-content-around mt-1 mb-3">
-                        <a href="#" onclick="alert('chức năng đang phát triển')">
+                        <a href="#" onclick="alert('chức năng đang phát triển')" style="width: 48%;">
                             <button type="button" class="btn btn-outline-primary btn-or-ct"><i class="fa-brands fa-facebook"></i> Facebook</button>
                         </a>
-                        <a href="#<?php echo $loginUrlgg; ?>" onclick="alert('chức năng đang phát triển')">
+                        <a href="#<?php echo $loginUrlgg; ?>" onclick="alert('chức năng đang phát triển')" style="width: 48%;">
                             <button type="button" class="btn btn-outline-danger btn-or-ct"><i class="fa-brands fa-google"></i> Google</button>
                         </a>
                     </div>
