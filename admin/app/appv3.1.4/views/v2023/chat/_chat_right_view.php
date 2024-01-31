@@ -1,3 +1,15 @@
+<style>
+    .image-hover:hover .position-btn {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .position-relative:hover i {
+        cursor: pointer;
+        color: red;
+    }
+</style>
 <div id="chat_khach" class="card mb-0" style="width: 100%; display: none;">
     <div class="card-header text-white p-1">
         <div class="d-flex align-items-center">
@@ -154,7 +166,7 @@
         for (const [id_file, file] of Object.entries(chat.file_list)) {
             list_file += `
             <div class="" 
-                onclick="downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')"
+                onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')"
                 style="cursor: pointer; width:150px"
                 data-bs-toggle="tooltip" data-bs-placement="top"
                 title="Bấm để tải xuống"
@@ -207,7 +219,7 @@
         let id_attach = Date.now();
 
         let html = ``;
-        if (isImage(link_file)) {
+        if (_.isImage(link_file)) {
             html = `
         <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" data-file="${link_file}">
             <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
