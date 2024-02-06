@@ -12,9 +12,9 @@
                     <strong>VIRTUAL STAGING</strong>
                 </div>
                 <div class="collapse collapse-horizontal show" id="foote_virtual_staging">
-                    <div class="fw-light mb-2"><a href="">Overview</a></div>
+                    <!-- <div class="fw-light mb-2"><a href="">Overview</a></div> -->
                     <div class="fw-light mb-2"><a href="<?= LINK_HIW ?>">How it works</a></div>
-                    <div class="fw-light mb-2"><a href="<?= LINK_PRICINGS ?>">Pricings</a></div>
+                    <!-- <div class="fw-light mb-2"><a href="<?= LINK_PRICINGS ?>">Pricings</a></div> -->
                     <div class="fw-light mb-2"><a href="<?= LINK_LIBRARY ?>">Library</a></div>
                 </div>
             </div>
@@ -23,8 +23,8 @@
                     <strong>COMPANY</strong>
                 </div>
                 <div class="collapse collapse-horizontal show" id="foote_company">
-                    <div class="fw-light mb-2"><a href="<?= LINK_ABOUT ?>">About</a></div>
-                    <div class="fw-light mb-2"><a href="<?= LINK_CAREERS ?>">Careers</a></div>
+                    <!-- <div class="fw-light mb-2"><a href="<?= LINK_ABOUT ?>">About</a></div> -->
+                    <!-- <div class="fw-light mb-2"><a href="<?= LINK_CAREERS ?>">Careers</a></div> -->
                     <div class="fw-light mb-2"><a href="<?= LINK_POLICY ?>">Privacy Policy</a></div>
                     <div class="fw-light mb-2"><a href="<?= LINK_TERMS ?>">Terms of Use</a></div>
                     <div class="fw-light mb-2"><a href="<?= LINK_REFUND ?>">Refund Policy</a></div>

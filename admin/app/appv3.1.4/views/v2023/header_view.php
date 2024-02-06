@@ -296,7 +296,7 @@
 											<p>Trang chủ</p>
 										</a>
 									</li>
-									<li class="nav-item">
+									<!-- <li class="nav-item">
 										<a href="setting/price" class="nav-link">
 											<i class="far fa-circle nav-icon"></i>
 											<p>Trang bảng giá</p>
@@ -307,7 +307,7 @@
 											<i class="far fa-circle nav-icon"></i>
 											<p>Trang tạo đơn</p>
 										</a>
-									</li>
+									</li> -->
 									<li class="nav-item">
 										<a href="setting/privacy_policy" class="nav-link">
 											<i class="far fa-circle nav-icon"></i>

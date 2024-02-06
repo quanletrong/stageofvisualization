@@ -9,7 +9,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 align-items-lg-center justify-content-lg-end">
-                <li class="nav-item dropdown">
+                <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         VIRTUAL STAGING
                     </a>
@@ -18,6 +18,10 @@
                         <li><a class="dropdown-item" href="<?= LINK_HIW ?>">How It Works</a></li>
                         <li><a class="dropdown-item" href="<?= LINK_PRICINGS ?>">Pricing</a></li>
                     </ul>
+                </li> -->
+
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="<?= LINK_HIW ?>">HOW IT WORKS</a>
                 </li>
 
                 <li class="nav-item">
