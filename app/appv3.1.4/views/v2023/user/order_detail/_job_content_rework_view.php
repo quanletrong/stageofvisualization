@@ -117,7 +117,7 @@
         });
 
         if (note == '') {
-            alert('Hãy nhập mô tả');
+            alert('Please enter a description');
             $(`#card_new_rework_${id_job} .txt_note_rework_add`).focus();
             return false;
         }

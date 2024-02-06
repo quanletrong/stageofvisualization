@@ -24,7 +24,7 @@
                     <th scope="row" class="text-center">OID<?= $id_order ?></th>
                     <td onclick="$('.time_since, .time_date').toggleClass('d-none');" style="cursor: pointer;">
                         <div class="time_since">
-                            <?= timeSince($order['create_time']) ?> trước
+                            <?= timeSince($order['create_time']) ?> ago
                         </div>
                         <div class="time_date d-none">
                             <?= date('H:s | d-m-Y', strtotime($order['create_time'])) ?>

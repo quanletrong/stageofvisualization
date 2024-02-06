@@ -202,13 +202,13 @@ class Login extends MY_Controller
                     }
 
                 } else {
-                    resError('Tài khoản đã bị khóa');
+                    resError('Account has been locked');
                 }
             } else {
-                resError('Sai tài khoản hoặc mật khẩu!');
+                resError('Wrong account or password!');
             }
         } else {
-            resError('Sai tài khoản hoặc mật khẩu!');
+            resError('Wrong account or password!');
         }
     }
     function ggcallback()

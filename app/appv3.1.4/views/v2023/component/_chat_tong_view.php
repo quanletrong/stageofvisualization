@@ -86,24 +86,24 @@
                     <div class="row">
                         <div class="col-md-6" style="border-right: 1px solid #dedede;">
                             <div class="mb-3">
-                                <label for="lastname" class="form-label">Tên của bạn là gì?</label>
+                                <label for="lastname" class="form-label">Your name?</label>
                                 <input type="text" class="form-control fullname" value="" onkeyup="local_storage_set_fullname(this)">
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email của bạn là gì?</label>
+                                <label for="email" class="form-label">Your email?</label>
                                 <input type="email" class="form-control email" value="" onkeyup="local_storage_set_email(this)">
                             </div>
                             <div class="mb-3">
-                                <label for="phone" class="form-label">Phone Number của bạn là?</label>
+                                <label for="phone" class="form-label">Your Phone Number?</label>
                                 <input type="tel" class="form-control phone" value="" onkeyup="local_storage_set_phone(this)">
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                            <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modal_login">Đăng nhập</button>
+                            <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modal_login">Log in</button>
                             <div class="text-center w-100 mt-3 mb-3">Or</div>
                             <a href="register?url=<?= site_url('order') ?>">
-                                <button class="btn btn-outline-primary w-100">Đăng ký</button>
+                                <button class="btn btn-outline-primary w-100">Register</button>
                             </a>
                         </div>
                     </div>
@@ -111,8 +111,8 @@
 
                 </div>
                 <div class="modal-footer" style="justify-content: space-between;">
-                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Xong</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Done</button>
                 </div>
             </div>
         </div>

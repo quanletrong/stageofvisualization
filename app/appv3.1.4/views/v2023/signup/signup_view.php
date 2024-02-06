@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title>Register</title>
 
     <!-- <link rel="stylesheet" href="css/bootstrap.css"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -106,24 +106,24 @@
                 <?php if ($info['success'] != "") { ?>
                     <?php if ($info['success'] == "1") { ?>
                         <div class="alert alert-success" role="alert">
-                            Bạn đã tạo tài khoản thành công, hãy vào <a href="<?php echo site_url(LINK_USER_LOGOUT); ?>">đây</a> để đăng nhập
+                            You have successfully created an account, click <a href="<?php echo site_url(LINK_USER_LOGIN); ?>">Login</a>
                         </div>
                     <?php } else { ?>
                         <div class="alert alert-danger" role="alert">
-                            Có lỗi xảy ra vui lòng tạo lại
+                            An error occurred, please recreate
                         </div>
                     <?php } ?>
                 <?php } ?>
                 <form id="frm-signup" method="post" action="<?php echo site_url(LINK_USER_REGISTER, $langcode) ?>">
-                    <h4 class="text-center text-danger">Tạo tài khoản</h4>
+                    <h4 class="text-center text-danger">Create Account</h4>
 
                     <div class="input-group mt-3 mb-3">
                         <div class="input-group-prepend">
                             <div class="input-group-text input-group-ct"><i class="fa-solid fa-user"></i></div>
                         </div>
                         <div class="form-outline position-relative">
-                            <input type="text" id="uname" name="uname" value="<?php echo $info["username"] ?>" class="form-control form-control-lg" required oninvalid="this.setCustomValidity('Hãy nhập tên tài khoản')" oninput="this.setCustomValidity('')" />
-                            <label class="form-label" for="uname" style="margin-left: 0px;">Tên tài khoản<span class="text-danger">*</span></label>
+                            <input type="text" id="uname" name="uname" value="<?php echo $info["username"] ?>" class="form-control form-control-lg" required oninvalid="this.setCustomValidity('Please enter username')" oninput="this.setCustomValidity('')" />
+                            <label class="form-label" for="uname" style="margin-left: 0px;">Username<span class="text-danger">*</span></label>
                             <div class="form-notch">
                                 <div class="form-notch-leading" style="width: 9px;"></div>
                                 <div class="form-notch-middle" style="width: 88px;"></div>
@@ -138,7 +138,7 @@
                         </div>
                         <div class="form-outline position-relative">
                             <input type="password" id="pword" name="pword" class="form-control form-control-lg" required />
-                            <label class="form-label" for="pword" style="margin-left: 0px;">Mật khẩu<span class="text-danger">*</span></label>
+                            <label class="form-label" for="pword" style="margin-left: 0px;">Password<span class="text-danger">*</span></label>
                             <div class="form-notch">
                                 <div class="form-notch-leading" style="width: 9px;"></div>
                                 <div class="form-notch-middle" style="width: 68px;"></div>
@@ -153,8 +153,8 @@
                             <div class="input-group-text input-group-ct"><i class="fa-solid fa-lock"></i> </div>
                         </div>
                         <div class="form-outline position-relative">
-                            <input type="password" id="repword" name="repword" class="form-control form-control-lg" required oninvalid="this.setCustomValidity('Mật khẩu không khớp')" oninput="this.setCustomValidity('')">
-                            <label class="form-label" for="repword" style="margin-left: 0px;">Nhập lại mật khẩu<span class="text-danger">*</span></label>
+                            <input type="password" id="repword" name="repword" class="form-control form-control-lg" required oninvalid="this.setCustomValidity('Password incorrect')" oninput="this.setCustomValidity('')">
+                            <label class="form-label" for="repword" style="margin-left: 0px;">Re-enter the password<span class="text-danger">*</span></label>
                             <div class="form-notch">
                                 <div class="form-notch-leading" style="width: 9px;"></div>
                                 <div class="form-notch-middle" style="width: 118px;"></div>
@@ -170,7 +170,7 @@
                             <div class="input-group-text input-group-ct"><i class="fa-solid fa-envelope"></i></div>
                         </div>
                         <div class="form-outline">
-                            <input type="email" id="email" name="email" value="<?php echo $info["email"] ?>" class="form-control form-control-lg" required oninvalid="this.setCustomValidity('Email không hợp lệ')" oninput="this.setCustomValidity('')" />
+                            <input type="email" id="email" name="email" value="<?php echo $info["email"] ?>" class="form-control form-control-lg" required oninvalid="this.setCustomValidity('Invalid email')" oninput="this.setCustomValidity('')" />
                             <label class="form-label" for="email" style="margin-left: 0px;">Email<span class="text-danger">*</span></label>
                             <div class="form-notch">
                                 <div class="form-notch-leading" style="width: 9px;"></div>
@@ -186,7 +186,7 @@
                         </div>
                         <div class="form-outline">
                             <input type="text" id="fullname" name="fullname" value="<?php echo $info["fullname"] ?>" class="form-control form-control-lg">
-                            <label class="form-label" for="fullname" style="margin-left: 0px;">Họ và tên</label>
+                            <label class="form-label" for="fullname" style="margin-left: 0px;">Fullname</label>
                             <div class="form-notch">
                                 <div class="form-notch-leading" style="width: 9px;"></div>
                                 <div class="form-notch-middle" style="width: 65px;"></div>
@@ -200,8 +200,8 @@
                             <div class="input-group-text input-group-ct"><i class="fa-solid fa-phone"></i></div>
                         </div>
                         <div class="form-outline">
-                            <input type="text" pattern="(\+84|0)\d{9,10}" value="<?php echo $info["phone"] ?>" id="phone" name="phone" class="form-control form-control-lg" oninvalid="this.setCustomValidity('Số điện thoại không hợp lệ')" oninput="this.setCustomValidity('')" />
-                            <label class="form-label" for="phone" style="margin-left: 0px;">Số điện thoại</label>
+                            <input type="text" pattern="(\+84|0)\d{9,10}" value="<?php echo $info["phone"] ?>" id="phone" name="phone" class="form-control form-control-lg" oninvalid="this.setCustomValidity('Invalid phone number')" oninput="this.setCustomValidity('')" />
+                            <label class="form-label" for="phone" style="margin-left: 0px;">Phone number</label>
                             <div class="form-notch">
                                 <div class="form-notch-leading" style="width: 9px;"></div>
                                 <div class="form-notch-middle" style="width: 85px;"></div>
@@ -212,21 +212,21 @@
 
 
                     <div class="d-flex justify-content-center mt-3">
-                        <input type="submit" class="btn btn-danger w-100" value="Đăng ký">
+                        <input type="submit" class="btn btn-danger w-100" value="Register">
                     </div>
 
                     <div class="line-or-ct mt-2">
                         <div class="line-ct"></div>
                         <div class="or-ct">
-                            <div type="tertiary" class="sc-crrsfI fmnTOX">Hoặc</div>
+                            <div type="tertiary" class="sc-crrsfI fmnTOX">Or</div>
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-around mt-1 mb-3">
-                        <a href="#" onclick="alert('chức năng đang phát triển')" style="width: 48%;">
+                        <a href="#" onclick="alert('Developing')" style="width: 48%;">
                             <button type="button" class="btn btn-outline-primary btn-or-ct"><i class="fa-brands fa-facebook"></i> Facebook</button>
                         </a>
-                        <a href="#<?php echo $loginUrlgg; ?>" onclick="alert('chức năng đang phát triển')" style="width: 48%;">
+                        <a href="#<?php echo $loginUrlgg; ?>" onclick="alert('Developing')" style="width: 48%;">
                             <button type="button" class="btn btn-outline-danger btn-or-ct"><i class="fa-brands fa-google"></i> Google</button>
                         </a>
                     </div>
@@ -239,13 +239,13 @@
                         </small>
                         <small>
                             <!-- TODO: chức năng quên mật khẩu -->
-                            <a href="#<?= site_url('quen-mat-khau') ?>" style="text-decoration: none;" onclick="alert('chức năng đang phát triển')">
-                                Quên mật khẩu?
+                            <a href="#<?= site_url('quen-mat-khau') ?>" style="text-decoration: none;" onclick="alert('Developing')">
+                                Forgot password?
                             </a>
                         </small>
                         <small>
                             <a href="<?= site_url('login') ?>" style="text-decoration: none;">
-                                Đăng nhập →
+                                Log in →
                             </a>
                         </small>
                     </div>
@@ -292,7 +292,7 @@
 
     function validateRePassword() {
         if (password.value != confirm_password.value) {
-            confirm_password.setCustomValidity("Mật khẩu không khớp");
+            confirm_password.setCustomValidity("Password incorrect");
         } else {
             confirm_password.setCustomValidity('');
         }
@@ -301,9 +301,9 @@
     function validatePassword() {
         var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         if (password.value == "") {
-            password.setCustomValidity('Hãy nhập mật khẩu');
+            password.setCustomValidity('Please enter your password');
         } else if (!reg_pass.test(password.value)) {
-            password.setCustomValidity("Mật khẩu phải chứa: Tối thiểu 8 ký tự ít nhất 1 chữ cái và 1 số");
+            password.setCustomValidity("Password must contain a minimum of 8 characters and at least 1 letter and 1 number");
         } else {
             password.setCustomValidity('');
         }

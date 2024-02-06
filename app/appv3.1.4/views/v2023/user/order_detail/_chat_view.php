@@ -15,7 +15,7 @@
     <div style="position: fixed; right: 10px; bottom: 0px;" class="small_chat">
         <div style="position: relative;">
             <button class="btn btn-sm btn-primary" onclick="CHAT.open_close_chat('#section_chat_order')" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm">
-                <i class="fa-solid fa-comment"></i> CHAT ĐƠN HÀNG NÀY
+                <i class="fa-solid fa-comment"></i> CHAT IN ORDER
             </button>
             <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white;"></div>
         </div>
@@ -28,7 +28,7 @@
             <div class="card-header bg-primary text-white" onclick="CHAT.open_close_chat('#section_chat_order')" style="cursor: pointer;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="card-title mb-0" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
-                        <div><i class="fa-solid fa-comment"></i> CHAT ĐƠN HÀNG NÀY</div>
+                        <div><i class="fa-solid fa-comment"></i> CHAT IN ORDER</div>
                         <div>x</div>
                     </h6>
                 </div>

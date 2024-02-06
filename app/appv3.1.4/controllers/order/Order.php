@@ -56,7 +56,7 @@ class Order extends MY_Controller
     {
         // TODO: sale admin qc ed muốn tạo đơn có được không?
 
-        $this->_islogin() ? "" : resError('error_attach');
+        $this->_islogin() ? "" : resError('Please log in!');
 
         $all_room    = $this->Room_model->get_list(1);
         $all_service = $this->Service_model->get_list(1);
@@ -138,12 +138,12 @@ class Order extends MY_Controller
             if ($flag_error) {
                 $this->Order_model->delete_order_and_job($new_order);
                 // Xóa ảnh của job, ảnh attach...TODO:
-                resError('Loi luu job');
+                resError('Save error (job)');
             } else {
                 resSuccess('ok');
             }
         } else {
-            resError('Loi luu don');
+            resError('Save error (order)');
         }
     }
 
@@ -156,26 +156,26 @@ class Order extends MY_Controller
 
         $note = removeAllTags($note);
 
-        !isIdNumber($id_job)    ? resError('IMGAE không hợp lệ') : '';
+        !isIdNumber($id_job)    ? resError('Invalid image') : '';
 
         $job = $this->Job_model->get_info_job_by_id($id_job);
-        $job == [] ? resError('IMAGE không tồn tại') : '';
+        $job == [] ? resError('Photo does not exist') : '';
 
         $order = $this->Order_model->get_info_order($job['id_order']);
-        empty($order) ? resError('Đơn hàng không tồn tại') : '';
+        empty($order) ? resError('Order does not exist') : '';
 
         $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
-        !$edit_action ? resError('Bạn không có quyền thao tác') : '';
+        !$edit_action ? resError('You do not have access') : '';
 
-        $note == ''             ? resError('Hãy nhập mô tả') : '';
-        !is_array($attach)      ? resError('Attach không hợp lệ') : '';
+        $note == ''             ? resError('Please requirement') : '';
+        !is_array($attach)      ? resError('Invalid Attach') : '';
 
         $db_attach = [];
         foreach ($attach as $i => $url_image) {
             $parse = parse_url($url_image);
-            !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
-            $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
-            !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+            !isset($parse['host'])              ? resError('Invalid image url (1)') : '';
+            $parse['host'] != DOMAIN_NAME       ? resError('Invalid image url (2)') : '';
+            !strpos($url_image, 'uploads/tmp')  ? resError('Invalid image url (3)') : '';
 
             $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
             $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
@@ -189,7 +189,7 @@ class Order extends MY_Controller
 
         $this->Order_model->update_status_order($order['id_order'], ORDER_REWORK);
 
-        $exc ? resSuccess('ok') : resError('Không lưu được vào lúc này, vui lòng thử lại');
+        $exc ? resSuccess('ok') : resError('Unable to save at this time, please try again!');
     }
 
     function ajax_add_file_attach_rework()
@@ -200,20 +200,20 @@ class Order extends MY_Controller
         $url_image = $this->input->post('url_image');
         $id_rework = $this->input->post('id_rework');
 
-        !isIdNumber($id_rework) ? resError('Rework không hợp lệ') : '';
+        !isIdNumber($id_rework) ? resError('Invalid Rework') : '';
 
         $info = $this->Job_model->get_info_rework_by_id($id_rework);
-        $info == [] ? resError('Rework không tồn tại') : '';
+        $info == [] ? resError('Rework does not exist') : '';
 
         $order = $this->Order_model->get_info_order($info['id_order']);
 
         $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
-        !$edit_action ? resError('Bạn không có quyền thao tác') : '';
+        !$edit_action ? resError('You do not have access') : '';
 
         $parse = parse_url($url_image);
-        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
-        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
-        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+        !isset($parse['host'])              ? resError('Invalid image url (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('Invalid image url (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('Invalid image url (3)') : '';
 
         $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
@@ -237,23 +237,23 @@ class Order extends MY_Controller
         $id_rework = $this->input->post('id_rework');
         $id_attach = $this->input->post('id_attach');
 
-        !isIdNumber($id_rework) ? resError('Rework không hợp lệ')      : '';
-        !isIdNumber($id_attach) ? resError('ID attach không hợp lệ') : '';
+        !isIdNumber($id_rework) ? resError('Invalid Rework')      : '';
+        !isIdNumber($id_attach) ? resError('Invalid ID Attach') : '';
 
         $rework = $this->Job_model->get_info_rework_by_id($id_rework);
-        $rework == [] ? resError('Rework không tồn tại') : '';
+        $rework == [] ? resError('Rework does not exist') : '';
 
         $order = $this->Order_model->get_info_order($rework['id_order']);
 
         $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
-        !$edit_action ? resError('Bạn không có quyền thao tác') : '';
+        !$edit_action ? resError('You do not have access') : '';
 
-        !isset($rework['attach'][$id_attach]) ? resError('ID attach không tồn tại') : '';
+        !isset($rework['attach'][$id_attach]) ? resError('ID attach does not exist') : '';
 
         $parse = parse_url($url_image);
-        !isset($parse['host'])              ? resError('url image không hợp lệ (1)') : '';
-        $parse['host'] != DOMAIN_NAME       ? resError('url image không hợp lệ (2)') : '';
-        !strpos($url_image, 'uploads/tmp')  ? resError('url image không hợp lệ (3)') : '';
+        !isset($parse['host'])              ? resError('Invalid image url (1)') : '';
+        $parse['host'] != DOMAIN_NAME       ? resError('Invalid image url (2)') : '';
+        !strpos($url_image, 'uploads/tmp')  ? resError('Invalid image url (3)') : '';
 
         $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
         $copy = copy_image_to_public_upload($url_image, $FDR_ORDER);
@@ -274,19 +274,19 @@ class Order extends MY_Controller
         $id_rework    = $this->input->post('id_rework');
         $id_attach = $this->input->post('id_attach');
 
-        !isIdNumber($id_rework) ? resError('Rework không hợp lệ')       : '';
-        !isIdNumber($id_attach) ? resError('ID Attach không hợp lệ')    : '';
+        !isIdNumber($id_rework) ? resError('Invalid Rework')       : '';
+        !isIdNumber($id_attach) ? resError('Invalid ID Attach')    : '';
 
         $info = $this->Job_model->get_info_rework_by_id($id_rework);
-        $info == [] ? resError('Rework không tồn tại') : '';
+        $info == [] ? resError('Rework does not exist') : '';
 
         $order = $this->Order_model->get_info_order($info['id_order']);
-        empty($order) ? resError('Đơn hàng không tồn tại') : '';
+        empty($order) ? resError('Order does not exist') : '';
 
         $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
-        !$edit_action ? resError('Bạn không có quyền thao tác') : '';
+        !$edit_action ? resError('You do not have access') : '';
 
-        !isset($info['attach'][$id_attach]) ? resError('ID attach không tồn tại') : '';
+        !isset($info['attach'][$id_attach]) ? resError('ID attach does not exist') : '';
 
         unset($info['attach'][$id_attach]); // xóa
 
@@ -304,20 +304,20 @@ class Order extends MY_Controller
         $id_rework    = $this->input->post('id_rework');
         $requirement = removeAllTags($this->input->post('requirement'));
 
-        !isIdNumber($id_rework) ? resError('Rework không hợp lệ') : '';
-        !strlen($requirement) ? resError('Requirement không được bỏ trống') : '';
+        !isIdNumber($id_rework) ? resError('Invalid Rework') : '';
+        !strlen($requirement) ? resError('Please Enter Requirement') : '';
 
         $info = $this->Job_model->get_info_rework_by_id($id_rework);
-        $info == [] ? resError('Rework không tồn tại') : '';
+        $info == [] ? resError('Rework does not exist') : '';
 
         $order = $this->Order_model->get_info_order($info['id_order']);
 
         $edit_action = $order['id_user'] == $cur_uid || $order['create_id_user'] != $cur_uid;
-        !$edit_action ? resError('Bạn không có quyền thao tác') : '';
+        !$edit_action ? resError('You do not have access') : '';
 
         //TODO: THIẾU GHI LOG
         $this->Job_model->update_requirement_rework($id_rework, $requirement);
-        resSuccess('Thành công');
+        resSuccess('OK');
     }
 
     function ajax_popup_payment($id_order)
@@ -329,7 +329,7 @@ class Order extends MY_Controller
 
         $order = $this->Order_model->get_info_order($id_order);
         if (empty($order) || $order['id_user'] != $cur_uid) {
-            resError('Bạn không có quyền truy cập đến đơn hàng này');
+            resError('You do not have access');
         }
 
 

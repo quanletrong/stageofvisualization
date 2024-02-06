@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title>Log in</title>
 
     <!-- <link rel="stylesheet" href="css/bootstrap.css"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -85,7 +85,7 @@
         <div class="card shadow mx-auto" style="width: 100%; max-width: 500px;">
             <div class="card-body">
                 <form action="<?php echo site_url('login/auth?url=' . $currUrl) ?>" method="post">
-                    <h4 class="text-center text-danger">Đăng nhập stageofvisualization</h4>
+                    <h4 class="text-center text-danger">Login stageofvisualization</h4>
                     <?php if ($login_fail != '') { ?>
                         <div class="alert alert-danger" role="alert">
                             <?php echo $login_fail ?>
@@ -96,7 +96,7 @@
                         <div class="input-group-prepend">
                             <div class="input-group-text input-group-ct"><i class="fa-solid fa-user"></i></div>
                         </div>
-                        <input type="text" class="form-control " name="username" placeholder="Nhập tên đăng nhập">
+                        <input type="text" class="form-control " name="username" placeholder="Enter username">
                     </div>
 
 
@@ -105,23 +105,23 @@
                         <div class="input-group-prepend">
                             <div class="input-group-text input-group-ct"><i class="fa-solid fa-lock"></i></div>
                         </div>
-                        <input type="password" class="form-control" name="password" placeholder="Nhập mật khẩu">
+                        <input type="password" class="form-control" name="password" placeholder="Enter password">
                     </div>
-                    <input type="submit" class="btn btn-danger w-100" value="Đăng nhập">
+                    <input type="submit" class="btn btn-danger w-100" value="Login">
 
                     <div class="line-or-ct mt-2">
                         <div class="line-ct"></div>
                         <div class="or-ct">
-                            <div type="tertiary" class="sc-crrsfI fmnTOX">Hoặc</div>
+                            <div type="tertiary" class="sc-crrsfI fmnTOX">Or</div>
                         </div>
                     </div>
 
                     <!-- TODO: bổ sung thêm chức năng này -->
                     <div class="d-flex justify-content-around mt-1 mb-3">
-                        <a href="#" onclick="alert('chức năng đang phát triển')" style="width: 48%;">
+                        <a href="#" onclick="alert('developing')" style="width: 48%;">
                             <button type="button" class="btn btn-outline-primary btn-or-ct"><i class="fa-brands fa-facebook"></i> Facebook</button>
                         </a>
-                        <a href="#<?php echo $loginUrlgg; ?>" onclick="alert('chức năng đang phát triển')" style="width: 48%;">
+                        <a href="#<?php echo $loginUrlgg; ?>" onclick="alert('developing')" style="width: 48%;">
                             <button type="button" class="btn btn-outline-danger btn-or-ct"><i class="fa-brands fa-google"></i> Google</button>
                         </a>
                     </div>
@@ -129,15 +129,15 @@
                     <div class="p-3 ps-4 d-flex justify-content-between">
                         <small>
                             <a href="<?= site_url() ?>" style="text-decoration: none;">
-                                ← Trang chủ
+                                ← Home
                             </a>
                         </small>
                         <!-- <small><a href="" style="text-decoration: none;">Bạn quên mật khẩu?</a></small> -->
                         <!-- TODO: chưa làm quên mật khẩu -->
-                        <small><a href="#" style="text-decoration: none;" onclick="alert('chức năng đang phát triển')">Bạn quên mật khẩu?</a></small>
+                        <small><a href="#" style="text-decoration: none;" onclick="alert('developing')">Bạn quên mật khẩu?</a></small>
                         <small>
                             <a href="<?= LINK_USER_REGISTER ?>" style="text-decoration: none;">
-                                Đăng ký →
+                                Register →
                             </a>
                         </small>
                     </div>

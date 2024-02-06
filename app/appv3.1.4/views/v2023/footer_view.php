@@ -42,7 +42,7 @@
 					beforeSend: function() {
 						$(quanlt_btn_upload).html(`<i class="fas fa-sync fa-spin"></i>`);
 						$(quanlt_btn_upload).prop('disabled', true)
-						$(quanlt_btn_upload).prop('title', 'Đang upload...')
+						$(quanlt_btn_upload).prop('title', 'Uploading...')
 					},
 					success: function(response) {
 						$(quanlt_btn_upload).html(quanlt_btn_upload_old);
@@ -93,20 +93,20 @@
 								for (const [key, error] of Object.entries(value.error)) {
 									error_text += '- ' + error + '<br/>';
 								}
-								toasts_danger(`${error_text} Ảnh: ${value.name} `, 'Thất bại')
+								toasts_danger(`${error_text} Image: ${value.name} `, 'Fail!')
 							}
 						}
 					} else {
-						toasts_danger('Xin lỗi, không lưu được ảnh', 'Thất bại')
+						toasts_danger('Sorry, image could not be saved!', 'Fail!')
 					}
 
 				} else {
-					toasts_danger(response.error, 'Thất bại')
+					toasts_danger(response.error, 'Fail!')
 				}
 
 			} catch (error) {
 				console.log(error)
-				toasts_danger('Xin lỗi, upload ảnh đang gặp vấn đề!', 'Thất bại')
+				toasts_danger(`Sorry, there's a problem uploading photos!`, 'Fail!')
 			}
 		} catch (error) {
 			console.log(error)

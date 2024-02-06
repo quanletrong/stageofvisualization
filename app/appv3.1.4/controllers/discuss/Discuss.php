@@ -23,8 +23,8 @@ class Discuss extends MY_Controller
 
         $id_order = isIdNumber($id_order)    ? $id_order : 0;
         $order = $this->Order_model->get_info_order($id_order);
-        $order == [] ? resError('Đơn không tồn tại') : '';
-        $order['id_user'] != $cur_uid ? resError('Tài khoản không có quyền truy cập đơn hàng này') : '';
+        $order == [] ? resError('Order does not exist') : '';
+        $order['id_user'] != $cur_uid ? resError('You do not have access') : '';
 
         // get list discuss theo order
         $list = $this->Discuss_model->discuss_list_by_id_order($id_order, CHAT_KHACH);
@@ -49,17 +49,17 @@ class Discuss extends MY_Controller
         // validate đơn
         $id_order = isIdNumber($id_order)    ? $id_order : 0;
         $order = $this->Order_model->get_info_order($id_order);
-        $order == [] ? resError('Đơn không tồn tại') : '';
-        $order['id_user'] != $cur_uid ? resError('Tài khoản không có quyền truy cập đơn hàng này') : '';
+        $order == [] ? resError('Order does not exist') : '';
+        $order['id_user'] != $cur_uid ? resError('You do not have access') : '';
 
         //validate file đính kèm
         $db_attach = [];
         $attach = is_array($attach) ? $attach : [];
         foreach ($attach as $i => $url_file) {
             $parse = parse_url($url_file);
-            !isset($parse['host'])              ? resError('url file không hợp lệ (1)') : '';
-            $parse['host'] != DOMAIN_NAME       ? resError('url file không hợp lệ (2)') : '';
-            !strpos($url_file, 'uploads/tmp')  ? resError('url file không hợp lệ (3)') : '';
+            !isset($parse['host'])              ? resError('Invalid attachment (1)') : '';
+            $parse['host'] != DOMAIN_NAME       ? resError('Invalid attachment (2)') : '';
+            !strpos($url_file, 'uploads/tmp')  ? resError('Invalid attachment (3)') : '';
 
             $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
             $copy = copy_image_to_public_upload($url_file, $FDR_ORDER);
@@ -96,8 +96,8 @@ class Discuss extends MY_Controller
         // validate đơn
         $id_order = isIdNumber($id_order)    ? $id_order : 0;
         $order = $this->Order_model->get_info_order($id_order);
-        $order == [] ? resError('Đơn không tồn tại') : '';
-        $order['id_user'] != $cur_uid ? resError('Tài khoản không có quyền truy cập đơn hàng này') : '';
+        $order == [] ? resError('Order does not exist') : '';
+        $order['id_user'] != $cur_uid ? resError('You do not have access') : '';
 
         //call db
 
@@ -155,9 +155,9 @@ class Discuss extends MY_Controller
         $attach = is_array($attach) ? $attach : [];
         foreach ($attach as $i => $url_file) {
             $parse = parse_url($url_file);
-            !isset($parse['host'])              ? resError('url file không hợp lệ (1)') : '';
-            $parse['host'] != DOMAIN_NAME       ? resError('url file không hợp lệ (2)') : '';
-            !strpos($url_file, 'uploads/tmp')  ? resError('url file không hợp lệ (3)') : '';
+            !isset($parse['host'])              ? resError('Invalid attachment (1)') : '';
+            $parse['host'] != DOMAIN_NAME       ? resError('Invalid attachment (2)') : '';
+            !strpos($url_file, 'uploads/tmp')  ? resError('Invalid attachment (3)') : '';
 
             $copy = copy_image_to_public_upload($url_file, FOLDER_CHAT_TONG);
 
