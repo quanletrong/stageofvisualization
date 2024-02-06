@@ -582,10 +582,8 @@
                 <div class="modal-body">
                     <div class="position-relative">
                         <img src="images/virtual-staging-banner-desktop.webp" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="position-absolute p-2 text-bg-dark shadow" style="top:10px; left: 10px;">BEFORE
-                        </div>
-                        <div class="position-absolute p-2 text-bg-dark shadow" style="top:10px; right: 10px;">AFTER
-                        </div>
+                        <!-- <div class="position-absolute p-2 text-bg-dark shadow" style="top:10px; left: 10px;">BEFORE</div> -->
+                        <!-- <div class="position-absolute p-2 text-bg-dark shadow" style="top:10px; right: 10px;">AFTER</div> -->
                     </div>
                     <p class="mt-3">
                         <strong>Add Furniture and Decor</strong> - Add furniture and decor to a space. This is
