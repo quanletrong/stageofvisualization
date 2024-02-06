@@ -21,7 +21,7 @@ class Service_model extends CI_Model
         $sql = "SELECT A.*, B.username 
             FROM tbl_service as A 
             LEFT JOIN tbl_user as B ON A.id_user = B.id_user 
-
+            $where
             ORDER BY sort ASC";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
