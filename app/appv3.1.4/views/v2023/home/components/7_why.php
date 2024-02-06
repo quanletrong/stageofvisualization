@@ -8,10 +8,10 @@
     </div>
 </div>
 
-<!-- Why Stuccco Virtual Staging? -->
+<!-- Why Stage of visualization? -->
 <div class="container my-5">
     <div class="fs-2 fw-bold text-center">
-        Why Stuccco Virtual Staging?
+        Why Stage of visualization?
     </div>
     <div class="border rounded-2 p-5 mt-4 shadow">
         <?= html_entity_decode(htmlspecialchars_decode($setting['why_stageofvisualization'])) ?>

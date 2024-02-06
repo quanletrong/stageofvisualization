@@ -50,7 +50,7 @@
                         <div class="fs-small fw-light"><a href="<?= LINK_TERMS ?>">Terms of Use</a></div>
                         <div class="fs-small fw-light"><a href="<?= LINK_REFUND ?>">Refund Policy</a></div>
                     </div>
-                    <div class="fs-small fw-light mt-3">© 2023 Stuccco, LLC. All rights reserved.</div>
+                    <div class="fs-small fw-light mt-3">© 2023 Stage of visualization, LLC. All rights reserved.</div>
                 </div>
                 <div class="d-flex" style="gap:20px">
                     <a href="<?= $setting['link_facebook'] ?>"><i class="fa-brands fa-square-facebook fs-4"></i></a>

@@ -76,7 +76,7 @@
                             <div class="link-color">
                                 Click here to watch a video that will walk you through how to place a virtual staging
                                 order on
-                                Stuccco.
+                                Stage of visualization.
                             </div>
                         </div>
                     </div>
