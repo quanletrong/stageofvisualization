@@ -76,7 +76,7 @@
 						xhr.upload.onprogress = function(evt) {
 							let percent = Math.round(evt.loaded / evt.total * 100);
 							percent = percent == 100 ? percent - 1 : percent;
-							$(quanlt_btn_upload).html(`<i class="fas fa-upload"></i> ${percent} %`);
+							$(quanlt_btn_upload).html(`<i class="fas fa-upload mr-2"></i> ${percent} %`);
 						};
 						xhr.upload.onload = function() {
 							console.log('DONE!')
@@ -243,6 +243,13 @@
 
 		var xhr = new XMLHttpRequest();
 		xhr.responseType = "json";
+
+		xhr.upload.onprogress = function(e) {
+			let percent = Math.round(e.loaded / e.total * 100);
+			percent = percent == 100 ? percent - 1 : percent;
+			$(ev.target).html(`<i class="fas fa-upload mr-2"></i> ${percent} %`);
+		};
+
 		xhr.open('POST', 'upload/siglefile');
 		xhr.onload = function() {
 			if (xhr.status == 200) {

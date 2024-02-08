@@ -221,18 +221,16 @@
 
     // cb_upload_image_job
     function cb_upload_image_job(link, target, name, btn) {
-
-        console.log('first')
+        
         let job_id = $(target).data('id');
-
         if (isImage(link)) {
-            $(btn).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file">`);
+            $(btn).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
         } else {
             $(btn).html(
-                `<div>
-            <i class="fa fa-paperclip" aria-hidden="true"></i>
-            <p style="font-size:12px" class="text-truncate">${name}</p>
-        </div>`
+                `<div ondragover="$(this).hide()">
+                    <i class="fa fa-paperclip" aria-hidden="true"></i>
+                    <p style="font-size:12px" class="text-truncate">${name}</p>
+                </div>`
             );
         }
         STATE.job[job_id].image = link;
@@ -317,6 +315,8 @@
                                 class="btn_upload_image w-100 d-flex p-3 rounded bg-light" 
                                 style="min-height:150px; justify-content: center;align-items: center; border: red 1px dotted;" 
                                 onclick="quanlt_upload(this);" 
+                                ondrop="quanlt_handle_drop_file(event)"
+                                ondragover="event.preventDefault();"
                                 data-callback="cb_upload_image_job" 
                                 data-target="#image_${job_id}"
                             >
