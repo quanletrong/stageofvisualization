@@ -221,7 +221,7 @@
 
     // cb_upload_image_job
     function cb_upload_image_job(link, target, name, btn) {
-        
+
         let job_id = $(target).data('id');
         if (isImage(link)) {
             $(btn).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
@@ -238,7 +238,7 @@
     }
 
     // cb_upload_image_attach
-    function cb_upload_attach(link, target, name) {
+    function cb_upload_attach(link, target, name, btn) {
         let job_id = $(target).data('id');
         let attach_id = Date.now() + Object.keys(STATE.job[job_id].attach).length;
         let attach_html = `<div style="position:relative" class="m-2">
@@ -246,6 +246,9 @@
             <i class="fas fa-times" style="position:absolute;right:-10px;top: -10px; color:red; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
         </div>`;
         $(`#${job_id}_attach_pre`).append(attach_html);
+
+        $(btn).html(`<i class="fas fa-paperclip"></i> Attach Reference Files`);
+        
         STATE.job[job_id].attach[attach_id] = link;
     }
 

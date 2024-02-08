@@ -205,7 +205,7 @@
     }
 
     // cb_upload_image_attach
-    function cb_upload_attach(link, target, name) {
+    function cb_upload_attach(link, target, name, btn) {
         let job_id = $(target).data('id');
         let attach_id = Date.now() + Object.keys(STATE.job[job_id].attach).length;
         let attach_html = `<div style="position:relative" class="m-2">
@@ -213,6 +213,9 @@
             <i class="fas fa-times" style="position:absolute;right:-10px;top: -10px; color:red; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
         </div>`;
         $(`#${job_id}_attach_pre`).append(attach_html);
+
+        $(btn).html(`<i class="fas fa-paperclip"></i> Attach Reference Files`);
+
         STATE.job[job_id].attach[attach_id] = link;
     }
 
@@ -295,9 +298,17 @@
 
                         <div class="mt-3">
                             <label for="exampleFormControlInput1" class="form-label fw-bold">Attach Reference Files:</label>
-                            <button type="button" class="form-control form-control-sm" onclick="quanlt_upload(this);" data-callback="cb_upload_attach" data-target="#image_${job_id}" style="width: fit-content;">
-                                <i class="fas fa-paperclip"></i>
-                                Attach Reference Files
+                            <button 
+                                type="button" 
+                                class="form-control form-control-sm" 
+                                onclick="quanlt_upload(this);" 
+                                ondrop="quanlt_handle_drop_file(event)"
+                                ondragover="event.preventDefault();"
+                                data-callback="cb_upload_attach" 
+                                data-target="#image_${job_id}" 
+                                style="width: fit-content;"
+                            >
+                                <i class="fas fa-paperclip"></i> Attach Reference Files
                             </button>
 
                             <div id="${job_id}_attach_pre" class="d-flex flex-wrap bg-white mt-2" style="gap:10px"></div>
