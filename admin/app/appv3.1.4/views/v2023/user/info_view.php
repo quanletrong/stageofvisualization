@@ -112,17 +112,26 @@
                         <h5 class="text-center">THAY ĐỔI MẬT KHẨU</h5>
                         <div class="form-group">
                             <label for="name"> <span class="text-red">*</span> Mật khẩu cũ</label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu cũ">
+                            <div style="position: relative;">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu cũ">
+                                <i class="fas fa-eye-slash i-eye" style="position: absolute; top:10px; right:5px;"></i>
+                            </div>
                             <small>Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*</small>
                         </div>
                         <div class="form-group">
                             <label for="name"> <span class="text-red">*</span> Mật khẩu mới</label>
-                            <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Nhập mật khẩu mới">
+                            <div style="position: relative;">
+                                <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Nhập mật khẩu mới">
+                                <i class="fas fa-eye-slash i-eye" style="position: absolute; top:10px; right:5px;"></i>
+                            </div>
                             <small>Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*</small>
                         </div>
                         <div class="form-group">
                             <label for="name"> <span class="text-red">*</span> Nhập lại mật khẩu mới </label>
-                            <input type="password" class="form-control" id="re_password" name="re_password" placeholder="Nhập lại mật khẩu mới">
+                            <div style="position: relative;">
+                                <input type="password" class="form-control" id="re_password" name="re_password" placeholder="Nhập lại mật khẩu mới">
+                                <i class="fas fa-eye-slash i-eye" style="position: absolute; top:10px; right:5px;"></i>
+                            </div>
                             <small>Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*</small>
                         </div>
                         <button type="button" class="btn btn-sm btn-lg btn-danger w-100" onclick="ajax_edit_password(this)">Lưu lại</button>
@@ -137,6 +146,18 @@
     $(document).ready(function() {
         $('#type').select2({});
         $('#user_service').select2({});
+
+        $(".i-eye").on("click", function() {
+            if ($(this).hasClass("fa-eye-slash")) {
+                $(this).siblings("input").prop("type", "text");
+                $(this).removeClass("fa-eye-slash");
+                $(this).addClass("fa-eye");
+            } else {
+                $(this).siblings("input").prop("type", "password");
+                $(this).addClass("fa-eye-slash");
+                $(this).removeClass("fa-eye");
+            }
+        });
     });
 
     function ajax_edit_info(btn) {

@@ -101,11 +101,12 @@
 
 
 
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-3 position-relative">
                         <div class="input-group-prepend">
                             <div class="input-group-text input-group-ct"><i class="fa-solid fa-lock"></i></div>
                         </div>
                         <input type="password" class="form-control" name="password" placeholder="Enter password">
+                        <i class="fa-solid position-absolute i-eye fa-eye-slash" style="top:11px; right:5px; z-index: 6;"></i>
                     </div>
                     <input type="submit" class="btn btn-danger w-100" value="Login">
 
@@ -146,6 +147,21 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function(){
+            $(".i-eye").on("click", function() {
+                if ($(this).hasClass("fa-eye-slash")) {
+                    $(this).parent(".input-group").find("input").attr("type", "text");
+                    $(this).removeClass("fa-eye-slash");
+                    $(this).addClass("fa-eye");
+                } else {
+                    $(this).parent(".input-group").find("input").attr("type", "password");
+                    $(this).addClass("fa-eye-slash");
+                    $(this).removeClass("fa-eye");
+                }
+            });
+        })
+    </script>
 </body>
 
 </html>

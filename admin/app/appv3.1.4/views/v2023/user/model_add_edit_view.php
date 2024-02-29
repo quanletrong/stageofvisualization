@@ -31,7 +31,10 @@
                                 <div class="form-group">
                                     <label for="name"> <span class="text-red">*</span> Password</label> <br>
                                     <small>Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*</small>
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu">
+                                    <div style="position: relative;">
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu" style="padding-right: 30px;">
+                                        <i class="fas fa-eye-slash i-eye" style="position: absolute; top:10px; right:5px;"></i>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -287,6 +290,18 @@
             $("#role").trigger("change");
             $("#type").trigger("change");
             $("#user_service").trigger("change");
+        });
+
+        $(".i-eye").on("click", function() {
+            if ($(this).hasClass("fa-eye-slash")) {
+                $(this).siblings("input").prop("type", "text");
+                $(this).removeClass("fa-eye-slash");
+                $(this).addClass("fa-eye");
+            } else {
+                $(this).siblings("input").prop("type", "password");
+                $(this).addClass("fa-eye-slash");
+                $(this).removeClass("fa-eye");
+            }
         });
     });
 

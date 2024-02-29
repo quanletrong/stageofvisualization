@@ -1,13 +1,13 @@
 <section id="section_chat_tong">
     <script src="js/v2023/moment_2.29.4.min.js"></script>
     <style>
-        .image-hover:hover .position-btn {
+        #section_chat_tong .image-hover:hover .position-btn {
             display: flex !important;
             justify-content: center;
             align-items: center;
         }
 
-        .position-relative:hover i {
+        #section_chat_tong .position-relative:hover i {
             cursor: pointer;
             color: red;
         }

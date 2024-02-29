@@ -43,7 +43,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <?php if ($role == ADMIN || $role == SALE || $role == QC || $role == EDITOR) { ?>
-                                <li><a class="dropdown-item" href="/admin">Go to ADMIN</a></li>
+                                <li><a class="dropdown-item" href="/admin">ADMIN</a></li>
                             <?php } ?>
                             <li><a class="dropdown-item" href="<?= LINK_USER_ORDER ?>">My Orders and Listings</a></li>
                             <li><a class="dropdown-item" href="<?= LINK_USER_NOTICES ?>">Notifications </a></li>
