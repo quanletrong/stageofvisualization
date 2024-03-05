@@ -52,6 +52,15 @@ class Signup extends MY_Controller {
                 $error['username'] = true;
             }
             
+            if(str_valid_phone($phone)){
+                $uinfo = $this->Account_model->get_user_info_by_phone($phone);
+                if(!empty($uinfo)){
+                    $error['phone'] = true;
+                }
+            } else {
+                $error['phone'] = true;
+            }
+
             if ($password == '' || $repassword == '') {
                 $error['password'] = $password == '' ? true : false;
                 $error['repassword'] = $repassword == '' ? true : false;
@@ -65,18 +74,14 @@ class Signup extends MY_Controller {
             }
     
             
-            if($phone != ""){
-                $uinfo = $this->Account_model->get_user_info_by_phone($phone);
-                if(!str_valid_phone($phone) || !empty($uinfo)){
-                    $phone = "";
-                }
-            }
-            if ($error['username'] || $error['password'] || $error['repassword'] || $error['email']) {
+            
+
+            if ($error['username'] || $error['password'] || $error['repassword'] || $error['email'] || $error['phone']) {
                 $info['username'] = $error['username'] ? "" : $uname;
                 $info['email'] = $error['email'] ? "" : $email;
                 
                 $info['fullname'] =  $fullname;
-                $info['phone'] = $phone;
+                $info['phone'] = $error['phone'] ? "" : $phone;
                 $info['success'] = "0";
             } else {
                 $password_hash = PasswordHash::hash($uname, md5($password));

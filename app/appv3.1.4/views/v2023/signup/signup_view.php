@@ -119,6 +119,21 @@
 
                     <div class="input-group mt-3 mb-3">
                         <div class="input-group-prepend">
+                            <div class="input-group-text input-group-ct"><i class="fa-solid fa-file-signature"></i></div>
+                        </div>
+                        <div class="form-outline">
+                            <input type="text" id="fullname" name="fullname" value="<?php echo $info["fullname"] ?>" class="form-control form-control-lg">
+                            <label class="form-label" for="fullname" style="margin-left: 0px;">Fullname</label>
+                            <div class="form-notch">
+                                <div class="form-notch-leading" style="width: 9px;"></div>
+                                <div class="form-notch-middle" style="width: 65px;"></div>
+                                <div class="form-notch-trailing"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-3 mb-3">
+                        <div class="input-group-prepend">
                             <div class="input-group-text input-group-ct"><i class="fa-solid fa-user"></i></div>
                         </div>
                         <div class="form-outline position-relative">
@@ -182,26 +197,11 @@
 
                     <div class="input-group mt-3 mb-3">
                         <div class="input-group-prepend">
-                            <div class="input-group-text input-group-ct"><i class="fa-solid fa-file-signature"></i></div>
-                        </div>
-                        <div class="form-outline">
-                            <input type="text" id="fullname" name="fullname" value="<?php echo $info["fullname"] ?>" class="form-control form-control-lg">
-                            <label class="form-label" for="fullname" style="margin-left: 0px;">Fullname</label>
-                            <div class="form-notch">
-                                <div class="form-notch-leading" style="width: 9px;"></div>
-                                <div class="form-notch-middle" style="width: 65px;"></div>
-                                <div class="form-notch-trailing"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="input-group mt-3 mb-3">
-                        <div class="input-group-prepend">
                             <div class="input-group-text input-group-ct"><i class="fa-solid fa-phone"></i></div>
                         </div>
                         <div class="form-outline">
-                            <input type="text" pattern="(\+84|0)\d{9,10}" value="<?php echo $info["phone"] ?>" id="phone" name="phone" class="form-control form-control-lg" oninvalid="this.setCustomValidity('Invalid phone number')" oninput="this.setCustomValidity('')" />
-                            <label class="form-label" for="phone" style="margin-left: 0px;">Phone number</label>
+                            <input type="text" pattern="(\+84|0)\d{9,10}" value="<?php echo $info["phone"] ?>" id="phone" name="phone" class="form-control form-control-lg" oninvalid="this.setCustomValidity('Invalid phone number')" oninput="this.setCustomValidity('')" required/>
+                            <label class="form-label" for="phone" style="margin-left: 0px;">Phone number <span class="text-danger">*</span></label>
                             <div class="form-notch">
                                 <div class="form-notch-leading" style="width: 9px;"></div>
                                 <div class="form-notch-middle" style="width: 85px;"></div>
