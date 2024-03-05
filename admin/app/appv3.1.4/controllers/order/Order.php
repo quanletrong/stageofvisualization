@@ -560,9 +560,12 @@ class Order extends MY_Controller
         if ($new_status == ORDER_PENDING) {
             $role == EDITOR ? resError('ED không có quyền đổi trạng thái về PENDING') : '';
         }
-        if ($new_status == ORDER_QC_CHECK) {
-            $role == EDITOR ? resError('ED không có quyền đổi trạng thái về PENDING') : '';
-        }
+
+        // Khánh bảo bỏ
+        // if ($new_status == ORDER_QC_CHECK) {
+        //     $role == EDITOR ? resError('ED không có quyền đổi trạng thái về QC_CHECK') : '';
+        // }
+
         if ($new_status == ORDER_AVAIABLE) {
             $role == EDITOR ? resError('ED không có quyền đổi trạng thái về AVAIABLE') : '';
         }

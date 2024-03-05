@@ -1363,6 +1363,7 @@ function button_status_order_by_role($role)
         $data[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);
         $data[ORDER_FIX]       = status_order(ORDER_FIX);
     } else if ($role == EDITOR) {
+        $data[ORDER_QC_CHECK]  = status_order(ORDER_QC_CHECK); // Khánh yêu câu thêm
         $data[ORDER_DONE]      = status_order(ORDER_DONE);
     }
 
