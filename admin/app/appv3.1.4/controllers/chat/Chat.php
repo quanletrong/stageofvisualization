@@ -22,13 +22,45 @@ class Chat extends MY_Controller
         $this->load->model('user/User_model');
     }
 
-    function index($chat_user = '')
+    // OLD TODO: bản cũ
+    function _index($chat_user = '')
     {
         $data = [];
         if (!in_array($this->_session_role(), [ADMIN, SALE])) {
             show_custom_error('Tài khoản không có quyền truy cập!');
         }
 
+        // danh sách người dùng chat
+        $list_user_chat = $this->Chat_model->list_user_chat();
+        $data['list_user_chat'] = $list_user_chat;
+
+        $chat_user = isIdNumber($chat_user) ? $chat_user : '';
+        $data['chat_user'] = $chat_user;
+        $data['cur_uid'] = $this->_session_uid();
+        $data['all_member'] = $this->User_model->get_list_user_working(1, implode(",", [ADMIN,SALE, QC, EDITOR]));
+
+        $header = [
+            'title' => 'Chat',
+            'header_page_css_js' => 'home'
+        ];
+
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'chat/chat_view', $data);
+        $this->_loadFooter();
+    }
+
+    function index($chat_user = '')
+    {
+        $data = [];
+        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+            show_custom_error('Tài khoản không có quyền truy cập!');
+        }
+        $curr_uid = $this->_session_uid();
+
+        // danh sách nhóm
+        $list_group = $this->Chat_model->list_group($curr_uid);
+        var_dump($list_group);die;
+        
         // danh sách người dùng chat
         $list_user_chat = $this->Chat_model->list_user_chat();
         $data['list_user_chat'] = $list_user_chat;
@@ -129,6 +161,7 @@ class Chat extends MY_Controller
             resError('Tài khoản không có quyền truy cập!');
         }
 
+        $curr_uid = $this->_session_uid();
         $all_member = $this->User_model->get_list_user_working(1, implode(",", [ADMIN,SALE, QC, EDITOR]));
         $all_group = $this->Chat_model->all_group();
         
@@ -136,10 +169,13 @@ class Chat extends MY_Controller
         $member = $this->input->post('member_group');
 
         // check memmber empty
-        if(!is_array($member)) {
-            $member = [$this->_session_uid()];
-        } else {
-            $member[] = $this->_session_uid();
+        is_array($member) ? '' : resError('Không lấy được thành viên');
+        count($member) ? '' : resError('Thành viên không được bỏ trống');
+
+        // kiểm tra xem list member đã có id người tạo nhóm chưa
+        // nếu chưa có thì thêm người tạo nhóm vào list member
+        if(!in_array($curr_uid, $member)) {
+            $member[] = $curr_uid;
         }
         
         // check member không tồn tại
@@ -153,14 +189,23 @@ class Chat extends MY_Controller
             resError('Nhóm đã tồn tại!');
         }
 
-        // if(isIdNumber($chat_user) || isIPV4($chat_user)) {
-        //     $exc = $this->Chat_model->delete_chat_user($chat_user);
+        $avatar = AVATAR_DEFAULT; //TODO: tạm fix, sau thêm chức năng upload avatar
+        $create_time = date('Y-m-d H:i:s');
+        $new_id_group = $this->Chat_model->add_group($name, $avatar, $curr_uid, $create_time);
 
-        //     resSuccess('ok');
-        // } else {
-        //     resError('Người xóa không hợp lệ');
-        // }
-       
+        $username_member = ''; // TODO: tạm fix = '', chưa biết có cần hay không
+        foreach($member as $id_member) {
+            $this->Chat_model->add_member_group($new_id_group, $id_member,$username_member, $create_time);
+        }
+
+
+        redirect('chat'); 
+
+        // resSuccess([
+        //     'new_id' => $new_id_group,
+        //     'avatar' => AVATAR_DEFAULT,
+        //     'name' => $name,
+        // ]);
     }
 
     // TRUE: nhóm đã tồn tại

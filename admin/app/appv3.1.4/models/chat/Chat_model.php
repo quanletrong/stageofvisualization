@@ -278,5 +278,98 @@ class Chat_model extends CI_Model
         $stmt->closeCursor();
         return $all_group;
     }
+
+    function add_group($name, $avatar, $key_user, $create_time)
+    {
+        $new_id = 0;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT INTO tbl_chat__all_group (name, avatar, key_user, created_time) VALUES (?, ?, ?, ?)";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$name, $avatar, $key_user, $create_time];
+
+            if ($stmt->execute($param)) {
+                $new_id = $iconn->lastInsertId();
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $new_id;
+    }
+
+    function add_member_group($id_gchat, $id_member, $username, $create_time)
+    {
+        $new_id = 0;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT INTO tbl_chat__member_group (id_gchat, id_user, username, join_time) VALUES (?, ?, ?, ?)";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_gchat, $id_member, $username, $create_time];
+
+            if ($stmt->execute($param)) {
+                $new_id = $iconn->lastInsertId();
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $new_id;
+    }
+
+    function list_group($id_user)
+    {
+        $data = [];
+        $data['list_group'] = [];
+        $data['msg_newest_in_group'] = [];
+        $iconn = $this->db->conn_id;
+
+        $sql =
+            "CREATE TEMPORARY TABLE tmp_all_group (
+                SELECT * 
+                FROM tbl_chat__all_group 
+                WHERE id_gchat IN (SELECT b.id_gchat FROM tbl_chat__member_group b WHERE b.id_user = $id_user)
+            );
+            
+            CREATE TEMPORARY TABLE tmp_ranked_chat (
+                SELECT *, ROW_NUMBER () OVER ( PARTITION BY id_gchat ORDER BY id_msg DESC ) AS row_num 
+                FROM tbl_chat__msg 
+                WHERE id_gchat IN (SELECT id_gchat FROM tmp_all_group)
+            );
+            
+            SELECT * FROM tmp_all_group;
+
+            SELECT a.*, IF(b.id_da_xem IS NULL, 0, 1) da_xem FROM tmp_ranked_chat a 
+            LEFT JOIN tbl_chat__msg_da_xem b ON a.id_msg = b.id_msg AND b.id_user = $id_user
+            WHERE row_num = 1;
+            
+            DROP TABLE IF EXISTS tmp_all_group;
+            DROP TABLE IF EXISTS tmp_ranked_chat;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+
+                $stmt->nextRowset();
+                $stmt->nextRowset();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data['list_group'][$row['id_gchat']] = $row;
+                }
+
+                $stmt->nextRowset();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data['msg_newest_in_group'][$row['id_gchat']] = $row;
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
+    }
     // END GROUP
 }

@@ -83,9 +83,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <form id="frm_user" method="post" action="">
-                                        <input type="hidden" name="action" value="">
-                                        <input type="hidden" name="id_user" value="">
+                                    <form id="frm_user" method="post" action="chat/ajax_add_group">
                                         <div class="card-body">
                                             <div class="form-group">
                                                 <label for="name">Tên nhóm</label>
