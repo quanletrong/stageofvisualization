@@ -3,7 +3,8 @@
     <div class="row">
         <div class="col-12 col-lg-8">
             <div class="border p-4 step-3-box shadow">
-                <div class="mb-3">
+                <!-- TODO: bỏ nhập card  -->
+                <!-- <div class="mb-3">
                     <label for="input_card_number" class="form-label">Card Number</label>
                     <input type="text" class="form-control" id="input_card_number" name="card_number" placeholder="Card Number" required onchange="STATE.card_number = $(this).val()">
                 </div>
@@ -25,7 +26,7 @@
                         <label for="input_card_number" class="form-label">Card Security Code (CVV/CVC)</label>
                         <input type="number" class="form-control w-50 me-3" id="input_card_cvv" name="card_cvv" placeholder="CVV" required onchange="STATE.card_cvv = $(this).val()">
                     </div>
-                </div>
+                </div> -->
 
                 <div class="row mb-3">
                     <div class="col-12 col-lg-6 mb-2">
@@ -47,9 +48,9 @@
                         <button type="button" id="submit-order" class="btn btn-lg btn-danger w-75">Place Order</button>
                     </div>
                 </div>
-                <small>By Placing an Order, You Agree to Stage of visualization 
-                    <a class="link-color" target="_blank" href="<?=LINK_TERMS?>">Terms of Use</a> and
-                    <a class="link-color" target="_blank" href="<?=LINK_POLICY?>">Privacy Policy</a>
+                <small>By Placing an Order, You Agree to Stage of visualization
+                    <a class="link-color" target="_blank" href="<?= LINK_TERMS ?>">Terms of Use</a> and
+                    <a class="link-color" target="_blank" href="<?= LINK_POLICY ?>">Privacy Policy</a>
                 </small>
             </div>
         </div>

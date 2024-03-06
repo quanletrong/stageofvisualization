@@ -17,6 +17,8 @@ class Order extends MY_Controller
         $this->load->model('login/Login_model');
         $this->load->model('account/Account_model');
         $this->load->model('payment/Payment_model');
+        $this->load->model('voucher/Voucher_model');
+        $this->load->model('log/Log_model');
     }
 
     function index()
@@ -52,10 +54,9 @@ class Order extends MY_Controller
         $this->_loadFooter();
     }
 
+    // TODO: sale admin qc ed muốn tạo đơn có được không?
     function submit()
     {
-        // TODO: sale admin qc ed muốn tạo đơn có được không?
-
         $this->_islogin() ? "" : resError('Please log in!');
 
         $all_room    = $this->Room_model->get_list(1);
@@ -63,27 +64,43 @@ class Order extends MY_Controller
         $all_style   = $this->Style_model->get_list(1);
 
         $order = $this->input->post('order');
-        $style       = $order['style'];
+        $style       = isset($order['style']) ? $order['style'] : 0;
         $id_user     = $this->_session_uid();
         $create_time = date('Y-m-d H:i:s');
-        $coupon      = $order['coupon'];
-        $list_job  = $order['job'];
+        $voucher     = isset($order['coupon']) ? $order['coupon'] : 0;
+        $list_job    = isset($order['job']) ? $order['job'] : [];
 
         // VALIDATE
         # check style
-        if (isIdNumber($style)) {
-            isset($all_style[$style]) ? '' : resError('error_style');
+        if ($style !== '0') {
+            if (isIdNumber($style)) {
+                isset($all_style[$style]) ? '' : resError('error_style');
+            } else {
+                $style = 0;
+            }
+        }
+
+        # check job
+        is_array($list_job) ? '' : resError('error_job (1)');
+        count($list_job) ? '' : resError('error_job (2)');
+
+        # check voucher (ko bắt buộc nhập voucher)
+        $info_voucher = [];
+        if (isIdNumber($voucher)) {
+            $lst_voucher =  $this->Voucher_model->get_list_voucher_for_create_order_by_customer($id_user, $create_time);
+            isset($lst_voucher[$voucher]) ? '' : resError('error_voucher');
+            $info_voucher = $lst_voucher[$voucher];
         }
 
         $info_user = $this->Account_model->get_user_info_by_uid($id_user);
         $FDR_ORDER = FOLDER_ORDER . strtotime($create_time) . '@' . $info_user['username'];
 
         foreach ($list_job as $id_job => $job) {
-            $room        = $job['room'];
-            $service     = $job['service'];
-            $image       = $job['image'];
-            $requirement = $job['requirement'];
-            $attach      = @$job['attach'];      // k bat buoc nhap attach nen de @
+            $room        = isset($job['room']) ? $job['room'] : '';
+            $service     = isset($job['service']) ? $job['service'] : '';
+            $image       = isset($job['image']) ? $job['image'] : '';
+            $requirement = isset($job['requirement']) ? $job['requirement'] : '';
+            $attach      = isset($job['attach']) ? $job['attach'] : [];
 
             # check room, service
             isset($all_room[$room])         ? '' : resError('error_room');
@@ -91,10 +108,12 @@ class Order extends MY_Controller
 
             # lưu ảnh image
             $copy_image = copy_image_to_public_upload($image, $FDR_ORDER);
-            $copy_image['status'] ? '' : resError('error_image');
+            $copy_image['status'] ? '' : resError('Please Add File Main!');
             $list_job[$id_job]['image_ok'] = $copy_image['basename'];
 
             # lưu ảnh attachments
+            is_array($attach) ? '' : resError('error_attach');
+
             $attach_ok = [];
             foreach ($attach as $id_attach => $image_attach) {
                 $copy_attach = copy_image_to_public_upload($image_attach, $FDR_ORDER);
@@ -113,37 +132,88 @@ class Order extends MY_Controller
         $create_id_user = $id_user;
         $new_order = $this->Order_model->add_order($style, $create_time, $id_user, ORDER_PAY_WAITING, DON_KHACH_TAO, $create_id_user, ED_NOI_BO);
 
-        $flag_error = false;
-        if ($new_order) {
-            // số lượng job của đơn lưu vào tbl_job
-            foreach ($list_job as $job) {
-
-                $room           = $job['room'];
-                $service        = $job['service'];
-                $type_service   = $all_service[$service]['type_service'];
-                $price          = $all_service[$service]['price'];
-                $price_unit     = '2'; //TODO: 1 VND, 2 Đô, ...
-                $image_ok       = $job['image_ok'];
-                $json_attach_ok = json_encode($job['attach_ok'], JSON_FORCE_OBJECT);
-                $requirement    = $job['requirement'];
-
-                $new_order_job_service = $this->Order_model->add_order_job($new_order, $service, $type_service, $price, $price_unit, $room, $style, $image_ok, $json_attach_ok, $requirement, $create_time);
-
-                if (!$new_order_job_service) {
-                    $flag_error = true;
-                    break;
-                }
-            }
-
-            if ($flag_error) {
-                $this->Order_model->delete_order_and_job($new_order);
-                // Xóa ảnh của job, ảnh attach...TODO:
-                resError('Save error (job)');
-            } else {
-                resSuccess('ok');
-            }
-        } else {
+        if ($new_order == false) {
+            deleteDirectory($FDR_ORDER);
             resError('Save error (order)');
+        }
+
+        // số lượng job của đơn lưu vào tbl_job
+        $total_price = 0;
+        $exc_add_job = true;
+        foreach ($list_job as $job) {
+            $room           = $job['room'];
+            $service        = $job['service'];
+            $type_service   = $all_service[$service]['type_service'];
+            $price          = $all_service[$service]['price'];
+            $price_unit     = '2'; //TODO: 1 VND, 2 Đô, ...
+            $image_ok       = $job['image_ok'];
+            $json_attach_ok = json_encode($job['attach_ok'], JSON_FORCE_OBJECT);
+            $requirement    = $job['requirement'];
+
+            $exc_add_job = $this->Order_model->add_order_job($new_order, $service, $type_service, $price, $price_unit, $room, $style, $image_ok, $json_attach_ok, $requirement, $create_time);
+
+            if (!$exc_add_job) break;
+
+            $total_price += $price;
+        }
+
+        // LƯU LICH SU THANH TOAN ORDER
+        $price_vou = isset($info_voucher['price']) ? $info_voucher['price'] : 0;
+        $code_vou  = isset($info_voucher['code']) ? $info_voucher['code'] : '';
+        $amount    = (float) ($total_price > $price_vou ? ($total_price - $price_vou) : 0);
+
+        $don_khong_can_thanh_toan = $amount == 0;
+        $don_can_thanh_toan       = $amount > 0;
+
+        // LƯU LỊCH SỬ THANH TOÁN ĐƠN
+        $exc_add_payment_order = true;
+
+        # đơn không cần thanh toán
+        if ($don_khong_can_thanh_toan) {
+            $exc_add_payment_order = $this->Order_model->add_payment_order($new_order, $voucher, $code_vou, $total_price, $price_vou, $id_user, PAY_HOAN_THANH, 0, $create_time);
+        }
+
+        # đơn cần thanh toán
+        if ($don_can_thanh_toan) {
+            $type_payment = PAYPAL;  //TODO: mặc định thanh toán bằng PAYPAL
+            if ($type_payment == PAYPAL) {
+                $exc_add_payment_order =  $this->Order_model->add_payment_order($new_order, $voucher, $code_vou, $total_price, $price_vou, $id_user, PAY_DANG_CHO, PAYPAL, $create_time);
+            }
+        }
+
+        // UPDATE ĐƠN VÊ PENDING
+        $exc_update_status_order = true;
+        if ($don_khong_can_thanh_toan) {
+            $exc_update_status_order = $this->Order_model->update_status_order($new_order, ORDER_PENDING);
+        }
+
+        // LƯU LOG
+        $log['type']     = LOG_CREATE_ORDER;
+        $log['id_order'] = $new_order;
+        $order           = $this->Order_model->get_info_order($new_order);
+        $exc_log_add     = $this->Log_model->log_add($log, $order);
+
+
+        // HOÀN THÀNH QUÁ TRÌNH LƯU ĐƠN HÀNG
+        if (
+            !$exc_add_job ||
+            !$exc_add_payment_order ||
+            !$exc_update_status_order ||
+            !$exc_log_add
+        ) {
+            $this->Order_model->delete_order_and_job($new_order);
+            deleteDirectory($FDR_ORDER);
+            // [3] xóa payment order TODO:
+            // [4] xóa log order TODO:
+            resError('Có lỗi xảy ra trong quá trình lưu đơn. Vui lòng thử lại sau.');
+        } else {
+            resSuccess([
+                'price'          => (float) $total_price,
+                'price_vou'      => (float) $price_vou,
+                'price_payment'  => (float) $amount,
+                'new_id_order'   => (int) $new_order,
+                'new_id_payment' => (int) $exc_add_payment_order
+            ]);
         }
     }
 

@@ -169,14 +169,16 @@
 
         // 
         $('#submit-order').click(function() {
-            if (STATE.card_number != '' && STATE.card_mm != '' && STATE.card_yy != '' && STATE.card_cvv != '') {
-                ajax_order();
-            } else {
-                valid_order.element(`*[name="card_number"]`)
-                valid_order.element(`*[name="card_mm"]`);
-                valid_order.element(`*[name="card_yy"]`);
-                valid_order.element(`*[name="card_cvv"]`);
-            }
+            ajax_order();
+            // TODO: bỏ nhập card 
+            // if (STATE.card_number != '' && STATE.card_mm != '' && STATE.card_yy != '' && STATE.card_cvv != '') {
+            //     ajax_order();
+            // } else {
+            //     valid_order.element(`*[name="card_number"]`)
+            //     valid_order.element(`*[name="card_mm"]`);
+            //     valid_order.element(`*[name="card_yy"]`);
+            //     valid_order.element(`*[name="card_cvv"]`);
+            // }
         })
 
         // STEP 2
@@ -195,10 +197,17 @@
                     order: STATE
                 },
                 success: function(data, textStatus, jqXHR) {
-                    console.log(data);
-                    alert('Bạn đã tạo thành công đơn hàng.');
-                    window.location.href = '<?= site_url(LINK_USER_ORDER) ?>';
 
+                    let res = JSON.parse(data);
+
+                    if(res.status) {
+                        common.open_popup_pay(res.data.new_id_order);
+                    } else {
+                        alert(`Save failed! ${res.error}`);
+                    }
+                    
+                    // window.location.href = 'order/detail/' + res.data.new_id_order;
+                    // console.log('Bạn đã tạo thành công đơn hàng.');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(data);
