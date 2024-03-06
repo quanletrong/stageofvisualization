@@ -1,6 +1,10 @@
 <?php ?>
 <script src="js/v2023/moment_2.29.4.min.js"></script>
 <style>
+    .main-footer {
+        display: none;
+    }
+
     .item-chat:hover {
         background-color: #f0f0f0;
     }
@@ -12,58 +16,110 @@
     .item-chat:hover .delete {
         display: block !important;
     }
+
+    /* group */
+
+    #btn-add-group {
+        font-size: 1.5rem;
+        color: gray;
+        cursor: pointer;
+    }
+
+    #btn-add-group:hover {
+        color: black;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Đoạn chat</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
-                        <li class="breadcrumb-item active">Đoạn chat</li>
-                    </ol>
-                </div>
-            </div>
-        </div><!-- /.container-fluid -->
-    </section>
-
     <!-- Main content -->
-    <section class="content">
+    <section class="content pt-1">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-4" id="chat-left">
-                    <div style="overflow-x: hidden; overflow-y: auto; height: 80vh; background: white; border-radius: 5px; padding: 5px;" class="list-chat-user">
+                    <div style="overflow-x: hidden; overflow-y: auto; height: 93vh; background: white; border-radius: 5px; padding: 5px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h3>Đoạn chat</h3>
+                            <div id="btn-add-group" title="Thêm nhóm" data-toggle="modal" data-target="#modal-add-group"><i class="fas fa-plus-circle"></i></div>
+                        </div>
 
+                        <div class="mb-2">
+                            <input type="text" placeholder="Tìm kiếm thành viên" class="form-control">
+                        </div>
+                        <div class="list-chat-user">
+                            <?php foreach ($list_user_chat as $chat) { ?>
+                                <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $chat['id_user'] ?>" onclick="click_left_chat_user('<?= $chat['id_user'] ?>')">
+                                    <div style="width: 15%; max-width: 50px;">
+                                        <img src="<?= $chat['avatar_url'] ?>" class="img-circle elevation-2 avatar" alt="User Image" style="width: 100%;object-fit: cover; aspect-ratio: 1;">
+                                    </div>
+                                    <div style="width: 85%; position: relative;">
+                                        <div style="width: 100%; font-weight: 500;" class="fullname">
+                                            <?= isIPV4($chat['id_user']) ?  '(Vãng lai - ' . $chat['id_user'] . ')' : $chat['fullname_user'] ?>
+                                        </div>
+                                        <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
+                                            <div class="text-truncate content" style="width: 80%; font-weight: <?= $chat['da_xem'] ? 300 : 600 ?>;"><?= $chat['content'] ?></div>
+                                            <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;"><?= timeSince($chat['create_time']) ?></div>
+                                        </div>
 
-                        <?php foreach ($list_user_chat as $chat) { ?>
-                            <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $chat['id_user'] ?>" onclick="click_left_chat_user('<?= $chat['id_user'] ?>')">
-                                <div style="width: 15%; max-width: 50px;">
-                                    <img src="<?= $chat['avatar_url'] ?>" class="img-circle elevation-2 avatar" alt="User Image" style="width: 100%;object-fit: cover; aspect-ratio: 1;">
+                                        <div style="position: absolute;right: 0px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('<?= $chat['id_user'] ?>')">
+                                            <i class="fas fa-times-circle"></i>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div style="width: 85%; position: relative;">
-                                    <div style="width: 100%; font-weight: 500;" class="fullname">
-                                        <?= isIPV4($chat['id_user']) ?  '(Vãng lai - ' . $chat['id_user'] . ')' : $chat['fullname_user'] ?>
-                                    </div>
-                                    <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
-                                        <div class="text-truncate content" style="width: 80%; font-weight: <?= $chat['da_xem'] ? 300 : 600 ?>;"><?= $chat['content'] ?></div>
-                                        <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;"><?= timeSince($chat['create_time']) ?></div>
-                                    </div>
+                            <?php } ?>
 
-                                    <div style="position: absolute;right: 0px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('<?= $chat['id_user'] ?>')">
-                                        <i class="fas fa-times-circle"></i>
-                                    </div>
+                            <?php if (count($list_user_chat) == 0) { ?>
+                                <div class="mt-3 text-center alert_empty_chat" style="display: block;">Không có đoạn chat nào</div>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="modal-add-group" style="display: none" aria-modal="true" role="dialog">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Thêm nhóm</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="frm_user" method="post" action="">
+                                        <input type="hidden" name="action" value="">
+                                        <input type="hidden" name="id_user" value="">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="name">Tên nhóm</label>
+                                                <input type="text" class="form-control name_group" name="name_group" placeholder="Nhập tên nhóm">
+                                            </div>
+
+                                            <div class="form-group" data-select2-id="16">
+                                                <label for="sapo">Thành viên</label>
+                                                <div>
+                                                    <select class="form-control select2 member_group" multiple="multiple" name="member_group[]" style="width: 100%;">
+                                                        <?php foreach ($all_member as $id_user => $user) { ?>
+                                                            <option value="<?= $id_user ?>"><?= $user['username'] ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
+                                        <div class="card-footer d-flex justify-content-center">
+                                            <button type="submit" class="btn btn-lg btn-danger">Lưu lại</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                        <?php } ?>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
 
-                        <?php if (count($list_user_chat) == 0) { ?>
-                            <div class="mt-3 text-center alert_empty_chat" style="display: block;">Không có đoạn chat nào</div>
-                        <?php } ?>
+                        <script>
+                            $(function() {
+                                $('#modal-add-group .member_group').select2({});
+                            })
+                        </script>
                     </div>
                 </div>
                 <div class="col-md-8" id="chat-right">

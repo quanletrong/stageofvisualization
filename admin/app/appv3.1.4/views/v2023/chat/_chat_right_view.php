@@ -9,19 +9,32 @@
         cursor: pointer;
         color: red;
     }
+
+    .btn-setting-group {
+        color: gray;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+    .btn-setting-group:hover {
+        color: black;
+    }
 </style>
 <div id="chat_khach" class="card mb-0" style="width: 100%; display: none;">
     <div class="card-header text-white p-1">
-        <div class="d-flex align-items-center">
-            <div>
-                <img src="" class="img-circle elevation-2 avatar" alt="User Image" style="width: 40px; object-fit: cover; aspect-ratio: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="d-flex align-items-center">
+                <div>
+                    <img src="" class="img-circle elevation-2 avatar" alt="User Image" style="width: 40px; object-fit: cover; aspect-ratio: 1;">
+                </div>
+                <div style="font-weight: 500; color:black; margin-left:15px" class="fullname">...</div>
             </div>
-            <div style="font-weight: 500; color:black; margin-left:15px" class="fullname">...</div>
+            <div class="btn-setting-group"><i class="fas fa-ellipsis-h"></i></div>
         </div>
+
     </div>
     <div class="card-body bg-white p-1">
         <div style="display: flex; flex-direction: column; justify-content: flex-end;">
-            <div class="list-chat" style="height: 63vh; overflow-y: auto;">
+            <div class="list-chat" style="height: 76vh; overflow-y: auto;">
                 <center><i class="fas fa-sync fa-spin"></i></center>
             </div>
             <div class="mt-2 nhap_du_lieu_chat">
@@ -80,7 +93,7 @@
     function ajax_chat_list_by_user(id_user) {
         $('#chat_khach').show();
         $('#chat_khach .list-chat').html('<center><i class="fas fa-sync fa-spin"></i></center>')
-        
+
         $.ajax({
             url: `chat/ajax_chat_list_by_user/${id_user}`,
 
@@ -127,7 +140,7 @@
 
         // get chat user active
         let chat_user = $('.item-chat.active').attr('id');
-        if(chat_user === undefined) {
+        if (chat_user === undefined) {
             return false;
         }
         // end chat user

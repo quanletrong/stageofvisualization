@@ -19,6 +19,7 @@ class Chat extends MY_Controller
         }
 
         $this->load->model('chat/Chat_model');
+        $this->load->model('user/User_model');
     }
 
     function index($chat_user = '')
@@ -35,6 +36,7 @@ class Chat extends MY_Controller
         $chat_user = isIdNumber($chat_user) ? $chat_user : '';
         $data['chat_user'] = $chat_user;
         $data['cur_uid'] = $this->_session_uid();
+        $data['all_member'] = $this->User_model->get_list_user_working(1, implode(",", [ADMIN,SALE, QC, EDITOR]));
 
         $header = [
             'title' => 'Chat',
@@ -118,5 +120,69 @@ class Chat extends MY_Controller
             resError('Người xóa không hợp lệ');
         }
        
+    }
+
+    function ajax_add_group() {
+
+        // check right
+        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
+            resError('Tài khoản không có quyền truy cập!');
+        }
+
+        $all_member = $this->User_model->get_list_user_working(1, implode(",", [ADMIN,SALE, QC, EDITOR]));
+        $all_group = $this->Chat_model->all_group();
+        
+        $name = removeAllTags($this->input->post('name_group'));
+        $member = $this->input->post('member_group');
+
+        // check memmber empty
+        if(!is_array($member)) {
+            $member = [$this->_session_uid()];
+        } else {
+            $member[] = $this->_session_uid();
+        }
+        
+        // check member không tồn tại
+        foreach($member as $id_member) {
+            isset($all_member[$id_member]) ? '' : resError('Thành viên không tồn tại!');
+        }
+
+        // check nhóm đã tồn tại
+        $nhom_da_ton_tai = $this->_check_group_da_ton_tai($member, $all_group);
+        if($nhom_da_ton_tai) {
+            resError('Nhóm đã tồn tại!');
+        }
+
+        // if(isIdNumber($chat_user) || isIPV4($chat_user)) {
+        //     $exc = $this->Chat_model->delete_chat_user($chat_user);
+
+        //     resSuccess('ok');
+        // } else {
+        //     resError('Người xóa không hợp lệ');
+        // }
+       
+    }
+
+    // TRUE: nhóm đã tồn tại
+    // FASLSE:  nhóm chưa tồn tại
+    function _check_group_da_ton_tai($member,$all_group ) {
+
+        $nhom_da_ton_tai = true;
+        $nhom_chua_ton_tai = false;
+
+        // nếu đã tồn tại nhóm có số lượng thành viên bằng $member thì báo $nhom_da_ton_tai
+        foreach($all_group as $group) {
+
+            if(count($group['members']) == count($member)) {
+
+                $array_diff = array_diff($group['members'], $member);
+
+                if(empty($array_diff)) {
+                    return $nhom_da_ton_tai;
+                }
+            }
+        }
+
+        return $nhom_chua_ton_tai;
     }
 }

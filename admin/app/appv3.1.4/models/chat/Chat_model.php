@@ -233,4 +233,50 @@ class Chat_model extends CI_Model
         $stmt->closeCursor();
         return $execute;
     }
+
+    // GROUP 
+    function all_group()
+    {
+        $all_group = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT * FROM tbl_chat__all_group;";
+        $sql .=
+            "SELECT A.id_gchat, GROUP_CONCAT( DISTINCT A.id_user ) members 
+            FROM tbl_chat__member_group A 
+            WHERE id_gchat IN ( SELECT id_gchat FROM tbl_chat__all_group ) 
+            GROUP BY A.id_gchat";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+
+
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $all_group[$row['id_gchat']] = $row;
+                    }
+                }
+
+                // Lấy ra thành viên trong nhóm
+                $stmt->nextRowset();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                    $members = [];
+                    foreach (explode(',', $row['members']) as $id_member) {
+                        $members[$id_member] = $id_member;
+                    }
+
+                    $all_group[$row['id_gchat']]['members'] = $members;
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $all_group;
+    }
+    // END GROUP
 }
