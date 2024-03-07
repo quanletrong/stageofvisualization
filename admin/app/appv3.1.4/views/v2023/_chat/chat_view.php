@@ -46,49 +46,28 @@
                             <input type="text" placeholder="Tìm kiếm thành viên" class="form-control">
                         </div>
                         <div class="list-chat-user">
-                            <?php foreach ($list_group['list'] as $id_group => $group) { ?>
-                                <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $id_group ?>" onclick="ajax_list_msg('<?= $id_group ?>')">
-                                    <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;">
-                                    
-                                        <?php $num_member = count($list_group['member'][$id_group]); ?>
-                                        <?php $lst_member = $list_group['member'][$id_group]; ?>
-
-                                        <?php $index = 1; ?>
-                                        <?php foreach ($lst_member as $user) { ?>
-                                            <?php if ($index <= 4) { ?>
-                                                <img src="<?= $user['avatar_url'] ?>" class="img-circle elevation-2 avatar" alt="<?= $user['fullname'] ?>" style="width: <?= $num_member == 1 ? '100%' : '50%' ?>; object-fit: cover; aspect-ratio: 1;">
-                                                <?php $index++; ?>
-                                            <?php } ?>
-                                        <?php } ?>
-
+                            <?php foreach ($list_user_chat as $chat) { ?>
+                                <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $chat['id_user'] ?>" onclick="click_left_chat_user('<?= $chat['id_user'] ?>')">
+                                    <div style="width: 15%; max-width: 50px;">
+                                        <img src="<?= $chat['avatar_url'] ?>" class="img-circle elevation-2 avatar" alt="User Image" style="width: 100%;object-fit: cover; aspect-ratio: 1;">
                                     </div>
                                     <div style="width: 85%; position: relative;">
                                         <div style="width: 100%; font-weight: 500;" class="fullname">
-                                            <?= $group['name'] ?>
+                                            <?= isIPV4($chat['id_user']) ?  '(Vãng lai - ' . $chat['id_user'] . ')' : $chat['fullname_user'] ?>
                                         </div>
                                         <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
-                                            <?php
-                                            $da_xem = '300';
-                                            $msg_newest = [];
-                                            if (isset($list_group['msg_newest'][$id_group])) {
-                                                $da_xem = $list_group['msg_newest'][$id_group]['da_xem'] ? '300' : '600';
-                                                $msg_newest = $list_group['msg_newest'][$id_group];
-                                            }
-                                            ?>
-                                            <?php if (count($msg_newest)) { ?>
-                                                <div class="text-truncate content" style="width: 80%; font-weight: <?= $da_xem ?>;"><?= $msg_newest['content'] ?></div>
-                                                <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;"><?= timeSince($msg_newest['create_time']) ?></div>
-                                            <?php } ?>
+                                            <div class="text-truncate content" style="width: 80%; font-weight: <?= $chat['da_xem'] ? 300 : 600 ?>;"><?= $chat['content'] ?></div>
+                                            <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;"><?= timeSince($chat['create_time']) ?></div>
                                         </div>
 
-                                        <div style="position: absolute;right: 0px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('<?= $id_group ?>')">
+                                        <div style="position: absolute;right: 0px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('<?= $chat['id_user'] ?>')">
                                             <i class="fas fa-times-circle"></i>
                                         </div>
                                     </div>
                                 </div>
                             <?php } ?>
 
-                            <?php if (count($list_group['list']) == 0) { ?>
+                            <?php if (count($list_user_chat) == 0) { ?>
                                 <div class="mt-3 text-center alert_empty_chat" style="display: block;">Không có đoạn chat nào</div>
                             <?php } ?>
                         </div>
@@ -98,7 +77,7 @@
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h4 class="modal-title">Thêm đoạn chat</h4>
+                                    <h4 class="modal-title">Thêm nhóm</h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
@@ -107,12 +86,12 @@
                                     <form id="frm_user" method="post" action="chat/ajax_add_group">
                                         <div class="card-body">
                                             <div class="form-group">
-                                                <label for="name">Tên gợi nhớ đoạn chat</label>
-                                                <input type="text" class="form-control name_group" name="name_group" placeholder="Tên gợi nhớ">
+                                                <label for="name">Tên nhóm</label>
+                                                <input type="text" class="form-control name_group" name="name_group" placeholder="Nhập tên nhóm">
                                             </div>
 
                                             <div class="form-group" data-select2-id="16">
-                                                <label for="sapo">Thành viên trong đoạn chat</label>
+                                                <label for="sapo">Thành viên</label>
                                                 <div>
                                                     <select class="form-control select2 member_group" multiple="multiple" name="member_group[]" style="width: 100%;">
                                                         <?php foreach ($all_member as $id_user => $user) { ?>
@@ -121,11 +100,6 @@
                                                     </select>
                                                 </div>
 
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="name">Lời nhắn đầu tiên tới đoạn chat</label>
-                                                <input type="text" class="form-control msg_newest" name="msg_newest" placeholder="Lời nhắn đầu tiên" value="Xin chào mọi người">
                                             </div>
                                         </div>
                                         <!-- /.card-body -->
@@ -169,16 +143,17 @@
         let id_user = item_chat_active.attr('id');
 
         let fullname = item_chat_active.find('.fullname').text();
-        let avatar = item_chat_active.find('.div-avatar').html();
+        let avatar = item_chat_active.find('.avatar').attr('src');
+
 
         $('#chat_khach .fullname').text(fullname)
-        $('#chat_khach .div-avatar').html(avatar)
+        $('#chat_khach .avatar').attr('src', avatar)
         if (id_user != '' && id_user !== undefined) {
             ajax_chat_list_by_user(id_user);
         }
     })
 
-    function ajax_list_msg(chat_user) {
+    function click_left_chat_user(chat_user) {
 
         let chat_item = $(`[id='${chat_user}']`);
 
@@ -187,10 +162,10 @@
         chat_item.find('.content').css('font-weight', 300)
 
         let fullname = chat_item.find('.fullname').text();
-        let avatar = chat_item.find('.div-avatar').html();
+        let avatar = chat_item.find('.avatar').attr('src');
 
         $('#chat_khach .fullname').text(fullname)
-        $('#chat_khach .div-avatar').html(avatar)
+        $('#chat_khach .avatar').attr('src', avatar)
 
         ajax_chat_list_by_user(chat_user)
     }
@@ -221,12 +196,12 @@
                             let item_chat_active = $('.item-chat').first();
                             let id_user = item_chat_active.attr('id');
                             let fullname = item_chat_active.find('.fullname').text();
-                            let avatar = item_chat_active.find('.div-avatar').html();
+                            let avatar = item_chat_active.find('.avatar').attr('src');
 
                             item_chat_active.addClass('active')
 
                             $('#chat_khach .fullname').text(fullname)
-                            $('#chat_khach .div-avatar').html(avatar)
+                            $('#chat_khach .avatar').attr('src', avatar)
                             ajax_chat_list_by_user(id_user);
                         }
 
@@ -276,7 +251,7 @@
         // đoạn chat mới nội dung bên trái
         else {
             let html_new =
-                `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_user}" onclick="ajax_list_msg('${id_user}')">
+                `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_user}" onclick="click_left_chat_user('${id_user}')">
                 <div style="width: 15%; max-width: 50px;">
                     <img src="${data.avatar_url}" class="img-circle elevation-2 avatar" alt="User Image" style="width: 100%;object-fit: cover; aspect-ratio: 1;">
                 </div>

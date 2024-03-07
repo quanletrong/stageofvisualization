@@ -23,7 +23,9 @@
     <div class="card-header text-white p-1">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div class="d-flex align-items-center">
-                <div class="div-avatar" style="height:50px; width: 50px; display: flex; flex-wrap: wrap; align-content: center;"></div>
+                <div>
+                    <img src="" class="img-circle elevation-2 avatar" alt="User Image" style="width: 40px; object-fit: cover; aspect-ratio: 1;">
+                </div>
                 <div style="font-weight: 500; color:black; margin-left:15px" class="fullname">...</div>
             </div>
             <div class="btn-setting-group"><i class="fas fa-ellipsis-h"></i></div>

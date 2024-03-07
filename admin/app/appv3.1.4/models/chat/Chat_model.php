@@ -322,8 +322,9 @@ class Chat_model extends CI_Model
     function list_group($id_user)
     {
         $data = [];
-        $data['list_group'] = [];
-        $data['msg_newest_in_group'] = [];
+        $data['list'] = [];
+        $data['msg_newest'] = [];
+        $data['member'] = [];
         $iconn = $this->db->conn_id;
 
         $sql =
@@ -339,12 +340,20 @@ class Chat_model extends CI_Model
                 WHERE id_gchat IN (SELECT id_gchat FROM tmp_all_group)
             );
             
+            /* ds nhóm*/
             SELECT * FROM tmp_all_group;
 
+            /* tin nhắn mới nhất trong nhóm */
             SELECT a.*, IF(b.id_da_xem IS NULL, 0, 1) da_xem FROM tmp_ranked_chat a 
             LEFT JOIN tbl_chat__msg_da_xem b ON a.id_msg = b.id_msg AND b.id_user = $id_user
             WHERE row_num = 1;
             
+            /* ds thành viên trong nhóm */
+            SELECT t1.*, t2.username, t2.fullname, t2.avatar  
+            FROM tbl_chat__member_group t1
+            INNER JOIN tbl_user t2 ON t1.id_user = t2.id_user
+            WHERE id_gchat IN(SELECT id_gchat FROM tmp_all_group) AND t1.id_user <> $id_user;
+
             DROP TABLE IF EXISTS tmp_all_group;
             DROP TABLE IF EXISTS tmp_ranked_chat;";
 
@@ -355,12 +364,19 @@ class Chat_model extends CI_Model
                 $stmt->nextRowset();
                 $stmt->nextRowset();
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $data['list_group'][$row['id_gchat']] = $row;
+                    $row['avatar_url'] = url_image($row['avatar'] == null ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
+                    $data['list'][$row['id_gchat']] = $row;
                 }
 
                 $stmt->nextRowset();
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $data['msg_newest_in_group'][$row['id_gchat']] = $row;
+                    $data['msg_newest'][$row['id_gchat']] = $row;
+                }
+
+                $stmt->nextRowset();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $row['avatar_url'] = url_image($row['avatar'] == null ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
+                    $data['member'][$row['id_gchat']][$row['id_user']] = $row;
                 }
             } else {
                 var_dump($stmt->errorInfo());

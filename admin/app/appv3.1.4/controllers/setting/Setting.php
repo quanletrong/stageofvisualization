@@ -1,4 +1,8 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+use function GuzzleHttp\json_encode;
+
+ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Setting extends MY_Controller
 {
@@ -10,7 +14,7 @@ class Setting extends MY_Controller
 
         if (!$this->_isLogin()) {
             if ($this->input->is_ajax_request()) {
-                echo 'unlogin';
+                resError('unlogin');
                 die();
             }
             $currUrl = getCurrentUrl();
@@ -399,5 +403,142 @@ class Setting extends MY_Controller
         $this->_loadHeader($header);
         $this->load->view($this->_template_f . 'setting/max_order_working_view', $data);
         $this->_loadFooter();
+    }
+
+    function hiw()
+    {
+
+        $data = [];
+        if ($this->_session_role() != ADMIN) {
+            show_custom_error('Tài khoản không có quyền truy cập!');
+        }
+        $header = [
+            'title' => 'Trang how it works',
+            'header_page_css_js' => 'setting'
+        ];
+
+        $setting = $this->Setting_model->get_setting();
+        $data['setting'] = $setting;
+
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'setting/setting_hiw_view', $data);
+        $this->_loadFooter();
+    }
+
+    function ajax_hiw_submit()
+    {
+        if ($this->_session_role() != ADMIN) {
+            resError('Tài khoản không có quyền truy cập!');
+        }
+
+        $setting = $this->Setting_model->get_setting();
+        $hiw = json_encode($setting['hiw'], true);
+
+        // POST
+        $title = removeAllTags($this->input->post('title'));
+        $desc = removeAllTags($this->input->post('desc'));
+
+        $step_1_title = removeAllTags($this->input->post('step_1_title'));
+        $step_1_desc = removeAllTags($this->input->post('step_1_desc'));
+        $step_1_icon = removeAllTags($this->input->post('step_1_icon'));
+        $step_1_image = removeAllTags($this->input->post('step_1_image'));
+
+        $step_2_title = removeAllTags($this->input->post('step_2_title'));
+        $step_2_desc = removeAllTags($this->input->post('step_2_desc'));
+        $step_2_icon = removeAllTags($this->input->post('step_2_icon'));
+        $step_2_image = removeAllTags($this->input->post('step_2_image'));
+
+        $step_3_title = removeAllTags($this->input->post('step_3_title'));
+        $step_3_desc = removeAllTags($this->input->post('step_3_desc'));
+        $step_3_icon = removeAllTags($this->input->post('step_3_icon'));
+        $step_3_image = removeAllTags($this->input->post('step_3_image'));
+
+        $revisions_title = removeAllTags($this->input->post('revisions_title'));
+        $revisions_desc = removeAllTags($this->input->post('revisions_desc'));
+
+        $listing_title = removeAllTags($this->input->post('listing_title'));
+        $listing_desc = removeAllTags($this->input->post('listing_desc'));
+
+        // VALIDATE
+        $title != '' ? '' : resError('#title', 'Thiếu dữ liệu');
+        $desc  != '' ? '' : resError('#desc', 'Thiếu dữ liệu');
+
+        $step_1_title != '' ? '' : resError('#step_1_title', 'Thiếu dữ liệu');
+        $step_1_desc  != '' ? '' : resError('#step_1_desc', 'Thiếu dữ liệu');
+        $step_1_icon  != '' ? '' : resError('#step_1_icon', 'Thiếu dữ liệu');
+        $step_1_image != '' ? '' : resError('#step_1_image', 'Thiếu dữ liệu');
+
+        $step_2_title != '' ? '' : resError('#step_2_title', 'Thiếu dữ liệu');
+        $step_2_desc  != '' ? '' : resError('#step_2_desc', 'Thiếu dữ liệu');
+        $step_2_icon  != '' ? '' : resError('#step_2_icon', 'Thiếu dữ liệu');
+        $step_2_image != '' ? '' : resError('#step_2_image', 'Thiếu dữ liệu');
+
+        $step_3_title != '' ? '' : resError('#step_3_title', 'Thiếu dữ liệu');
+        $step_3_desc  != '' ? '' : resError('#step_3_desc', 'Thiếu dữ liệu');
+        $step_3_icon  != '' ? '' : resError('#step_3_icon', 'Thiếu dữ liệu');
+        $step_3_image != '' ? '' : resError('#step_3_image', 'Thiếu dữ liệu');
+
+        $revisions_title != '' ? '' : resError('#revisions_title', 'Thiếu dữ liệu');
+        $revisions_desc  != '' ? '' : resError('#revisions_desc', 'Thiếu dữ liệu');
+
+        $listing_title != '' ? '' : resError('#listing_title', 'Thiếu dữ liệu');
+        $listing_desc  != '' ? '' : resError('#listing_desc', 'Thiếu dữ liệu');
+
+        // lưu image step 1
+        if (basename($step_1_icon) != $hiw['step_1_icon']) {
+            $copy_attach = copy_image_to_public_upload($step_1_icon, FOLDER_HIW);
+            $copy_attach['status'] ? '' : resError('Icon step 1 không hợp lệ!');
+            $hiw['step_1_icon'] = $copy_attach['basename'];
+        }
+
+        if (basename($step_1_image) != $hiw['step_1_image']) {
+            $copy_attach = copy_image_to_public_upload($step_1_icon, FOLDER_HIW);
+            $copy_attach['status'] ? '' : resError('Image step 1 không hợp lệ!');
+            $hiw['step_1_image'] = $copy_attach['basename'];
+        }
+
+        // lưu image step 2
+        if (basename($step_2_icon) != $hiw['step_2_icon']) {
+            $copy_attach = copy_image_to_public_upload($step_2_icon, FOLDER_HIW);
+            $copy_attach['status'] ? '' : resError('Icon step 2 không hợp lệ!');
+            $hiw['step_2_icon'] = $copy_attach['basename'];
+        }
+
+        if (basename($step_2_image) != $hiw['step_2_image']) {
+            $copy_attach = copy_image_to_public_upload($step_2_icon, FOLDER_HIW);
+            $copy_attach['status'] ? '' : resError('Image step 2 không hợp lệ!');
+            $hiw['step_2_image'] = $copy_attach['basename'];
+        }
+
+        // lưu image step 3
+        if (basename($step_3_icon) != $hiw['step_3_icon']) {
+            $copy_attach = copy_image_to_public_upload($step_3_icon, FOLDER_HIW);
+            $copy_attach['status'] ? '' : resError('Icon step 3 không hợp lệ!');
+            $hiw['step_3_icon'] = $copy_attach['basename'];
+        }
+
+        if (basename($step_3_image) != $hiw['step_3_image']) {
+            $copy_attach = copy_image_to_public_upload($step_3_icon, FOLDER_HIW);
+            $copy_attach['status'] ? '' : resError('Image step 3 không hợp lệ!');
+            $hiw['step_3_image'] = $copy_attach['basename'];
+        }
+
+        $hiw['title']           = $title;
+        $hiw['desc']            = $desc;
+        $hiw['step_1_title']    = $step_1_title;
+        $hiw['step_1_desc']     = $step_1_desc;
+        $hiw['step_2_title']    = $step_2_title;
+        $hiw['step_2_desc']     = $step_2_desc;
+        $hiw['step_3_title']    = $step_3_title;
+        $hiw['step_3_desc']     = $step_3_desc;
+        $hiw['revisions_title'] = $revisions_title;
+        $hiw['revisions_desc']  = $revisions_desc;
+        $hiw['listing_title']   = $listing_title;
+        $hiw['listing_desc']    = $listing_desc;
+
+        $hiw_json = json_encode($hiw, JSON_FORCE_OBJECT);
+
+        $this->Setting_model->update_hiw($hiw_json);
+        resSuccess('OK');
     }
 }

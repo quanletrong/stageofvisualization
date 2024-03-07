@@ -59,7 +59,8 @@ class Chat extends MY_Controller
 
         // danh sách nhóm
         $list_group = $this->Chat_model->list_group($curr_uid);
-        var_dump($list_group);die;
+        $data['list_group'] = $list_group;
+        // var_dump($list_group);die;
         
         // danh sách người dùng chat
         $list_user_chat = $this->Chat_model->list_user_chat();
