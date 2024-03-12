@@ -319,7 +319,7 @@ class Chat_model extends CI_Model
         return $new_id;
     }
 
-    function list_group($id_user)
+    function list_group_by_user($id_user)
     {
         $data = [];
         $data['list'] = [];
@@ -346,7 +346,8 @@ class Chat_model extends CI_Model
             /* tin nhắn mới nhất trong nhóm */
             SELECT a.*, IF(b.id_da_xem IS NULL, 0, 1) da_xem FROM tmp_ranked_chat a 
             LEFT JOIN tbl_chat__msg_da_xem b ON a.id_msg = b.id_msg AND b.id_user = $id_user
-            WHERE row_num = 1;
+            WHERE row_num = 1 
+            ORDER BY create_time DESC;
             
             /* ds thành viên trong nhóm */
             SELECT t1.*, t2.username, t2.fullname, t2.avatar  
@@ -370,6 +371,7 @@ class Chat_model extends CI_Model
 
                 $stmt->nextRowset();
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $row['strtotime'] = strtotime($row['create_time']);
                     $data['msg_newest'][$row['id_gchat']] = $row;
                 }
 
@@ -378,6 +380,69 @@ class Chat_model extends CI_Model
                     $row['avatar_url'] = url_image($row['avatar'] == null ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
                     $data['member'][$row['id_gchat']][$row['id_user']] = $row;
                 }
+
+                // dữ liệu bổ sung
+                foreach($data['list'] as $id_gchat => $gchat){
+
+                    // bổ sung tên nhóm nếu tên nhóm chưa được đặt
+                    if($gchat['name'] === null || $gchat['name'] === '') {
+                        $list_mem = $data['member'][$id_gchat];
+                        $name_group = [];
+                        foreach($list_mem as $id_mem => $mem){
+                            $name_group[$id_mem] = $mem['fullname'];
+                            $data['list'][$id_gchat]['name'] = implode(', ',$name_group);
+                        }
+                    }
+
+                    // bổ sung tin nhắn mới nhất của nhóm
+                    $msg_newest = isset($data['msg_newest'][$id_gchat]) ? $data['msg_newest'][$id_gchat] : [];
+                    $data['list'][$id_gchat]['msg_newest'] = $msg_newest;
+                }
+
+                // sắp xếp lại mảng gruop theo tin nhắn mới nhất lên đầu mảng
+                // function cb($a, $b){
+                //     if(!isset($a['msg_newest']['strtotime']) || !isset($b['msg_newest']['strtotime'])) {
+                //         return 0;
+                //     }
+                //     if($a['msg_newest']['strtotime'] == $b['msg_newest']['strtotime']){
+                //         return 0;
+                //     }
+                //     return ($a['msg_newest']['strtotime'] > $b['msg_newest']['strtotime']) ? -1 : 1;
+                // }
+                // uasort($data['list'], "cb");
+                
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        // die;
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function chat_list_by_group($id_group) {
+        $list_chat = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT A.*, B.username as username, B.role as role, B.fullname as fullname_user, B.avatar as avatar
+        FROM tbl_chat__msg as A
+        LEFT JOIN tbl_user B ON A.id_user = B.id_user 
+        WHERE A.id_gchat = ?
+        ORDER BY A.id_msg ASC; ";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([$id_group])) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                        $row['avatar_url'] = url_image($row['avatar'] == '' ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
+                        $row['file_list']  = json_decode($row['file'], true);
+
+                        $list_chat[] = $row;
+                    }
+                }
             } else {
                 var_dump($stmt->errorInfo());
                 die;
@@ -385,7 +450,8 @@ class Chat_model extends CI_Model
         }
 
         $stmt->closeCursor();
-        return $data;
+        return $list_chat;
     }
+
     // END GROUP
 }

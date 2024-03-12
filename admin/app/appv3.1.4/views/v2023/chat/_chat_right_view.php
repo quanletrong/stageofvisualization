@@ -19,12 +19,12 @@
         color: black;
     }
 </style>
-<div id="chat_khach" class="card mb-0" style="width: 100%; display: none;">
+<div id="chat_right" class="card mb-0" style="width: 100%; display: none;">
     <div class="card-header text-white p-1">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center w-75">
                 <div class="div-avatar" style="height:50px; width: 50px; display: flex; flex-wrap: wrap; align-content: center;"></div>
-                <div style="font-weight: 500; color:black; margin-left:15px" class="fullname">...</div>
+                <div style="font-weight: 500; color:black; margin-left:15px" class="fullname text-truncate">...</div>
             </div>
             <div class="btn-setting-group"><i class="fas fa-ellipsis-h"></i></div>
         </div>
@@ -71,7 +71,7 @@
 <script>
     $(document).ready(function() {
 
-        $(`#chat_khach .content_chat`).on('keypress keyup', function(e) {
+        $(`#chat_right .content_chat`).on('keypress keyup', function(e) {
 
             let line = _.calculateNumLines(e.target.value, this);
             line = line < 2 ? 2 : line // tối thiểu 2 rows
@@ -79,21 +79,21 @@
             $(this).attr('rows', line)
         })
 
-        $("#chat_khach .content_chat").keypress(function(e) {
+        $("#chat_right .content_chat").keypress(function(e) {
             if (e.which == 13 && !e.shiftKey) {
-                ajax_chat_add($(`#chat_khach .btn-send`));
+                ajax_chat_add($(`#chat_right .btn-send`));
                 return false;
             }
         });
 
     })
 
-    function ajax_chat_list_by_user(id_user) {
-        $('#chat_khach').show();
-        $('#chat_khach .list-chat').html('<center><i class="fas fa-sync fa-spin"></i></center>')
+    function ajax_list_msg_by_group(id_group) {
+        $('#chat_right').show();
+        $('#chat_right .list-chat').html('<center><i class="fas fa-sync fa-spin"></i></center>')
 
         $.ajax({
-            url: `chat/ajax_chat_list_by_user/${id_user}`,
+            url: `chat/ajax_list_msg_by_group/${id_group}`,
 
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
@@ -106,9 +106,9 @@
                         html += html_item_chat(chat)
                     }
 
-                    $('#chat_khach .list-chat').html(html).scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
+                    $('#chat_right .list-chat').html(html).scrollTop($('#chat_right .list-chat')[0].scrollHeight);
 
-                    tooltipTriggerList('#chat_khach');
+                    tooltipTriggerList('#chat_right');
                 } else {
                     alert(kq.error);
                 }
@@ -122,9 +122,9 @@
 
     function ajax_chat_add(btn) {
 
-        let content = $('#chat_khach .content_chat').val();
+        let content = $('#chat_right .content_chat').val();
         let attach = [];
-        $('#chat_khach .chat_list_attach > div').each(function(index) {
+        $('#chat_right .chat_list_attach > div').each(function(index) {
             let file = $(this).data('file');
             attach.push(file);
         });
@@ -256,6 +256,6 @@
         </div>`;
         }
 
-        $('#chat_khach .chat_list_attach').append(html);
+        $('#chat_right .chat_list_attach').append(html);
     }
 </script>

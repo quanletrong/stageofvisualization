@@ -58,7 +58,7 @@ class Chat extends MY_Controller
         $curr_uid = $this->_session_uid();
 
         // danh sách nhóm
-        $list_group = $this->Chat_model->list_group($curr_uid);
+        $list_group = $this->Chat_model->list_group_by_user($curr_uid);
         $data['list_group'] = $list_group;
         // var_dump($list_group);die;
         
@@ -230,5 +230,24 @@ class Chat extends MY_Controller
         }
 
         return $nhom_chua_ton_tai;
+    }
+
+    function ajax_list_msg_by_group($id_group) {
+        if (!in_array($this->_session_role(), [ADMIN, SALE, EDITOR])) {
+            resError('Tài khoản không có quyền truy cập!');
+        }
+
+        $curr_uid = $this->_session_uid();
+        // set tất cả tin nhắn là đã xem
+        // $this->Chat_model->da_xem_all_chat_user($id_group);
+
+        $list_group = $this->Chat_model->list_group_by_user($curr_uid);
+
+        isset($list_group['list'][$id_group]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+
+        // get lai list
+        $chat_list = $this->Chat_model->chat_list_by_group($id_group);
+
+        resSuccess($chat_list);
     }
 }

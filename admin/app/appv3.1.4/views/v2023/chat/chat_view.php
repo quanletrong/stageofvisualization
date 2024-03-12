@@ -45,7 +45,7 @@
                         <div class="mb-2">
                             <input type="text" placeholder="Tìm kiếm thành viên" class="form-control">
                         </div>
-                        <div class="list-chat-user">
+                        <div class="list-group">
                             <?php foreach ($list_group['list'] as $id_group => $group) { ?>
                                 <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $id_group ?>" onclick="ajax_list_msg('<?= $id_group ?>')">
                                     <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;">
@@ -63,7 +63,7 @@
 
                                     </div>
                                     <div style="width: 85%; position: relative;">
-                                        <div style="width: 100%; font-weight: 500;" class="fullname">
+                                        <div style="width: 100%; font-weight: 500;" class="fullname text-truncate">
                                             <?= $group['name'] ?>
                                         </div>
                                         <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
@@ -159,28 +159,36 @@
 <script>
     $(document).ready(function() {
 
-        let item_chat_active = $('.item-chat').first();
+        // Sắp xếp nhóm có tin nhắn mới nhất lên đầu
+        let group_id_sort = <?= json_encode(array_keys($list_group['msg_newest'])) ?>;
+        group_id_sort.reverse();
+        group_id_sort.map(function(value, index, array) {
+            $(`#${value}`).parent().prepend($(`#${value}`));
+        });
+        // END sắp xếp nhóm có tin nhắn mới nhất lên đầu
+
+        let item_group_active = $('.item-chat').first();
 
         <?php if ($chat_user != '') { ?>
-            item_chat_active = $('#<?= $chat_user ?>');
+            item_group_active = $('#<?= $chat_user ?>');
         <?php } ?>
 
-        item_chat_active.addClass('active')
-        let id_user = item_chat_active.attr('id');
+        item_group_active.addClass('active')
+        let id_group = item_group_active.attr('id');
 
-        let fullname = item_chat_active.find('.fullname').text();
-        let avatar = item_chat_active.find('.div-avatar').html();
+        let fullname = item_group_active.find('.fullname').text();
+        let avatar = item_group_active.find('.div-avatar').html();
 
-        $('#chat_khach .fullname').text(fullname)
-        $('#chat_khach .div-avatar').html(avatar)
-        if (id_user != '' && id_user !== undefined) {
-            ajax_chat_list_by_user(id_user);
+        $('#chat_right .fullname').text(fullname)
+        $('#chat_right .div-avatar').html(avatar)
+        if (id_group != '' && id_group !== undefined) {
+            ajax_list_msg_by_group(id_group);
         }
     })
 
-    function ajax_list_msg(chat_user) {
+    function ajax_list_msg(id_group) {
 
-        let chat_item = $(`[id='${chat_user}']`);
+        let chat_item = $(`[id='${id_group}']`);
 
         $('.item-chat').removeClass('active');
         chat_item.addClass('active')
@@ -189,10 +197,10 @@
         let fullname = chat_item.find('.fullname').text();
         let avatar = chat_item.find('.div-avatar').html();
 
-        $('#chat_khach .fullname').text(fullname)
-        $('#chat_khach .div-avatar').html(avatar)
+        $('#chat_right .fullname').text(fullname)
+        $('#chat_right .div-avatar').html(avatar)
 
-        ajax_chat_list_by_user(chat_user)
+        ajax_list_msg_by_group(id_group)
     }
 
     function ajax_delete_chat_user(chat_user) {
@@ -211,23 +219,23 @@
                         // hiển thị empty nếu có
                         if ($('.item-chat').length == 0) {
                             $('#chat-left .alert_empty_chat').show();
-                            $('#chat_khach').hide();
+                            $('#chat_right').hide();
                         }
 
                         // xóa bên phải
                         let is_active = $(`[id='${chat_user}']`).hasClass('active');
                         if (is_active) {
 
-                            let item_chat_active = $('.item-chat').first();
-                            let id_user = item_chat_active.attr('id');
-                            let fullname = item_chat_active.find('.fullname').text();
-                            let avatar = item_chat_active.find('.div-avatar').html();
+                            let item_group_active = $('.item-chat').first();
+                            let id_group = item_group_active.attr('id');
+                            let fullname = item_group_active.find('.fullname').text();
+                            let avatar = item_group_active.find('.div-avatar').html();
 
-                            item_chat_active.addClass('active')
+                            item_group_active.addClass('active')
 
-                            $('#chat_khach .fullname').text(fullname)
-                            $('#chat_khach .div-avatar').html(avatar)
-                            ajax_chat_list_by_user(id_user);
+                            $('#chat_right .fullname').text(fullname)
+                            $('#chat_right .div-avatar').html(avatar)
+                            ajax_list_msg_by_group(id_group);
                         }
 
                     } else {
@@ -261,15 +269,15 @@
             let isActiveRight = chat_user.hasClass('active');
             if (isActiveRight) {
                 let new_html = html_item_chat(data);
-                $('#chat_khach .list-chat')
+                $('#chat_right .list-chat')
                     .append(new_html)
-                    .scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
+                    .scrollTop($('#chat_right .list-chat')[0].scrollHeight);
 
-                $('#chat_khach .content_chat').val('').attr('rows', 2);
-                $('#chat_khach .chat_list_attach').html('');
-                $('#chat_khach .list-chat').scrollTop($('#chat_khach .list-chat')[0].scrollHeight);
+                $('#chat_right .content_chat').val('').attr('rows', 2);
+                $('#chat_right .chat_list_attach').html('');
+                $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
 
-                tooltipTriggerList('#chat_khach');
+                tooltipTriggerList('#chat_right');
             }
         }
 
@@ -297,7 +305,7 @@
                 </div>
             </div>`
 
-            $('#chat-left .list-chat-user').prepend(html_new);
+            $('#chat-left .list-group').prepend(html_new);
             $('#chat-left .alert_empty_chat').hide();
         }
     })
