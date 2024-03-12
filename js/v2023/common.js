@@ -666,7 +666,7 @@ const common = {
                         title: "Payment succedeed",
                         backdrop: true,
                         onOk: () => {
-                            window.location.reload()
+                            window.location.href = `user/orderdetail/${id_order}`;
                         }
                     });
                 }
