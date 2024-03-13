@@ -250,23 +250,25 @@
         }
     }
 
+    function ajax_list_gchat_left() {
+
+    }
     // hứng chat của khách
     socket.on('update-chat-tong', data => {
 
         var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
         audio.play();
 
-        let id_user = data.id_user;
-        let chat_user = $(`[id='${data.id_user}']`);
+        let id_gchat = data.id_gchat;
+        let el_gchat_left = $(`[id='${data.id_gchat}']`);
 
         // đoạn chat cũ
-        if (chat_user.length) {
+        if (el_gchat_left.length) {
+            el_gchat_left.find(`.content`).text(data.content);
+            el_gchat_left.find(`.content`).css('font-weight', 600)
+            el_gchat_left.find(`.time`).text(moment(data.create_time).fromNow());
 
-            chat_user.find(`.content`).text(data.content);
-            chat_user.find(`.content`).css('font-weight', 600)
-            chat_user.find(`.time`).text(moment(data.create_time).fromNow());
-
-            let isActiveRight = chat_user.hasClass('active');
+            let isActiveRight = el_gchat_left.hasClass('active');
             if (isActiveRight) {
                 let new_html = html_item_chat(data);
                 $('#chat_right .list-chat')
@@ -284,13 +286,13 @@
         // đoạn chat mới nội dung bên trái
         else {
             let html_new =
-                `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_user}" onclick="ajax_list_msg('${id_user}')">
-                <div style="width: 15%; max-width: 50px;">
+                `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_gchat}" onclick="ajax_list_msg('${id_gchat}')">
+                <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;">
                     <img src="${data.avatar_url}" class="img-circle elevation-2 avatar" alt="User Image" style="width: 100%;object-fit: cover; aspect-ratio: 1;">
                 </div>
                 <div style="width: 85%; position: relative;">
                     <div style="width: 100%; font-weight: 500;" class="fullname">
-                        ${_.isIPv4(data.id_user) ? `(Vãng lai - ${data.id_user})` : data.fullname_user}
+                        ${_.isIPv4(data.id_gchat) ? `(Vãng lai - ${data.id_gchat})` : data.fullname_user}
                     </div>
                     <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
                         <div class="text-truncate content" style="width: 80%; font-weight: 600;">${data.content}</div>
@@ -299,7 +301,7 @@
                         </div>
                     </div>
 
-                    <div style="position: absolute;right: -17px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('${id_user}')">
+                    <div style="position: absolute;right: -17px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('${id_gchat}')">
                         <i class="fas fa-times-circle"></i>
                     </div>
                 </div>

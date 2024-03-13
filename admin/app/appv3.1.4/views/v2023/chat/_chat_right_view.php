@@ -43,7 +43,7 @@
                     <textarea name="message" class="form-control content_chat bg-white" style="padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                     <div style="height: fit-content; position: absolute; bottom: 10px; right:20px">
-                        <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_chat_add(this)"><i class="fas fa-paper-plane"></i></button>
+                        <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_msg_add_to_group(this)"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
 
@@ -81,7 +81,7 @@
 
         $("#chat_right .content_chat").keypress(function(e) {
             if (e.which == 13 && !e.shiftKey) {
-                ajax_chat_add($(`#chat_right .btn-send`));
+                ajax_msg_add_to_group($(`#chat_right .btn-send`));
                 return false;
             }
         });
@@ -120,7 +120,7 @@
         });
     }
 
-    function ajax_chat_add(btn) {
+    function ajax_msg_add_to_group(btn) {
 
         let content = $('#chat_right .content_chat').val();
         let attach = [];
@@ -137,8 +137,8 @@
         // end check empty
 
         // get chat user active
-        let chat_user = $('.item-chat.active').attr('id');
-        if (chat_user === undefined) {
+        let id_gchat = $('.item-chat.active').attr('id');
+        if (id_gchat === undefined) {
             return false;
         }
         // end chat user
@@ -147,7 +147,7 @@
         $(btn).prop("disabled", true);
 
         $.ajax({
-            url: `chat/ajax_chat_add/${chat_user}`,
+            url: `chat/ajax_msg_add_to_group/${id_gchat}`,
             type: "POST",
             data: {
                 'content': content,
@@ -195,7 +195,7 @@
         }
 
         let html = ``;
-        if (<?= $cur_uid ?> == chat.action_by) {
+        if (<?= $cur_uid ?> == chat.id_user) {
             html = `
         <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${chat.create_time}">
             <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">

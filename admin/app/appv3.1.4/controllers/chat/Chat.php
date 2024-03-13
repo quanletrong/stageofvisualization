@@ -250,4 +250,51 @@ class Chat extends MY_Controller
 
         resSuccess($chat_list);
     }
+
+    function ajax_msg_add_to_group($id_gchat)
+    {
+        if (!in_array($this->_session_role(), [ADMIN, SALE, EDITOR])) {
+            resError('Tài khoản không có quyền truy cập!');
+        }
+        $curr_uid = $this->_session_uid();
+
+        // check right
+        $content = removeAllTags($this->input->post('content'));
+        $attach = $this->input->post('attach');
+
+        $list_group = $this->Chat_model->list_group_by_user($curr_uid);
+        isset($list_group['list'][$id_gchat]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+
+        //validate file đính kèm
+        $db_attach = [];
+        $attach = is_array($attach) ? $attach : [];
+        foreach ($attach as $i => $url_file) {
+            $parse = parse_url($url_file);
+            !isset($parse['host'])              ? resError('url file không hợp lệ (1)') : '';
+            $parse['host'] != DOMAIN_NAME       ? resError('url file không hợp lệ (2)') : '';
+            !strpos($url_file, 'uploads/tmp')  ? resError('url file không hợp lệ (3)') : '';
+
+            $copy = copy_image_to_public_upload($url_file, FOLDER_CHAT_TONG);
+
+            !$copy['status'] ? resError($copy['error']) : '';
+            $id_attach = generateRandomNumber();
+            $db_attach[$id_attach] = $copy['basename'];
+        }
+
+        // get list discuss theo order
+        $create_time = date('Y-m-d H:i:s');
+        $db_attach =  json_encode($db_attach, JSON_FORCE_OBJECT);
+
+        $status    = 1;          // TODO: trường này chưa có trong db, có thể thêm sau
+        $ip        = '';         // TODO: trường này chưa có trong db, có thể thêm sau
+        $fullname  = '';         // TODO: trường này chưa có trong db, có thể thêm sau
+        $email     = '';         // TODO: trường này chưa có trong db, có thể thêm sau
+        $phone     = '';         // TODO: trường này chưa có trong db, có thể thêm sau
+        $action_by = $curr_uid;  // TODO: trường này chưa có trong db, có thể thêm sau
+
+        $new_id_msg = $this->Chat_model->msg_add_to_group($id_gchat, $curr_uid, $content, $db_attach, $create_time, $status, $ip, $fullname, $phone, $email, $action_by);
+        $info = $this->Chat_model->msg_info($new_id_msg);
+
+        resSuccess($info);
+    }
 }
