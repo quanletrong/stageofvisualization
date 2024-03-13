@@ -299,14 +299,14 @@ class Chat_model extends CI_Model
         return $new_id;
     }
 
-    function add_member_group($id_gchat, $id_member, $username, $create_time)
+    function add_member_group($id_gchat, $id_member, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_chat__member_group (id_gchat, id_user, username, join_time) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_chat__member_group (id_gchat, id_user, join_time) VALUES (?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_gchat, $id_member, $username, $create_time];
+            $param = [$id_gchat, $id_member, $create_time];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -382,15 +382,15 @@ class Chat_model extends CI_Model
                 }
 
                 // dữ liệu bổ sung
-                foreach($data['list'] as $id_gchat => $gchat){
+                foreach ($data['list'] as $id_gchat => $gchat) {
 
                     // bổ sung tên nhóm nếu tên nhóm chưa được đặt
-                    if($gchat['name'] === null || $gchat['name'] === '') {
+                    if ($gchat['name'] === null || $gchat['name'] === '') {
                         $list_mem = $data['member'][$id_gchat];
                         $name_group = [];
-                        foreach($list_mem as $id_mem => $mem){
+                        foreach ($list_mem as $id_mem => $mem) {
                             $name_group[$id_mem] = $mem['fullname'];
-                            $data['list'][$id_gchat]['name'] = implode(', ',$name_group);
+                            $data['list'][$id_gchat]['name'] = implode(', ', $name_group);
                         }
                     }
 
@@ -410,7 +410,7 @@ class Chat_model extends CI_Model
                 //     return ($a['msg_newest']['strtotime'] > $b['msg_newest']['strtotime']) ? -1 : 1;
                 // }
                 // uasort($data['list'], "cb");
-                
+
             } else {
                 var_dump($stmt->errorInfo());
                 die;
@@ -421,7 +421,80 @@ class Chat_model extends CI_Model
         return $data;
     }
 
-    function chat_list_by_group($id_group) {
+    function gchat_info($id_gchat, $id_user)
+    {
+        $data = [];
+        $data['info'] = [];
+        $data['msg_newest'] = [];
+        $data['member'] = [];
+        $data['member_ids'] = [];
+        $iconn = $this->db->conn_id;
+
+        $sql =
+            "SELECT * FROM tbl_chat__all_group WHERE id_gchat=$id_gchat;
+
+            /* tin nhắn mới nhất trong nhóm */
+            SELECT * FROM tbl_chat__msg WHERE id_gchat = $id_gchat ORDER BY create_time DESC LIMIT 1;
+            
+            /* ds thành viên trong nhóm */
+            SELECT t1.*, t2.username, t2.fullname, t2.avatar  
+            FROM tbl_chat__member_group t1
+            INNER JOIN tbl_user t2 ON t1.id_user = t2.id_user
+            WHERE id_gchat = $id_gchat;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+
+                // info nhóm
+                $info = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($info !== false) {
+                    $info['avatar_url'] = url_image($info['avatar'] == null ? AVATAR_DEFAULT : $info['avatar'], FOLDER_AVATAR);
+                    $data['info'] = $info;
+                }
+
+                // tin nhắn mới nhất trong nhóm
+                $stmt->nextRowset();
+                $msg = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($msg !== false) {
+                    $msg['strtotime'] = strtotime($msg['create_time']);
+                    $data['msg_newest'] = $msg;
+                }
+
+                // thành viên trong nhóm
+                $stmt->nextRowset();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    // không thêm user hiện tại vào mảng member
+                    if($row['id_user'] != $id_user) {
+                        $row['avatar_url'] = url_image($row['avatar'] == null ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
+                        $data['member'][$row['id_user']] = $row;
+                    }
+                    
+                    $data['member_ids'][] = $row['id_user'];
+                }
+
+                // bổ sung tên nhóm nếu tên nhóm chưa được đặt
+                if ($info !== false) {
+                    if ($info['name'] === null || $info['name'] === '') {
+                        $name_group = [];
+                        foreach ($data['member'] as $id_mem => $mem) {
+                            $name_group[$id_mem] = $mem['fullname'];
+                            $data['info']['name'] = implode(', ', $name_group);
+                        }
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        // die;
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function chat_list_by_group($id_group)
+    {
         $list_chat = [];
         $iconn = $this->db->conn_id;
 

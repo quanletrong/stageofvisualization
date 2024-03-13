@@ -15,6 +15,7 @@
         cursor: pointer;
         margin-right: 10px;
     }
+
     .btn-setting-group:hover {
         color: black;
     }
@@ -70,6 +71,23 @@
 
 <script>
     $(document).ready(function() {
+
+        // INIT LẦN ĐẦU
+        let item_group_active = $('.item-chat').first();
+        <?php if ($chat_user != '') { ?>
+            item_group_active = $('#<?= $chat_user ?>');
+        <?php } ?>
+        item_group_active.addClass('active')
+        let id_group = item_group_active.attr('id');
+        let fullname = item_group_active.find('.fullname').text();
+        let avatar = item_group_active.find('.div-avatar').html();
+
+        $('#chat_right .fullname').text(fullname)
+        $('#chat_right .div-avatar').html(avatar)
+        if (id_group != '' && id_group !== undefined) {
+            ajax_list_msg_by_group(id_group);
+        }
+        // INIT LẦN ĐẦU
 
         $(`#chat_right .content_chat`).on('keypress keyup', function(e) {
 
@@ -157,7 +175,7 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    socket.emit('update-chat-tong', kq.data);
+                    socket.emit('add-msg-to-group', kq.data);
                 } else {
                     alert(kq.error);
                 }
