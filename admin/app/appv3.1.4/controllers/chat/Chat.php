@@ -169,7 +169,6 @@ class Chat extends MY_Controller
 
         $name = removeAllTags($this->input->post('name_group'));
         $member = $this->input->post('member_group');
-        $msg_newest = removeAllTags($this->input->post('msg_newest'));
 
         // check memmber empty
         is_array($member) ? '' : resError('Không lấy được thành viên');
@@ -187,9 +186,12 @@ class Chat extends MY_Controller
         }
 
         // check nhóm đã tồn tại
-        $nhom_da_ton_tai = $this->_check_group_da_ton_tai($member, $all_group);
-        if ($nhom_da_ton_tai) {
-            resError('Những thành viên này đã có nhóm!');
+        $id_gchat_unique = $this->_check_group_da_ton_tai($member, $all_group);
+        if ($id_gchat_unique) {
+            //get info nhóm
+            $gchat_info = $this->Chat_model->gchat_info($id_gchat_unique, $curr_uid);
+            resError($id_gchat_unique, 'nhom_da_ton_tai');
+            // resError('Những thành viên này đã có nhóm!');
         }
 
         // thêm nhóm
@@ -205,17 +207,13 @@ class Chat extends MY_Controller
         $email     = '';         // TODO: trường này chưa có trong db, có thể thêm sau
         $phone     = '';         // TODO: trường này chưa có trong db, có thể thêm sau
         $action_by = $curr_uid;  // TODO: trường này chưa có trong db, có thể thêm sau
-
-        if ($msg_newest != '') {
-            $this->Chat_model->msg_add_to_group($new_id_group, $curr_uid, $msg_newest, $attach, $create_time, $status, $ip, $fullname, $phone, $email, $action_by);
-        }
-
         // thêm thành viên vào nhóm
         foreach ($member as $id_member) {
             $this->Chat_model->add_member_group($new_id_group, $id_member, $create_time);
         }
 
         $gchat_info = $this->Chat_model->gchat_info($new_id_group, $curr_uid);
+        $gchat_info['action_by'] = $curr_uid;
         resSuccess($gchat_info);
     }
 
@@ -223,24 +221,20 @@ class Chat extends MY_Controller
     // FASLSE:  nhóm chưa tồn tại
     function _check_group_da_ton_tai($member, $all_group)
     {
-
-        $nhom_da_ton_tai = true;
-        $nhom_chua_ton_tai = false;
-
         // nếu đã tồn tại nhóm có số lượng thành viên bằng $member thì báo $nhom_da_ton_tai
-        foreach ($all_group as $group) {
+        foreach ($all_group as $id_gchat => $group) {
 
             if (count($group['members']) == count($member)) {
 
                 $array_diff = array_diff($group['members'], $member);
 
                 if (empty($array_diff)) {
-                    return $nhom_da_ton_tai;
+                    return $id_gchat;
                 }
             }
         }
 
-        return $nhom_chua_ton_tai;
+        return 0;
     }
 
     function ajax_list_msg_by_group($id_group)
@@ -306,6 +300,7 @@ class Chat extends MY_Controller
 
         $new_id_msg = $this->Chat_model->msg_add_to_group($id_gchat, $curr_uid, $content, $db_attach, $create_time, $status, $ip, $fullname, $phone, $email, $action_by);
         $info = $this->Chat_model->msg_info($new_id_msg);
+        $info['action_by'] = $curr_uid;
 
         resSuccess($info);
     }

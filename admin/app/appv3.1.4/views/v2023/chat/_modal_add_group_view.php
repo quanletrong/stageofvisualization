@@ -10,31 +10,27 @@
             <div class="modal-body">
                 <form id="frm_add_group" method="post" action="chat/ajax_add_group">
                     <div class="card-body">
-                        <div class="form-group">
-                            <label for="name">Tên gợi nhớ đoạn chat</label>
-                            <input type="text" class="form-control name_group" name="name_group" placeholder="Tên gợi nhớ">
-                        </div>
-
                         <div class="form-group" data-select2-id="16">
-                            <label for="sapo">Thành viên trong đoạn chat</label>
+                            <label for="sapo">Thành viên</label>
                             <div>
                                 <select class="form-control select2 member_group" multiple="multiple" name="member_group[]" style="width: 100%;">
                                     <?php foreach ($all_member as $id_user => $user) { ?>
-                                        <option value="<?= $id_user ?>"><?= $user['username'] ?></option>
+                                        <?php if ($id_user != $cur_uid) { ?>
+                                            <option value="<?= $id_user ?>"><?= $user['username'] ?></option>
+                                        <?php } ?>
                                     <?php } ?>
                                 </select>
                             </div>
-
                         </div>
 
                         <div class="form-group">
-                            <label for="name">Lời nhắn đầu tiên tới đoạn chat</label>
-                            <input type="text" class="form-control msg_newest" name="msg_newest" placeholder="Lời nhắn đầu tiên" value="Xin chào mọi người">
+                            <label for="name">Tên đoạn chat</label>
+                            <input type="text" class="form-control name_group" name="name_group" placeholder="Tên đoạn chat">
                         </div>
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer d-flex justify-content-center">
-                        <button type="submit" class="btn btn-lg btn-danger">Lưu lại</button>
+                        <button type="submit" class="btn btn-lg btn-danger">Thêm đoạn chat</button>
                     </div>
                 </form>
             </div>
@@ -46,6 +42,10 @@
     <script>
         $(function() {
             $('#modal-add-group .member_group').select2({});
+
+            $('#modal-add-group').on('shown.bs.modal', function() {
+                $('#modal-add-group .member_group ').val(null).trigger("change");
+            })
 
             $("#frm_add_group").submit(function(e) {
 
@@ -60,10 +60,38 @@
                     data: form.serialize(), // serializes the form's elements.
                     success: function(data) {
                         let kq = JSON.parse(data);
-                        if(kq.status) {
+                        if (kq.status) {
+
+                            $("#modal-add-group").modal("hide");
+
                             socket.emit('add-gchat', kq.data);
+
+                            // 500ms sau update trái, update phải
+                            setTimeout(() => {
+
+                            }, 500);
                         } else {
-                            alert(kq.error)
+                            if (kq.msg == 'nhom_da_ton_tai') {
+
+                                $("#modal-add-group").modal("hide");
+                                let id_gchat = kq.error; // kq.error chính là id_gchat
+
+                                // update trái
+                                $('.item-chat').removeClass('active');
+                                $(`#${id_gchat}`).addClass('active');
+                                $(`#${id_gchat}`).parent().prepend($(`#${id_gchat}`));
+                                $(`#${id_gchat} .content`).css('font-weight', 300)
+
+                                // update phải
+                                let fullname = $(`#${id_gchat} .fullname`).text();
+                                let avatar = $(`#${id_gchat} .div-avatar`).html();
+                                $('#chat_right .fullname').text(fullname)
+                                $('#chat_right .div-avatar').html(avatar)
+                                ajax_list_msg_by_group(id_gchat);
+
+                            } else {
+                                alert(kq.error)
+                            }
                         }
                     }
                 });

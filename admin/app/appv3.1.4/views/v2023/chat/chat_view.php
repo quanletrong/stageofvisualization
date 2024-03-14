@@ -36,7 +36,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-4" id="chat-left">
-                <?php $this->load->view('v2023/chat/_chat_left_view.php'); ?>
+                    <?php $this->load->view('v2023/chat/_chat_left_view.php'); ?>
                 </div>
                 <div class="col-md-8" id="chat-right">
                     <?php $this->load->view('v2023/chat/_chat_right_view.php'); ?>
@@ -49,8 +49,7 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-    })
+    $(document).ready(function() {})
 
     function onclick_el_gchat(id_group) {
 
@@ -79,16 +78,15 @@
 
                     if (kq.status) {
 
-                        // xóa bên trái
+                        // update trái
                         $(`[id='${chat_user}']`).remove();
 
-                        // hiển thị empty nếu có
                         if ($('.item-chat').length == 0) {
                             $('#chat-left .alert_empty_chat').show();
                             $('#chat_right').hide();
                         }
 
-                        // xóa bên phải
+                        // update phải
                         let is_active = $(`[id='${chat_user}']`).hasClass('active');
                         if (is_active) {
 
@@ -118,27 +116,32 @@
 
     // lắng nghe sự kiên thêm nhóm chat
     socket.on('add-gchat', data => {
-        var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
-        audio.play();
-
         let id_gchat = data.info.id_gchat;
         let members = data.member;
         let member_ids = data.member_ids;
         let msg = data.msg_newest
+        let action_by = data.action_by
 
+        // bật thông báo
+        if (action_by != <?= $cur_uid ?>) {
+            var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
+            audio.play();
+        }
+
+        // nếu user hiện tại includes trong member_ids thì mới hiển thị
         if (member_ids.length && member_ids.includes('<?= $cur_uid ?>')) {
 
             // tạo avatar cho el gchat
             let index = 1;
             let avatar = '';
             for (var mem_id in members) {
-                if(index <= 4) {
+                if (index <= 4) {
                     let mem = members[mem_id];
                     avatar += `<img src = "${mem.avatar_url}"
                     class = "img-circle elevation-2 avatar"
                     alt = "${mem.fullname}"
                     style = "width: ${member_ids.length == 2 ? '100%' : '50%'}; object-fit: cover; aspect-ratio: 1;" >`;
-                    index ++;
+                    index++;
                 }
             }
             // end tạo avatar
@@ -174,11 +177,14 @@
 
     // lắng nghe sự kiện thêm msg mới
     socket.on('add-msg-to-group', data => {
-        var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
-        audio.play();
-
         let id_gchat = data.id_gchat;
+        let action_by = data.action_by;
         let el_gchat_left = $(`[id='${data.id_gchat}']`);
+
+        if (action_by != <?= $cur_uid ?>) {
+            var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
+            audio.play();
+        }
 
         // nhóm đã tồn tại làm 2 việc chính sau:
         if (el_gchat_left.length) {
@@ -187,39 +193,6 @@
             el_gchat_left.find(`.content`).css('font-weight', 600)
             el_gchat_left.find(`.time`).text(moment(data.create_time).fromNow());
             el_gchat_left.parent().prepend(el_gchat_left);
-
-            // update bên phải nếu nhóm đang active
-            let isActiveRight = el_gchat_left.hasClass('active');
-            if (isActiveRight) {
-                let new_html = html_item_chat(data);
-                $('#chat_right .list-chat')
-                    .append(new_html)
-                    .scrollTop($('#chat_right .list-chat')[0].scrollHeight);
-
-                $('#chat_right .content_chat').val('').attr('rows', 2);
-                $('#chat_right .chat_list_attach').html('');
-                $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
-
-                tooltipTriggerList('#chat_right');
-            }
-        }
-    })
-
-    // hứng chat của khách
-    socket.on('update-msg', data => {
-
-        var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
-        audio.play();
-
-        let id_gchat = data.id_gchat;
-        let el_gchat_left = $(`[id='${data.id_gchat}']`);
-
-        // nhóm đã tồn tại làm 2 việc chính sau:
-        if (el_gchat_left.length) {
-            // update bên trái
-            el_gchat_left.find(`.content`).text(data.content);
-            el_gchat_left.find(`.content`).css('font-weight', 600)
-            el_gchat_left.find(`.time`).text(moment(data.create_time).fromNow());
 
             // update bên phải nếu nhóm đang active
             let isActiveRight = el_gchat_left.hasClass('active');
