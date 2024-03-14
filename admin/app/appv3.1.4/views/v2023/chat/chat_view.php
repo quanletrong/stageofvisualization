@@ -154,9 +154,9 @@
                         ${data.info.name}
                     </div>
                     <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
-                        <div class="text-truncate content" style="width: 80%; font-weight: 600;">${msg.content}</div>
+                        <div class="text-truncate content" style="width: 80%; font-weight: 600;">${isEmpty(msg) ? '' : msg.content}</div>
                         <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;">
-                            ${moment(msg.create_time).fromNow()}
+                            ${isEmpty(msg) ? '' : moment(msg.create_time).fromNow()}
                         </div>
                     </div>
 
