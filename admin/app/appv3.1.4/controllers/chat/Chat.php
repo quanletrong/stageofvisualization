@@ -244,8 +244,9 @@ class Chat extends MY_Controller
         }
 
         $curr_uid = $this->_session_uid();
+
         // set tất cả tin nhắn là đã xem
-        // $this->Chat_model->da_xem_all_chat_user($id_group);
+        // $this->Chat_model->set_da_xem_all_msg_group($id_group);
 
         $list_group = $this->Chat_model->list_group_by_user($curr_uid);
 

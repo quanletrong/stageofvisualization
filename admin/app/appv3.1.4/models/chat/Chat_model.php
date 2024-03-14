@@ -213,11 +213,11 @@ class Chat_model extends CI_Model
         return $execute;
     }
 
-    function da_xem_all_chat_user($chat_user)
+    function da_xem_all_msg_group($chat_user)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_chat SET da_xem=1 WHERE id_user= ?";
+        $sql = "UPDATE tbl_chat__ SET da_xem=1 WHERE id_user= ?";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
