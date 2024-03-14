@@ -134,9 +134,9 @@
             for (var mem_id in members) {
                 if(index <= 4) {
                     let mem = members[mem_id];
-                    avatar += `<img src = "<?= $user['avatar_url'] ?>"
+                    avatar += `<img src = "${mem.avatar_url}"
                     class = "img-circle elevation-2 avatar"
-                    alt = "${mem.fullname} ?>"
+                    alt = "${mem.fullname}"
                     style = "width: ${member_ids.length == 2 ? '100%' : '50%'}; object-fit: cover; aspect-ratio: 1;" >`;
                     index ++;
                 }
