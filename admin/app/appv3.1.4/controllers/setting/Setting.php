@@ -1,7 +1,5 @@
 <?php
 
-use function GuzzleHttp\json_encode;
-
  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Setting extends MY_Controller

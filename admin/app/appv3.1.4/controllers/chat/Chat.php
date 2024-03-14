@@ -52,7 +52,7 @@ class Chat extends MY_Controller
     function index($chat_user = '')
     {
         $data = [];
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
             show_custom_error('Tài khoản không có quyền truy cập!');
         }
         $curr_uid = $this->_session_uid();
@@ -84,7 +84,7 @@ class Chat extends MY_Controller
     function ajax_chat_list_by_user($chat_user)
     {
 
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
             resError('Tài khoản không có quyền truy cập!');
         }
 
@@ -99,7 +99,7 @@ class Chat extends MY_Controller
 
     function ajax_chat_add($chat_user)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
             resError('Tài khoản không có quyền truy cập!');
         }
 
@@ -142,7 +142,7 @@ class Chat extends MY_Controller
 
     function ajax_delete_chat_user($chat_user)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
+        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
             resError('Tài khoản không có quyền truy cập!');
         }
 
@@ -245,7 +245,7 @@ class Chat extends MY_Controller
 
     function ajax_list_msg_by_group($id_group)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE, EDITOR])) {
+        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
             resError('Tài khoản không có quyền truy cập!');
         }
 
@@ -265,7 +265,7 @@ class Chat extends MY_Controller
 
     function ajax_msg_add_to_group($id_gchat)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE, EDITOR])) {
+        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
             resError('Tài khoản không có quyền truy cập!');
         }
         $curr_uid = $this->_session_uid();
