@@ -214,9 +214,19 @@
 						<?php } ?>
 
 						<!-- QUẢN LÝ NGƯỜI DÙNG -->
-						<?php if (in_array($role, [ADMIN, SALE])) { ?>
-							<li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
 
+						<li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
+
+						<li class="nav-item">
+							<a href="chat" class="nav-link">
+								<i class="nav-icon fas fa-th"></i>
+								<p>
+									CHAT
+								</p>
+							</a>
+						</li>
+
+						<?php if (in_array($role, [ADMIN, SALE])) { ?>
 							<li class="nav-item">
 								<a href="kpi" class="nav-link">
 									<i class="nav-icon fas fa-th"></i>
@@ -225,37 +235,29 @@
 									</p>
 								</a>
 							</li>
-							<?php if (in_array($role, [ADMIN])) { ?>
-								<li class="nav-item">
-									<a href="withdraw" class="nav-link">
-										<i class="nav-icon fas fa-th"></i>
-										<p>
-											Yêu cầu rút tiền
-										</p>
-									</a>
-								</li>
+						<?php } ?>
 
-								<li class="nav-item">
-									<a href="user" class="nav-link">
-										<i class="nav-icon fas fa-th"></i>
-										<p>
-											Danh sách tài khoản
-										</p>
-									</a>
-								</li>
-							<?php } ?>
-
-							<?php if (in_array($role, [ADMIN, SALE])) { ?>
+						<?php if (in_array($role, [ADMIN])) { ?>
 							<li class="nav-item">
-								<a href="chat" class="nav-link">
+								<a href="withdraw" class="nav-link">
 									<i class="nav-icon fas fa-th"></i>
 									<p>
-										CHAT
+										Yêu cầu rút tiền
 									</p>
 								</a>
 							</li>
-							<?php } ?>
 
+							<li class="nav-item">
+								<a href="user" class="nav-link">
+									<i class="nav-icon fas fa-th"></i>
+									<p>
+										Danh sách tài khoản
+									</p>
+								</a>
+							</li>
+						<?php } ?>
+
+						<?php if (in_array($role, [ADMIN, SALE])) { ?>
 							<li class="nav-item">
 								<a href="contact" class="nav-link">
 									<i class="nav-icon fas fa-th"></i>
