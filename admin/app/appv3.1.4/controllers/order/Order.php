@@ -571,6 +571,10 @@ class Order extends MY_Controller
         //     $role == EDITOR ? resError('ED không có quyền đổi trạng thái về QC_CHECK') : '';
         // }
 
+        if ($new_status == ORDER_PROGRESS) {
+            $role == EDITOR ? resError('ED không có quyền đổi trạng thái về IN-PROGRESS') : '';
+        }
+
         if ($new_status == ORDER_AVAIABLE) {
             $role == EDITOR ? resError('ED không có quyền đổi trạng thái về AVAIABLE') : '';
         }
