@@ -44,6 +44,7 @@ class Order extends MY_Controller
         $data = [];
         $role = $this->_session_role();
         $uid = $this->_session_uid();
+        $uinfo = $this->User_model->get_user_info_by_id($uid);
 
         ### DU LIEU LAM FILTER
         $all_service    = $this->Service_model->get_list();
@@ -158,7 +159,14 @@ class Order extends MY_Controller
         $filter['id_user']      = implode(',', $filter_id_user);
 
         $list_order = $this->Order_model->get_list_v2($filter, $role);       //lấy tất cả đơn
-        $box        = $this->Order_model->box_count($list_order);
+
+        // sô liệu total
+        $box = $this->Order_model->box_count($list_order);
+        
+        // $ed_type dùng để làm tính total image_avaiable
+        $ed_type = $role == EDITOR ? $uinfo['type'] : ED_NOI_BO.",".ED_CTV;
+        $list_image_avaiable = $this->Order_model->danh_sach_image_avaiable($ed_type);
+        $box['image_avaiable'] = count($list_image_avaiable);
 
         # END CALL DATABASE
 
@@ -527,14 +535,17 @@ class Order extends MY_Controller
     function ajax_find_order()
     {
         $cur_uid = $this->_session_uid();
-
+        $role    = $this->_session_role();
+        
         if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
             resError('not_permit', 'Bạn không có quyền thực hiện.');
         }
         $curr_uinfo = $this->User_model->get_user_info_by_id($cur_uid);
         $curr_uinfo['status'] == '-1' ? resError('Tài khoản của bạn đang bị khóa') : '';
 
-        $danh_sach_image_avaiable = $this->Order_model->danh_sach_image_avaiable();
+        // lọc theo ed là nội bộ hoặc ctv
+        $ed_type = $role == EDITOR ? $curr_uinfo['type'] : ED_NOI_BO.",".ED_CTV;
+        $danh_sach_image_avaiable = $this->Order_model->danh_sach_image_avaiable($ed_type);
 
         if (empty($danh_sach_image_avaiable)) {
             resError('not_result', 'Không tìm thấy đơn. Hãy thử lại bạn nhé.');

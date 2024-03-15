@@ -637,9 +637,6 @@ class Order_model extends CI_Model
             }
         }
 
-        $list_image_avaiable = $this->danh_sach_image_avaiable();
-        $box['image_avaiable'] = count($list_image_avaiable);
-
         return $box;
     }
 
@@ -893,19 +890,20 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    function danh_sach_image_avaiable()
+    function danh_sach_image_avaiable($ED_TYPE)
     {
         $data = [];
         $iconn = $this->db->conn_id;
-        $sql = "SELECT A.* 
-        FROM `tbl_job` A
-        WHERE A.id_order IN (SELECT B.id_order FROM tbl_order B WHERE B.status IN (?,?,?))
-        AND A.id_job NOT IN (SELECT C.id_job FROM tbl_job_user C WHERE C.id_job = A.id_job AND C.type_job_user = ? AND C.status = 1)
-        ORDER BY A.create_time ASC";
+        $sql = 
+        "SELECT A.*
+        FROM `tbl_job` A 
+        INNER JOIN tbl_order B ON A.id_order=B.id_order AND B.status IN (?,?,?) AND B.ed_type IN (?) 
+        WHERE A.id_job NOT IN (SELECT C.id_job FROM tbl_job_user C WHERE C.id_job=A.id_job AND C.type_job_user=? AND C.status=1) 
+        ORDER BY (UNIX_TIMESTAMP(B.create_time) + B.custom_time) ASC;";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, WORKING_EDITOR])) {
+            if ($stmt->execute([ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, $ED_TYPE, WORKING_EDITOR])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
