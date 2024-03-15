@@ -75,8 +75,8 @@
                 <i class="fas fa-sync fa-spin"></i>
             </div>
             <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" onclick="ajax_find_order()">Try again!</button>
                 <button class="btn btn-primary btn-link-join" href="" style="display: none;" onclick="ajax_ed_join_order()">JOIN</button>
+                <button type="button" class="btn btn-default" onclick="ajax_find_order()">Try again!</button>
             </div>
         </div>
     </div>

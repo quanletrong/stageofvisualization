@@ -79,7 +79,12 @@ class Order extends MY_Controller
         $filter_id_user       = $this->input->get('filter_id_user');
 
         ### DU LIEU MAC DINH
-        $status_filter_default = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+        if($role == ADMIN || $role == SALE) {
+            $status_filter_default = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_REWORK, ORDER_DELIVERED];
+        } else {
+            $status_filter_default = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+        }
+
         if ($role == EDITOR) {
             $filter_id_user = [$uid];
         }

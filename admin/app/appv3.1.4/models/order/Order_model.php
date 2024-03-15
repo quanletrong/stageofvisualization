@@ -901,7 +901,7 @@ class Order_model extends CI_Model
         FROM `tbl_job` A
         WHERE A.id_order IN (SELECT B.id_order FROM tbl_order B WHERE B.status IN (?,?,?))
         AND A.id_job NOT IN (SELECT C.id_job FROM tbl_job_user C WHERE C.id_job = A.id_job AND C.type_job_user = ? AND C.status = 1)
-        ORDER BY A.create_time ASC";
+        ORDER BY A.create_time DESC";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
