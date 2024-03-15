@@ -1349,6 +1349,7 @@ function button_status_order_by_role($role)
         $data[ORDER_PENDING]   = status_order(ORDER_PENDING);
         $data[ORDER_QC_CHECK]  = status_order(ORDER_QC_CHECK);
         $data[ORDER_AVAIABLE]  = status_order(ORDER_AVAIABLE);
+        $data[ORDER_PROGRESS]  = status_order(ORDER_PROGRESS);
         $data[ORDER_DONE]      = status_order(ORDER_DONE);
         $data[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);
         $data[ORDER_FIX]       = status_order(ORDER_FIX);
@@ -1359,6 +1360,7 @@ function button_status_order_by_role($role)
         $data[ORDER_PENDING]   = status_order(ORDER_PENDING);
         $data[ORDER_QC_CHECK]  = status_order(ORDER_QC_CHECK);
         $data[ORDER_AVAIABLE]  = status_order(ORDER_AVAIABLE);
+        $data[ORDER_PROGRESS]  = status_order(ORDER_PROGRESS);
         $data[ORDER_DONE]      = status_order(ORDER_DONE);
         $data[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);
         $data[ORDER_FIX]       = status_order(ORDER_FIX);
