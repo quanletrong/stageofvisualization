@@ -56,15 +56,15 @@
                                     <b>Main Files</b>
                                     <div class="position-relative image-hover" id="box_main_file_<?= $id_job ?>">
                                         <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
+                                            <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($job['image'], $FDR_ORDER) ?>', '<?= $job['image'] ?>')">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                            
                                             <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
                                                 <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_main_file" data-target="#main_file_<?= $id_job ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             <?php } ?>
-
-                                            <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($job['image'], $FDR_ORDER) ?>', '<?= $job['image'] ?>')">
-                                                <i class="fas fa-download"></i>
-                                            </button>
                                         </div>
 
                                         <?php if (stringIsImage($job['image'])) { ?>
@@ -181,12 +181,13 @@
                                             <div class="position-relative image-hover w-50 p-1" style="width: 48%;" id="file_complete_<?= $key ?>">
 
                                                 <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
-                                                    <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_<?= $key ?>">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
 
                                                     <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, $FDR_ORDER) ?>', '<?= $file ?>')">
                                                         <i class="fas fa-download"></i>
+                                                    </button>
+
+                                                    <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_<?= $key ?>">
+                                                        <i class="fas fa-edit"></i>
                                                     </button>
 
                                                     <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete(this, <?= $id_job ?>,<?= $key ?>)">
@@ -559,12 +560,11 @@
                     html = `
                         <div class="position-relative image-hover w-50 p-1" id="file_complete_${id_file_complete}">
                             <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
-                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_${id_file_complete}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-
                                 <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')">
                                     <i class="fas fa-download"></i>
+                                </button>    
+                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_${id_file_complete}">
+                                    <i class="fas fa-edit"></i>
                                 </button>
 
                                 <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete(this, ${id_job}, ${id_file_complete})">

@@ -26,12 +26,12 @@
                         <div class="position-relative image-hover w-50 p-1" id="file_complete_rework_<?= $key ?>">
 
                             <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
-                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_<?= $key ?>">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-
                                 <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($file, $FDR_ORDER) ?>', '<?= $file ?>')">
                                     <i class="fas fa-download"></i>
+                                </button>
+
+                                <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_<?= $key ?>">
+                                    <i class="fas fa-edit"></i>
                                 </button>
 
                                 <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete_rework(this, <?= $id_rework ?>,<?= $key ?>)">
@@ -322,12 +322,12 @@
 
                     html = `<div class="position-relative image-hover w-50 p-1" id="file_complete_rework_${id_file_complete}">
                         <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
-                            <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_${id_file_complete}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-
                             <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')">
                                 <i class="fas fa-download"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete_rework" data-target="#img_complete_rework_${id_file_complete}">
+                                <i class="fas fa-edit"></i>
                             </button>
 
                             <button class="btn btn-sm btn-warning" onclick="ajax_delete_file_complete_rework(this, ${id_rework}, ${id_file_complete})">
