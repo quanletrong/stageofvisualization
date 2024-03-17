@@ -1766,7 +1766,6 @@ class Order extends MY_Controller
 
     /**
      * Chức năng thay đổi đơn cho ED nội bộ hoặc ED cộng tác viên
-     * TODO: chưa xong
      */
     function ajax_update_ed_type()
     {
@@ -1781,7 +1780,7 @@ class Order extends MY_Controller
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn hàng không tồn tại') : '';
 
-        // $this->Order_model->update_custom_time_order($id_order, $second);
+        $this->Order_model->edit_ed_type($id_order, $ed_type);
         resSuccess('Thành công');
     }
 

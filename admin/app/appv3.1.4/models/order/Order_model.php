@@ -1077,4 +1077,23 @@ class Order_model extends CI_Model
         $stmt->closeCursor();
         return $new_id;
     }
+
+    function edit_ed_type($id_odrer, $ed_type){
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_order SET ed_type=? WHERE id_order=?";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$ed_type, $id_odrer];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
 }
