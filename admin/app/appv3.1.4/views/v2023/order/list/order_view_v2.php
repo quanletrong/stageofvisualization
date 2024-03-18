@@ -183,20 +183,26 @@
 <script>
     // sau 5 phut sẽ load lại trang
     setTimeout(() => {
-        // window.location.reload();
+        window.location.reload();
     }, 1000 * 60 * 5);
 
     $(function() {
-
-        $("#example1").DataTable({
-            "lengthChange": false,
-            "pageLength": 50,
+        var table = $("#example1").DataTable({
+            "lengthChange": true,
+            "aLengthMenu": [
+                [50, 100, 150, 300, 500, -1],
+                [50, 100, 150, 300, 500, "All"]
+            ],
             "responsive": true,
-            "lengthChange": false,
             "autoWidth": false,
             "searching": false,
-            // "buttons": ["excel", "pdf"]
-        }).buttons().container().appendTo('#export');
+        })
+        $('#example1_paginate').parent().prepend($('#example1_length'));
+        $('#example1_paginate').parent().css({
+            'display': 'flex',
+            'align-items': 'center',
+            'justify-content': 'space-between'
+        })
 
         $('.checkox_order').on('change', function() {
             let total = $('.checkox_order').length;
