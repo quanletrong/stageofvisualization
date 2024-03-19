@@ -16,8 +16,8 @@
     <div class="col-lg-2 col-6">
         <div class="info-box">
             <div class="info-box-content">
-                <span class="info-box-text">TOTAL URGENT</span>
-                <span class="info-box-number">0</span>
+                <span class="info-box-text">TOTAL QC CHECK</span>
+                <span class="info-box-number"><?= isset($box['qc_check']) ? $box['qc_check'] : 0 ?></span>
             </div>
         </div>
     </div>
@@ -34,8 +34,8 @@
     <div class="col-lg-2 col-6">
         <div class="info-box">
             <div class="info-box-content">
-                <span class="info-box-text">TOTAL OVERDUE</span>
-                <span class="info-box-number"><?= isset($box['late']) ? $box['late'] : 0 ?></span>
+                <span class="info-box-text">TOTAL DONE</span>
+                <span class="info-box-number"><?= isset($box['done']) ? $box['done'] : 0 ?></span>
             </div>
         </div>
     </div>
@@ -52,8 +52,8 @@
     <div class="col-lg-2 col-6">
         <div class="info-box">
             <div class="info-box-content">
-                <span class="info-box-text">TOTAL PROGRESSING</span>
-                <span class="info-box-number"><?= isset($box['progress']) ? $box['progress'] : 0 ?></span>
+                <span class="info-box-text">TOTAL</span>
+                <span class="info-box-number"><?= isset($box['all']) ? $box['all'] : 0 ?></span>
             </div>
         </div>
     </div>

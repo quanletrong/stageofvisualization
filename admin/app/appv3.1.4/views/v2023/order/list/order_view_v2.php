@@ -42,9 +42,9 @@
 
             <!-- SMALL BOX -->
             <?php
-            if ($role == ADMIN || $role == SALE) {
+            if ($role == ADMIN || $role == SALE || $role == QC) {
                 $this->load->view(TEMPLATE_FOLDER . 'order/list/small_box_sale_admin_view.php');
-            } else if ($role == QC || $role == EDITOR) {
+            } else if ($role == EDITOR) {
                 $this->load->view(TEMPLATE_FOLDER . 'order/list/small_box_qc_ed_view.php');
             }
             ?>
@@ -196,6 +196,8 @@
             "responsive": true,
             "autoWidth": false,
             "searching": false,
+            "ordering": true,
+            "order": []
         })
         $('#example1_paginate').parent().prepend($('#example1_length'));
         $('#example1_paginate').parent().css({

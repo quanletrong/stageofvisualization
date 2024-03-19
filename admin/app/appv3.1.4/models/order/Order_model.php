@@ -625,6 +625,15 @@ class Order_model extends CI_Model
             if ($status == ORDER_REWORK) {
                 $box['rework'] = isset($box['rework']) ? $box['rework'] + 1 : 1;
             }
+
+            if ($status == ORDER_QC_CHECK) {
+                $box['qc_check'] = isset($box['qc_check']) ? $box['qc_check'] + 1 : 1;
+            }
+
+            if ($status == ORDER_DONE) {
+                $box['done'] = isset($box['done']) ? $box['done'] + 1 : 1;
+            }
+
             if ($status == ORDER_COMPLETE) {
                 $box['complete'] = isset($box['complete']) ? $box['complete'] + 1 : 1;
             }
@@ -636,6 +645,8 @@ class Order_model extends CI_Model
                 $box['late'] = isset($box['late']) ? $box['late'] + 1 : 1;
             }
         }
+
+        $box['all'] = count($list_order);
 
         return $box;
     }
