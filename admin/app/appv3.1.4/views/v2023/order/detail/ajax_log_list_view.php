@@ -1,6 +1,17 @@
-<div class="timeline" style="overflow-y: auto; height: 100%;">
+<div style="display: flex; justify-content: center; margin-top: 10px;">
+    <select onchange="filter_history(this.value)" class="form-control w-50">
+        <option value="">Tất cả lịch sử</option>
+        <option value="Sửa trạng thái đơn hàng">Sửa trạng thái đơn hàng</option>
+        <option value="Sửa Working QC IN">Sửa Working QC IN</option>
+        <option value="Sửa Working QC OUT">Sửa Working QC OUT</option>
+        <option value="Sửa thời gian làm đơn hàng">Sửa thời gian làm đơn hàng</option>
+    </select>
+</div>
+
+
+<div class="timeline mt-3" style="overflow-y: auto; height: 100%;">
     <?php foreach ($logs as $id_log => $log) { ?>
-        <div>
+        <div id="log_<?= $id_log ?>">
             <img class="direct-chat-img" src="<?= $log['avatar'] ?>" alt="message user image" style="left: 18px;position: absolute;width: 30px;height: 30px;">
             <div class="timeline-item"=>
                 <span class="time"><i class="fas fa-clock"></i> <?= date('H:i, d/m/Y', strtotime($log['created_time'])) ?></span>

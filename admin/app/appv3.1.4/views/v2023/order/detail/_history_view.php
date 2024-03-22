@@ -33,4 +33,17 @@
             }
         });
     }
+
+    function filter_history(text_compare) {
+        $('.timeline .timeline-item').each(function() {
+            let header_text = $(this).find('.timeline-header').text().toLowerCase();
+            let check_text = header_text.indexOf(text_compare.toLowerCase()) >= 0;
+            // console.log(check_text);
+            if (check_text == false) {
+                $(this).parent().hide()
+            } else {
+                $(this).parent().show()
+            }
+        })
+    }
 </script>
