@@ -13,12 +13,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Trang chính sách bảo mật</h1>
+                    <h1>Trang How It Works</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
-                        <li class="breadcrumb-item active">Chính sách bảo mật</li>
+                        <li class="breadcrumb-item active">How It Works</li>
                     </ol>
                 </div>
             </div>
@@ -28,44 +28,53 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title"></h3>
 
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
+            <!-- Title, desc -->
+            <div class="container my-5 d-flex flex-column align-items-center">
+                <div class="" style="font-size: 2.7em; font-weight: bold;"> Get Photos Virtually Staged in 24 Hours or Less
                 </div>
-                <div class="card-body p-3">
-
-                    <form method="post" action="setting/termsofuse">
-                        <div style="display: flex; justify-content: flex-start;">
-                            <button type="submit" class="btn btn-sm btn-danger m-1">Lưu lại</button>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <span class="text-bold">Nhập nội dung</span>
-                                <textarea id="termsofuse" name="termsofuse"><?= html_entity_decode(htmlspecialchars_decode($setting['termsofuse'])) ?></textarea>
-
-                            </div>
-
-                            <div class="col-md-6">
-                                <span class="text-bold">Xem trước</span>
-                                <div id="termsofuse_pre" class="border p-2"><?= html_entity_decode(htmlspecialchars_decode($setting['termsofuse'])) ?></div>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: flex-start;">
-                            <button type="submit" class="btn btn-sm btn-danger m-1">Lưu lại</button>
-                        </div>
-                    </form>
+                <div class="mt-2 fs-5">Quickly and Easily Maximize the Appeal and Value of Your Listings in Three Simple Steps
                 </div>
             </div>
+            <!-- END Title, desc -->
 
-
-
-            <!-- /.card -->
+            <!-- STEP 1 -->
+            <div class="row my-5">
+                <div class="col-12 col-lg-6">
+                    <div class="text-color fw-bold fs-5">
+                        <input type="text" class="form-control" value="Step 1">
+                    </div>
+                    <div class="fw-bold fs-2 mt-2">
+                        <input type="text" class="form-control" value="Upload Your Photos">
+                    </div>
+                    <div class="mt-2 fs-5">
+                        <input type="text" class="form-control" value="Upload the photos you want staged.">
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div style="display: flex; gap:20px">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Icon</span>
+                                <button type="button" class="btn btn-warning button-upload btn-sm" onclick="quanlt_upload(this)" data-callback="cb_upload_image_slide" data-target="#image_1707207906343">
+                                    <i class="fas fa-upload"></i> Upload ảnh
+                                </button>
+                            </div>
+                            <img src="http://stageofvisualization.local/images/virtual-staging-how-it-works-step-1.jpg" class="rounded shadow" alt="">
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Ảnh mô tả</span>
+                                <button type="button" class="btn btn-warning button-upload btn-sm" onclick="quanlt_upload(this)" data-callback="cb_upload_image_slide" data-target="#image_1707207906343">
+                                    <i class="fas fa-upload"></i> Upload ảnh
+                                </button>
+                            </div>
+                            <img src="http://stageofvisualization.local/images/virtual-staging-how-it-works-step-1.jpg" class="rounded shadow" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END STEP 1 -->
         </div>
         <!-- /.container-fluid -->
     </section>
