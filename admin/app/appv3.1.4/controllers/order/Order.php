@@ -626,14 +626,23 @@ class Order extends MY_Controller
         }
 
         // lưu thời gian giao hàng
-        if ($new_status == ORDER_DELIVERED || $new_status == ORDER_COMPLETE) {
+        if ($new_status == ORDER_DELIVERED) {
             $thoi_gian_giao_hang = date('Y-m-d H:i:s');
             $this->Order_model->luu_thoi_gian_giao_hang($id_order, $thoi_gian_giao_hang);
         }
 
+        if ($new_status == ORDER_COMPLETE && $order['done_qc_time'] == '') {
+            $thoi_gian_giao_hang = date('Y-m-d H:i:s');
+            $this->Order_model->luu_thoi_gian_giao_hang($id_order, $thoi_gian_giao_hang);
+        }
+        // end lưu thời gian giao hàng
+
+
+
         // tính tiền cho user đang active trong đơn
         if ($new_status == ORDER_DELIVERED || $new_status == ORDER_COMPLETE) {
-            $this->Order_model->tinh_tien_cho_cac_user_dang_active($id_order, $thoi_gian_giao_hang);
+            $thoi_gian_tinh_tien = date('Y-m-d H:i:s');
+            $this->Order_model->tinh_tien_cho_cac_user_dang_active($id_order, $thoi_gian_tinh_tien);
         }
 
         //LOG
