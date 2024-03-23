@@ -106,3 +106,7 @@ $route['discuss/ajax_chat_tong_add'] = 'discuss/discuss/ajax_chat_tong_add';
 $route['checkout/pay/(:num)'] = 'checkout/checkout/pay/$1';
 $route['checkout/success']    = 'checkout/checkout/success';
 $route['checkout/cancle']     = 'checkout/checkout/cancle';
+
+// hiw
+
+$route['home/ajax_save_hiw']     = 'home/home/ajax_save_hiw';
