@@ -148,7 +148,6 @@ class MY_Controller extends CI_Controller
     protected function _session_role()
     {
         $role = trim($this->session->userdata('role'));
-        $role = $role >= -1 && $role <= 12 && is_numeric($role) ? $role : 3;
         return $role;
     }
 
