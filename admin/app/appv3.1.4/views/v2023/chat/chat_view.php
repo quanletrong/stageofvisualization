@@ -49,6 +49,44 @@
 </div>
 
 <script>
+    setInterval(() => {
+        let time_chat = []
+        $('.time').each(function(i, obj) {
+            datetime = $(this).attr('title')
+            if (datetime != undefined || datetime == '') {
+                let seconds = moment(Date.now()).unix() - moment(datetime).unix();
+                let interval = Math.floor(seconds / 31536000);
+                if (interval >= 1) {
+                    $(this).html(interval + " năm");
+                    return
+                }
+                interval = Math.floor(seconds / 2592000);
+                if (interval >= 1) {
+                    $(this).html(interval + " tháng");
+                    return
+                }
+                interval = Math.floor(seconds / 86400);
+                if (interval >= 1) {
+                    $(this).html(interval + " ngày");
+                    return
+                }
+                interval = Math.floor(seconds / 3600);
+                if (interval >= 1) {
+                    $(this).html(interval + " giờ");
+                    return
+                }
+                interval = Math.floor(seconds / 60);
+                if (interval >= 1) {
+                    $(this).html(interval + " phút");
+                    return
+                }
+                $(this).html('Vừa xong');
+                return
+            }
+        });
+    }, 1000);
+
+
     $(document).ready(function() {})
 
     function onclick_el_gchat(id_group) {
@@ -158,9 +196,7 @@
                     </div>
                     <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
                         <div class="text-truncate content" style="width: 80%; font-weight: 600;">${isEmpty(msg) ? '' : msg.content}</div>
-                        <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;">
-                            ${isEmpty(msg) ? '' : moment(msg.create_time).fromNow()}
-                        </div>
+                        <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="${isEmpty(msg) ? '' : msg.create_time}">&nbsp;</div>
                     </div>
 
                     <div style="position: absolute;right: 0px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('${id_gchat}')">
@@ -191,7 +227,7 @@
             // update bên trái
             el_gchat_left.find(`.content`).text(data.content);
             el_gchat_left.find(`.content`).css('font-weight', 600)
-            el_gchat_left.find(`.time`).text(moment(data.create_time).fromNow());
+            el_gchat_left.find(`.time`).attr('title', data.create_time);
             el_gchat_left.parent().prepend(el_gchat_left);
 
             // update bên phải nếu nhóm đang active

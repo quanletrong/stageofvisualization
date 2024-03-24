@@ -215,25 +215,25 @@
         let html = ``;
         if (<?= $cur_uid ?> == chat.id_user) {
             html = `
-        <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${chat.create_time}">
-            <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
-                <div style="white-space: pre-line;">${chat.content != '' ? `${chat.content}` : ''}</div>
-                <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                <small style="color:#7c7c7c">${moment(chat.create_time).fromNow()}</small>
-            </div>
-        </div>`;
+            <div id="msg_${chat.id_msg}"  class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px">
+                <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
+                    <div style="white-space: pre-line;">${chat.content != '' ? `${chat.content}` : ''}</div>
+                    <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
+                    <small style="color:#7c7c7c" class="time" title="${chat.create_time}">&nbsp;</small>
+                </div>
+            </div>`;
         } else {
             html = `
-        <div class="mb-2 me-2 d-flex" style="gap:10px" title="${chat.create_time}">
-            <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${chat.avatar_url}">
-            <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                <div style="white-space: pre-line;">${chat.content != '' ? `${chat.content}` : ''}</div>
-                <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                <small style="color:#7c7c7c">${moment(chat.create_time).fromNow()}</small>
-            </div>
-        </div>`;
+            <div id="msg_${chat.id_msg}" class="mb-2 me-2 d-flex" style="gap:10px">
+                <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${chat.avatar_url}">
+                <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
+                    <div style="white-space: pre-line;">${chat.content != '' ? `${chat.content}` : ''}</div>
+                    <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
+                    <small style="color:#7c7c7c" class="time" title="${chat.create_time}">&nbsp;</small>
+                </div>
+            </div>`;
         }
-
+        // _.refresh_since_time(`#msg_${chat.id_msg} .time`, chat.create_time);
         return html;
     }
 

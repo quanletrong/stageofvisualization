@@ -62,20 +62,13 @@
                         let kq = JSON.parse(data);
                         if (kq.status) {
 
+                            let id_gchat= kq.data.info.id_gchat;
                             $("#modal-add-group").modal("hide");
 
                             socket.emit('add-gchat', kq.data);
 
-                            // 500ms sau update trái, update phải
+                            // 500ms sau update trái phải
                             setTimeout(() => {
-
-                            }, 500);
-                        } else {
-                            if (kq.msg == 'nhom_da_ton_tai') {
-
-                                $("#modal-add-group").modal("hide");
-                                let id_gchat = kq.error; // kq.error chính là id_gchat
-
                                 // update trái
                                 $('.item-chat').removeClass('active');
                                 $(`#${id_gchat}`).addClass('active');
@@ -87,7 +80,31 @@
                                 let avatar = $(`#${id_gchat} .div-avatar`).html();
                                 $('#chat_right .fullname').text(fullname)
                                 $('#chat_right .div-avatar').html(avatar)
+
                                 ajax_list_msg_by_group(id_gchat);
+                            }, 500);
+                            
+                        } else {
+                            
+                            if (kq.msg == 'nhom_da_ton_tai') {
+
+                                // tạm thời ko check nhom_da_ton_tai
+
+                                // $("#modal-add-group").modal("hide");
+                                // let id_gchat = kq.error; // kq.error chính là id_gchat
+
+                                // // update trái
+                                // $('.item-chat').removeClass('active');
+                                // $(`#${id_gchat}`).addClass('active');
+                                // $(`#${id_gchat}`).parent().prepend($(`#${id_gchat}`));
+                                // $(`#${id_gchat} .content`).css('font-weight', 300)
+
+                                // // update phải
+                                // let fullname = $(`#${id_gchat} .fullname`).text();
+                                // let avatar = $(`#${id_gchat} .div-avatar`).html();
+                                // $('#chat_right .fullname').text(fullname)
+                                // $('#chat_right .div-avatar').html(avatar)
+                                // ajax_list_msg_by_group(id_gchat);
 
                             } else {
                                 alert(kq.error)

@@ -186,13 +186,13 @@ class Chat extends MY_Controller
         }
 
         // check nhóm đã tồn tại
-        $id_gchat_unique = $this->_check_group_da_ton_tai($member, $all_group);
-        if ($id_gchat_unique) {
-            //get info nhóm
-            $gchat_info = $this->Chat_model->gchat_info($id_gchat_unique, $curr_uid);
-            resError($id_gchat_unique, 'nhom_da_ton_tai');
-            // resError('Những thành viên này đã có nhóm!');
-        }
+        // $id_gchat_unique = $this->_check_group_da_ton_tai($member, $all_group);
+        // if ($id_gchat_unique) {
+        //     //get info nhóm
+        //     $gchat_info = $this->Chat_model->gchat_info($id_gchat_unique, $curr_uid);
+        //     resError($id_gchat_unique, 'nhom_da_ton_tai');
+        //     // resError('Những thành viên này đã có nhóm!');
+        // }
 
         // thêm nhóm
         $avatar = AVATAR_DEFAULT; //TODO: tạm fix, sau thêm chức năng upload avatar

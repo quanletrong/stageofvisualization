@@ -61,6 +61,38 @@ const _ = {
         link.click();
         document.body.removeChild(link);
         delete link;
+    },
+    auto_update_time_since: function (el_target, datetime) {
+        setInterval(() => {
+            let seconds = moment(Date.now()).unix() - moment(datetime).unix();
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) {
+                $(el_target).html(interval + " năm");
+                return
+            }
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) {
+                $(el_target).html(interval + " tháng");
+                return
+            }
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) {
+                $(el_target).html(interval + " ngày");
+                return
+            }
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) {
+                $(el_target).html(interval + " giờ");
+                return
+            }
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) {
+                $(el_target).html(interval + " phút");
+                return
+            }
+            $(el_target).html(interval + " giây");
+            return
+        }, 1000);
     }
 }
 

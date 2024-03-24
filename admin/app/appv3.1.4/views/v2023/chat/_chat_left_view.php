@@ -21,11 +21,11 @@
                         <?php if ($index <= 3) { ?>
                             <img src="<?= $user['avatar_url'] ?>" class="img-circle elevation-2 avatar" alt="<?= $user['fullname'] ?>" style="width: <?= $num_member == 1 ? '100%' : '50%' ?>; object-fit: cover; aspect-ratio: 1;">
                         <?php } ?>
-                        
+
                         <?php if ($index == 4) { ?>
-                            <div style="border-radius: 25px;font-size: 0.8rem;box-shadow: 0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)!important;background: white;width: 50%;text-align: center;color: gray;">+<?php echo ($num_member - 3)?></div>
+                            <div style="border-radius: 25px;font-size: 0.8rem;box-shadow: 0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)!important;background: white;width: 50%;text-align: center;color: gray;">+<?php echo ($num_member - 3) ?></div>
                         <?php } ?>
-                        
+
                         <?php $index++; ?>
 
                     <?php } ?>
@@ -46,7 +46,7 @@
                         ?>
                         <?php if (count($msg_newest)) { ?>
                             <div class="text-truncate content" style="width: 80%; font-weight: <?= $da_xem ?>;"><?= $msg_newest['content'] ?></div>
-                            <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;"><?= timeSince($msg_newest['create_time']) ?></div>
+                            <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="<?= $msg_newest['create_time'] ?>">&nbsp;</div>
                         <?php } ?>
                     </div>
 
