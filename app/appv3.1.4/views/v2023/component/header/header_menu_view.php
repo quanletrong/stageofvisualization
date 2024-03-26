@@ -2,7 +2,7 @@
 <nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary py-1 shadow-sm bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
-            <img width="130" src="<?= $setting['logo_ngang_path'] ?>" alt="logo" class="d-inline-block align-text-top" srcset="">
+            <img width="250" src="<?= $setting['logo_ngang_path'] ?>" alt="logo" class="d-inline-block align-text-top" srcset="">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

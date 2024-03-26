@@ -94,7 +94,7 @@
                                         <i class="fas fa-upload"></i> Upload
                                     </button>
                                     <input type="hidden" id="logo_ngang" name="logo_ngang" value="<?= htmlentities(@$setting['logo_ngang_path']) ?>" required>
-                                    <img src="<?= @$setting['logo_ngang_path'] ?>" id="logo_ngang_pre">
+                                    <img src="<?= @$setting['logo_ngang_path'] ?>" id="logo_ngang_pre" style="max-width: 300px;">
                                 </div>
 
                                 <div class="form-group">
@@ -103,7 +103,7 @@
                                         <i class="fas fa-upload"></i> Upload
                                     </button>
                                     <input type="hidden" id="logo_vuong" name="logo_vuong" value="<?= htmlentities(@$setting['logo_vuong_path']) ?>" required>
-                                    <img src="<?= @$setting['logo_vuong_path'] ?>" id="logo_vuong_pre">
+                                    <img src="<?= @$setting['logo_vuong_path'] ?>" id="logo_vuong_pre" style="max-width: 300px;">
                                 </div>
                             </div>
                         </div>
