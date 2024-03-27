@@ -123,7 +123,7 @@ define("gg_ClientId", "654277741157-g3eecjl5a6nq1d3n55jdubasik12221u.apps.google
 define("gg_ClientSecret", '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');
 
 // limit size upload image
-define('LIMIT_SIZE_IMAGE', 52428800); // 50Mb
+define('LIMIT_SIZE_IMAGE', 524288000); // 500Mb
 
 define('AVATAR_DEFAULT', 'user-default.png');
 
