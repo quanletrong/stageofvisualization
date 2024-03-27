@@ -18,7 +18,7 @@
     <div class="rounded px-2 py-1 pb-0 mb-2" style="background-color: #dee2e6;">
         <div class="row">
             <!-- STATUS -->
-            <div class="col-md-6 mb-2">
+            <div class="col-md-5 mb-2">
                 <small>Status - Trạng thái đơn hàng</small> <br>
                 <select class="select2" name="filter_status[]" multiple="multiple">
                     <?php foreach ($all_status as $id => $it) { ?>
@@ -42,12 +42,32 @@
             </div>
 
             <!-- search -->
-            <div class="col-md-3 mb-2 ">
+            <div class="col-md-4 mb-2 ">
                 <small>&nbsp;</small>
-                <div class="d-flex" style="gap:5px; align-items: center;">
-                    <button type="submit" class="btn btn-primary" title="Tìm kiếm"><i class="fas fa-search"></i> Lọc đơn</button>
-                    <a href="order" class="btn" title="Xóa bộ lọc"><i class="fas fa-sync-alt"></i></a>
-                    <button type="button" class="btn" title="Thêm option tìm kiếm" onclick="$('#filter-expand').slideToggle()"><i class="fas fa-sliders-h"></i></button>
+                <div class="d-flex justify-content-between" style="gap:5px; align-items: center;">
+                    <div>
+                        <button type="submit" class="btn btn-primary" title="Tìm kiếm"><i class="fas fa-search"></i> Lọc đơn</button>
+                        <a href="order" class="btn" title="Xóa bộ lọc"><i class="fas fa-sync-alt"></i></a>
+                        <button type="button" class="btn" title="Thêm option tìm kiếm" onclick="$('#filter-expand').slideToggle()">
+                            <i class="fas fa-sliders-h"></i>
+                        </button>
+                    </div>
+
+                    <div>
+                        <?php if ($role == ADMIN) { ?>
+                            <button class="btn btn-success" type="button" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()">
+                                <i class="fas fa-play"></i> START
+                            </button>
+                        <?php } ?>
+
+                        <button class="btn btn-success" type="button" data-toggle="modal" data-target="#modal-withdraw-balance" onclick="ajax_get_rut_tien()">
+                            <i class="fas fa-wallet"></i> RÚT TIỀN
+                        </button>
+
+                        <button id="btn_export" type="button" class="btn btn-success " onclick="export_file(this)" title="Xuất báo cáo">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

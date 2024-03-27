@@ -12,7 +12,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Chi tiết đơn hàng</h1>
+                        <h1>Chi tiết đơn hàng <span style="color: red">#<?=$order['id_order']?></span></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">

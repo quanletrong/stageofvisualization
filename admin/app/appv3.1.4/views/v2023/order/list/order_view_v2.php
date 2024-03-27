@@ -19,25 +19,8 @@
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Danh sách đơn hàng</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
-                        <li class="breadcrumb-item active">Danh sách đơn hàng</li>
-                    </ol>
-                </div>
-            </div>
-        </div><!-- /.container-fluid -->
-    </section>
-
     <!-- Main content -->
-    <section class="content">
+    <section class="content pt-2">
         <div class="container-fluid">
 
             <!-- SMALL BOX -->
@@ -54,18 +37,7 @@
 
             <!-- ACTION BUTTON -->
             <div class="d-flex mt-2" style="gap:10px">
-
                 <button id="cancle_order" class="btn btn btn-danger" style="display: none;" onclick="ajax_cancle_order(this)"><i class="fas fa-trash"></i> Xóa đơn hàng đã chọn</button>
-
-                <?php if ($role == EDITOR) { ?>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()"> <i class="fas fa-play"></i> START</button>
-                <?php } ?>
-
-                <button class="btn btn-success" data-toggle="modal" data-target="#modal-withdraw-balance" onclick="ajax_get_rut_tien()"> <i class="fas fa-wallet"></i> RÚT TIỀN</button>
-
-                <div style="display: flex; justify-content: flex-end;" id="export"></div>
-
-                <button id="btn_export" class="btn btn-sm btn-secondary " onclick="export_file(this)" title="Xuất báo cáo"><i class="fas fa-file-excel"></i> Excel</button>
             </div>
 
             <!-- BẢNG DỮ LIỆU -->
@@ -95,14 +67,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $index = 1; ?>
                     <?php foreach ($list_order as $id_order => $order) { ?>
                         <tr class="text-default">
                             <?php if ($role == ADMIN || $role == SALE) { ?>
                                 <td class="align-middle text-center">
                                     <div class="icheck-primary d-inline">
                                         <input type="checkbox" id="checkbox_<?= $id_order ?>" class="checkox_order" data-order="<?= $id_order ?>">
-                                        <label for="checkbox_<?= $id_order ?>"><?= $index++ ?></label>
+                                        <label for="checkbox_<?= $id_order ?>">#<?= $id_order ?></label>
                                     </div>
                                 </td>
                             <?php } ?>

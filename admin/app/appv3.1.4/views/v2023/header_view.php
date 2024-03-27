@@ -16,6 +16,8 @@
 
 </head>
 
+
+<!-- sidebar-collapse -->
 <body class="hold-transition sidebar-mini layout-fixed d-none">
 	<div class="wrapper">
 
@@ -80,55 +82,17 @@
 
 		<!-- Main Sidebar Container -->
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
-			<!-- Brand Logo -->
-			<a href="index3.html" class="brand-link">
-				<img src="dist/img/AdminLTELogo.png" alt="Admin Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-				<span class="brand-text font-weight-light">Quản Trị Website</span>
-			</a>
 
 			<!-- Sidebar -->
 			<div class="sidebar">
-				<!-- Sidebar user panel (optional) -->
-				<div class="user-panel mt-3 pb-3 mb-3 d-flex">
-					<div class="image">
-						<img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-					</div>
-					<div class="info">
-						<a href="#" class="d-block">Admin</a>
-					</div>
-				</div>
-
-				<!-- SidebarSearch Form -->
-				<div class="form-inline d-none">
-					<div class="input-group" data-widget="sidebar-search">
-						<input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-						<div class="input-group-append">
-							<button class="btn btn-sidebar">
-								<i class="fas fa-search fa-fw"></i>
-							</button>
-						</div>
-					</div>
-				</div>
-
 				<!-- Sidebar Menu -->
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-						<!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
-						<li class="nav-item d-none">
-							<a href="home" class="nav-link">
-								<i class="nav-icon fas fa-tachometer-alt"></i>
-								<p>
-									Trang Chủ
-								</p>
-							</a>
-
-						</li>
-
 						<!-- QUẢN LÝ ĐƠN -->
 						<li class="nav-header">QUẢN LÝ ĐƠN</li>
 						<li class="nav-item">
 							<a href="order" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
+								<i class="nav-icon fas fa-home"></i>
 								<p>
 									QUẢN LÝ ĐƠN HÀNG
 									<i class="fas fa-angle-left right"></i>
@@ -138,7 +102,7 @@
 
 								<li class="nav-item">
 									<a href="order/index" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
+										<i class="nav-icon fas fa-tasks"></i>
 										<p>Danh sách đơn hàng</p>
 									</a>
 								</li>
@@ -146,13 +110,13 @@
 								<?php if (in_array($role, [ADMIN, SALE])) { ?>
 									<li class="nav-item">
 										<a href="order/add_private" class="nav-link">
-											<i class="far fa-circle nav-icon"></i>
+											<i class="nav-icon fas fa-folder-plus"></i>
 											<p>Tạo đơn hàng nội bộ</p>
 										</a>
 									</li>
 									<li class="nav-item">
 										<a href="order/add_customer" class="nav-link">
-											<i class="far fa-circle nav-icon"></i>
+											<i class="nav-icon fas fa-folder-plus"></i>
 											<p>Tạo đơn hàng cho khách</p>
 										</a>
 									</li>
@@ -166,7 +130,7 @@
 							<?php if (in_array($role, [ADMIN])) { ?>
 								<li class="nav-item">
 									<a href="service" class="nav-link">
-										<i class="nav-icon fas fa-th"></i>
+										<i class="nav-icon fas fa-palette"></i>
 										<p>
 											Dịch vụ thiết kế
 											<!-- <i class="right fas fa-angle-left"></i> -->
@@ -176,7 +140,7 @@
 
 								<li class="nav-item">
 									<a href="style" class="nav-link">
-										<i class="nav-icon fas fa-th"></i>
+										<i class="nav-icon fas fa-icons"></i>
 										<p>
 											Phong cách thiết kế
 										</p>
@@ -185,7 +149,7 @@
 
 								<li class="nav-item">
 									<a href="room" class="nav-link">
-										<i class="nav-icon fas fa-th"></i>
+									<i class="nav-icon fas fa-person-booth"></i>
 										<p>
 											Loại phòng thiết kế
 										</p>
@@ -194,7 +158,7 @@
 
 								<li class="nav-item">
 									<a href="library" class="nav-link">
-										<i class="nav-icon fas fa-th"></i>
+										<i class="nav-icon fas fa-photo-video"></i>
 										<p>
 											Thư viện
 										</p>
@@ -204,7 +168,7 @@
 
 							<li class="nav-item">
 								<a href="voucher" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
+									<i class="nav-icon fas fa-band-aid"></i>
 									<p>
 										Khuyến mại
 										<!-- <i class="right fas fa-angle-left"></i> -->
@@ -219,7 +183,7 @@
 
 						<li class="nav-item">
 							<a href="chat" class="nav-link">
-								<i class="nav-icon fas fa-th"></i>
+								<i class="nav-icon fas fa-comments"></i>
 								<p>
 									CHAT
 								</p>
@@ -229,7 +193,7 @@
 						<?php if (in_array($role, [ADMIN, SALE])) { ?>
 							<li class="nav-item">
 								<a href="kpi" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
+									<i class="nav-icon fas fa-chart-line"></i>
 									<p>
 										KPI
 									</p>
@@ -240,7 +204,7 @@
 						<?php if (in_array($role, [ADMIN])) { ?>
 							<li class="nav-item">
 								<a href="withdraw" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
+									<i class="nav-icon fas fa-hand-holding-usd"></i>
 									<p>
 										Yêu cầu rút tiền
 									</p>
@@ -249,7 +213,7 @@
 
 							<li class="nav-item">
 								<a href="user" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
+									<i class="nav-icon fas fa-users"></i>
 									<p>
 										Danh sách tài khoản
 									</p>
@@ -260,7 +224,7 @@
 						<?php if (in_array($role, [ADMIN, SALE])) { ?>
 							<li class="nav-item">
 								<a href="contact" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
+									<i class="nav-icon fas fa-comment-medical"></i>
 									<p>
 										Phản hồi người dùng
 									</p>
@@ -273,7 +237,7 @@
 							<li class="nav-header">CÀI ĐẶT WEBSITE</li>
 							<li class="nav-item">
 								<a href="setting" class="nav-link">
-									<i class="nav-icon fas fa-th"></i>
+									<i class="nav-icon fas fa-cogs"></i>
 									<p>
 										Cài đặt website
 										<i class="fas fa-angle-left right"></i>
