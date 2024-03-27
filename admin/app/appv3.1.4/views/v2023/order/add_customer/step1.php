@@ -33,7 +33,7 @@
 
         <div class="mb-3">
             <label for="phone" class="form-label">Set CID</label>
-            <textarea type="tel" id="cid" class="form-control" onchange="STATE.cid = this.value"></textarea>
+            <textarea type="tel" id="cid" class="form-control" value="" disabled></textarea>
         </div>
 
         <div class="mt-3 mb-3">

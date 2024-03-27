@@ -336,7 +336,6 @@ class Order extends MY_Controller
 
         $order       = $this->input->post('order');
         $jid         = removeAllTags($order['jid']);
-        $cid         = removeAllTags($order['cid']);
         $style       = isset($order['style']) ? $order['style'] : resError('Không tìm thấy Design Style');
         $for_user    = isset($order['for_user']) ? $order['for_user'] : '';
         $create_time = date('Y-m-d H:i:s');
@@ -349,7 +348,6 @@ class Order extends MY_Controller
         if ($type == 'private') {
             $create_id_user = $cur_uid;  //mặc định
             $for_user       = $cur_uid;  //mặc định
-            $cid            = ''; //mặc định
             $info_user      = $this->User_model->get_user_info_by_id($cur_uid);
             $FDR_ORDER      = FOLDER_ORDER . strtotime($create_time) . '@' . $info_user['username'];
         }
@@ -493,12 +491,6 @@ class Order extends MY_Controller
             $exc_discuss_add = $this->Discuss_model->discuss_add($cur_uid, $new_order, $content, '{}', $create_time, 1, CHAT_KHACH);
         }
 
-        // LUU CODE USER (nếu có)
-        $exc_update_code_user = true;
-        if ($type == 'customer' && $cid != $info_user['code_user']) {
-            $exc_update_code_user = $this->User_model->update_code_user($for_user, $cid);
-        }
-
         // LƯU LOG
         $log['type']     = LOG_CREATE_ORDER;
         $log['id_order'] = $new_order;
@@ -512,7 +504,6 @@ class Order extends MY_Controller
             !$exc_add_payment_order ||
             !$exc_update_status_order ||
             !$exc_discuss_add ||
-            !$exc_update_code_user ||
             !$exc_log_add
         ) {
             $this->Order_model->delete_order_and_job($new_order);

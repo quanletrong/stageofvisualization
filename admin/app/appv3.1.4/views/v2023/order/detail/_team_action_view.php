@@ -116,11 +116,7 @@
             <div class="d-flex mt-1" style="align-items: center;">
                 <div style="color: red; width:150px">#ID Customer</div>
                 <div class="input-group">
-                    <?php $disable = in_array($role, [ADMIN, SALE]) ? '' : 'disabled'; ?>
-                    <input id="textCodeUser" class="form-control" value="<?= htmlentities($order['code_user']) ?>" <?= $disable ?> style="color: red; font-weight: bold;">
-                    <div class="input-group-append">
-                        <button class="btn btn-warning" type="button" <?= $disable ?> onclick="ajax_change_code_user(this, <?= $order['id_user'] ?>)" style="width: 50px;"><i class="fas fa-save"></i></button>
-                    </div>
+                    <input id="textCodeUser" class="form-control" value="<?= htmlentities($order['id_customer']) ?>" disabled style="color: red; font-weight: bold;">
                 </div>
             </div>
 
@@ -471,39 +467,6 @@
                 if (kq.status) {
                     toasts_success()
                     socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi giá custom cho người làm'})
-                } else {
-                    toasts_danger(kq.error);
-                }
-
-                $(btn).html(old_text);
-                $(btn).prop("disabled", false);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(data);
-                alert('Error');
-            }
-        });
-    }
-
-    function ajax_change_code_user(btn, id_user) {
-        let old_text = $(btn).html();
-
-        let code = $('#textCodeUser').val();
-        $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
-        $(btn).prop("disabled", true);
-        $.ajax({
-            url: `user/ajax_change_code_user`,
-            type: "POST",
-            data: {
-                id_user,
-                code
-            },
-            success: function(data, textStatus, jqXHR) {
-                let kq = JSON.parse(data);
-
-                if (kq.status) {
-                    toasts_success()
-                    socket.emit('refresh', {id_order: <?=$order['id_order']?>, 'au': <?= $curr_uid ?>, 'content': 'Thay đổi CODE USER'})
                 } else {
                     toasts_danger(kq.error);
                 }

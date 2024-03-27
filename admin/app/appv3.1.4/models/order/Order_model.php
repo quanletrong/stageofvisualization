@@ -16,7 +16,7 @@ class Order_model extends CI_Model
     {
         $data = [];
         $iconn = $this->db->conn_id;
-        $sql = "SELECT A.*, B.code_user, B.username FROM tbl_order A
+        $sql = "SELECT A.*, B.code_user as id_customer, B.username FROM tbl_order A
         INNER JOIN tbl_user B ON A.id_user = B.id_user
         WHERE A.id_order = ? LIMIT 1";
         $stmt = $iconn->prepare($sql);

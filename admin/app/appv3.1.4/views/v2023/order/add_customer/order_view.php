@@ -15,7 +15,6 @@
     // step 2
     STATE.job = {};
     STATE.style = '';
-    STATE.cid = '';
     STATE.jid = '';
 
     //step 3
