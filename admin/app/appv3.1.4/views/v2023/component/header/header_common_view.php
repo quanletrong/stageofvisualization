@@ -33,6 +33,14 @@
 
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
+
+<link rel="stylesheet" href="skins/v2023/bs5dialog.css" />
+<script src="js/v2023/bs5dialog.js"></script>
+<script>
+    bs5dialog.startup();
+</script>
+
+
 <!-- common js -->
 <script src="js/v2023/common.js?v=3"></script>
 <script src="js/v2023/func.js"></script>

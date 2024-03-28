@@ -1417,15 +1417,16 @@ class Order extends MY_Controller
 
         $note = removeAllTags($note);
 
-        !isIdNumber($id_job)    ? resError('IMGAE không hợp lệ') : '';
+        !isIdNumber($id_job) ? resError('IMGAE không hợp lệ') : '';
 
         $job = $this->Job_model->get_info_job_by_id($id_job);
         $job == [] ? resError('IMAGE không tồn tại') : '';
 
         $order = $this->Order_model->get_info_order($job['id_order']);
 
-        $note == ''             ? resError('Hãy nhập mô tả') : '';
-        !is_array($attach)      ? resError('Attach không hợp lệ') : '';
+        !is_array($attach) ? resError('Attach không hợp lệ') : '';
+
+        $note == '' && empty($attach) ? resError('Hãy nhập mô tả hoặc đính kèm file khi tạo rework') : '';
 
         $db_attach = [];
         foreach ($attach as $i => $url_image) {
