@@ -54,7 +54,7 @@
                     </div>
 
                     <div>
-                        <?php if ($role == ADMIN) { ?>
+                        <?php if ($role == EDITOR ) { ?>
                             <button class="btn btn-success" type="button" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()">
                                 <i class="fas fa-play"></i> START
                             </button>
