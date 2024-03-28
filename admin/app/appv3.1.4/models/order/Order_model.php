@@ -908,13 +908,13 @@ class Order_model extends CI_Model
         $sql = 
         "SELECT A.*
         FROM `tbl_job` A 
-        INNER JOIN tbl_order B ON A.id_order=B.id_order AND B.status IN (?,?,?) AND B.ed_type IN (?) 
+        INNER JOIN tbl_order B ON A.id_order=B.id_order AND B.status IN (?,?,?) AND B.ed_type IN ($ED_TYPE) 
         WHERE A.id_job NOT IN (SELECT C.id_job FROM tbl_job_user C WHERE C.id_job=A.id_job AND C.type_job_user=? AND C.status=1) 
         ORDER BY (UNIX_TIMESTAMP(B.create_time) + B.custom_time) ASC;";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, $ED_TYPE, WORKING_EDITOR])) {
+            if ($stmt->execute([ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, WORKING_EDITOR])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
