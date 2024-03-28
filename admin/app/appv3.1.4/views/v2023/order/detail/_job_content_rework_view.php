@@ -76,7 +76,7 @@
 
                             <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:5px">
 
-                                <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= $url_attach ?>', '<?= $url_attach ?>')" style="font-size: 10px; padding: 3px 5px;">
+                                <button class="btn btn-sm btn-warning" onclick="downloadURI('<?= url_image($url_attach, $FDR_ORDER) ?>', '<?= $url_attach ?>')" style="font-size: 10px; padding: 3px 5px;">
                                     <i class="fas fa-download"></i>
                                 </button>
 
