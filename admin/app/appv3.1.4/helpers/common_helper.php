@@ -1142,7 +1142,7 @@ function status_order($status)
         $data['text'] = 'QC CHECK';
         $data['bg'] = '#ffc107';
     } else if ($status == ORDER_AVAIABLE) {
-        $data['text'] = 'AVAIABLE';
+        $data['text'] = 'AVAILABLE';
         $data['bg'] = '#ffc107';
     } else if ($status == ORDER_PROGRESS) {
         $data['text'] = 'IN PROGRESS';
@@ -1314,7 +1314,7 @@ function button_status_order($role, $order)
     }
     // QC_CHECK 
     else if ($status == ORDER_QC_CHECK && $role == QC) {
-        $new = ['status' => ORDER_AVAIABLE, 'text' => 'AVAIABLE', 'mau' => 'warning'];
+        $new = ['status' => ORDER_AVAIABLE, 'text' => 'AVAILABLE', 'mau' => 'warning'];
     }
     // AVAIABLE 
     else if ($status == ORDER_AVAIABLE) {

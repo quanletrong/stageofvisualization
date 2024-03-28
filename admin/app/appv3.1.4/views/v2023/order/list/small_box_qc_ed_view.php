@@ -8,7 +8,7 @@
     <div class="col-lg-3 col-6">
         <div class="info-box">
             <div class="info-box-content">
-                <span class="info-box-text">TOTAL IMAGE AVAIABLE</span>
+                <span class="info-box-text">TOTAL IMAGE AVAILABLE</span>
                 <span class="info-box-number"><?= isset($box['image_avaiable']) ? $box['image_avaiable'] : 0 ?></span>
             </div>
         </div>

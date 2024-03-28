@@ -578,7 +578,7 @@ class Order extends MY_Controller
         }
 
         if ($new_status == ORDER_AVAIABLE) {
-            $role == EDITOR ? resError('ED không có quyền đổi trạng thái về AVAIABLE') : '';
+            $role == EDITOR ? resError('ED không có quyền đổi trạng thái về AVAILABLE') : '';
         }
         if ($new_status == ORDER_DONE) {
         }
