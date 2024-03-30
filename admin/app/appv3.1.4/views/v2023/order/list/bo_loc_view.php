@@ -54,9 +54,9 @@
                     </div>
 
                     <div>
-                        <?php if ($role == EDITOR ) { ?>
+                        <?php if ($role == EDITOR) { ?>
                             <button class="btn btn-success" type="button" data-toggle="modal" data-target="#modal-start" onclick="ajax_find_order()">
-                                <i class="fas fa-play"></i> START
+                                <i class="fas fa-play"></i> START (<?= $box['image_avaiable'] ?>)
                             </button>
                         <?php } ?>
 

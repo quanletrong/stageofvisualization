@@ -16,24 +16,24 @@
     <div class="col-lg-3 col-6">
         <div class="info-box">
             <div class="info-box-content">
-                <span class="info-box-text">TOTAL PROGRESSING</span>
-                <span class="info-box-number"><?= isset($box['progress']) ? $box['progress'] : 0 ?></span>
+                <span class="info-box-text">TOTAL IMAGE PROGRESSING</span>
+                <span class="info-box-number"><?= isset($box['image_progress']) ? $box['image_progress'] : 0 ?></span>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
         <div class="info-box">
             <div class="info-box-content">
-                <span class="info-box-text">TOTAL OVERDUE</span>
-                <span class="info-box-number"><?= isset($box['late']) ? $box['late'] : 0 ?></span>
+                <span class="info-box-text">TOTAL IMAGE OVERDUE</span>
+                <span class="info-box-number"><?= isset($box['image_late']) ? $box['image_late'] : 0 ?></span>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
         <div class="info-box">
             <div class="info-box-content">
-                <span class="info-box-text">TOTAL REWORK</span>
-                <span class="info-box-number"><?= isset($box['rework']) ? $box['rework'] : 0 ?></span>
+                <span class="info-box-text">TOTAL IMAGE REWORK</span>
+                <span class="info-box-number"><?= isset($box['image_rework']) ? $box['image_rework'] : 0 ?></span>
             </div>
         </div>
     </div>
