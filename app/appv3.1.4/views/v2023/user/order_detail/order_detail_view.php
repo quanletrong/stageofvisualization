@@ -197,8 +197,10 @@
                             echo '<button class="btn btn-danger w-100">REWORK</button>';
                             echo '<p>Đơn hàng của bạn đang được làm lại!</p>';
                         } else if ($order['status'] == ORDER_PAY_WAITING) {
-                            echo '<button class="btn btn-danger w-100" onclick="common.open_popup_pay(' . $order['id_order'] . ')">CLICK TO PAY!</button>';
-                            echo '<p>Đơn hàng của bạn chưa thanh toán!</p>';
+                            echo '<button class="btn btn-warning w-100 d-flex align-items-center justify-content-center" onclick="common.open_popup_pay(' . $order['id_order'] . ')">
+                            <i>Pay with</i> <img src="images/paypal.png" height="50"/>
+                            </button>';
+                            echo '<p class="mt-2">Đơn hàng của bạn chưa thanh toán!</p>';
                         } else {
                             echo '<button class="btn btn-warning w-100">IN PROGRESS</button>';
                             echo '<p>Đơn hàng của bạn đang được xử lý.</p>';
