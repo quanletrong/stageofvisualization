@@ -914,7 +914,7 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    function danh_sach_image_avaiable($ED_TYPE)
+    function danh_sach_image_avaiable($ED_TYPE, $LIST_SERVICE)
     {
         $data = [];
         $iconn = $this->db->conn_id;
@@ -922,7 +922,9 @@ class Order_model extends CI_Model
         "SELECT A.*
         FROM `tbl_job` A 
         INNER JOIN tbl_order B ON A.id_order=B.id_order AND B.status IN (?,?,?) AND B.ed_type IN ($ED_TYPE) 
-        WHERE A.id_job NOT IN (SELECT C.id_job FROM tbl_job_user C WHERE C.id_job=A.id_job AND C.type_job_user=? AND C.status=1) 
+        WHERE 1=1
+            AND A.id_job NOT IN (SELECT C.id_job FROM tbl_job_user C WHERE C.id_job=A.id_job AND C.type_job_user=? AND C.status=1) 
+            AND A.id_service IN ($LIST_SERVICE)
         ORDER BY (UNIX_TIMESTAMP(B.create_time) + B.custom_time) ASC;";
 
         $stmt = $iconn->prepare($sql);

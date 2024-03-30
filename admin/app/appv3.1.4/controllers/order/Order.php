@@ -80,7 +80,7 @@ class Order extends MY_Controller
         $filter_id_user       = $this->input->get('filter_id_user');
 
         ### DU LIEU MAC DINH
-        if($role == ADMIN || $role == SALE) {
+        if ($role == ADMIN || $role == SALE) {
             $status_filter_default = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_REWORK, ORDER_DELIVERED];
         } else {
             $status_filter_default = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
@@ -162,10 +162,13 @@ class Order extends MY_Controller
 
         // sô liệu total
         $box = $this->Order_model->box_count($list_order);
-        
+
         // $ed_type dùng để làm tính total image_avaiable
-        $ed_type = $role == EDITOR ? $uinfo['type'] : ED_NOI_BO.",".ED_CTV;
-        $list_image_avaiable = $this->Order_model->danh_sach_image_avaiable($ed_type);
+        $ed_type = $role == EDITOR ? $uinfo['type'] : ED_NOI_BO . "," . ED_CTV;
+
+        $all_service_ids = implode(',', array_keys($all_service));
+
+        $list_image_avaiable = $this->Order_model->danh_sach_image_avaiable($ed_type, $all_service_ids);
         $box['image_avaiable'] = count($list_image_avaiable);
 
         # END CALL DATABASE
@@ -527,16 +530,23 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role    = $this->_session_role();
-        
+
         if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
             resError('not_permit', 'Bạn không có quyền thực hiện.');
         }
         $curr_uinfo = $this->User_model->get_user_info_by_id($cur_uid);
         $curr_uinfo['status'] == '-1' ? resError('Tài khoản của bạn đang bị khóa') : '';
 
+
+        $user_service = implode(',', array_keys($curr_uinfo['user_service']));
+
+        if ($user_service == '') {
+            resError('not_result', 'Không tìm thấy đơn. Hãy thử lại bạn nhé.');
+        }
+
         // lọc theo ed là nội bộ hoặc ctv
-        $ed_type = $role == EDITOR ? $curr_uinfo['type'] : ED_NOI_BO.",".ED_CTV;
-        $danh_sach_image_avaiable = $this->Order_model->danh_sach_image_avaiable($ed_type);
+        $ed_type = $role == EDITOR ? $curr_uinfo['type'] : ED_NOI_BO . "," . ED_CTV;
+        $danh_sach_image_avaiable = $this->Order_model->danh_sach_image_avaiable($ed_type, $user_service);
 
         if (empty($danh_sach_image_avaiable)) {
             resError('not_result', 'Không tìm thấy đơn. Hãy thử lại bạn nhé.');
