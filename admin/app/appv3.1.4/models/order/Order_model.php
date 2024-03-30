@@ -621,29 +621,42 @@ class Order_model extends CI_Model
 
             if ($status == ORDER_PENDING) {
                 $box['pending'] = isset($box['pending']) ? $box['pending'] + 1 : 1;
+                $box['image_pending'] = isset($box['image_pending']) ? $box['image_pending'] + count($order['list_job']) : count($order['list_job']);
             }
             if ($status == ORDER_REWORK) {
                 $box['rework'] = isset($box['rework']) ? $box['rework'] + 1 : 1;
+
+                $box['image_rework'] = isset($box['image_rework']) ? $box['image_rework'] + count($order['list_job']) : count($order['list_job']);
             }
 
             if ($status == ORDER_QC_CHECK) {
                 $box['qc_check'] = isset($box['qc_check']) ? $box['qc_check'] + 1 : 1;
+
+                $box['image_qc_check'] = isset($box['image_qc_check']) ? $box['image_qc_check'] + count($order['list_job']) : count($order['list_job']);
             }
 
             if ($status == ORDER_DONE) {
                 $box['done'] = isset($box['done']) ? $box['done'] + 1 : 1;
+
+                $box['image_done'] = isset($box['image_done']) ? $box['image_done'] + count($order['list_job']) : count($order['list_job']);
             }
 
             if ($status == ORDER_COMPLETE) {
                 $box['complete'] = isset($box['complete']) ? $box['complete'] + 1 : 1;
+
+                $box['image_complete'] = isset($box['image_complete']) ? $box['image_complete'] + count($order['list_job']) : count($order['list_job']);
             }
             if (in_array($status, [ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE])) {
                 $box['progress'] = isset($box['progress']) ? $box['progress'] + 1 : 1;
+                $box['image_progress'] = isset($box['image_progress']) ? $box['image_progress'] + count($order['list_job']) : count($order['list_job']);
             }
 
             if (is_late_order($order)) {
                 $box['late'] = isset($box['late']) ? $box['late'] + 1 : 1;
+                $box['image_late'] = isset($box['image_late']) ? $box['image_late'] + count($order['list_job']) : count($order['list_job']);
             }
+
+            $box['image_all'] = isset($box['image_all']) ? $box['image_all'] + count($order['list_job']) : count($order['list_job']);
         }
 
         $box['all'] = count($list_order);
