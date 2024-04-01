@@ -23,9 +23,9 @@
         <?php if (count($all_pending)) { ?>
             <!-- TỔNG HỢP PENDING -->
             <section>
-                <div class="d-flex" style="gap: 10px;">
+                <div class="d-flex" style="gap: 10px; justify-content: center;">
                     <?php foreach ($tong_hop_pending as $type_service => $number) { ?>
-                        <div class="info-box bg-danger" style="max-width: 25%">
+                        <div class="info-box bg-danger" style="max-width: 20%">
                             <div class="info-box-content">
                                 <span class="info-box-text"><?= $type_service ?></span>
                                 <span class="info-box-number"><?= $number ?></span>
@@ -44,7 +44,7 @@
             <!-- GROUP DATE PENDING -->
             <section>
                 Chi tiết yêu cầu <small onclick="$('#example1').fadeToggle()" style="cursor: pointer;"> [Ẩn/hiện]</small>
-                <table id="example1" class="table table-bordered">
+                <table id="example1" class="table table-bordered" style="display: none;">
                     <thead class="thead-danger">
                         <tr>
                             <th class="text-center" width="50">STT</th>
@@ -90,7 +90,7 @@
             <section>
                 <div class="d-flex" style="gap: 10px;">
                     <?php foreach ($tong_hop_done as $type_service => $number) { ?>
-                        <div class="info-box bg-success" style="max-width: 25%">
+                        <div class="info-box bg-success" style="max-width: 20%">
                             <div class="info-box-content">
                                 <span class="info-box-text"><?= $type_service ?></span>
                                 <span class="info-box-number"><?= $number ?></span>
@@ -103,7 +103,7 @@
             <!-- GROUP DATE DONE -->
             <section>
                 <small onclick="$('#example2').fadeToggle()" style="cursor: pointer;">[Ẩn/hiện]</small>
-                <table id="example2" class="table table-bordered">
+                <table id="example2" class="table table-bordered" style="display: none;">
                     <thead class="thead-success">
                         <tr>
                             <th class="text-center" width="50">STT</th>
