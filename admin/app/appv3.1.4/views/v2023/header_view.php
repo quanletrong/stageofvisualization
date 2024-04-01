@@ -190,7 +190,7 @@
 							</a>
 						</li>
 
-						<?php if (in_array($role, [ADMIN, SALE])) { ?>
+						<?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
 							<li class="nav-item">
 								<a href="kpi" class="nav-link">
 									<i class="nav-icon fas fa-chart-line"></i>
