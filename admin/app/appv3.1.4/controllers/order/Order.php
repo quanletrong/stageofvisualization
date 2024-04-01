@@ -154,9 +154,14 @@ class Order extends MY_Controller
         $filter['status']       = implode(',', $filter_status);
         $filter['type_service'] = implode(',', $filter_service);
         $filter['order_type']   = implode(',', $filter_order_type);
-        $filter['fdate']        = date("Y-m-d H:i:s", strtotime($filter_fdate));
-        $filter['tdate']        = date("Y-m-d H:i:s", strtotime($filter_tdate));
         $filter['id_user']      = implode(',', $filter_id_user);
+
+        $filter['fdate']   = date("Y-m-d", strtotime($filter_fdate)) . ' 00:00:00';
+        if($filter_tdate < $ngay_hien_tai) {
+            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' 23:59:59';
+        } else {
+            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' '. date("H:i:s");
+        }
 
         $list_order = $this->Order_model->get_list_v2($filter, $role);       //lấy tất cả đơn
 

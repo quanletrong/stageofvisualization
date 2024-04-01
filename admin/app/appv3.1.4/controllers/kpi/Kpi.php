@@ -50,7 +50,12 @@ class Kpi extends MY_Controller
         $filter_tdate = strtotime($filter_tdate) === false ? $ngay_hien_tai : $filter_tdate;
 
         $filter['fdate']   = date("Y-m-d", strtotime($filter_fdate)) . ' 00:00:00';
-        $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' '. date("H:i:s");
+        if($filter_tdate < $ngay_hien_tai) {
+            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' 23:59:59';
+        } else {
+            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' '. date("H:i:s");
+        }
+        
         $filter['id_user'] = $filter_id_user;
         $filter['role']    = $filter_role;
 
