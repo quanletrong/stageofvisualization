@@ -1,5 +1,9 @@
-<div class="container py-5 d-none" id="step-2">
-    <div class="fw-semibold fs-5 mb-3">NỘI DUNG ĐƠN HÀNG </div>
+<div class="container pb-5 d-none" id="step-2">
+    <div class="fw-semibold fs-5 mb-3 d-flex">
+        <div style="width: 33%;text-align: center;background: #bbbbbb;color: white;">LỰA CHỌN KHÁCH HÀNG</div>
+        <div class="step-2-active" style="width: 34%;text-align: center;background: #007bff;color: white;">NỘI DUNG ĐƠN HÀNG</div>
+        <div style="width: 33%;text-align: center;background: #bbbbbb;color: white;">THANH TOÁN</div>
+    </div>
 
     <div class="row">
         <div class="col-12">

@@ -21,25 +21,53 @@
     STATE.voucher = '';
 </script>
 
-<div class="content-wrapper">
-    <div class="container-fluid">
-        <!-- PAGE HEADER -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1><?= $title ?></h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
-                            <li class="breadcrumb-item active"><?= $title ?></li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+<style>
+    .step-1-active:after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-top: 14px solid #bbbbbb;
+        border-bottom: 14px solid #bbbbbb;
+        border-left: 14px solid #007bff;
+        float: inline-end;
+    }
 
+    .step-2-active:after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-top: 14px solid #bbbbbb;
+        border-bottom: 14px solid #bbbbbb;
+        border-left: 14px solid #007bff;
+        float: inline-end;
+    }
+    .step-2-active::before {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-top: 14px solid #007bff;
+        border-bottom: 14px solid #007bff;
+        border-left: 14px solid #bbbbbb;
+        float: inline-start;
+    }
+
+    .step-3-active:after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-top: 14px solid #007bff;
+        border-bottom: 14px solid #007bff;
+        border-left: 14px solid #bbbbbb;
+        float: inline-start;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="container-fluid pt-3">
         <!-- JOB CONTENT / TEAM ACTION -->
         <section>
             <form id="form_order">
@@ -247,7 +275,7 @@
         $(`#${job_id}_attach_pre`).append(attach_html);
 
         $(btn).html(`<i class="fas fa-paperclip"></i> Attach Reference Files`);
-        
+
         STATE.job[job_id].attach[attach_id] = link;
     }
 

@@ -1,5 +1,9 @@
-<div class="container py-5" id="step-1">
-    <div class="fw-semibold fs-5 mb-3">LỰA CHỌN KHÁCH HÀNG CẦN TẠO ĐƠN</div>
+<div class="container pb-5" id="step-1">
+    <div class="fw-semibold fs-5 mb-3 d-flex">
+        <div class="step-1-active" style="width: 33%;text-align: center;background: #007bff;color: white;">LỰA CHỌN KHÁCH HÀNG</div>
+        <div style="width: 34%;text-align: center;background: #bbbbbb;color: white;">NỘI DUNG ĐƠN HÀNG</div>
+        <div style="width: 33%;text-align: center;background: #bbbbbb;color: white;">THANH TOÁN</div>
+    </div>
 
     <div class="border p-4 step-1-box shadow">
         <strong>Chọn khách hàng</strong>
@@ -11,29 +15,35 @@
         </select>
 
         <hr>
-        <div class="mb-3 text-center">
-            <img src="" id="user_avatar" class="img-circle" width="100" height="100" style="background-color: #eee;">
-        </div>
-        <div class="mb-3">
-            <label for="lastname" class="form-label">Full Name</label>
-            <input type="text" id="user_fullname" class="form-control" value="" disabled>
-        </div>
-        <div class="mb-3">
-            <label for="lastname" class="form-label">Username</label>
-            <input type="text" id="user_username" class="form-control" value="" disabled>
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" id="user_email" class="form-control" value="" disabled>
-        </div>
-        <div class="mb-3">
-            <label for="phone" class="form-label">Phone Number (10 Digits)</label>
-            <input type="tel" id="user_phone" class="form-control" value="" disabled>
-        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="lastname" class="form-label">Full Name</label>
+                    <input type="text" id="user_fullname" class="form-control" value="" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="lastname" class="form-label">Username</label>
+                    <input type="text" id="user_username" class="form-control" value="" disabled>
+                </div>
 
-        <div class="mb-3">
-            <label for="phone" class="form-label">Set CID</label>
-            <textarea type="tel" id="cid" class="form-control" value="" disabled></textarea>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">CID</label>
+                    <textarea type="tel" id="cid" class="form-control" value="" disabled></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="user_email" class="form-control" value="" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number (10 Digits)</label>
+                    <input type="tel" id="user_phone" class="form-control" value="" disabled>
+                </div>
+                <div class="mb-3 text-center">
+                    <img src="" id="user_avatar" class="img-circle" width="100" height="100" style="background-color: #eee;">
+                </div>
+            </div>
         </div>
 
         <div class="mt-3 mb-3">
@@ -51,7 +61,7 @@
 
     function ajax_load_info_user_create_order(id_user) {
 
-        STATE.for_user = id_user; 
+        STATE.for_user = id_user;
 
         if (id_user != '') {
             $.ajax({
@@ -60,7 +70,7 @@
                     try {
                         let result = JSON.parse(jdata);
                         let data = result.data;
-                        
+
                         $('#user_avatar').attr('src', data.avatar_url);
                         $('#user_fullname').val(data.fullname);
                         $('#user_username').val(data.username);

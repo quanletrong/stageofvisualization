@@ -18,25 +18,32 @@
     STATE.style = '';
 </script>
 
-<div class="content-wrapper">
-    <div class="container-fluid">
-        <!-- PAGE HEADER -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Tạo đơn hàng nội bộ</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= site_url() ?>">Home</a></li>
-                            <li class="breadcrumb-item active">Tạo đơn hàng nội bộ</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+<style>
+    .step-2-active:after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-top: 14px solid #bbbbbb;
+        border-bottom: 14px solid #bbbbbb;
+        border-left: 14px solid #007bff;
+        float: inline-end;
+    }
 
+    .step-3-active:after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-top: 14px solid #007bff;
+        border-bottom: 14px solid #007bff;
+        border-left: 14px solid #bbbbbb;
+        float: inline-start;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="container-fluid pt-3">
         <!-- JOB CONTENT / TEAM ACTION -->
         <section>
             <form id="form_order" action="order/submit_add_private">

@@ -1,5 +1,8 @@
-<div class="container py-5 d-none" id="step-3">
-    <div class="fw-semibold fs-5 mb-3">THANH TOÁN</div>
+<div class="container pb-5 d-none" id="step-3">
+    <div class="fw-semibold fs-5 mb-3 d-flex">
+        <div style="width: 50%;text-align: center;background: #bbbbbb;color: white;">NỘI DUNG ĐƠN HÀNG</div>
+        <div class="step-3-active" style="width: 50%;text-align: center;background: #007bff;color: white;">THANH TOÁN</div>
+    </div>
     <div class="row">
         <div class="col-12">
             <div class="border p-4 step-3-box shadow bg-white">

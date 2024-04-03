@@ -18,7 +18,8 @@
 
 
 <!-- sidebar-collapse -->
-<body class="hold-transition sidebar-mini layout-fixed d-none">
+
+<body class="hold-transition sidebar-mini sidebar-collapse layout-fixed d-none">
 	<div class="wrapper">
 
 		<!-- Navbar -->
@@ -88,52 +89,36 @@
 				<!-- Sidebar Menu -->
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-						<!-- QUẢN LÝ ĐƠN -->
-						<li class="nav-header">QUẢN LÝ ĐƠN</li>
 						<li class="nav-item">
-							<a href="order" class="nav-link">
+							<a href="order/index" class="nav-link">
 								<i class="nav-icon fas fa-home"></i>
-								<p>
-									QUẢN LÝ ĐƠN HÀNG
-									<i class="fas fa-angle-left right"></i>
-								</p>
+								<p>Danh sách đơn hàng</p>
 							</a>
-							<ul class="nav nav-treeview">
-
-								<li class="nav-item">
-									<a href="order/index" class="nav-link">
-										<i class="nav-icon fas fa-tasks"></i>
-										<p>Danh sách đơn hàng</p>
-									</a>
-								</li>
-
-								<?php if (in_array($role, [ADMIN, SALE])) { ?>
-									<li class="nav-item">
-										<a href="order/add_private" class="nav-link">
-											<i class="nav-icon fas fa-folder-plus"></i>
-											<p>Tạo đơn hàng nội bộ</p>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="order/add_customer" class="nav-link">
-											<i class="nav-icon fas fa-folder-plus"></i>
-											<p>Tạo đơn hàng cho khách</p>
-										</a>
-									</li>
-								<?php } ?>
-							</ul>
 						</li>
 
+						<?php if (in_array($role, [ADMIN, SALE])) { ?>
+							<li class="nav-item">
+								<a href="order/add_private" class="nav-link">
+									<i class="nav-icon fas fa-folder-plus"></i>
+									<p>Tạo đơn hàng nội bộ</p>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a href="order/add_customer" class="nav-link">
+									<i class="nav-icon fas fa-folder-plus"></i>
+									<p>Tạo đơn hàng cho khách</p>
+								</a>
+							</li>
+						<?php } ?>
+						<hr>
 						<!-- QUẢN LÝ DANH MỤC -->
 						<?php if (in_array($role, [ADMIN, SALE])) { ?>
-							<li class="nav-header">QUẢN LÝ DANH MỤC</li>
 							<?php if (in_array($role, [ADMIN])) { ?>
 								<li class="nav-item">
 									<a href="service" class="nav-link">
 										<i class="nav-icon fas fa-palette"></i>
 										<p>
 											Dịch vụ thiết kế
-											<!-- <i class="right fas fa-angle-left"></i> -->
 										</p>
 									</a>
 								</li>
@@ -149,7 +134,7 @@
 
 								<li class="nav-item">
 									<a href="room" class="nav-link">
-									<i class="nav-icon fas fa-person-booth"></i>
+										<i class="nav-icon fas fa-person-booth"></i>
 										<p>
 											Loại phòng thiết kế
 										</p>
@@ -171,16 +156,12 @@
 									<i class="nav-icon fas fa-band-aid"></i>
 									<p>
 										Khuyến mại
-										<!-- <i class="right fas fa-angle-left"></i> -->
 									</p>
 								</a>
 							</li>
 						<?php } ?>
-
+						<hr>
 						<!-- QUẢN LÝ NGƯỜI DÙNG -->
-
-						<li class="nav-header">QUẢN LÝ NGƯỜI DÙNG</li>
-
 						<li class="nav-item">
 							<a href="chat" class="nav-link">
 								<i class="nav-icon fas fa-comments"></i>
@@ -231,10 +212,9 @@
 								</a>
 							</li>
 						<?php } ?>
-
+						<hr>
 						<!-- CÀI ĐẶT WEBSITE -->
 						<?php if (in_array($role, [ADMIN])) { ?>
-							<li class="nav-header">CÀI ĐẶT WEBSITE</li>
 							<li class="nav-item">
 								<a href="setting" class="nav-link">
 									<i class="nav-icon fas fa-cogs"></i>
@@ -262,18 +242,6 @@
 											<p>Trang chủ</p>
 										</a>
 									</li>
-									<!-- <li class="nav-item">
-										<a href="setting/price" class="nav-link">
-											<i class="far fa-circle nav-icon"></i>
-											<p>Trang bảng giá</p>
-										</a>
-									</li>
-									<li class="nav-item">
-										<a href="setting/order" class="nav-link">
-											<i class="far fa-circle nav-icon"></i>
-											<p>Trang tạo đơn</p>
-										</a>
-									</li> -->
 									<li class="nav-item">
 										<a href="setting/privacy_policy" class="nav-link">
 											<i class="far fa-circle nav-icon"></i>
@@ -293,24 +261,6 @@
 											<p>Trang hoàn tiền</p>
 										</a>
 									</li>
-									<!-- <li class="nav-item">
-									<a href="setting/introduce" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Trang giới thiệu</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="setting/contact" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Trang liên hệ</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="setting/recruitment" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Trang tuyển dụng</p>
-									</a>
-								</li> -->
 								</ul>
 							</li>
 							<li class="nav-header"></li>
@@ -326,23 +276,23 @@
 
 		<script>
 			$(document).ready(function() {
-				let menu_current = '<?= $this->uri->rsegments[1] ?>';
-				let sub1_current = '<?= $this->uri->rsegments[1] ?>/<?= $this->uri->rsegments[2] ?>';
-				$('.nav-sidebar > .nav-item').each(function() {
-					let menu = $(this).find('a').attr('href');
-					if (menu == menu_current) {
-						$(this).addClass('menu-open'); // mo menu
-						$(this).find('a').eq(0).addClass('active'); // active menu
+				$('.nav-item .nav-link').each(function() {
 
-						$(this).find('ul.nav-treeview li').each(function() {
-							let menusub = $(this).find('a').attr('href');
-							if (menusub == sub1_current) {
-								$(this).find('a').addClass('active');
-							}
-						})
+					let href = $(this).attr('href');
+					href = href === '' ? 'order/index' : href;
+					href = href.split('/').length === 1 ? href + '/index' : href;
+
+					if (href === '<?= $this->uri->rsegments[1] ?>/<?= $this->uri->rsegments[2] ?>') {
+						$(this).addClass('active');
+
+						// nếu có parent
+						let has_nav_treeview = $(this).closest('.nav-treeview').length
+						if (has_nav_treeview) {
+							$(this).closest('.nav-treeview').parent().addClass('menu-open');
+							$(this).closest('.nav-treeview').siblings('.nav-link').addClass('active');
+						}
 					}
 				})
-
 				$('body').removeClass('d-none')
 			});
 		</script>

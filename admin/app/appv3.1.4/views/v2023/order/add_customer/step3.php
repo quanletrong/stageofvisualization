@@ -1,5 +1,9 @@
-<div class="container py-5 d-none" id="step-3">
-    <div class="fw-semibold fs-5 mb-3">THANH TOÁN</div>
+<div class="container pb-5 d-none" id="step-3">
+    <div class="fw-semibold fs-5 mb-3 d-flex">
+        <div style="width: 33%;text-align: center;background: #bbbbbb;color: white;">LỰA CHỌN KHÁCH HÀNG</div>
+        <div style="width: 34%;text-align: center;background: #bbbbbb;color: white;">NỘI DUNG ĐƠN HÀNG</div>
+        <div class="step-3-active"" style="width: 33%;text-align: center;background: #007bff;color: white;">THANH TOÁN</div>
+    </div>
     <div class="row">
         <div class="col-12">
             <div class="border p-4 step-3-box shadow bg-white">
@@ -106,7 +110,7 @@
 
                 <div class="form-group">
                     <label for="link-payment">Tài khoản khách hàng</label>
-                    <input class="form-control username"  disabled style="font-size: 1rem;">
+                    <input class="form-control username" disabled style="font-size: 1rem;">
                 </div>
 
                 <div class="form-group">
@@ -121,7 +125,7 @@
 
                 <div class="form-group">
                     <label for="link-payment">Số tiền cần thanh toán</label>
-                    <input class="form-control money-payment"  value="" disabled style="font-size: 2rem;">
+                    <input class="form-control money-payment" value="" disabled style="font-size: 2rem;">
                 </div>
 
                 <div class="form-group">
@@ -129,8 +133,8 @@
                         <label for="link-payment">Copy link đơn hàng gửi cho khách</label>
                         <button type="button" class="btn btn-warning btn-sm" onclick="copyToClipboard(this, $('#modal-payment .link-payment').val())">Copy</button>
                     </div>
-                    
-                    <textarea class="form-control link-payment mt-2"  placeholder="" disabled></textarea>
+
+                    <textarea class="form-control link-payment mt-2" placeholder="" disabled></textarea>
                 </div>
 
             </div>
