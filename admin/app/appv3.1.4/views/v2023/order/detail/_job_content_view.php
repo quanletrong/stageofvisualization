@@ -144,7 +144,7 @@
                                         </div>
                                         <div class="d-flex">
                                             <div style="min-width: 130px; font-weight: bold;">Design Style</div>
-                                            <div><?= $job['style'] ?></div>
+                                            <div><?= $job['style'] != '' ? $job['style'] : "I'm unsure, let my designer choose a style for me." ?></div>
                                         </div>
                                     </div>
 
