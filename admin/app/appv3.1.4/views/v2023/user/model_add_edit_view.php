@@ -132,12 +132,14 @@
     <!-- /.modal-dialog -->
 </div>
 <script>
-    var ROOM = {}; // các hạng mục thiết kế thuộc dịch vụ
     $(function() {
-
-        $('#role').select2({});
+        $('#role').select2({})
         $('#type').select2({});
         $('#user_service').select2({});
+
+        $('#role').on('change', function() {
+            validobj.element(`select[name="role"]`);
+        });
 
         $("#chk_all_user_service").click(function() {
             if ($("#chk_all_user_service").is(':checked')) {
@@ -149,87 +151,72 @@
             }
         });
 
-        $('#frm_voucher').validate({
+        var validobj = $('#frm_user').validate({
             submitHandler: function(form) {
 
-                $(form).find('button[type="submit"]').attr('disabled', 'disabled');
-                // $(form).find('input[name="room"]').val(JSON.stringify(ROOM))
-                form.submit();
-
-                // if ($(form).find('input[name="image"]') == '') {
-                //     $('#image-error').show();
-                //     $([document.documentElement, document.body]).animate({
-                //         scrollTop: $("#image-error").offset().top
-                //     }, 2000);
-
-                //     $(form).find('button[type="submit"]').attr('disabled', false);
-
-                // } else {
-
-                //     $(form).find('button[type="submit"]').attr('disabled', 'disabled');
-                //     // $(form).find('input[name="room"]').val(JSON.stringify(ROOM))
-                //     form.submit();
-                // }
+                event.preventDefault();
+                $(form).find('button[type="submit"]').attr('disabled', true);
+                let action = $(form).find('[name="action"]').val();
+                let url = action === 'add' ?
+                    'user/ajax_add_user' :
+                    'user/ajax_edit_user';
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: $(form).serialize(), // serializes the form's elements.
+                    success: function(data) {
+                        let kq = JSON.parse(data);
+                        if (kq.status) {
+                            bs5dialog.alert("", {
+                                type: 'success',
+                                title: "Thành công",
+                                backdrop: true,
+                                onOk: () => {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            bs5dialog.alert(kq.error, {
+                                type: 'warning',
+                                title: "Có lỗi xảy ra",
+                                backdrop: true
+                            });
+                            $(form).find('button[type="submit"]').attr('disabled', false);
+                        }
+                    }
+                });
             },
-            // rules: {
-            //     name: {
-            //         required: true,
-            //         minlength: 5,
-            //         maxlength: 256
-            //     },
-            //     type_voucher: {
-            //         required: true,
-            //         minlength: 2,
-            //         maxlength: 256
-            //     },
-            //     sapo: {
-            //         required: true,
-            //         minlength: 5
-            //     },
-            //     price: {
-            //         required: true,
-            //         maxlength: 256
-            //     },
-            //     image: {
-            //         required: true
-            //     }
-
-            // },
-            // messages: {
-            //     name: {
-            //         required: 'Không được bỏ trống',
-            //         minlength: 'Tối thiểu 5 ký tự',
-            //         maxlength: 'Tối đa 256 ký tự',
-            //     },
-            //     type_voucher: {
-            //         required: 'Không được bỏ trống',
-            //         minlength: 'Tối thiểu 2 ký tự',
-            //         maxlength: 'Tối đa 256 ký tự',
-            //     },
-            //     sapo: {
-            //         required: 'Không được bỏ trống',
-            //         minlength: 'Tối thiểu 5 ký tự',
-            //         maxlength: 'Tối đa 256 ký tự',
-            //     },
-            //     price: {
-            //         required: 'Không được bỏ trống',
-            //         maxlength: 'Tối đa 256 ký tự',
-            //     },
-            //     image: {
-            //         required: 'Không được bỏ trống'
-            //     }
-            // },
-            // errorElement: 'span',
-            // errorPlacement: function(error, element) {
-            //     error.addClass('invalid-feedback');
-            //     element.closest('.form-group, .input-group').append(error);
-            // },
-            // highlight: function(element, errorClass, validClass) {
-            //     $(element).addClass('is-invalid');
-            // },
-            // unhighlight: function(element, errorClass, validClass) {
-            //     $(element).removeClass('is-invalid');
-            // }
+            rules: {
+                username: {
+                    required: true
+                },
+                password: {
+                    required: true,
+                    minlength: 8
+                },
+                fullname: {
+                    required: true
+                },
+                phone: {
+                    required: true
+                },
+                email: {
+                    required: true
+                },
+                role: "select_required"
+            },
+            messages: {},
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group, .input-group').append(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
         });
 
 

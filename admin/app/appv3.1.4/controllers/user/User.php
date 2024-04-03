@@ -51,172 +51,10 @@ class User extends MY_Controller
 
         $list_service = $this->Service_model->get_list();
 
-        // SUBMIT FORM (nếu có)
-        if (isset($_POST['action'])) {
-            $code_user    = removeAllTags($this->input->post('code_user'));
-            $username     = removeAllTags($this->input->post('username'));
-            $password     = removeAllTags($this->input->post('password'));
-            $fullname     = removeAllTags($this->input->post('fullname'));
-            $phone        = removeAllTags($this->input->post('phone'));
-            $email        = removeAllTags($this->input->post('email'));
-            $role         = removeAllTags($this->input->post('role'));
-            $type         = removeAllTags($this->input->post('type'));
-            $user_service = $this->input->post('user_service[]');
-            $status       = removeAllTags($this->input->post('status'));
-            $hdd_avatar   = removeAllTags($this->input->post('hdd_avatar'));
-            $status       = $status == 'on' ? 1 : 0;
-            $id_user      = removeAllTags($this->input->post('id_user'));
-            $id_user      = is_numeric($id_user) && $id_user > 0 ? $id_user : 0;
-
-            $create_time = date('Y-m-d H:i:s');
-
-            // VALIDATE DATA
-            $username  = $username  != '' ? $username : false;
-            $fullname  = $fullname  != '' ? $fullname : false;
-            $phone     = $phone     != '' ? $phone : false;
-            $email     = $email     != '' ? $email : false;
-            $role      = in_array($role, [ADMIN, QC, SALE, EDITOR, CUSTOMER]) ? $role : false;
-            $type      = in_array($type, ['1', '2']) ? $type : false;
-
-            // dữ liệu không hợp lệ => báo lỗi
-            if (!$username || !$fullname || !$phone || !$email || !$role || !$type) {
-                $this->session->set_flashdata('flsh_msg', 'Dữ liệu không hợp lệ!');
-                redirect('user');
-            }
-
-            // Dịch vụ được cấp không tồn tại => báo lỗi
-            $user_service  = $user_service  == null ? [] : $user_service;
-            $user_service_db = [];
-            foreach ($user_service as $id_service) {
-                if (isset($list_service[$id_service]) == false) {
-                    $this->session->set_flashdata('flsh_msg', 'Dịch vụ được cấp không tồn tại!');
-                    redirect('user');
-                } else {
-                    $user_service_db[$id_service] = $list_service[$id_service]['type_service'];
-                }
-            }
-
-            //END VALIDATE
-            $user_by_code  = $this->User_model->get_user_info_by_code($code_user);
-            $user_by_phone = $this->User_model->get_user_info_by_phone($phone);
-            $user_by_email = $this->User_model->get_user_info_by_email($email);
-
-            // TẠO MỚI 
-            if ($_POST['action'] == 'add') {
-
-                // check username
-                $preg_match_username = preg_match('/^[a-zA-Z0-9_]+$/', $username);
-                if (!$preg_match_username) {
-                    $this->session->set_flashdata('flsh_msg', 'Username chỉ bao gồm chữ hoa, chữ thường, chữ số và dấu gạch dưới');
-                    redirect('user');
-                }
-
-                // check passwork
-                $check_match = password_streng($password);
-                if (!$check_match) {
-                    $this->session->set_flashdata('flsh_msg', 'Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*');
-                    redirect('user');
-                }
-
-                // check code user đã tồn tại =>  báo lỗi
-                if ($code_user != '' && !empty($user_by_code)) {
-                    $this->session->set_flashdata('flsh_msg', 'Code user đã tồn tại!');
-                    redirect('user');
-                }
-
-                // check phone đã tồn tại =>  báo lỗi
-                if (!empty($user_by_phone)) {
-                    $this->session->set_flashdata('flsh_msg', 'Số điện thoại đã tồn tại!');
-                    redirect('user');
-                }
-
-                // check email đã tồn tại =>  báo lỗi
-                if (!empty($user_by_email)) {
-                    $this->session->set_flashdata('flsh_msg', 'Email đã tồn tại!');
-                    redirect('user');
-                }
-
-                // check avatar == mặc định
-                $avatar = AVATAR_DEFAULT;
-                if (basename($hdd_avatar) != AVATAR_DEFAULT) {
-                    $copy_attach = copy_image_to_public_upload($hdd_avatar, FOLDER_AVATAR);
-                    if ($copy_attach['status']) {
-                        $avatar = $copy_attach['basename'];
-                    }
-                }
-
-                // add user
-                $password_hash = PasswordHash::hash($username, md5($password));
-                $newid = $this->User_model->add($code_user, $username, $password_hash, $fullname, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $avatar);
-
-                //error
-                $this->session->set_flashdata('flsh_msg', $newid ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
-                redirect('user');
-            }
-
-            // CẬP NHẬT
-            if ($_POST['action'] == 'edit') {
-
-                $info =  $this->User_model->get_user_info_by_id($id_user);
-                if (empty($info)) {
-                    $msg = 'Lưu không thành công vui lòng thử lại!';
-                } else {
-
-                    if ($password != $info['password']) {
-                        // check passwork
-                        $check_match = password_streng($password);
-                        if (!$check_match) {
-                            $this->session->set_flashdata('flsh_msg', 'Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*');
-                            redirect('user');
-                        }
-                        $password_hash = PasswordHash::hash($info['username'], md5($password));
-                    } else {
-                        $password_hash = $info['password'];
-                    }
-
-                    // check code user đã tồn tại =>  báo lỗi
-                    if ($code_user != '' && $info['code_user'] != $code_user && !empty($user_by_code)) {
-                        $this->session->set_flashdata('flsh_msg', 'Code user đã tồn tại!');
-                        redirect('user');
-                    }
-
-
-                    // check phone đã tồn tại =>  báo lỗi
-                    if ($info['phone'] != $phone && !empty($user_by_phone)) {
-                        $this->session->set_flashdata('flsh_msg', 'Số điện thoại đã tồn tại!');
-                        redirect('user');
-                    }
-
-                    // check email đã tồn tại =>  báo lỗi
-                    if ($info['email'] != $email && !empty($user_by_email)) {
-                        $this->session->set_flashdata('flsh_msg', 'Email đã tồn tại!');
-                        redirect('user');
-                    }
-
-                    // check avatar == mặc định
-                    $new_avatar = $info['avatar'];
-                    if (basename($hdd_avatar) != AVATAR_DEFAULT && basename($hdd_avatar) != $info['avatar']) {
-                        $copy_attach = copy_image_to_public_upload($hdd_avatar, FOLDER_AVATAR);
-                        if ($copy_attach['status']) {
-                            $new_avatar = $copy_attach['basename'];
-                        }
-                    }
-
-                    // update voucher
-                    $exc = $this->User_model->edit($code_user, $fullname, $password_hash, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $id_user, $new_avatar);
-
-                    //error
-                    $this->session->set_flashdata('flsh_msg', $exc ? 'OK' : 'Lưu không thành công vui lòng thử lại!');
-                    redirect('user');
-                }
-                $this->session->set_flashdata('flsh_msg', $msg);
-                redirect('user');
-            }
-        }
-
         $data = [];
         $data['list']     = $list;
         $data['list_service']  = $list_service;
+
 
         $data['filter_status']   = $filter_status;
         $data['filter_username'] = $filter_username;
@@ -236,6 +74,180 @@ class User extends MY_Controller
         $this->_loadHeader($header);
         $this->load->view($this->_template_f . 'user/user_view', $data);
         $this->_loadFooter();
+    }
+
+    function ajax_add_user()
+    {
+        $role = $this->_session_role();
+        in_array($role, [ADMIN]) ? '' : resError('Bạn không có quyền truy cập');
+
+        $code_user    = removeAllTags($this->input->post('code_user'));
+        $username     = removeAllTags($this->input->post('username'));
+        $password     = removeAllTags($this->input->post('password'));
+        $fullname     = removeAllTags($this->input->post('fullname'));
+        $phone        = removeAllTags($this->input->post('phone'));
+        $email        = removeAllTags($this->input->post('email'));
+        $role         = removeAllTags($this->input->post('role'));
+        $type         = removeAllTags($this->input->post('type'));
+        $user_service = $this->input->post('user_service[]');
+        $status       = removeAllTags($this->input->post('status'));
+        $hdd_avatar   = removeAllTags($this->input->post('hdd_avatar'));
+        $status       = $status == 'on' ? 1 : 0;
+
+        # VALIDATE DATA
+
+        // check code user
+        if ($code_user != '') {
+            $user_by_code  = $this->User_model->get_user_info_by_code($code_user);
+            empty($user_by_code) ? '' : resError('Code user đã tồn tại');
+        }
+
+        // check username
+        $username  = $username  != '' ? $username : resError('Username không được bỏ trống');
+        $preg_match_username = preg_match('/^[a-zA-Z0-9_]+$/', $username);
+        if (!$preg_match_username) {
+            resError('Username chỉ bao gồm chữ hoa, chữ thường, chữ số và dấu gạch dưới');
+        } else {
+            $user_by_uname = $this->User_model->get_user_info_by_uname($username);
+            empty($user_by_uname) ? '' : resError('Username đã tồn tại');
+        }
+
+        // fullname, role, type
+        $fullname  = $fullname  != '' ? $fullname : resError('Fullname không được bỏ trống');
+        $role      = in_array($role, [ADMIN, QC, SALE, EDITOR, CUSTOMER]) ? $role : resError('Role không hợp lệ');
+        $type      = in_array($type, [ED_NOI_BO, ED_CTV]) ? $type : resError('Loại tài khoản không hợp lệ');
+
+        // check services
+        $user_service  = $user_service  == null ? [] : $user_service;
+        $list_service = $this->Service_model->get_list();
+        $user_service_db = [];
+        foreach ($user_service as $id_service) {
+            if (isset($list_service[$id_service]) == false) {
+                resError('Dịch vụ được cấp không tồn tại!');
+            } else {
+                $user_service_db[$id_service] = $list_service[$id_service]['type_service'];
+            }
+        }
+
+        // check phone
+        $phone != '' ? '' : resError('Phonenumber không được bỏ trống');
+        $user_by_phone = $this->User_model->get_user_info_by_phone($phone);
+        empty($user_by_phone) ? '' : resError('Phonenumber đã tồn tại');
+
+        // check email 
+        $email != '' ? '' : resError('Email không được bỏ trống');
+        $user_by_email = $this->User_model->get_user_info_by_email($email);
+        empty($user_by_email) ? '' : resError('Email đã tồn tại');
+
+        // check avatar 
+        $avatar = AVATAR_DEFAULT;
+        if (basename($hdd_avatar) != AVATAR_DEFAULT) {
+            $copy_attach = copy_image_to_public_upload($hdd_avatar, FOLDER_AVATAR);
+            if ($copy_attach['status']) {
+                $avatar = $copy_attach['basename'];
+            }
+        }
+
+        #END VALIDATE
+
+        # ADD
+        $create_time = date('Y-m-d H:i:s');
+        $password_hash = PasswordHash::hash($username, md5($password));
+
+        $newid = $this->User_model->add($code_user, $username, $password_hash, $fullname, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $create_time, $avatar);
+
+        $newid ? resSuccess($newid) : resError('Lưu không thành công vui lòng thử lại!');
+        #END ADD
+    }
+
+    function ajax_edit_user()
+    {
+        $role = $this->_session_role();
+        in_array($role, [ADMIN]) ? '' : resError('Bạn không có quyền truy cập');
+
+        $code_user    = removeAllTags($this->input->post('code_user'));
+        $password     = removeAllTags($this->input->post('password'));
+        $fullname     = removeAllTags($this->input->post('fullname'));
+        $phone        = removeAllTags($this->input->post('phone'));
+        $email        = removeAllTags($this->input->post('email'));
+        $role         = removeAllTags($this->input->post('role'));
+        $type         = removeAllTags($this->input->post('type'));
+        $user_service = $this->input->post('user_service[]');
+        $status       = removeAllTags($this->input->post('status'));
+        $hdd_avatar   = removeAllTags($this->input->post('hdd_avatar'));
+        $status       = $status == 'on' ? 1 : 0;
+        $id_user      = removeAllTags($this->input->post('id_user'));
+        $id_user      = is_numeric($id_user) && $id_user > 0 ? $id_user : 0;
+
+        # VALIDATE DATA
+        // check info user
+        $info =  $this->User_model->get_user_info_by_id($id_user);
+        !empty($info) ? '' : resError('Tài khoản không tồn tại');
+
+        // check code user
+        $user_by_code  = $this->User_model->get_user_info_by_code($code_user);
+        if ($code_user != '' && $info['code_user'] != $code_user && !empty($user_by_code)) {
+            resError('Code user đã tồn tại!');
+        }
+
+        // check passwork
+        if ($password != $info['password']) {
+            $check_match = password_streng($password);
+            $check_match ? '' : resError('Mật khẩu tối thiểu 8 ký tự, bao gồm số, chữ thường, chữ in hoa và ký tự đặc biệt !@#$%^&*');
+            $password_hash = PasswordHash::hash($info['username'], md5($password));
+        } else {
+            $password_hash = $info['password'];
+        }
+
+        // fullname, role, type
+        $fullname  = $fullname  != '' ? $fullname : resError('Fullname không được bỏ trống');
+        $role      = in_array($role, [ADMIN, QC, SALE, EDITOR, CUSTOMER]) ? $role : resError('Role không hợp lệ');
+        $type      = in_array($type, [ED_NOI_BO, ED_CTV]) ? $type : resError('Loại tài khoản không hợp lệ');
+
+        // check phone
+        $phone != '' ? '' : resError('Phonenumber không được bỏ trống');
+        $user_by_phone = $this->User_model->get_user_info_by_phone($phone);
+        if ($info['phone'] != $phone && !empty($user_by_phone)) {
+            resError('Số điện thoại đã tồn tại!');
+        }
+
+        // check email
+        $email != '' ? '' : resError('Email không được bỏ trống');
+        $user_by_email = $this->User_model->get_user_info_by_email($email);
+        if ($info['email'] != $email && !empty($user_by_email)) {
+            resError('Email đã tồn tại!');
+        }
+
+        // check services
+        $user_service  = $user_service  == null ? [] : $user_service;
+        $list_service = $this->Service_model->get_list();
+        $user_service_db = [];
+        foreach ($user_service as $id_service) {
+            if (isset($list_service[$id_service]) == false) {
+                resError('Dịch vụ được cấp không tồn tại!');
+            } else {
+                $user_service_db[$id_service] = $list_service[$id_service]['type_service'];
+            }
+        }
+
+        // check avatar
+        $new_avatar = $info['avatar'];
+        if (basename($hdd_avatar) != AVATAR_DEFAULT && basename($hdd_avatar) != $info['avatar']) {
+            $copy_attach = copy_image_to_public_upload($hdd_avatar, FOLDER_AVATAR);
+            if ($copy_attach['status']) {
+                $new_avatar = $copy_attach['basename'];
+            }
+        }
+        #END VALIDATE
+
+        # EDIT
+        $updatetime = date('Y-m-d H:i:s');
+        $password_hash = PasswordHash::hash($info['username'], md5($password));
+
+        $exc = $this->User_model->edit($code_user, $fullname, $password_hash, $phone, $email, $status, $role, $type, json_encode($user_service_db, JSON_FORCE_OBJECT), $updatetime, $id_user, $new_avatar);
+
+        $exc ? resSuccess('Thành công') : resError('Lưu không thành công vui lòng thử lại!');
+        #END EDIT
     }
 
     function ajax_change_code_user()

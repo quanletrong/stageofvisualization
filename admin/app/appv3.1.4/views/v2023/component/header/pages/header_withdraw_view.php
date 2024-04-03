@@ -20,4 +20,4 @@
 
 <!-- jquery-validation -->
 <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
-<script src="plugins/jquery-validation/additional-methods.min.js"></script>
+<script src="plugins/jquery-validation/additional-methods.js"></script>
