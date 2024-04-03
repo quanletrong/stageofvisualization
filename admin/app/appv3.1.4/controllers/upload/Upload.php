@@ -36,6 +36,7 @@ class Upload extends MY_Controller
                     
                     $name_file = $_FILES['file']['name'][$i];
                     $name_file = str_replace(" ","", $name_file); // xoa khoang trang trong ten
+                    $name_file = preg_replace('/[^a-zA-Z0-9_-]/', '', $name_file); // xóa ký tự đặc biệt
                     $tmp_name = $_FILES['file']['tmp_name'][$i];
                     $size = $_FILES['file']['size'][$i];
                     $target_dir = $_SERVER["DOCUMENT_ROOT"] . "/uploads/tmp/";
@@ -100,6 +101,7 @@ class Upload extends MY_Controller
             
             $name_file     = $_FILES['file']['name'];
             $name_file     = str_replace(" ", "", $name_file);  // xoa khoang trang trong ten
+            $name_file     = preg_replace('/[^a-zA-Z0-9_-]/', '', $name_file); // xóa ký tự đặc biệt
             $tmp_name      = $_FILES['file']['tmp_name'];
             $size          = $_FILES['file']['size'];
             $target_dir    = $_SERVER["DOCUMENT_ROOT"] . "/uploads/tmp/";

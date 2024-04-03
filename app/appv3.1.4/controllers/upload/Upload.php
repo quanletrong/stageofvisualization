@@ -17,14 +17,15 @@ class Upload extends MY_Controller
                 $data = [];
                 for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
 
-                    
-                    $name_file = $_FILES['file']['name'][$i];
-                    $name_file = str_replace(" ","", $name_file); // xoa khoang trang trong ten
-                    $tmp_name = $_FILES['file']['tmp_name'][$i];
-                    $size = $_FILES['file']['size'][$i];
-                    $target_dir = $_SERVER["DOCUMENT_ROOT"] . "/uploads/tmp/";
-                    $name_file = basename($name_file);
-                    $target_file = $target_dir . $name_file;
+
+                    $name_file     = $_FILES['file']['name'][$i];
+                    $name_file     = str_replace(" ", "", $name_file);                        // xoa khoang trang trong ten
+                    $name_file     = preg_replace('/[^a-zA-Z0-9_-]/', '', $name_file);        // xóa ký tự đặc biệt
+                    $tmp_name      = $_FILES['file']['tmp_name'][$i];
+                    $size          = $_FILES['file']['size'][$i];
+                    $target_dir    = $_SERVER["DOCUMENT_ROOT"] . "/uploads/tmp/";
+                    $name_file     = basename($name_file);
+                    $target_file   = $target_dir . $name_file;
                     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
                     $data[$i]['status'] = 1;
@@ -80,9 +81,10 @@ class Upload extends MY_Controller
     {
         // SUBMIT FORM (nếu có)
         if (isset($_FILES['file'])) {
-            
+
             $name_file     = $_FILES['file']['name'];
             $name_file     = str_replace(" ", "", $name_file);  // xoa khoang trang trong ten
+            $name_file     = preg_replace('/[^a-zA-Z0-9_-]/', '', $name_file); // xóa ký tự đặc biệt
             $tmp_name      = $_FILES['file']['tmp_name'];
             $size          = $_FILES['file']['size'];
             $target_dir    = $_SERVER["DOCUMENT_ROOT"] . "/uploads/tmp/";
