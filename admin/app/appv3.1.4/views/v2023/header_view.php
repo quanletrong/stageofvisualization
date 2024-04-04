@@ -110,9 +110,9 @@
 								</a>
 							</li>
 						<?php } ?>
-						<hr>
 						<!-- QUẢN LÝ DANH MỤC -->
 						<?php if (in_array($role, [ADMIN, SALE])) { ?>
+							<hr>
 							<?php if (in_array($role, [ADMIN])) { ?>
 								<li class="nav-item">
 									<a href="service" class="nav-link">
@@ -212,9 +212,10 @@
 								</a>
 							</li>
 						<?php } ?>
-						<hr>
+						
 						<!-- CÀI ĐẶT WEBSITE -->
 						<?php if (in_array($role, [ADMIN])) { ?>
+							<hr>
 							<li class="nav-item">
 								<a href="setting" class="nav-link">
 									<i class="nav-icon fas fa-cogs"></i>

@@ -44,14 +44,18 @@
             <table id="example1" class="table table-bordered table-striped">
                 <thead class="thead-danger">
                     <tr>
-                        <?php if ($role == ADMIN || $role == SALE) { ?>
-                            <th class="text-center">
+
+                        <th class="text-center" style="width: 50px;">
+                            <?php if ($role == ADMIN || $role == SALE) { ?>
                                 <div class="icheck-primary d-inline">
                                     <input type="checkbox" id="checkbox_all_order">
                                     <label for="checkbox_all_order">#</label>
                                 </div>
-                            </th>
-                        <?php } ?>
+                            <?php } else { ?>
+                                #
+                            <?php } ?>
+                        </th>
+
                         <th class="text-center" style="max-width: 200px;">JID</th>
                         <th class="text-center">CID</th>
                         <th class="text-center">DATE</th>
@@ -69,14 +73,18 @@
                 <tbody>
                     <?php foreach ($list_order as $id_order => $order) { ?>
                         <tr class="text-default">
-                            <?php if ($role == ADMIN || $role == SALE) { ?>
-                                <td class="align-middle text-center">
+
+                            <td class="align-middle text-center">
+                                <?php if ($role == ADMIN || $role == SALE) { ?>
                                     <div class="icheck-primary d-inline">
                                         <input type="checkbox" id="checkbox_<?= $id_order ?>" class="checkox_order" data-order="<?= $id_order ?>">
                                         <label for="checkbox_<?= $id_order ?>">#<?= $id_order ?></label>
                                     </div>
-                                </td>
-                            <?php } ?>
+                                <?php } else { ?>
+                                    <b># <?= $id_order ?></b>
+                                <?php } ?>
+                            </td>
+
                             <td class="align-middle text-center" style="max-width: 200px; line-break: anywhere"><?= $order['code_order'] == '' ? 'OID' . $order['id_order'] : $order['code_order'] ?></td>
                             <td class="align-middle text-center"><?= $order['code_user'] == '' ? 'UID' . $order['id_user'] :  $order['code_user'] ?></td>
                             <td class="align-middle text-center"><span title="<?= $order['create_time'] ?>"><?= timeSince($order['create_time']) ?> trước </span></td>
