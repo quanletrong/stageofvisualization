@@ -78,6 +78,7 @@ class Order extends MY_Controller
         $filter_fdate         = $this->input->get('filter_fdate');
         $filter_tdate         = $this->input->get('filter_tdate');
         $filter_id_user       = $this->input->get('filter_id_user');
+        $filter_custom        = $this->input->get('filter_custom');
 
         ### DU LIEU MAC DINH
         if ($role == ADMIN || $role == SALE) {
@@ -90,7 +91,7 @@ class Order extends MY_Controller
             $filter_id_user = [$uid];
         }
 
-        // QC chi duoc xem DON cua minh 
+        // QC chi duoc xem DON cua` minh 
 
         //validate filter_order_ed_type
         $filter_order_ed_type = is_array($filter_order_ed_type) ? $filter_order_ed_type : [];
@@ -144,6 +145,11 @@ class Order extends MY_Controller
         $filter_tdate = !is_date($filter_tdate) ? $ngay_hien_tai : $filter_tdate;
 
 
+        //validate filter_id_user
+        $filter_custom = in_array($filter_custom, ['>=', '>', '=']) ? $filter_custom : '>=';
+        if ($role == EDITOR) {
+            $filter_custom = '>=';
+        }
 
         # END FORM FILTER
 
@@ -155,12 +161,13 @@ class Order extends MY_Controller
         $filter['type_service'] = implode(',', $filter_service);
         $filter['order_type']   = implode(',', $filter_order_type);
         $filter['id_user']      = implode(',', $filter_id_user);
+        $filter['custom']       = $filter_custom;
 
         $filter['fdate']   = date("Y-m-d", strtotime($filter_fdate)) . ' 00:00:00';
-        if($filter_tdate < $ngay_hien_tai) {
-            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' 23:59:59';
+        if ($filter_tdate < $ngay_hien_tai) {
+            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)) . ' 23:59:59';
         } else {
-            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' '. date("H:i:s");
+            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)) . ' ' . date("H:i:s");
         }
 
         $list_order = $this->Order_model->get_list_v2($filter, $role);       //lấy tất cả đơn
@@ -190,6 +197,7 @@ class Order extends MY_Controller
         $data['filter_fdate']         = $filter_fdate;
         $data['filter_tdate']         = $filter_tdate;
         $data['filter_id_user']       = $filter_id_user;
+        $data['filter_custom']        = $filter_custom;
 
         $data['all_service']    = $all_service;
         $data['all_status']     = $all_status;

@@ -131,6 +131,23 @@
                     </select>
                 </div>
             <?php } ?>
+
+            <!-- Lọc theo đơn custom -->
+            <?php if ($role != EDITOR) { ?>
+                <div class="col-md-4 mb-2">
+                    <small>Đơn custom</small><br>
+                    <select class="select2" name="filter_custom" id="filter_custom" data-minimum-results-for-search="Infinity">
+                        <option value=">=" <?= $filter_custom == '>=' ? 'selected' : '' ?>>Tất cả</option>
+                        <option value=">" <?= $filter_custom == '>' ? 'selected' : '' ?>>Có custom</option>
+                        <option value="=" <?= $filter_custom == '=' ? 'selected' : '' ?>>Không custom</option>
+                    </select>
+                </div>
+            <?php } ?>
+
+            <div class="col-md-4 mb-2">
+                <small>&nbsp;</small><br>
+                <button type="submit" class="btn btn-primary" title="Tìm kiếm"><i class="fas fa-search"></i> Lọc đơn</button>
+            </div>
         </div>
     </div>
 </form>

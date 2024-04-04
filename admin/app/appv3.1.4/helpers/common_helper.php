@@ -1621,6 +1621,30 @@ function QSQL_IN($filed, $id_string, $CI)
     }
 }
 
+//  > >= < <= = !=
+function QSQL_COMPARE($filed, $compare, $value_compare, $CI)
+{
+    if($value_compare !== '') {
+        if($compare == '>') {
+            return " $filed > $value_compare ";
+        } else if($compare == '>=') {
+            return " $filed >= $value_compare ";
+        } else if($compare == '<') {
+            return " $filed < $value_compare ";
+        }else if($compare == '<=') {
+            return " $filed <= $value_compare ";
+        } else if($compare == '!=') {
+            return " $filed != $value_compare ";
+        } else if($compare == '=') {
+            return " $filed = $value_compare ";
+        } else {
+            return ' 1=1 ';
+        }
+    } else {
+        return ' 1=1 ';
+    }
+}
+
 function get_role_name($role)
 {
     if ($role == ADMIN) {

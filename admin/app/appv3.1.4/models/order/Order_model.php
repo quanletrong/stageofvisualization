@@ -188,15 +188,16 @@ class Order_model extends CI_Model
         $list_order = [];
         $iconn = $this->db->conn_id;
 
-        $filter_code_order   = isset($filter['code_order'])     ? $filter['code_order']     : '';
-        $filter_user_code    = isset($filter['user_code'])      ? $filter['user_code']      : '';
-        $filter_status       = isset($filter['status'])         ? $filter['status']         : '';
-        $filter_type_service = isset($filter['type_service'])   ? $filter['type_service']   : '';      // vs vr ...
-        $filter_order_type   = isset($filter['order_type'])     ? $filter['order_type']     : '';      // khách tạo, nội bộ, tạo hộ
-        $filter_ed_type      = isset($filter['ed_type'])        ? $filter['ed_type']        : '';      // nội bộ, ctv
-        $filter_fdate        = isset($filter['fdate'])          ? $filter['fdate']          : '';
-        $filter_tdate        = isset($filter['tdate'])          ? $filter['tdate']          : '';
-        $filter_id_user      = isset($filter['id_user'])        ? $filter['id_user']        : '';
+        $filter_code_order     = isset($filter['code_order'])     ? $filter['code_order']     : '';
+        $filter_user_code      = isset($filter['user_code'])      ? $filter['user_code']      : '';
+        $filter_status         = isset($filter['status'])         ? $filter['status']         : '';
+        $filter_type_service   = isset($filter['type_service'])   ? $filter['type_service']   : '';                  // vs vr ...
+        $filter_order_type     = isset($filter['order_type'])     ? $filter['order_type']     : '';                  // khách tạo, nội bộ, tạo hộ
+        $filter_ed_type        = isset($filter['ed_type'])        ? $filter['ed_type']        : '';                  // nội bộ, ctv
+        $filter_fdate          = isset($filter['fdate'])          ? $filter['fdate']          : '';
+        $filter_tdate          = isset($filter['tdate'])          ? $filter['tdate']          : '';
+        $filter_id_user        = isset($filter['id_user'])        ? $filter['id_user']        : '';
+        $filter_custom         = isset($filter['custom'])         ? $filter['custom']         : '';
 
         $this->session->set_flashdata('PARAMS', []);
         // SELECT
@@ -234,6 +235,9 @@ class Order_model extends CI_Model
 
                 AND (" . QSQL_LIKE_OR('concat(",", tbl_tam.list_user, ",")', $filter_id_user, $this) . ")
                 AND (" . QSQL_LIKE_OR('concat(",", tbl_tam.list_service, ",")', $filter_type_service, $this) . ") 
+
+                AND (" . QSQL_COMPARE('tbl_order.custom', $filter_custom, 0, $this) . ") 
+
                 AND " . QSQL_BETWEEN('tbl_order.create_time', $filter_fdate, $filter_tdate, $this) . "
 
             ORDER BY 
