@@ -1072,15 +1072,14 @@ class Order extends MY_Controller
         $second   = $this->input->post('second');
         $id_order = $this->input->post('id_order');
 
-        is_numeric($second) && $second >= 0 ? '' : resError('Thời gian không hợp lệ');
+        is_numeric($second) && $second >= 0 ? '' : resError('Thời gian không được để trống');
 
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn hàng không tồn tại') : '';
 
-        // thời gian mới = thời gian cũ
-        $order['custom_time'] == $second ? resSuccess('Thành công') : '';
+        $custom_time = time() - strtotime($order['create_time']) + $second;
 
-        $this->Order_model->update_custom_time_order($id_order, $second);
+        $this->Order_model->update_custom_time_order($id_order, $custom_time);
 
         //LOG
         $log['type']      = LOG_TIME_CUSTOM;

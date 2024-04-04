@@ -576,6 +576,73 @@ function no_count_down_time(time, timeDone, elId) {
     document.getElementById(elId).innerHTML = html;
 }
 
+function no_count_down_time_v2(tsp_done, tsp_tao, tsp_custom, elId) {
+
+    //before
+    document.getElementById(elId).innerHTML = '<i class="fas fa-sync fa-spin"></i>';
+
+    var distance = (tsp_done - tsp_tao) - tsp_custom;
+
+    // kiêm tra xem đã hết hạn chưa
+    let IS_EXPIRED = distance > 0 ? true : false;
+    let distance_abs = Math.abs(distance);
+
+    var days = Math.floor(distance_abs / (60 * 60 * 24));
+    var hours = Math.floor((distance_abs % (60 * 60 * 24)) / (60 * 60));
+    var minutes = Math.floor((distance_abs % (60 * 60)) / 60);
+    var seconds = Math.floor(distance_abs % 60);
+
+    // CODE CU
+    // let ket_qua = days + " ngày : " + hours + " giờ : " + minutes + " phút " + seconds + "";
+
+    let bg_color = IS_EXPIRED ? 'bg-danger' : 'bg-success';
+    let html = `
+        <div class='d-flex' style="gap:10px; justify-content: space-evenly; width:100%; font-weight: bold;">
+            <div class="d-flex" style="flex-direction:column; align-items: center;">
+                <div 
+                    class="text-light rounded-circle ${bg_color} p-2 d-flex" 
+                    style="width: 30px; height: 30px; align-items: center;justify-content: center;"
+                >
+                    <span>${days}</span>
+                </div>
+                <span>Ngày</span>
+            </div>
+            
+            <div class="d-flex" style="flex-direction:column; align-items: center;">
+                <div 
+                    class="text-light rounded-circle ${bg_color} p-2 d-flex" 
+                    style="width: 30px; height: 30px; align-items: center;justify-content: center;"
+                >
+                    <span>${hours}</span>
+                </div>
+                <span>Giờ</span>
+            </div>
+
+            <div class="d-flex" style="flex-direction:column; align-items: center;">
+                <div 
+                    class="text-light rounded-circle ${bg_color} p-2 d-flex" 
+                    style="width: 30px; height: 30px; align-items: center;justify-content: center;"
+                >
+                    <span>${minutes}</span>
+                </div>
+                <span>Phút</span>
+            </div>
+
+            <div class="d-flex" style="flex-direction:column; align-items: center;">
+                <div 
+                    class="text-light rounded-circle ${bg_color} p-2 d-flex" 
+                    style="width: 30px; height: 30px; align-items: center;justify-content: center;"
+                >
+                    <span>${seconds}</span>
+                </div>
+                <span>Giây</span>
+            </div>
+
+        </div>
+    `;
+    document.getElementById(elId).innerHTML = html;
+}
+
 function scroll_to(selector, offset=200) {
     $([document.documentElement, document.body]).animate({
         scrollTop: $(selector).offset().top - offset

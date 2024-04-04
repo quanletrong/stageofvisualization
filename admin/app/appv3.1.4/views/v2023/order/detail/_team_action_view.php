@@ -524,13 +524,12 @@
         return date;
     }
     let start = new Date('2023-08-30 01:30:00');
-    console.log(start)
     let newDate1 = addCustom(start, 0, 1, 10, 30);
-    console.log(newDate1); // 2022-05-15T19:00:00.000Z
 
+    // TODO: cheeck  tiếp đoạn nãy
     // count_down_time('$DMY_han_chot', 'cdt_$id_order')
 
-    secondsToDhms(<?= $order['custom_time'] ?>);
+    // secondsToDhms(<?= $order['custom_time'] ?>);
 
     function secondsToDhms(seconds) {
         seconds = Number(seconds);
@@ -551,6 +550,7 @@
         }
         return data;
     }
+    // TODO: đến đoạn nãy
 
     function ajax_change_custom_time(btn, id_order) {
         let dCustom = $('#dCustom').val();
@@ -586,6 +586,7 @@
                 }
 
                 $(btn).prop("disabled", false);
+                $(btn).html(' <i class="fas fa-save"></i>');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(data);

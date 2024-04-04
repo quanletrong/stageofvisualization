@@ -1197,7 +1197,7 @@ function status_late_order($status_text, $time_create_order, $time_done, $custom
 
 // đếm ngược thời gian hoàn thành đơn
 
-function count_down_time_order($order)
+function count_down_time_order_v1($order)
 {
     $id_order          = $order['id_order'];
     $thoi_gian_tao_don = strtotime($order['create_time']);
@@ -1212,6 +1212,28 @@ function count_down_time_order($order)
         $DMY_thoi_gian_tra_don = date('Y-m-d H:i:s', $thoi_gian_tra_don);
 
         return "<script>no_count_down_time('$DMY_han_chot', '$DMY_thoi_gian_tra_don', 'cdt_$id_order')</script>";
+    }
+    // chưa hoàn thành đơn
+    else {
+        $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
+
+        return "<script>count_down_time('$DMY_han_chot', 'cdt_$id_order')</script>";
+    }
+}
+
+function count_down_time_order($order)
+{
+    $id_order          = $order['id_order'];
+    $thoi_gian_tao_don = strtotime($order['create_time']);
+    $thoi_gian_tra_don = strtotime($order['done_qc_time']);
+    $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
+    $thoi_gian_lam_don = $order['custom_time'];
+    $han_chot          = $thoi_gian_tao_don + $thoi_gian_lam_don + MIN_TIME_WORKING;
+
+    // đã hoàn thành đơn
+    if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
+        
+        return "<script>no_count_down_time_v2($thoi_gian_tra_don, $thoi_gian_tao_don, $thoi_gian_lam_don, 'cdt_$id_order')</script>";
     }
     // chưa hoàn thành đơn
     else {
