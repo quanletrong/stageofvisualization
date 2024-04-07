@@ -97,11 +97,11 @@
                             <td class="align-middle text-center">
                                 <?php
                                 if ($order['status'] == ORDER_DONE) {
-                                    $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time']);
+                                    $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time_v2']);
                                 } else if ($order['status'] == ORDER_DELIVERED) {
-                                    $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                                    $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time_v2']);
                                 } else if ($order['status'] == ORDER_COMPLETE) {
-                                    $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                                    $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time_v2']);
                                 } else {
                                     $s = status_order($order['status']);
                                 }

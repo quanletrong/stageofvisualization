@@ -27,21 +27,19 @@
         <?php if (in_array($role, [ADMIN, SALE])) { ?>
             <div class="mb-3">
                 <b>Realtime</b>
-                <small onclick="alert('real time = (time tạo đơn + 24h) - time hiện tại')">[Mô tả]</small>
+                <small onclick="alert('real time = time hiện tại - time tạo đơn')">[Mô tả]</small>
                 <div id="cdt_real_time" class="mt-2" title="<?= $order['create_time'] ?>">
                     <script>
-                        // real time = (time tạo đơn + 24h) - time hiện tại
-                        <?php $time_chot_don = strtotime($order['create_time']) + 86400; ?>
-                        count_down_time('<?= date('Y-m-d H:i:s', $time_chot_don) ?>', 'cdt_real_time')
+                        <?php $realtime24 = strtotime($order['create_time']); ?>
+                        count_down_time(<?= $realtime24 ?>, 'cdt_real_time');
                     </script>
                 </div>
             </div>
         <?php } ?>
         <div>
             <b>Countdown time</b>
-            <small onclick="alert('countdown time = (time tạo + time custom ) - time hiện tại')">[Mô tả]</small>
+            <small onclick="alert('countdown time = time custom - time hiện tại')">[Mô tả]</small>
             <div id="cdt_<?= $order['id_order'] ?>" class="mt-2">
-                <!-- countdown time = (time tạo + time custom ) - time hiện tại -->
                 <?= count_down_time_order($order) ?>
             </div>
         </div>
@@ -80,11 +78,11 @@
         <div class="mt-3">
             <?php
             if ($order['status'] == ORDER_DONE) {
-                $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time']);
+                $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time_v2']);
             } else if ($order['status'] == ORDER_DELIVERED) {
-                $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time_v2']);
             } else if ($order['status'] == ORDER_COMPLETE) {
-                $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time']);
+                $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time_v2']);
             } else {
                 $s = status_order($order['status']);
             }
@@ -527,9 +525,9 @@
     let newDate1 = addCustom(start, 0, 1, 10, 30);
 
     // TODO: cheeck  tiếp đoạn nãy
-    // count_down_time('$DMY_han_chot', 'cdt_$id_order')
+    // count_down_time($DMY_han_chot, 'cdt_$id_order')
 
-    // secondsToDhms(<?= $order['custom_time'] ?>);
+    // secondsToDhms(<?= $order['custom_time_v2'] ?>);
 
     function secondsToDhms(seconds) {
         seconds = Number(seconds);

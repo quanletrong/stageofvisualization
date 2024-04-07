@@ -392,8 +392,7 @@ function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function count_down_time(time, elId) {
-    
+function count_down_time(expire_str, elId) {
     //before=
     let init = `
     <div class='d-flex' style="gap:10px; justify-content: space-evenly; width:100%; font-weight: bold;">
@@ -441,19 +440,18 @@ function count_down_time(time, elId) {
 
     document.getElementById(elId).innerHTML = init;
 
-    var countDownDate = new Date(time).getTime();
     var x = setInterval(function () {
-        var now = new Date().getTime();
-        var distance = countDownDate - now;
+        var now_str = Math.floor(Date.now() / 1000);
+        var distance = expire_str - now_str;
 
         // kiêm tra xem đã hết hạn chưa
         let IS_EXPIRED = distance < 0 ? true : false;
         let distance_abs = Math.abs(distance);
 
-        var days = Math.floor(distance_abs / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance_abs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance_abs % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance_abs % (1000 * 60)) / 1000);
+        var days = Math.floor(distance_abs / (60 * 60 * 24));
+        var hours = Math.floor((distance_abs % (60 * 60 * 24)) / (60 * 60));
+        var minutes = Math.floor((distance_abs % (60 * 60)) / 60);
+        var seconds = Math.floor(distance_abs % 60);
 
         let bg_color = IS_EXPIRED ? 'bg-danger' : 'bg-success';
         // let am = IS_EXPIRED ? '-' : '';
@@ -576,12 +574,14 @@ function no_count_down_time(time, timeDone, elId) {
     document.getElementById(elId).innerHTML = html;
 }
 
-function no_count_down_time_v2(tsp_done, tsp_tao, tsp_custom, elId) {
+function no_count_down_time_v2(done_str, expire_str, elId) {
 
     //before
     document.getElementById(elId).innerHTML = '<i class="fas fa-sync fa-spin"></i>';
 
-    var distance = (tsp_done - tsp_tao) - tsp_custom;
+    console.log(done_str)
+    console.log(expire_str)
+    var distance = done_str - expire_str;
 
     // kiêm tra xem đã hết hạn chưa
     let IS_EXPIRED = distance > 0 ? true : false;

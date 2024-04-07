@@ -1178,14 +1178,12 @@ function status_order($status)
 function status_late_order($status_text, $time_create_order, $time_done, $custom_time_second = 0, $second_time_limit = MIN_TIME_WORKING)
 {
     $data = [];
-    $tsp_time_create_order = strtotime($time_create_order);
-    $tsp_time_done = strtotime($time_done);
+    $done_str = strtotime($time_done);
 
-    // 13h 3/8/2023 - 12h 2/8/2023 = 25h => 25h < 24h + 2h => DONE LATE
-    // 13h 3/8/2023 - 12h 2/8/2023 - 2h  = 23h < 24h => DONE
-    $thoi_gian_lam = $tsp_time_done - $tsp_time_create_order;
-    $thoi_gian_gioi_han = $second_time_limit + $custom_time_second;
-    if ($thoi_gian_lam > $thoi_gian_gioi_han) {
+    $expire_str = strtotime($custom_time_second);
+    $expire_str = $expire_str == false || $expire_str < 0 ? 0 : $expire_str;
+
+    if ($done_str > $expire_str) {
         $data['text'] = $status_text . ' LATE';
         $data['bg'] = 'darkred';
     } else {
@@ -1195,51 +1193,25 @@ function status_late_order($status_text, $time_create_order, $time_done, $custom
     return $data;
 }
 
-// đếm ngược thời gian hoàn thành đơn
-
-function count_down_time_order_v1($order)
-{
-    $id_order          = $order['id_order'];
-    $thoi_gian_tao_don = strtotime($order['create_time']);
-    $thoi_gian_tra_don = strtotime($order['done_qc_time']);
-    $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
-    $cong_them_gio     = $order['custom_time'];
-    $han_chot          = $thoi_gian_tao_don + $cong_them_gio + MIN_TIME_WORKING;
-
-    // đã hoàn thành đơn
-    if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
-        $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
-        $DMY_thoi_gian_tra_don = date('Y-m-d H:i:s', $thoi_gian_tra_don);
-
-        return "<script>no_count_down_time('$DMY_han_chot', '$DMY_thoi_gian_tra_don', 'cdt_$id_order')</script>";
-    }
-    // chưa hoàn thành đơn
-    else {
-        $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
-
-        return "<script>count_down_time('$DMY_han_chot', 'cdt_$id_order')</script>";
-    }
-}
-
 function count_down_time_order($order)
 {
-    $id_order          = $order['id_order'];
-    $thoi_gian_tao_don = strtotime($order['create_time']);
-    $thoi_gian_tra_don = strtotime($order['done_qc_time']);
-    $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
-    $thoi_gian_lam_don = $order['custom_time'];
-    $han_chot          = $thoi_gian_tao_don + $thoi_gian_lam_don + MIN_TIME_WORKING;
+    $id_order = $order['id_order'];
+
+    $qc_done_str = strtotime($order['done_qc_time']);
+    $qc_done_str = $qc_done_str == false || $qc_done_str < 0 ? 0 : $qc_done_str;
+
+    $expire_str = strtotime($order['custom_time_v2']);
+    $expire_str = $expire_str == false || $expire_str < 0 ? 0 : $expire_str;
 
     // đã hoàn thành đơn
     if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
         
-        return "<script>no_count_down_time_v2($thoi_gian_tra_don, $thoi_gian_tao_don, $thoi_gian_lam_don, 'cdt_$id_order')</script>";
+        return "<script>no_count_down_time_v2($qc_done_str, $expire_str, 'cdt_$id_order')</script>";
     }
     // chưa hoàn thành đơn
     else {
-        $DMY_han_chot = date('Y-m-d H:i:s', $han_chot);
 
-        return "<script>count_down_time('$DMY_han_chot', 'cdt_$id_order')</script>";
+        return "<script>count_down_time($expire_str, 'cdt_$id_order')</script>";
     }
 }
 
@@ -1265,52 +1237,46 @@ function string_time_to_countdown($start, $end)
 
 function count_down_time_order_for_export($order)
 {
-    $thoi_gian_tao_don = strtotime($order['create_time']);
-    $thoi_gian_tra_don = strtotime($order['done_qc_time']);
-    $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
-    $cong_them_gio     = $order['custom_time'];
-    $han_chot          = $thoi_gian_tao_don + $cong_them_gio + MIN_TIME_WORKING;
+    $dơn_qc_str = strtotime($order['done_qc_time']);
+    $dơn_qc_str = $dơn_qc_str == false || $dơn_qc_str < 0 ? 0 : $dơn_qc_str;
+
+    $expire_str = strtotime($order['custom_time_v2']);
+    $expire_str = $expire_str == false || $expire_str < 0 ? 0 : $expire_str;
 
     // đã hoàn thành đơn
     if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
         // hoàn thành đúng hạn
-        if ($thoi_gian_tra_don <= $han_chot) {
+        if ($dơn_qc_str <= $expire_str) {
 
-            return ["TRƯỚC HẠN", string_time_to_countdown($thoi_gian_tra_don, $han_chot)];
+            return ["TRƯỚC HẠN", string_time_to_countdown($dơn_qc_str, $expire_str)];
         }
         // hoàn thành trễ hạn
         else {
-            return ["TRỄ HẠN", string_time_to_countdown($han_chot, $thoi_gian_tra_don)];
+            return ["TRỄ HẠN", string_time_to_countdown($expire_str, $dơn_qc_str)];
         }
     }
     // chưa hoàn thành đơn
     else {
         $now = time();
         // chưa đến hạn chót
-        if ($now <= $han_chot) {
-            return ["CÒN HẠN", string_time_to_countdown($now, $han_chot)];
+        if ($now <= $expire_str) {
+            return ["CÒN HẠN", string_time_to_countdown($now, $expire_str)];
         }
         // đã quá hạn chót
         else {
-            return ["TRỄ HẠN", string_time_to_countdown($han_chot, $now)];
+            return ["TRỄ HẠN", string_time_to_countdown($expire_str, $now)];
         }
     }
 }
 
 function is_late_order($order)
 {
-    $thoi_gian_hien_tai = time();
-    $thoi_gian_tao_don = strtotime($order['create_time']);
-    $thoi_gian_tra_don = strtotime($order['done_qc_time']);
-    $thoi_gian_tra_don = $thoi_gian_tra_don == false || $thoi_gian_tra_don < 0 ? 0 : $thoi_gian_tra_don;
-    $cong_them_gio = $order['custom_time'];
-    $han_chot = $thoi_gian_tao_don + $cong_them_gio + MIN_TIME_WORKING;
+    $now_str = time();
 
-    $ket_qua = 0;
+    $expire_str = strtotime($order['custom_time_v2']);
+    $expire_str = $expire_str == false || $expire_str < 0 ? 0 : $expire_str;
 
-    $ket_qua = $han_chot - $thoi_gian_hien_tai;
-
-    return $ket_qua < 0;
+    return $expire_str < $now_str;
 }
 
 function url_image($file_name, $folder)

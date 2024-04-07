@@ -1077,15 +1077,15 @@ class Order extends MY_Controller
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn hàng không tồn tại') : '';
 
-        $custom_time = time() - strtotime($order['create_time']) + $second;
+        $custom_time = date('Y-m-d H:i:s', time() + $second);
 
         $this->Order_model->update_custom_time_order($id_order, $custom_time);
 
         //LOG
         $log['type']      = LOG_TIME_CUSTOM;
         $log['id_order']  = $order['id_order'];
-        $log['old']       = sec2time($order['custom_time']);
-        $log['new']       = sec2time($second);
+        $log['old']       = $order['custom_time_v2'];
+        $log['new']       = $custom_time;
         $this->Log_model->log_add($log, $order);
 
         resSuccess('Thành công');

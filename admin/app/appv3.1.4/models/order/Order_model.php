@@ -994,7 +994,7 @@ class Order_model extends CI_Model
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_order SET custom_time=? WHERE id_order=? LIMIT 1";
+        $sql = "UPDATE tbl_order SET custom_time_v2=? WHERE id_order=? LIMIT 1";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
