@@ -87,7 +87,9 @@
     }, 1000);
 
 
-    $(document).ready(function() {})
+    $(document).ready(function() {
+        $('.main-header').hide()
+    })
 
     function onclick_el_gchat(id_group) {
 
@@ -243,6 +245,7 @@
                 $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
 
                 tooltipTriggerList('#chat_right');
+                set_vh_list_chat();
             }
         }
     })

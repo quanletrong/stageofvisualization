@@ -1,4 +1,4 @@
-<div style="overflow-x: hidden; overflow-y: auto; height: 93vh; background: white; border-radius: 5px; padding: 5px;">
+<div style="overflow-x: hidden; overflow-y: auto; height: 99vh; background: white; border-radius: 5px; padding: 5px;">
     <div style="display: flex; justify-content: space-between;">
         <h3>Đoạn chat</h3>
         <div id="btn-add-group" title="Thêm nhóm" data-toggle="modal" data-target="#modal-add-group"><i class="fas fa-plus-circle"></i></div>

@@ -33,7 +33,7 @@
     </div>
     <div class="card-body bg-white p-1">
         <div style="display: flex; flex-direction: column; justify-content: flex-end;">
-            <div class="list-chat" style="height: 76vh; overflow-y: auto;">
+            <div class="list-chat" style="height: 81vh; overflow-y: auto;">
                 <center><i class="fas fa-sync fa-spin"></i></center>
             </div>
             <div class="mt-2 nhap_du_lieu_chat">
@@ -245,6 +245,7 @@
     function remove_chat_attach(id) {
         if (confirm("Are you sure you want to delete this file?") == true) {
             $(id).remove();
+            set_vh_list_chat();
         }
     }
 
@@ -280,5 +281,26 @@
         }
 
         $('#chat_right .chat_list_attach').append(html);
+
+        set_vh_list_chat();
+    }
+
+    function set_vh_list_chat() {
+
+        let chat_list_attach_height = $('#chat_right .chat_list_attach').height();
+        let content_chat_height = $('#chat_right .content_chat').height();
+
+        if (chat_list_attach_height == 0) {
+            $('#chat_right .list-chat').css('height', '81vh');
+        } else {
+            let windown_height = $(window).height();
+            let chat_list_attach_vh = chat_list_attach_height * 100 / windown_height;
+            let list_chat_height = $('#chat_right .list-chat').height();
+            let list_chat_vh = list_chat_height * 100 / windown_height;
+            let list_chat_vh_new = (list_chat_vh - chat_list_attach_vh) + 'vh';
+            $('#chat_right .list-chat').css('height', list_chat_vh_new);
+        }
+
+        $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
     }
 </script>
