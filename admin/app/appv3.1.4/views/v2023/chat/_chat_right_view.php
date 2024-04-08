@@ -72,6 +72,10 @@
 <script>
     $(document).ready(function() {
 
+        $(".list-chat").on("scroll", function() {
+            $('.lazy').lazy();
+        });
+
         // INIT LẦN ĐẦU
         let item_group_active = $('.item-chat').first();
         <?php if ($chat_user != '') { ?>
@@ -201,7 +205,7 @@
                 title="Bấm để tải xuống"
             >   ${
                     (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                    ? `<img src="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" class="rounded border"  style="width:100%; aspect-ratio: 1;object-fit: cover;">`
+                    ? `<img data-src="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" class="rounded border lazy" style="width:100%; aspect-ratio: 1;object-fit: cover;">`
                     : `
                     <div class="rounded border p-2 text-truncate bg-light" style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
                         <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
