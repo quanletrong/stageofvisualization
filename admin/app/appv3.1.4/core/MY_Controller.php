@@ -342,9 +342,9 @@ class MY_Controller extends CI_Controller
             $func = $this->uri->rsegment(2);
 
             $list_role_block = $block_method[$method][$func];
-            
+
             if (!empty($list_role_block)) {
-                if (!in_array($role, $list_role_block)) {
+                if (in_array($role, $list_role_block)) {
                     if ($this->input->is_ajax_request()) {
                         resError('Tài khoản không có quyền truy cập');
                     } else {
