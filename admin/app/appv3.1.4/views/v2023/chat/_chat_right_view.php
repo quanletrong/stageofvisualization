@@ -131,6 +131,7 @@
                     $('#chat_right .list-chat').html(html).scrollTop($('#chat_right .list-chat')[0].scrollHeight);
 
                     tooltipTriggerList('#chat_right');
+                    $('.lazy').lazy();
                 } else {
                     alert(kq.error);
                 }
