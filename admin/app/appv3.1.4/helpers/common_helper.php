@@ -1175,12 +1175,12 @@ function status_order($status)
 
 // DONE, DELIVERED, COMPLETE
 // $second_time_limit = 86400 = 1 day
-function status_late_order($status_text, $time_create_order, $time_done, $custom_time_second = 0, $second_time_limit = MIN_TIME_WORKING)
+function status_late_order($status_text, $time_done, $expire)
 {
     $data = [];
     $done_str = strtotime($time_done);
 
-    $expire_str = strtotime($custom_time_second);
+    $expire_str = strtotime($expire);
     $expire_str = $expire_str == false || $expire_str < 0 ? 0 : $expire_str;
 
     if ($done_str > $expire_str) {
@@ -1200,7 +1200,7 @@ function count_down_time_order($order)
     $qc_done_str = strtotime($order['done_qc_time']);
     $qc_done_str = $qc_done_str == false || $qc_done_str < 0 ? 0 : $qc_done_str;
 
-    $expire_str = strtotime($order['custom_time_v2']);
+    $expire_str = strtotime($order['expire']);
     $expire_str = $expire_str == false || $expire_str < 0 ? 0 : $expire_str;
 
     // đã hoàn thành đơn
@@ -1240,7 +1240,7 @@ function count_down_time_order_for_export($order)
     $dơn_qc_str = strtotime($order['done_qc_time']);
     $dơn_qc_str = $dơn_qc_str == false || $dơn_qc_str < 0 ? 0 : $dơn_qc_str;
 
-    $expire_str = strtotime($order['custom_time_v2']);
+    $expire_str = strtotime($order['expire']);
     $expire_str = $expire_str == false || $expire_str < 0 ? 0 : $expire_str;
 
     // đã hoàn thành đơn
@@ -1273,7 +1273,7 @@ function is_late_order($order)
 {
     $now_str = time();
 
-    $expire_str = strtotime($order['custom_time_v2']);
+    $expire_str = strtotime($order['expire']);
     $expire_str = $expire_str == false || $expire_str < 0 ? 0 : $expire_str;
 
     return $expire_str < $now_str;

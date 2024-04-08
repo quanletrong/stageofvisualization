@@ -47,11 +47,11 @@ foreach ($list_order as $id_order => $order) {
 
     #
     if ($order['status'] == ORDER_DONE) {
-        $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time_v2']);
+        $s = status_late_order('DONE', $order['done_editor_time'], $order['expire']);
     } else if ($order['status'] == ORDER_DELIVERED) {
-        $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time_v2']);
+        $s = status_late_order('DELIVERED', $order['done_qc_time'], $order['expire']);
     } else if ($order['status'] == ORDER_COMPLETE) {
-        $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time_v2']);
+        $s = status_late_order('COMPLETE', $order['done_qc_time'], $order['expire']);
     } else {
         $s = status_order($order['status']);
     }

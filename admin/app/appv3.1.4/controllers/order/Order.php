@@ -1064,7 +1064,7 @@ class Order extends MY_Controller
         resSuccess('Thành công');
     }
 
-    function ajax_change_custom_time()
+    function ajax_change_expire()
     {
         $role = $this->_session_role();
         !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
@@ -1072,20 +1072,20 @@ class Order extends MY_Controller
         $second   = $this->input->post('second');
         $id_order = $this->input->post('id_order');
 
-        is_numeric($second) && $second >= 0 ? '' : resError('Thời gian không được để trống');
+        is_numeric($second) ? '' : resError('Thời gian không hợp lệ');
 
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn hàng không tồn tại') : '';
 
-        $custom_time = date('Y-m-d H:i:s', time() + $second);
+        $expire = date('Y-m-d H:i:s', time() + $second);
 
-        $this->Order_model->update_custom_time_order($id_order, $custom_time);
+        $this->Order_model->update_expire_order($id_order, $expire);
 
         //LOG
         $log['type']      = LOG_TIME_CUSTOM;
         $log['id_order']  = $order['id_order'];
-        $log['old']       = $order['custom_time_v2'];
-        $log['new']       = $custom_time;
+        $log['old']       = $order['expire'];
+        $log['new']       = $expire;
         $this->Log_model->log_add($log, $order);
 
         resSuccess('Thành công');

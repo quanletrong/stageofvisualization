@@ -929,7 +929,7 @@ class Order_model extends CI_Model
         WHERE 1=1
             AND A.id_job NOT IN (SELECT C.id_job FROM tbl_job_user C WHERE C.id_job=A.id_job AND C.type_job_user=? AND C.status=1) 
             AND A.id_service IN ($LIST_SERVICE)
-        ORDER BY (UNIX_TIMESTAMP(B.create_time) + B.custom_time) ASC;";
+        ORDER BY B.expire ASC;";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -990,11 +990,11 @@ class Order_model extends CI_Model
         return $execute;
     }
 
-    function update_custom_time_order($id_order, $second)
+    function update_expire_order($id_order, $second)
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_order SET custom_time_v2=? WHERE id_order=? LIMIT 1";
+        $sql = "UPDATE tbl_order SET expire=? WHERE id_order=? LIMIT 1";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -1032,12 +1032,13 @@ class Order_model extends CI_Model
 
     function add_order($id_style, $create_time, $id_user, $status, $order_type, $create_id_user, $ed_type, $code_order)
     {
+        $expire = $create_time;
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_order (id_style, create_time, id_user, status, order_type, create_id_user, ed_type, code_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_order (id_style, create_time, id_user, status, order_type, create_id_user, ed_type, code_order, expire) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_style, $create_time, $id_user, $status, $order_type, $create_id_user, $ed_type, $code_order];
+            $param = [$id_style, $create_time, $id_user, $status, $order_type, $create_id_user, $ed_type, $code_order, $expire];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();

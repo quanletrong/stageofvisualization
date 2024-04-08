@@ -11,7 +11,7 @@
         -moz-appearance: textfield;
     }
 
-    #box_custom_time * {
+    #box_expire * {
         border-radius: 0;
     }
 </style>
@@ -44,45 +44,46 @@
             </div>
         </div>
 
-        <div class="mt-3">
-            <b>Time custom</b>
-            <small onclick="alert('Thời gian phải hoàn thành tính từ khi tạo đơn')">[Mô tả]</small>
-            <p>
-            <div class="d-flex" id="box_custom_time">
-                <?php $disable = in_array($role, [ADMIN, SALE]) ? '' : 'disabled'; ?>
-                <div class="d-flex">
-                    <div style="position: relative; width: 33%;">
-                        <input type="number" min=0 class="form-control" id="dCustom" value="" <?= $disable ?>>
-                        <span style="position: absolute; top:6px; right:6px">Ngày</span>
+        <?php if(in_array($role, [ADMIN, SALE])) {?>
+            <div class="mt-3">
+                <b>Time custom</b>
+                <small onclick="alert('Thời gian phải hoàn thành tính từ khi tạo đơn')">[Mô tả]</small>
+                <p>
+                <div class="d-flex" id="box_expire">
+                    <div class="d-flex">
+                        <div style="position: relative; width: 33%;">
+                            <input type="number" min=0 class="form-control" id="dCustom" value="">
+                            <span style="position: absolute; top:6px; right:6px">Ngày</span>
+                        </div>
+                        <div style="position: relative; width: 33%;">
+                            <input type="number" min=0 class="form-control" id="hCustom" value="">
+                            <span style="position: absolute; top:6px; right:6px">Giờ</span>
+                        </div>
+                        <div style="position: relative; width: 33%;">
+                            <input type="number" min=0 class="form-control" id="mCustom" value="">
+                            <span style="position: absolute; top:6px; right:6px">Phút</span>
+                        </div>
+                        <div style="position: relative; display: none;">
+                            <input type="number" min=0 class="form-control" id="sCustom" value="">
+                            <span style="position: absolute; top:6px; right:6px">Giây</span>
+                        </div>
                     </div>
-                    <div style="position: relative; width: 33%;">
-                        <input type="number" min=0 class="form-control" id="hCustom" value="" <?= $disable ?>>
-                        <span style="position: absolute; top:6px; right:6px">Giờ</span>
-                    </div>
-                    <div style="position: relative; width: 33%;">
-                        <input type="number" min=0 class="form-control" id="mCustom" value="" <?= $disable ?>>
-                        <span style="position: absolute; top:6px; right:6px">Phút</span>
-                    </div>
-                    <div style="position: relative; display: none;">
-                        <input type="number" min=0 class="form-control" id="sCustom" value="" <?= $disable ?>>
-                        <span style="position: absolute; top:6px; right:6px">Giây</span>
-                    </div>
-                </div>
 
-                <button class="btn btn-warning" type="button" <?= $disable ?> onclick="ajax_change_custom_time(this, <?= $order['id_order'] ?>)" style="width: 50px;"><i class="fas fa-save"></i></button>
+                    <button class="btn btn-warning" type="button" onclick="ajax_change_expire(this, <?= $order['id_order'] ?>)" style="width: 50px;"><i class="fas fa-save"></i></button>
+                </div>
+                </p>
             </div>
-            </p>
-        </div>
+        <?php } ?>
 
         <!-- STATUS -->
         <div class="mt-3">
             <?php
             if ($order['status'] == ORDER_DONE) {
-                $s = status_late_order('DONE', $order['create_time'], $order['done_editor_time'], $order['custom_time_v2']);
+                $s = status_late_order('DONE', $order['done_editor_time'], $order['expire']);
             } else if ($order['status'] == ORDER_DELIVERED) {
-                $s = status_late_order('DELIVERED', $order['create_time'], $order['done_qc_time'], $order['custom_time_v2']);
+                $s = status_late_order('DELIVERED', $order['done_qc_time'], $order['expire']);
             } else if ($order['status'] == ORDER_COMPLETE) {
-                $s = status_late_order('COMPLETE', $order['create_time'], $order['done_qc_time'], $order['custom_time_v2']);
+                $s = status_late_order('COMPLETE', $order['done_qc_time'], $order['expire']);
             } else {
                 $s = status_order($order['status']);
             }
@@ -527,7 +528,7 @@
     // TODO: cheeck  tiếp đoạn nãy
     // count_down_time($DMY_han_chot, 'cdt_$id_order')
 
-    // secondsToDhms(<?= $order['custom_time_v2'] ?>);
+    // secondsToDhms(<?= $order['expire'] ?>);
 
     function secondsToDhms(seconds) {
         seconds = Number(seconds);
@@ -550,7 +551,7 @@
     }
     // TODO: đến đoạn nãy
 
-    function ajax_change_custom_time(btn, id_order) {
+    function ajax_change_expire(btn, id_order) {
         let dCustom = $('#dCustom').val();
         let hCustom = $('#hCustom').val();
         let mCustom = $('#mCustom').val();
@@ -566,7 +567,7 @@
         $(btn).html(' <i class="fas fa-sync fa-spin"></i>');
         $(btn).prop("disabled", true);
         $.ajax({
-            url: `order/ajax_change_custom_time`,
+            url: `order/ajax_change_expire`,
             type: "POST",
             data: {
                 id_order,
