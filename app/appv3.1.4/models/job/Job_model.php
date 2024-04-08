@@ -296,12 +296,13 @@ class Job_model extends CI_Model
     function add_rework($id_order, $id_job, $attach, $note, $id_user)
     {
         $execute = false;
+        $create_time = date('Y-m-d H:i:s');
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_job_rework (id_order, id_job, attach, note, id_user) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_job_rework (id_order, id_job, attach, note, id_user, create_time) VALUES (?, ?, ?, ?, ?, ?)";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_order, $id_job, $attach, $note, $id_user];
+            $param = [$id_order, $id_job, $attach, $note, $id_user, $create_time];
 
             if ($stmt->execute($param)) {
                 $execute = true;
