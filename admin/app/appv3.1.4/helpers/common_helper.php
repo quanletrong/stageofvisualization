@@ -64,7 +64,7 @@ function isIdNumber($str)
     }
 }
 
-function show_custom_error($mess = '')
+function show_custom_error($mess = 'Tài khoản không có quyền truy cập! <br/> <a href="/admin">Back Home</a>')
 {
     $CI = &get_instance();
     $langcode = get_langcode();
