@@ -20,24 +20,4 @@ class Payment extends MY_Controller {
             die();
         }
 	}
-
-	// function index()
-	// {
-    //     $data = [];
-    //     if($this->_session_role() != ADMIN) {
-    //         show_custom_error('Tài khoản không có quyền truy cập!');
-    //     }
-    //     $header = [
-    //         'title' => 'Trang chủ',
-    //         'header_page_css_js' => 'home'
-    //     ];
-        
-    //     $this->_loadHeader($header);
-    //     $this->load->view($this->_template_f . 'home/home_view', $data);
-    //     $this->_loadFooter();
-	// }
-
-    function handle_payment() {
-        
-    }
 }

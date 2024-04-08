@@ -36,11 +36,6 @@ class Order extends MY_Controller
 
     function index()
     {
-
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
-
         $data = [];
         $role = $this->_session_role();
         $uid = $this->_session_uid();
@@ -219,22 +214,13 @@ class Order extends MY_Controller
     //TODO: check quyên truy cập id_order
     function detail($id_order)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
-
         $data = [];
-
-        if (!isIdNumber($id_order)) {
-            dbClose();
-            redirect(site_url('order', $this->_langcode));
-            die();
-        }
+        $id_order = isIdNumber($id_order) ? $id_order : 0;
         $role = $this->_session_role();
         $uid = $this->_session_uid();
         $all_user_working = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, QC, EDITOR]));
         $order = $this->Order_model->get_info_order($id_order);
-        // var_dump($order);die;
+
         empty($order) ? redirect(site_url('order', $this->_langcode)) : '';
 
         ## check right access
@@ -281,17 +267,10 @@ class Order extends MY_Controller
 
     function add_private()
     {
-        $cur_uid = $this->_session_uid();
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
-            dbClose();
-            redirect(site_url('order', $this->_langcode));
-            die();
-        }
-
-        $room          = $this->Room_model->get_list(1);
-        $style         = $this->Style_model->get_list(1);
-        $library       = $this->Library_model->get_list(1);
-        $service       = $this->Service_model->get_list(1);
+        $room    = $this->Room_model->get_list(1);
+        $style   = $this->Style_model->get_list(1);
+        $library = $this->Library_model->get_list(1);
+        $service = $this->Service_model->get_list(1);
 
         $data = [];
         $data['list_room']     = $room;
@@ -310,13 +289,6 @@ class Order extends MY_Controller
 
     function add_customer()
     {
-        $cur_uid = $this->_session_uid();
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
-            dbClose();
-            redirect(site_url('order', $this->_langcode));
-            die();
-        }
-
         $room          = $this->Room_model->get_list(1);
         $style         = $this->Style_model->get_list(1);
         $library       = $this->Library_model->get_list(1);
@@ -342,10 +314,6 @@ class Order extends MY_Controller
     function submit_add($type)
     {
         $cur_uid     = $this->_session_uid();
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
-            resError('not_permit', 'Bạn không có quyền thực hiện.');
-        }
-
         $all_room    = $this->Room_model->get_list(1);
         $all_service = $this->Service_model->get_list(1);
         $all_style   = $this->Style_model->get_list(1);
@@ -543,13 +511,8 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role    = $this->_session_role();
-
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            resError('not_permit', 'Bạn không có quyền thực hiện.');
-        }
         $curr_uinfo = $this->User_model->get_user_info_by_id($cur_uid);
         $curr_uinfo['status'] == '-1' ? resError('Tài khoản của bạn đang bị khóa') : '';
-
 
         $user_service = implode(',', array_keys($curr_uinfo['user_service']));
 
@@ -577,7 +540,6 @@ class Order extends MY_Controller
     function ajax_change_status_order($id_order, $new_status)
     {
         $role    = $this->_session_role();
-        $cur_uid = $this->_session_uid();
 
         $order                = $this->Order_model->get_info_order($id_order);
         $allow_status_by_role = button_status_order_by_role($role);
@@ -651,8 +613,6 @@ class Order extends MY_Controller
         }
         // end lưu thời gian giao hàng
 
-
-
         // tính tiền cho user đang active trong đơn
         if ($new_status == ORDER_DELIVERED || $new_status == ORDER_COMPLETE) {
             $thoi_gian_tinh_tien = date('Y-m-d H:i:s');
@@ -679,7 +639,6 @@ class Order extends MY_Controller
         $order      = $this->Order_model->get_info_order($id_order);
 
         # CHECK RIGHT
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
         $curr_uinfo['status'] == 0  ? resError('Tài khoản đang bị khóa') : '';
         $as_uinfo             == [] ? resError('User được gán không tồn tại') : '';
         $as_uinfo['status']  == 0  ? resError('User được gán đang bị khóa') : '';
@@ -795,7 +754,6 @@ class Order extends MY_Controller
     // Bản chất xóa custom là đổi `status = 0`
     function ajax_remove_job_user($working_type, $id_order, $id_job, $id_user)
     {
-
         $role    = $this->_session_role();
         $cur_uid = $this->_session_uid();
 
@@ -804,10 +762,9 @@ class Order extends MY_Controller
         $order      = $this->Order_model->get_info_order($id_order);
 
         // chỉ admin, sale, qc, ed mới được vào đây
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản của bạn không có quyền thực hiện chức năng này')        : '';
-        $curr_uinfo['status'] == 0                  ? resError('Tài khoản của bạn đang bị khóa') : '';
-        $as_uinfo             == []                 ? resError('User được xóa không tồn tại') : '';
-        $order                == []                 ? resError('Đơn không tồn tại') : '';
+        $curr_uinfo['status'] == 0  ? resError('Tài khoản của bạn đang bị khóa') : '';
+        $as_uinfo             == [] ? resError('User được xóa không tồn tại') : '';
+        $order                == [] ? resError('Đơn không tồn tại') : '';
 
         // không được xóa người khi đơn đã giao, đã hoàn thành, đã hủy
         $order['status'] == ORDER_DELIVERED    ? resError('Đơn hàng đã giao không được thay đổi người làm') : '';
@@ -897,12 +854,8 @@ class Order extends MY_Controller
 
     function ajax_change_custom_order($id_order, $custom)
     {
-        $role    = $this->_session_role();
-        $cur_uid = $this->_session_uid();
         $order   = $this->Order_model->get_info_order($id_order);
-
         $order == []                        ? resError('Đơn không tồn tại') : '';
-        !in_array($role, [ADMIN, SALE])     ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
         !is_numeric($custom) || $custom < 0 ? resError('Tổng custom không hợp lệ') : '';
         $custom == $order['custom']         ? resSuccess('ok') : ''; // giá mới = giá cũ
 
@@ -925,10 +878,9 @@ class Order extends MY_Controller
         $order   = $this->Order_model->get_info_order($id_order);
         $uinfo   = $this->User_model->get_user_info_by_id($id_user);
 
-        $uinfo == []                                    ? resError('User không tồn tại') : '';
-        $order == []                                    ? resError('Đơn không tồn tại') : '';
-        !in_array($role, [ADMIN, SALE, QC, EDITOR])     ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-        !is_numeric($custom) || $custom < 0             ? resError('Tổng custom không hợp lệ') : '';
+        $uinfo == []                            ? resError('User không tồn tại') : '';
+        $order == []                            ? resError('Đơn không tồn tại') : '';
+        !is_numeric($custom) || $custom < 0     ? resError('Tổng custom không hợp lệ') : '';
 
         // QC ED không có quyền thay đổi custom của người khác
         // QC ED không có quyền thay custom khi đơn hàng đã giao hoặc đã hoàn thành hoặc đã hủy
@@ -971,15 +923,13 @@ class Order extends MY_Controller
 
     function ajax_ed_join_order($id_order)
     {
-        $role       = $this->_session_role();
         $cur_uid    = $this->_session_uid();
-        $cur_uname  = $this->_session_uname();;
+        $cur_uname  = $this->_session_uname();
         $curr_uinfo = $this->User_model->get_user_info_by_id($cur_uid);
         $order      = $this->Order_model->get_info_order($id_order);
 
-        $order == []                                ? resError('Đơn không tồn tại') : '';
-        $curr_uinfo['status'] == '-1'               ? resError('Tài khoản của bạn đang bị khóa') : '';
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
+        $order == []                    ? resError('Đơn không tồn tại') : '';
+        $curr_uinfo['status'] == '-1'   ? resError('Tài khoản của bạn đang bị khóa') : '';
 
         // kiểm tra đơn có hợp lệ không
         $list_job_no_ed = [];
@@ -1039,18 +989,11 @@ class Order extends MY_Controller
 
     function ajax_change_code_order()
     {
-        $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $id_order = $this->input->post('id_order');
         $code     = $this->input->post('code');
         $code     = removeAllTags($code);
-
-        $order         = $this->Order_model->get_info_order($id_order);
-        // $infoOrderCode = $this->Order_model->get_order_info_by_code($code);
-
-        $order == []            ? resError('Đơn hàng không tồn tại') : '';
-        // $infoOrderCode != []    ? resError('Code Order đã tồn tại') : '';
+        $order    = $this->Order_model->get_info_order($id_order);
+        $order == [] ? resError('Đơn hàng không tồn tại') : '';
 
         $this->Order_model->update_code_order($id_order, $code);
 
@@ -1066,9 +1009,6 @@ class Order extends MY_Controller
 
     function ajax_change_expire()
     {
-        $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $second   = $this->input->post('second');
         $id_order = $this->input->post('id_order');
 
@@ -1095,8 +1035,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role    = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $url_image = $this->input->post('url_image');
         $id_job    = $this->input->post('id_job');
 
@@ -1136,8 +1074,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $url_image = $this->input->post('url_image');
         $id_job = $this->input->post('id_job');
 
@@ -1182,8 +1118,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $id_job    = $this->input->post('id_job');
         $id_attach = $this->input->post('id_attach');
 
@@ -1220,8 +1154,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role    = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $url_image = $this->input->post('url_image');
         $id_job    = $this->input->post('id_job');
         $id_attach = $this->input->post('id_attach');
@@ -1267,8 +1199,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role    = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $id_job    = $this->input->post('id_job');
         $requirement = removeAllTags($this->input->post('requirement'));
 
@@ -1304,8 +1234,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $url_image = $this->input->post('url_image');
         $id_job    = $this->input->post('id_job');
 
@@ -1348,8 +1276,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $url_image   = $this->input->post('url_image');
         $id_job      = $this->input->post('id_job');
         $id_complete = $this->input->post('id_complete');
@@ -1394,8 +1320,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $id_job    = $this->input->post('id_job');
         $id_complete = $this->input->post('id_complete');
 
@@ -1431,9 +1355,6 @@ class Order extends MY_Controller
     {
 
         $cur_uid = $this->_session_uid();
-        $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $note   = $this->input->post('note');
         $attach = $this->input->post('attach');
 
@@ -1483,8 +1404,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $url_image = $this->input->post('url_image');
         $id_rework = $this->input->post('id_rework');
 
@@ -1526,11 +1445,8 @@ class Order extends MY_Controller
 
     function ajax_edit_file_attach_rework()
     {
-
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $url_image = $this->input->post('url_image');
         $id_rework = $this->input->post('id_rework');
         $id_attach = $this->input->post('id_attach');
@@ -1578,8 +1494,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $id_rework    = $this->input->post('id_rework');
         $id_attach = $this->input->post('id_attach');
 
@@ -1616,8 +1530,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $id_rework    = $this->input->post('id_rework');
         $requirement = removeAllTags($this->input->post('requirement'));
 
@@ -1654,8 +1566,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $url_image = $this->input->post('url_image');
         $id_rework = $this->input->post('id_rework');
 
@@ -1699,8 +1609,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $url_image          = $this->input->post('url_image');
         $id_rework          = $this->input->post('id_rework');
         $id_complete_rework = $this->input->post('id_complete_rework');
@@ -1750,8 +1658,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $id_rework    = $this->input->post('id_rework');
         $id_complete = $this->input->post('id_complete');
 
@@ -1790,14 +1696,9 @@ class Order extends MY_Controller
      */
     function ajax_update_ed_type()
     {
-        $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $ed_type   = $this->input->post('ed_type');
         $id_order = $this->input->post('id_order');
-
         in_array($ed_type, [ED_NOI_BO, ED_CTV]) ? '' : resError('Giá trị không hợp lệ');
-
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn hàng không tồn tại') : '';
 
@@ -1812,10 +1713,6 @@ class Order extends MY_Controller
     {
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-
-        // check right
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? redirect(site_url('order', $this->_langcode)) : '';
-
         isIdNumber($id_job) ? $id_job : 0;
 
         $job = $this->Job_model->get_info_job_by_id($id_job);
@@ -1851,9 +1748,6 @@ class Order extends MY_Controller
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
 
-        // check right
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         isIdNumber($id_rework) ? $id_rework : 0;
 
         $rework = $this->Job_model->get_info_rework_by_id($id_rework);
@@ -1881,23 +1775,9 @@ class Order extends MY_Controller
         }
     }
 
-    /**
-     * Chức năng lấy danh sách log
-     */
-
-    function ajax_log_order($id_order)
-    {
-    }
-
-
     function export()
     {
         $cur_uname = $this->_session_uname();
-        $role = $this->_session_role();
-
-        // check right
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $hdData = $this->input->post('hdData');
         $fromdate = date('Y-m-d', strtotime($this->input->post('fromdate')));
         $todate = date('Y-m-d', strtotime($this->input->post('todate')));
@@ -1916,25 +1796,18 @@ class Order extends MY_Controller
 
         $this->load->view($this->_template_f . 'order/list/excel.php', $data);
     }
+
     function ajax_log_list($id_order)
     {
 
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-
-        // check right
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         isIdNumber($id_order) ? $id_order : 0;
 
         $order = $this->Order_model->get_info_order($id_order);
         if ($role == QC || $role == EDITOR) {
             !isset($order['team'][$cur_uid]) ? resError('Tài khoản của bạn chưa tham gia đơn hàng này') : '';
         }
-
-        // end check right
-
-
         ## log
         $dk['id_order']    = $id_order;
         $logs              = $this->Log_model->log_list($dk, $order);

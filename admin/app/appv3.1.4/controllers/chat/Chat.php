@@ -26,10 +26,6 @@ class Chat extends MY_Controller
     function _index($chat_user = '')
     {
         $data = [];
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
-
         // danh sách người dùng chat
         $list_user_chat = $this->Chat_model->list_user_chat();
         $data['list_user_chat'] = $list_user_chat;
@@ -52,15 +48,11 @@ class Chat extends MY_Controller
     function index($chat_user = '')
     {
         $data = [];
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $curr_uid = $this->_session_uid();
 
         // danh sách nhóm
         $list_group = $this->Chat_model->list_group_by_user($curr_uid);
         $data['list_group'] = $list_group;
-        // var_dump($list_group);die;
 
         // danh sách người dùng chat
         $list_user_chat = $this->Chat_model->list_user_chat();
@@ -83,11 +75,6 @@ class Chat extends MY_Controller
 
     function ajax_chat_list_by_user($chat_user)
     {
-
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            resError('Tài khoản không có quyền truy cập!');
-        }
-
         // set tất cả tin nhắn là đã xem
         $this->Chat_model->da_xem_all_chat_user($chat_user);
 
@@ -99,10 +86,6 @@ class Chat extends MY_Controller
 
     function ajax_chat_add($chat_user)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            resError('Tài khoản không có quyền truy cập!');
-        }
-
         // check right
         $content = removeAllTags($this->input->post('content'));
         $attach = $this->input->post('attach');
@@ -142,10 +125,6 @@ class Chat extends MY_Controller
 
     function ajax_delete_chat_user($chat_user)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            resError('Tài khoản không có quyền truy cập!');
-        }
-
         if (isIdNumber($chat_user) || isIPV4($chat_user)) {
             $exc = $this->Chat_model->delete_chat_user($chat_user);
 
@@ -157,12 +136,6 @@ class Chat extends MY_Controller
 
     function ajax_add_group()
     {
-
-        // check right
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            resError('Tài khoản không có quyền truy cập!');
-        }
-
         $curr_uid = $this->_session_uid();
         $all_member = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
         $all_group = $this->Chat_model->all_group();
@@ -239,10 +212,6 @@ class Chat extends MY_Controller
 
     function ajax_list_msg_by_group($id_group)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            resError('Tài khoản không có quyền truy cập!');
-        }
-
         $curr_uid = $this->_session_uid();
 
         // set tất cả tin nhắn là đã xem
@@ -260,11 +229,7 @@ class Chat extends MY_Controller
 
     function ajax_msg_add_to_group($id_gchat)
     {
-        if (!in_array($this->_session_role(), [ADMIN, SALE, QC, EDITOR])) {
-            resError('Tài khoản không có quyền truy cập!');
-        }
         $curr_uid = $this->_session_uid();
-
         // check right
         $content = removeAllTags($this->input->post('content'));
         $attach = $this->input->post('attach');

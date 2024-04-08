@@ -27,9 +27,6 @@ class Kpi extends MY_Controller
 
     function index()
     {
-        $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC]) ? redirect(site_url('', $this->_langcode)) : '';
-
         $filter_fdate   = $this->input->get('filter_fdate');
         $filter_tdate   = $this->input->get('filter_tdate');
         $filter_id_user = $this->input->get('filter_id_user');

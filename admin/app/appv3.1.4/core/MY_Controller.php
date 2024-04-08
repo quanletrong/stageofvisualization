@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')){exit('No direct script access allowed');}
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 class MY_Controller extends CI_Controller
 {
@@ -62,23 +64,19 @@ class MY_Controller extends CI_Controller
         // set lang code for multi language url
         $arrLang = $this->config->item('lang_uri_abbr');
         $langcodeUrl = '';
-        if (MULTI_LANGUAGE)
-        {
-            foreach ($arrLang as $key => $langItem)
-            {
-                if ($this->_langcode == $langItem)
-                {
+        if (MULTI_LANGUAGE) {
+            foreach ($arrLang as $key => $langItem) {
+                if ($this->_langcode == $langItem) {
                     $langcodeUrl = $key;
                     break;
                 }
             }
         }
-        
+
         $preHeader['langcode_url'] = $langcodeUrl;
 
-        if ($this->_islogin())
-        {
-        	$preHeader['isLogin'] = true;
+        if ($this->_islogin()) {
+            $preHeader['isLogin'] = true;
             $preHeader['username'] = $this->_session_uname();
             $preHeader['userid'] = $this->_session_uid();
             $preHeader['role'] = $this->_session_role();
@@ -86,7 +84,6 @@ class MY_Controller extends CI_Controller
 
         // assign all common param to view
         $this->load->view($this->_template_f . 'preheader_view', $preHeader);
-
     }
 
     protected function _loadHeader($data = NULL, $menuTab = 0, $subMenuTab = 0, $loadHeader = TRUE)
@@ -101,7 +98,7 @@ class MY_Controller extends CI_Controller
         $header['loadHeader'] = $loadHeader;
         $header['menuTab'] = $menuTab;
         $header['subMenuTab'] = $subMenuTab;
-        
+
         // for new skin
         // check load header css, js file by page hay ko
         // $this->uri->rsegments[1].'_'.$this->uri->rsegments[2]
@@ -119,7 +116,7 @@ class MY_Controller extends CI_Controller
     {
         $footer = array();
         $footer['is_login'] = $this->_islogin();
-        $this->load->view($this->_template_f . 'footer_view', $footer );
+        $this->load->view($this->_template_f . 'footer_view', $footer);
     }
 
     protected function _session_uid()
@@ -139,10 +136,10 @@ class MY_Controller extends CI_Controller
     {
         $uname = $this->session->userdata('uname');
         $uname = strtolower($uname);
-        $uname = preg_match('/^[a-z0-9_@\-\.]+$/',$uname) ? $uname : '';
+        $uname = preg_match('/^[a-z0-9_@\-\.]+$/', $uname) ? $uname : '';
         return $uname;
     }
- 
+
     protected function _islogin()
     {
         $user_id = $this->_session_uid();
@@ -156,8 +153,10 @@ class MY_Controller extends CI_Controller
         $text = $url;
 
         $text = rawurldecode($text);
-        $text = htmlspecialchars_decode(html_entity_decode($text, ENT_QUOTES | ENT_IGNORE, "UTF-8"),
-                                        ENT_QUOTES | ENT_IGNORE);
+        $text = htmlspecialchars_decode(
+            html_entity_decode($text, ENT_QUOTES | ENT_IGNORE, "UTF-8"),
+            ENT_QUOTES | ENT_IGNORE
+        );
         $text = trim($text);
         $url = $text;
         // PHP's strip_tags() function will remove tags, but it
@@ -208,12 +207,12 @@ class MY_Controller extends CI_Controller
                 "\n\$0",
                 "\n\$0",
             ),
-            $text);
+            $text
+        );
 
         // Remove all remaining tags and comments and return.
         $text = strip_tags($text);
-        if ($text != $url)
-        {
+        if ($text != $url) {
             dbClose();
             show_404('', FALSE);
             die();
@@ -222,24 +221,137 @@ class MY_Controller extends CI_Controller
 
     protected function _permission_role()
     {
-        if ($this->_islogin())
-        {
+        if ($this->_islogin()) {
             $role = $this->_session_role();
-            $user_id = $this->_session_uid();
-            
+
+            if (!in_array($role, [ADMIN, SALE, QC, EDITOR])) {
+                show_custom_error();
+            }
+
+            $block_method = [
+                'chat' => [
+                    'index' => [],
+                    'ajax_chat_list_by_user' => [],
+                    'ajax_chat_add' => [],
+                    'ajax_delete_chat_user' => [],
+                    'ajax_add_group' => [],
+                    'ajax_list_msg_by_group' => [],
+                    'ajax_msg_add_to_group' => [],
+                ],
+                'discuss' => [
+                    'ajax_discuss_list_khach' => [QC, EDITOR],
+                    'ajax_discuss_list_noi_bo' => [],
+                    'ajax_discuss_noi_bo_add' => [],
+                    'ajax_discuss_khach_add' => [QC, EDITOR],
+                ],
+                'kpi' => [
+                    'index' => [EDITOR]
+                ],
+                'library' => [
+                    'index' => [SALE, QC, EDITOR],
+                    'ajax_delete' => [SALE, QC, EDITOR],
+                ],
+                'order' => [
+                    'index' => [],
+                    'detail' => [],
+                    'add_private' => [QC, EDITOR],
+                    'add_customer' => [QC, EDITOR],
+                    'submit_add' => [QC, EDITOR],
+                    'ajax_find_order' => [],
+                    'ajax_change_status_order' => [],
+                    'ajax_assign_job_user' => [],
+                    'ajax_remove_job_user' => [],
+                    'ajax_change_custom_order' => [QC, EDITOR],
+                    'ajax_change_custom_order_for_user' => [],
+                    'ajax_ed_join_order' => [],
+                    'ajax_change_code_order' => [QC, EDITOR],
+                    'ajax_change_expire' => [QC, EDITOR],
+                    'ajax_edit_main_file' => [EDITOR],
+                    'ajax_add_attach_file' => [EDITOR],
+                    'ajax_delete_attach_file' => [EDITOR],
+                    'ajax_edit_attach_file' => [EDITOR],
+                    'ajax_update_requirement' => [EDITOR],
+                    'ajax_add_file_complete' => [],
+                    'ajax_edit_file_complete' => [],
+                    'ajax_delete_file_complete' => [],
+                    'ajax_add_rework' => [QC, EDITOR],
+                    'ajax_add_file_attach_rework' => [EDITOR],
+                    'ajax_edit_file_attach_rework' => [EDITOR],
+                    'ajax_delete_file_attach_rework' => [EDITOR],
+                    'ajax_update_requirement_rework' => [EDITOR],
+                    'ajax_add_file_complete_rework' => [],
+                    'ajax_edit_file_complete_rework' => [],
+                    'ajax_delete_file_complete_rework' => [],
+                    'ajax_update_ed_type' => [QC, EDITOR],
+                    'ajax_zip_attach' => [],
+                    'ajax_zip_attach_rework' => [],
+                    'export' => [],
+                    'ajax_log_list' => [],
+                ],
+                'room' => [
+                    'index' => [SALE, QC, EDITOR],
+                ],
+                'service' => [
+                    'index' => [SALE, QC, EDITOR],
+                ],
+                'setting' => [
+                    'info' => [SALE, QC, EDITOR],
+                    'home' => [SALE, QC, EDITOR],
+                    'submit_home' => [SALE, QC, EDITOR],
+                    'privacy_policy' => [SALE, QC, EDITOR],
+                    'refund_policy' => [SALE, QC, EDITOR],
+                    'termsofuse' => [SALE, QC, EDITOR],
+                    'max_order_working' => [SALE, QC, EDITOR],
+                    'hiw' => [SALE, QC, EDITOR],
+                    'ajax_hiw_submit' => [SALE, QC, EDITOR],
+                ],
+                'style' => [
+                    'index' => [SALE, QC, EDITOR],
+                ],
+                'upload' => [
+                    'index' => [],
+                    'siglefile' => [],
+                ],
+                'user' => [
+                    'index' => [SALE, QC, EDITOR],
+                    'ajax_add_user' => [SALE, QC, EDITOR],
+                    'ajax_edit_user' => [SALE, QC, EDITOR],
+                    'ajax_change_code_user' => [QC, EDITOR],
+                    'ajax_load_info_user_create_order' => [QC, EDITOR],
+                    'info' => [],
+                    'ajax_edit_info' => [],
+                    'ajax_edit_password' => [],
+                ],
+                'voucher' => [
+                    'index' => [QC, EDITOR],
+                    'ajax_get_list_voucher' => [QC, EDITOR],
+                    'ajax_get_list_voucher_for_create_order_by_sale' => [QC, EDITOR],
+                ],
+                'withdraw' => [
+                    'index' => [SALE, QC, EDITOR],
+                    'detail' => [SALE, QC, EDITOR],
+                    'ajax_get_rut_tien' => [],
+                    'ajax_set_rut_tien' => [],
+                    'ajax_phe_duyet_rut_tien' => [SALE, QC, EDITOR],
+                    'ajax_set_rut_tien_ho' => [QC, EDITOR],
+                ],
+            ];
+
             // khong phai admin 
-            if ($role == 1)
-            {
-                // ví dụ:
-                // if (!in_array($this->uri->rsegment(1), array('codlist', 'login', 'account', 'logout', 'suser', 'recharge')))
-                // {
-                //     redirect(site_url('', $this->_langcode));
-                //     die();
-                // }
+            $method = $this->uri->rsegment(1);
+            $func = $this->uri->rsegment(2);
+
+            $list_role_block = $block_method[$method][$func];
+            if (!in_array($role, $list_role_block)) {
+                if ($this->input->is_ajax_request()) {
+                    resError('Tài khoản không có quyền truy cập');
+                } else {
+                    show_custom_error();
+                }
             }
         }
     }
-    
+
     protected function validKey($k1, $k2, $uid = '', $pid = '')
     {
         $data = array();
@@ -250,8 +362,7 @@ class MY_Controller extends CI_Controller
         $enc_id = EncryptData::Decode($enc_id);
         $enc_id = json_decode($enc_id, true);
         $chk_key = false;
-        if(is_array($enc_id))
-        {
+        if (is_array($enc_id)) {
             $tmp_ctt = isset($enc_id['ctt']) ? $enc_id['ctt'] : '';
             $tmp_userid = isset($enc_id['uid']) ? $enc_id['uid'] : '';
             $tmp_fromDate = isset($enc_id['fdate']) ? $enc_id['fdate'] : '';
@@ -275,5 +386,4 @@ class MY_Controller extends CI_Controller
 
         return $data;
     }
-
 }

@@ -27,9 +27,6 @@ class Setting extends MY_Controller
     function info()
     {
         $data = [];
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $header = [
             'title' => 'Thông tin website',
             'header_page_css_js' => 'setting'
@@ -81,9 +78,6 @@ class Setting extends MY_Controller
     function home()
     {
         $data = [];
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $header = [
             'title' => 'Trang chủ',
             'header_page_css_js' => 'setting'
@@ -120,12 +114,7 @@ class Setting extends MY_Controller
     }
 
     function submit_home($action)
-    {
-
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
-
+    {        
         // update slide
         if ($action == 'slide') {
             $str_slide = $this->input->post('slide');
@@ -275,9 +264,6 @@ class Setting extends MY_Controller
     function privacy_policy()
     {
         $data = [];
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $header = [
             'title' => 'Trang chính sách bảo mật',
             'header_page_css_js' => 'setting'
@@ -308,9 +294,6 @@ class Setting extends MY_Controller
     function refund_policy()
     {
         $data = [];
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $header = [
             'title' => 'Trang chính hoàn tiền',
             'header_page_css_js' => 'setting'
@@ -341,9 +324,6 @@ class Setting extends MY_Controller
     function termsofuse()
     {
         $data = [];
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $header = [
             'title' => 'Trang chính hoàn tiền',
             'header_page_css_js' => 'setting'
@@ -374,9 +354,6 @@ class Setting extends MY_Controller
     function max_order_working()
     {
         $data = [];
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $header = [
             'title' => 'Giới hạn tham gia đơn hàng',
             'header_page_css_js' => 'setting'
@@ -405,11 +382,7 @@ class Setting extends MY_Controller
 
     function hiw()
     {
-
         $data = [];
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $header = [
             'title' => 'Trang how it works',
             'header_page_css_js' => 'setting'
@@ -425,10 +398,6 @@ class Setting extends MY_Controller
 
     function ajax_hiw_submit()
     {
-        if ($this->_session_role() != ADMIN) {
-            resError('Tài khoản không có quyền truy cập!');
-        }
-
         $setting = $this->Setting_model->get_setting();
         $hiw = json_encode($setting['hiw'], true);
 

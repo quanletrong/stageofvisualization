@@ -27,10 +27,6 @@ class Voucher extends MY_Controller
     function index()
     {
         $role = $this->_session_role();
-        if ( !in_array($role, [ADMIN, SALE])) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
-
         if($role == ADMIN) {
             include("index_admin.php");
         } else if ($role == SALE) {
@@ -43,11 +39,6 @@ class Voucher extends MY_Controller
     function ajax_get_list_voucher()
     {
         $cur_uid = $this->_session_uid();
-
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
-            resError('not_permit', 'Bạn không có quyền thực hiện.');
-        }
-
         // lấy danh sách ID voucher mà user đó đc gán
         $list_voucher = $this->Voucher_model->voucher_user_get_list('', $cur_uid);
 
@@ -73,25 +64,16 @@ class Voucher extends MY_Controller
             $create_by     = '';
             $limit         = 10000;
             $offset        = 0;
-
             $list =  $this->Voucher_model->get_list2($id_voucher, $f_price, $t_price, $price_unit, $code, $f_expire, $t_expire, $status, $f_create_time, $t_create_time, $note, $create_by, $limit, $offset);
         }
     }
 
     function ajax_get_list_voucher_for_create_order_by_sale()
     {
-
         $cur_uid = $this->_session_uid();
-
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
-            resError('not_permit', 'Bạn không có quyền thực hiện.');
-        }
-
         $id_sale = $cur_uid;
         $now = date("Y-m-d H:s:i");
-
         $list =  $this->Voucher_model->get_list_voucher_for_create_order_by_sale($id_sale, $now);
-
         resSuccess($list);
     }
 }

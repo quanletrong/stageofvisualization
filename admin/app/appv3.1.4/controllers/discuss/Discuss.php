@@ -25,20 +25,13 @@ class Discuss extends MY_Controller
 
     function ajax_discuss_list_khach()
     {
-        // check right
-        $cur_uid = $this->_session_uid();
-        $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
-
         $id_order = $this->input->post('id_order');
-
-        $id_order = isIdNumber($id_order)    ? $id_order : 0;
+        $id_order = isIdNumber($id_order) ? $id_order : 0;
         $order = $this->Order_model->get_info_order($id_order);
         $order == [] ? resError('Đơn không tồn tại') : '';
 
         // get list discuss theo order
         $list = $this->Discuss_model->discuss_list_by_id_order($id_order, CHAT_KHACH);
-
         resSuccess($list);
     }
 
@@ -48,7 +41,6 @@ class Discuss extends MY_Controller
         // check right
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $id_order = $this->input->post('id_order');
 
@@ -70,7 +62,6 @@ class Discuss extends MY_Controller
         // check right
         $cur_uid = $this->_session_uid();
         $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE, QC, EDITOR]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $id_order = $this->input->post('id_order');
         $content = removeAllTags($this->input->post('content'));
@@ -116,8 +107,6 @@ class Discuss extends MY_Controller
     {
         // check right
         $cur_uid = $this->_session_uid();
-        $role = $this->_session_role();
-        !in_array($role, [ADMIN, SALE]) ? resError('Tài khoản không có quyền thực hiện chức năng này') : '';
 
         $id_order = $this->input->post('id_order');
         $content = removeAllTags($this->input->post('content'));

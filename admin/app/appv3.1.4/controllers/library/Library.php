@@ -28,9 +28,6 @@ class Library extends MY_Controller
     function index()
     {
         $data = [];
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $header = [
             'title' => 'Quản lý thư viện',
             'header_page_css_js' => 'library'
@@ -131,10 +128,6 @@ class Library extends MY_Controller
     }
     function ajax_delete()
     {
-        if ($this->_session_role() != ADMIN) {
-            resError('Tài khoản không có quyền truy cập!');
-        }
-
         $id_library  = $this->input->post('id_library');
         $id_library  = is_numeric($id_library) && $id_library > 0 ? $id_library : 0;
         $info = $this->Library_model->get_info($id_library);

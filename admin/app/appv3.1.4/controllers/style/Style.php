@@ -26,9 +26,6 @@ class Style extends MY_Controller
     function index()
     {
         $data = [];
-        if ($this->_session_role() != ADMIN) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $header = [
             'title' => 'Quản lý phong cách thiết kế',
             'header_page_css_js' => 'style'

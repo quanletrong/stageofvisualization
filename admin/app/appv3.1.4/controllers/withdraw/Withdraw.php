@@ -25,9 +25,6 @@ class Withdraw extends MY_Controller
 
     function index()
     {
-        if (!in_array($this->_session_role(), [ADMIN])) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
         $withdraw = $this->Withdraw_model->withdraw_get_list();
 
         $data['withdraw'] = $withdraw;
@@ -44,10 +41,6 @@ class Withdraw extends MY_Controller
 
     function detail($id_user)
     {
-        if (!in_array($this->_session_role(), [ADMIN])) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
-
         if (!isIdNumber($id_user)) {
             dbClose();
             redirect(site_url('withdraw', $this->_langcode));
@@ -176,19 +169,9 @@ class Withdraw extends MY_Controller
 
     function ajax_phe_duyet_rut_tien($id_user)
     {
-        if (!in_array($this->_session_role(), [ADMIN])) {
-            show_custom_error('Tài khoản không có quyền truy cập!');
-        }
-
-        if (!isIdNumber($id_user)) {
-            resError('Error');
-        }
-
+        !isIdNumber($id_user) ? resError('Error') : '';
         $uinfo = $this->User_model->get_user_info_by_id($id_user);
-
-        if (empty($uinfo)) {
-            resError('Error');
-        }
+        empty($uinfo) ?  resError('Error') : '';
 
         $status_pending = 0;
         $list_waiting = $this->Withdraw_model->withdraw_get_detail($id_user, $status_pending);
@@ -211,11 +194,6 @@ class Withdraw extends MY_Controller
 
     function ajax_set_rut_tien_ho()
     {
-
-        if (!in_array($this->_session_role(), [ADMIN, SALE])) {
-            resError('Tài khoản không có quyền truy cập!');
-        }
-
         $create_time = date('Y-m-d H:i:s');
         $id_user     = $this->input->post('id_user');
         $fdate       = $this->input->post('fdate');
