@@ -22,11 +22,11 @@
                     <?php foreach ($lst_member as $user) { ?>
 
                         <?php if ($index <= 3) { ?>
-                            <img src="<?= $user['avatar_url'] ?>" class="img-circle elevation-2 avatar" alt="<?= $user['fullname'] ?>" style="width: <?= $num_member == 1 ? '100%' : '50%' ?>; object-fit: cover; aspect-ratio: 1;">
+                            <img src="<?= $user['avatar_url'] ?>" class="img-circle border avatar" alt="<?= $user['fullname'] ?>" style="width: <?= $num_member == 1 ? '100%' : '50%' ?>; object-fit: cover; aspect-ratio: 1;">
                         <?php } ?>
 
                         <?php if ($index == 4) { ?>
-                            <div style="border-radius: 25px;font-size: 0.8rem;box-shadow: 0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23)!important;background: white;width: 50%;text-align: center;color: gray;">+<?php echo ($num_member - 3) ?></div>
+                            <div class="border" style="border-radius: 25px;font-size: 0.8rem;background: white;width: 50%;text-align: center;color: gray;">+<?php echo ($num_member - 3) ?></div>
                         <?php } ?>
 
                         <?php $index++; ?>

@@ -45,7 +45,7 @@ class Chat extends MY_Controller
         $this->_loadFooter();
     }
 
-    function index($chat_user = '')
+    function index($active_gchat = '')
     {
         $data = [];
         $curr_uid = $this->_session_uid();
@@ -58,8 +58,8 @@ class Chat extends MY_Controller
         $list_user_chat = $this->Chat_model->list_user_chat();
         $data['list_user_chat'] = $list_user_chat;
 
-        $chat_user = isIdNumber($chat_user) ? $chat_user : '';
-        $data['chat_user'] = $chat_user;
+        $active_gchat = isIdNumber($active_gchat) ? $active_gchat : '';
+        $data['active_gchat'] = $active_gchat;
         $data['cur_uid'] = $this->_session_uid();
         $data['all_member'] = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
 
@@ -237,6 +237,9 @@ class Chat extends MY_Controller
         $list_group = $this->Chat_model->list_group_by_user($curr_uid);
         isset($list_group['list'][$id_gchat]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
 
+        $name_group = $list_group['list'][$id_gchat]['name'];
+        $member_group = array_keys($list_group['member'][$id_gchat]);
+        
         //validate file đính kèm
         $db_attach = [];
         $attach = is_array($attach) ? $attach : [];
@@ -266,6 +269,8 @@ class Chat extends MY_Controller
 
         $new_id_msg = $this->Chat_model->msg_add_to_group($id_gchat, $curr_uid, $content, $db_attach, $create_time, $status, $ip, $fullname, $phone, $email, $action_by);
         $info = $this->Chat_model->msg_info($new_id_msg);
+        $info['name_group'] = $name_group;
+        $info['member_group'] = $member_group;
         $info['action_by'] = $curr_uid;
 
         resSuccess($info);

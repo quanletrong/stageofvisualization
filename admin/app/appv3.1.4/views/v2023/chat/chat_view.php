@@ -105,7 +105,8 @@
         $('#chat_right .fullname').text(fullname)
         $('#chat_right .div-avatar').html(avatar)
 
-        ajax_list_msg_by_group(id_group)
+        ajax_list_msg_by_group(id_group);
+        window.history.pushState('chat', 'chat', `/admin/chat/index/${id_group}`);
     }
 
     function ajax_delete_chat_user(chat_user) {

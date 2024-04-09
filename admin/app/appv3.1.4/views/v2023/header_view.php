@@ -14,6 +14,35 @@
 	}
 	?>
 
+	<style>
+		/* Style for zoom in zoom out animation */
+		.zoom-in-out-box {
+			animation: zoom-in-zoom-out 1s ease infinite;
+		}
+
+		/* Keyframes for the zoom in zoom out animation */
+		@keyframes zoom-in-zoom-out {
+
+			/* At the beginning of the animation */
+			0% {
+				/* Scale the element to its original size */
+				transform: scale(1, 1);
+			}
+
+			/* At the middle of the animation */
+			50% {
+				/* Scale the element to 1.5 times its original size */
+				transform: scale(1.5, 1.5);
+			}
+
+			/* At the end of the animation */
+			100% {
+				/* Scale the element back to its original size */
+				transform: scale(1, 1);
+			}
+		}
+	</style>
+
 </head>
 
 
@@ -162,11 +191,12 @@
 						<?php } ?>
 						<hr>
 						<!-- QUẢN LÝ NGƯỜI DÙNG -->
-						<li class="nav-item">
+						<li class="nav-item chat-menu-left">
 							<a href="chat" class="nav-link">
 								<i class="nav-icon fas fa-comments"></i>
 								<p>
 									CHAT
+									<!-- <span class="badge badge-warning right">0</span> -->
 								</p>
 							</a>
 						</li>
@@ -212,7 +242,7 @@
 								</a>
 							</li>
 						<?php } ?>
-						
+
 						<!-- CÀI ĐẶT WEBSITE -->
 						<?php if (in_array($role, [ADMIN])) { ?>
 							<hr>

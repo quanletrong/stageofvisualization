@@ -106,9 +106,10 @@
         });
 
         // INIT LẦN ĐẦU
+        // load msg
         let item_group_active = $('.item-chat').first();
-        <?php if ($chat_user != '') { ?>
-            item_group_active = $('#<?= $chat_user ?>');
+        <?php if ($active_gchat != '') { ?>
+            item_group_active = $('#<?= $active_gchat ?>');
         <?php } ?>
         item_group_active.addClass('active')
         let id_group = item_group_active.attr('id');
@@ -119,13 +120,19 @@
         $('#chat_right .div-avatar').html(avatar)
         if (id_group != '' && id_group !== undefined) {
             ajax_list_msg_by_group(id_group);
-        }
 
+            window.history.pushState('chat', 'chat', `/admin/chat/index/${id_group}`);
+        }
+        
+        // end
+
+        // set height group
         set_vh_list_chat();
 
         $(window).resize(function() {
             set_vh_list_chat();
         });
+        // end
         // INIT LẦN ĐẦU
 
         $(`#chat_right .content_chat`).on('keypress keyup', function(e) {

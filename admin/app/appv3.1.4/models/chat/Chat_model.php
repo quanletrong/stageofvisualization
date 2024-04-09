@@ -465,11 +465,11 @@ class Chat_model extends CI_Model
                 $stmt->nextRowset();
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     // không thêm user hiện tại vào mảng member
-                    if($row['id_user'] != $id_user) {
+                    if ($row['id_user'] != $id_user) {
                         $row['avatar_url'] = url_image($row['avatar'] == null ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
                         $data['member'][$row['id_user']] = $row;
                     }
-                    
+
                     $data['member_ids'][] = $row['id_user'];
                 }
 

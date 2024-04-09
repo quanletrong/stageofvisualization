@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="dist/css/adminlte.min.css">
 <!-- Icheck -->
 <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+
+<!-- Toast -->
+<link rel="stylesheet" href="skins/v2023/jquery.toast.css">
 <!-- all CSS -->
 <link rel="stylesheet" href="skins/v2023/all.css?v=1">
 
@@ -30,6 +33,9 @@
 <!-- confirm -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+
+<!-- TOAST  -->
+<script src="js/v2023/jquery.toast.js"></script>
 
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
