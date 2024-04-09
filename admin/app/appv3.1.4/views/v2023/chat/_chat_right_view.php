@@ -33,7 +33,7 @@
     </div>
     <div class="card-body bg-white p-1">
         <div style="display: flex; flex-direction: column; justify-content: flex-end;">
-            <div class="list-chat" style="height: 81vh; overflow-y: auto;">
+            <div class="list-chat" style="height: 81vh; overflow-y: auto; padding-right: 10px;">
                 <center><i class="fas fa-sync fa-spin"></i></center>
             </div>
             <div class="mt-2 nhap_du_lieu_chat">
@@ -69,6 +69,35 @@
     </div>
 </div>
 
+<!-- modal full image -->
+<div class="modal fade" id="modal-full-image" style="display: none" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="" alt="" class="w-100">
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#modal-full-image').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var image = button.data('src');
+                if (image === undefined || image === '') {
+                    image = button.attr('src');
+                }
+                var modal = $(this);
+                modal.find('.modal-body img').attr('src', image);
+            })
+        })
+    </script>
+</div>
+
 <script>
     $(document).ready(function() {
 
@@ -91,6 +120,12 @@
         if (id_group != '' && id_group !== undefined) {
             ajax_list_msg_by_group(id_group);
         }
+
+        set_vh_list_chat();
+
+        $(window).resize(function() {
+            set_vh_list_chat();
+        });
         // INIT LẦN ĐẦU
 
         $(`#chat_right .content_chat`).on('keypress keyup', function(e) {
@@ -99,6 +134,7 @@
             line = line < 2 ? 2 : line // tối thiểu 2 rows
             line = line > 5 ? 5 : line; // tối đa 10 rows
             $(this).attr('rows', line)
+            set_vh_list_chat();
         })
 
         $("#chat_right .content_chat").keypress(function(e) {
@@ -200,15 +236,24 @@
         for (const [id_file, file] of Object.entries(chat.file_list)) {
             list_file += `
             <div class="" 
-                onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')"
                 style="cursor: pointer; width:150px"
-                data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Bấm để tải xuống"
             >   ${
                     (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                    ? `<img data-src="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" class="rounded border lazy" style="width:100%; aspect-ratio: 1;object-fit: cover;">`
-                    : `
-                    <div class="rounded border p-2 text-truncate bg-light" style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
+                    ? 
+                    `<img 
+                        data-src="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" 
+                        class="rounded border lazy" 
+                        style="width:100%; aspect-ratio: 1;object-fit: cover;"
+                        data-toggle="modal" data-target="#modal-full-image"
+                    >`
+                    :
+                    `<div 
+                        onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')" 
+                        class="rounded border p-2 text-truncate bg-light" 
+                        style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;"
+                        title="Bấm để tải xuống"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
+                    >
                         <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                         <span style="font-size:12px;">${file}</span>
                     </div>
@@ -220,9 +265,9 @@
         let html = ``;
         if (<?= $cur_uid ?> == chat.id_user) {
             html = `
-            <div id="msg_${chat.id_msg}"  class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px">
+            <div id="msg_${chat.id_msg}"  class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px;">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
-                    <div style="white-space: pre-line;">${chat.content != '' ? `${chat.content}` : ''}</div>
+                    <div style="white-space: pre-line; line-break: anywhere">${chat.content != '' ? `${chat.content}` : ''}</div>
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
                     <small style="color:#7c7c7c" class="time" title="${chat.create_time}">&nbsp;</small>
                 </div>
@@ -232,7 +277,7 @@
             <div id="msg_${chat.id_msg}" class="mb-2 me-2 d-flex" style="gap:10px">
                 <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${chat.avatar_url}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                    <div style="white-space: pre-line;">${chat.content != '' ? `${chat.content}` : ''}</div>
+                    <div style="white-space: pre-line; line-break: anywhere">${chat.content != '' ? `${chat.content}` : ''}</div>
                     <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
                     <small style="color:#7c7c7c" class="time" title="${chat.create_time}">&nbsp;</small>
                 </div>
@@ -287,20 +332,14 @@
 
     function set_vh_list_chat() {
 
-        let chat_list_attach_height = $('#chat_right .chat_list_attach').height();
-        let content_chat_height = $('#chat_right .content_chat').height();
+        let windown_height = $(window).height();
+        let card_header = $('#chat_right .card-header').outerHeight();
+        let nhap_du_lieu_chat = $('#chat_right .nhap_du_lieu_chat').outerHeight();
 
-        if (chat_list_attach_height == 0) {
-            $('#chat_right .list-chat').css('height', '81vh');
-        } else {
-            let windown_height = $(window).height();
-            let chat_list_attach_vh = chat_list_attach_height * 100 / windown_height;
-            let list_chat_height = $('#chat_right .list-chat').height();
-            let list_chat_vh = list_chat_height * 100 / windown_height;
-            let list_chat_vh_new = (list_chat_vh - chat_list_attach_vh) + 'vh';
-            $('#chat_right .list-chat').css('height', list_chat_vh_new);
-        }
+        let new_height = windown_height - card_header - nhap_du_lieu_chat - 30;
+        $('#chat_right .list-chat').css('height', new_height + 'px');
 
+        let chat_right = $("#chat_right").outerHeight();
         $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
     }
 </script>

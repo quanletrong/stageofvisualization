@@ -35,10 +35,10 @@
     <section class="content pt-1">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-4" id="chat-left">
+                <div class="col-md-4">
                     <?php $this->load->view('v2023/chat/_chat_left_view.php'); ?>
                 </div>
-                <div class="col-md-8" id="chat-right">
+                <div class="col-md-8">
                     <?php $this->load->view('v2023/chat/_chat_right_view.php'); ?>
                 </div>
             </div>

@@ -1,13 +1,16 @@
-<div style="overflow-x: hidden; overflow-y: auto; height: 99vh; background: white; border-radius: 5px; padding: 5px;">
-    <div style="display: flex; justify-content: space-between;">
-        <h3>Đoạn chat</h3>
-        <div id="btn-add-group" title="Thêm nhóm" data-toggle="modal" data-target="#modal-add-group"><i class="fas fa-plus-circle"></i></div>
+<div id="chat-left" class="content" style="background: white; border-radius: 5px; padding: 5px;">
+    <div class="header">
+        <div style="display: flex; justify-content: space-between;">
+            <h3>Đoạn chat</h3>
+            <div id="btn-add-group" title="Thêm nhóm" data-toggle="modal" data-target="#modal-add-group"><i class="fas fa-plus-circle"></i></div>
+        </div>
+
+        <div class="mb-2">
+            <input type="text" placeholder="Tìm kiếm thành viên" class="form-control">
+        </div>
     </div>
 
-    <div class="mb-2">
-        <input type="text" placeholder="Tìm kiếm thành viên" class="form-control">
-    </div>
-    <div class="list-group">
+    <div class="list-group" style="overflow-x: hidden; overflow-y: auto; padding-right:5px">
         <?php foreach ($list_group['list'] as $id_group => $group) { ?>
             <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $id_group ?>" onclick="onclick_el_gchat('<?= $id_group ?>')">
                 <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;">
@@ -61,6 +64,7 @@
             <div class="mt-3 text-center alert_empty_chat" style="display: block;">Không có đoạn chat nào</div>
         <?php } ?>
     </div>
+
 </div>
 
 <!-- MODAL ADD GROUP -->
@@ -77,5 +81,18 @@
         });
         // END sắp xếp nhóm có tin nhắn mới nhất lên đầu
 
+        set_vh_list_group();
+
+        $(window).resize(function() {
+            set_vh_list_group();
+        });
+
+        function set_vh_list_group() {
+            let windown_height = $(window).height();
+            let header = $('#chat-left .header').outerHeight();
+
+            let new_height = windown_height - header - 30;
+            $('#chat-left .list-group').css('height', new_height + 'px');
+        }
     })
 </script>
