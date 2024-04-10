@@ -5,7 +5,7 @@
         <div class="card-header" onclick="$(this).siblings('.card-body').slideToggle()" style="cursor: pointer;">
             <h3 class="card-title" style="display: flex;justify-content: space-between;align-items: center;width:100%;">
                 <div>REWORK <?= $i ?></div>
-                <small><?=$rework['create_time'] != null ? date('H:i m/d/Y', strtotime($rework['create_time'])) : '';?></small>
+                <small><?=$rework['create_time'] != null ? date('H:i d/m/Y', strtotime($rework['create_time'])) : '';?></small>
             </h3>
         </div>
         <div class="card-body" style="display: <?= $i < count($job['rework']) ? 'none' : 'block' ?>;">

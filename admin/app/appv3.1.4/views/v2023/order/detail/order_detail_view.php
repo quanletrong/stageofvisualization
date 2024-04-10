@@ -104,7 +104,35 @@
         <?php $this->load->view(TEMPLATE_FOLDER . 'order/detail/_history_view.php'); ?>
     </div>
 
-
+    <!-- modal -->
+    <!-- modal full image -->
+    <div class="modal fade" id="modal-full-image" style="display: none" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img src="" alt="" class="w-100">
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                $('#modal-full-image').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var image = button.data('src');
+                    if (image === undefined || image === '') {
+                        image = button.attr('src');
+                    }
+                    var modal = $(this);
+                    modal.find('.modal-body img').attr('src', image);
+                })
+            })
+        </script>
+    </div>
 </section>
 <script>
     function isImage(url_image) {

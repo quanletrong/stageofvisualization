@@ -294,9 +294,17 @@
 									</li>
 								</ul>
 							</li>
-							<li class="nav-header"></li>
-							<li class="nav-header"></li>
 						<?php } ?>
+
+						<hr>
+						<li class="nav-item">
+							<a href="<?= ROOT_DOMAIN . 'logout' ?>" class="nav-link">
+								<i class="nav-icon fas fa-sign-out-alt"></i>
+								<p>
+									Thoát
+								</p>
+							</a>
+						</li>
 
 					</ul>
 				</nav>

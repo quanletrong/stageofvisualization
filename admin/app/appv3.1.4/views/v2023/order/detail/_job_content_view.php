@@ -2,6 +2,7 @@
     img {
         border-radius: 5px;
         box-shadow: 3px 2px 7px 0px #888888;
+        /* border: 1px solid #f8f9fa; */
     }
 
     .card-header {

@@ -157,19 +157,28 @@
         for (const [id_file, file] of Object.entries(discuss.file_list)) {
             list_file += `
                 <div class="" 
-                    onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
                     style="cursor: pointer; width:150px"
-                    data-bs-toggle="tooltip" data-bs-placement="top"
-                    title="Bấm để tải xuống"
                 >   ${
                         (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                        ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" class="rounded border"  style="width:100%; aspect-ratio: 1;object-fit: cover;">`
-                        : `
-                        <div class="rounded border p-2 text-truncate bg-light" style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
+                        ? 
+                        `<img 
+                            src="<?= url_image('', $FDR_ORDER) ?>${file}" 
+                            data-src="<?= url_image('', $FDR_ORDER) ?>${file}" 
+                            class="rounded border"  
+                            style="width:100%; aspect-ratio: 1;object-fit: cover;"
+                            data-toggle="modal" data-target="#modal-full-image"
+                        >`
+                        :
+                        `<div 
+                            class="rounded border p-2 text-truncate bg-light" 
+                            style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;"
+                            onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
+                            title="Bấm để tải xuống"
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                        >
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                             <span style="font-size:12px;">${file}</span>
-                        </div>
-                        `
+                        </div>`
                     }
                 </div>`;
         }

@@ -52,19 +52,19 @@
                 <div class="d-flex" id="box_expire">
                     <div class="d-flex">
                         <div style="position: relative; width: 33%;">
-                            <input type="number" min=0 class="form-control" id="dCustom" value="">
+                            <input type="number" min=0 class="form-control text-center" id="dCustom" value="">
                             <span style="position: absolute; top:6px; right:6px">Ngày</span>
                         </div>
                         <div style="position: relative; width: 33%;">
-                            <input type="number" min=0 class="form-control" id="hCustom" value="">
+                            <input type="number" min=0 class="form-control text-center" id="hCustom" value="">
                             <span style="position: absolute; top:6px; right:6px">Giờ</span>
                         </div>
                         <div style="position: relative; width: 33%;">
-                            <input type="number" min=0 class="form-control" id="mCustom" value="">
+                            <input type="number" min=0 class="form-control text-center" id="mCustom" value="">
                             <span style="position: absolute; top:6px; right:6px">Phút</span>
                         </div>
                         <div style="position: relative; display: none;">
-                            <input type="number" min=0 class="form-control" id="sCustom" value="">
+                            <input type="number" min=0 class="form-control text-center" id="sCustom" value="">
                             <span style="position: absolute; top:6px; right:6px">Giây</span>
                         </div>
                     </div>
