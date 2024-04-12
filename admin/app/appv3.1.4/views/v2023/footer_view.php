@@ -298,10 +298,9 @@
 	socket.on('add-msg-to-gchat', data => {
 		let {
 			id_gchat,
-			name_group,
+			name_gchat,
 			id_user,
 			fullname,
-			member_group,
 			content,
 			file_list
 		} = data;
@@ -309,40 +308,41 @@
 		let crr_uid = <?= $this->session->userdata('uid') ?>;
 		let page = '<?= $this->uri->rsegments[1] ?>';
 
-		if (page != 'chat' && id_user != crr_uid) {
+		if (page != 'chat') {
+			$('.sidebar .chat-menu-left i').addClass('zoom-in-out-box text-warning');
+			let count = parseInt($('.sidebar .chat-menu-left .badge').html());
+			$('.sidebar .chat-menu-left .badge').html(count + 1);
 
-			if (member_group.includes(crr_uid)) {
-				$('.sidebar .chat-menu-left i').addClass('zoom-in-out-box text-warning');
-				let count = parseInt($('.sidebar .chat-menu-left .badge').html());
-				$('.sidebar .chat-menu-left .badge').html(count + 1);
+			var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
+			audio.play();
 
-				var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
-				audio.play();
+			// setTimeout(() => {
+			// 	$('.sidebar .chat-menu-left i').removeClass('zoom-in-out-box text-warning');
+			// }, 15000);
 
-				// setTimeout(() => {
-				// 	$('.sidebar .chat-menu-left i').removeClass('zoom-in-out-box text-warning');
-				// }, 15000);
+			// toast
+			let href = `admin/chat/index/${id_gchat}`;
+			let content_show = content.length > 100 ? content.substring(0, 100) + '...' : content;
+			let dinh_kem = isEmpty(file_list) ? '' : '<p><i>[Đính kèm]</i></p>';
+			let fullname_show = `<p style="display: flex;justify-content: flex-end;"><small>${fullname}</small></p>`;
 
-				// toast
-				let href = `admin/chat/index/${id_gchat}`;
-				let content_show = content.length > 100 ? content.substring(0, 100) + '...' : content;
-				let dinh_kem = isEmpty(file_list) ? '' : '<p><i>[Đính kèm]</i></p>';
-				let fullname_show = `<p style="display: flex;justify-content: flex-end;"><small>${fullname}</small></p>`;
-
-				$.toast({
-					heading: `<b>${name_group}</b>`,
-					text: `<a style="text-decoration: none; border-bottom: none;" href="${href}">
-						${content_show} 
-						${dinh_kem}
-						${fullname_show}
-					</a>`,
-					loader: true,
-					hideAfter: 15000,
-					bgColor: '#4CAF50',
-					textColor: 'white'
-				})
-			}
+			$.toast({
+				heading: `<b>${name_gchat}</b>`,
+				text: `<a style="text-decoration: none; border-bottom: none;" href="${href}">
+					${content_show} 
+					${dinh_kem}
+					${fullname_show}
+				</a>`,
+				loader: true,
+				hideAfter: 15000,
+				bgColor: '#4CAF50',
+				textColor: 'white'
+			})
 		}
+	})
+
+	socket.on('add-msg-to-gchat', data => {
+		
 	})
 </script>
 </body>

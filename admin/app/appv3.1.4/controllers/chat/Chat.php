@@ -227,9 +227,6 @@ class Chat extends MY_Controller
         $list_group = $this->Chat_model->list_group_by_user($curr_uid);
         isset($list_group['list'][$id_gchat]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
 
-        $name_group = $list_group['list'][$id_gchat]['name'];
-        $member_group = array_keys($list_group['members'][$id_gchat]);
-
         //validate file đính kèm
         $db_attach = [];
         $attach = is_array($attach) ? $attach : [];
@@ -258,12 +255,26 @@ class Chat extends MY_Controller
         $action_by = $curr_uid;  // TODO: trường này chưa có trong db, có thể thêm sau
 
         $new_id_msg = $this->Chat_model->msg_add_to_group($id_gchat, $curr_uid, $content, $db_attach, $create_time, $status, $ip, $fullname, $phone, $email, $action_by);
-        $info = $this->Chat_model->msg_info($new_id_msg);
-        $info['name_group'] = $name_group;
-        $info['member_group'] = $member_group;
-        $info['action_by'] = $curr_uid;
 
-        resSuccess($info);
+        // trả dư liệu
+        $msg_info = $this->Chat_model->msg_info($new_id_msg);
+        $gchat_info = $this->Chat_model->gchat_info($id_gchat, $curr_uid);
+
+        $data['id_gchat']    = $id_gchat;
+        $data['name_gchat']  = $gchat_info['info']['name'];
+        $data['members']     = $gchat_info['members'];
+        $data['member_ids']  = $gchat_info['member_ids'];
+        $data['msg_newest']  = $gchat_info['msg_newest'];
+        $data['id_msg']      = $new_id_msg;
+        $data['file_list']   = $msg_info['file_list'];
+        $data['id_user']     = $msg_info['id_user'];
+        $data['content']     = $msg_info['content'];
+        $data['avatar_url']  = $msg_info['avatar_url'];
+        $data['create_time'] = $msg_info['create_time'];
+        $data['fullname']    = $msg_info['fullname'];
+        $data['action_by']   = $curr_uid;
+
+        resSuccess($data);
     }
 
     function ajax_modal_group_info($id_group)
@@ -365,6 +376,7 @@ class Chat extends MY_Controller
             $data['content']     = $msg_info['content'];
             $data['avatar_url']  = $msg_info['avatar_url'];
             $data['create_time'] = $msg_info['create_time'];
+            $data['fullname']    = $msg_info['fullname'];
 
             $data['member_new'] = $member_new;
             $data['member_del'] = $member_del;
