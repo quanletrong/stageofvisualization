@@ -1,3 +1,8 @@
+<style>
+    .dropdown-toggle::after {
+        content: none;
+    }
+</style>
 <div id="chat-left" class="content" style="background: white; border-radius: 5px; padding: 5px;">
     <div class="header">
         <div style="display: flex; justify-content: space-between;">
@@ -15,8 +20,8 @@
             <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $id_group ?>" onclick="onclick_el_gchat('<?= $id_group ?>')">
                 <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;">
 
-                    <?php $num_member = count($list_group['member'][$id_group]); ?>
-                    <?php $lst_member = $list_group['member'][$id_group]; ?>
+                    <?php $num_member = count($list_group['members'][$id_group]); ?>
+                    <?php $lst_member = $list_group['members'][$id_group]; ?>
 
                     <?php $index = 1; ?>
                     <?php foreach ($lst_member as $user) { ?>
@@ -35,7 +40,7 @@
 
                 </div>
                 <div style="width: 85%; position: relative;">
-                    <div style="width: 100%; font-weight: 500;" class="fullname text-truncate">
+                    <div style="width: 80%; font-weight: 500;" class="fullname text-truncate">
                         <?= $group['name'] ?>
                     </div>
                     <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
@@ -48,13 +53,27 @@
                         }
                         ?>
                         <?php if (count($msg_newest)) { ?>
-                            <div class="text-truncate content" style="width: 80%; font-weight: <?= $da_xem ?>;"><?= $msg_newest['content'] ?></div>
+                            <div class="text-truncate content" style="width: 80%; font-weight: <?= $da_xem ?>;"><?= $msg_newest['content'] !== '' ? $msg_newest['content'] : '<i>File phương tiện</i>' ?></div>
                             <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="<?= $msg_newest['create_time'] ?>">&nbsp;</div>
                         <?php } ?>
                     </div>
 
-                    <div style="position: absolute;right: 0px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('<?= $id_group ?>')">
-                        <i class="fas fa-times-circle"></i>
+                    <div style="position: absolute;right: 0px;top: 11px;color: red; display: none; background-color: #f0f0f0;" class="option">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding: 0 10px;">
+                                <span class="text-secondary">
+                                    <i class="fas fa-ellipsis-h" style="font-size: 1.5rem;"></i>
+                                </span>
+                            </button>
+                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(33px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                <button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-edit-group" data-group="<?=$id_group?>">
+                                    <span class="text-secondary">Xem thông tin</span>
+                                </button>
+                                <button class="dropdown-item" type="button" onclick="ajax_delete_chat_user('<?= $id_group ?>')">
+                                    <span class="text-secondary">Xóa nhóm này</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,6 +88,9 @@
 
 <!-- MODAL ADD GROUP -->
 <?php $this->load->view('v2023/chat/_modal_add_group_view.php'); ?>
+
+<!-- MODAL EDIT GROUP -->
+<?php $this->load->view('v2023/chat/_modal_edit_group_view.php'); ?>
 
 <script>
     $(document).ready(function() {

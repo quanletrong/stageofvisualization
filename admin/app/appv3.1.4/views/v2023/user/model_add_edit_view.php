@@ -167,20 +167,24 @@
                     success: function(data) {
                         let kq = JSON.parse(data);
                         if (kq.status) {
-                            bs5dialog.alert("", {
-                                type: 'success',
-                                title: "Thành công",
-                                backdrop: true,
-                                onOk: () => {
+                            $.toast({
+                                icon: 'success',
+                                heading: `<b>Thành công</b>`,
+                                text: `Tự động tải lại sau 5s`,
+                                hideAfter: 5000,
+                                position: 'top-right',
+                                afterHidden: function () {
                                     location.reload();
-                                }
-                            });
+                                } 
+                            })
                         } else {
-                            bs5dialog.alert(kq.error, {
-                                type: 'warning',
-                                title: "Có lỗi xảy ra",
-                                backdrop: true
-                            });
+                            $.toast({
+                                icon: 'error',
+                                heading: `Thất bại`,
+                                text: kq.error,
+                                hideAfter: 15000,
+                                position: 'top-right',
+                            })
                             $(form).find('button[type="submit"]').attr('disabled', false);
                         }
                     }

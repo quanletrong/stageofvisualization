@@ -13,7 +13,7 @@
         background-color: #f0f0f0;
     }
 
-    .item-chat:hover .delete {
+    .item-chat:hover .option {
         display: block !important;
     }
 
@@ -157,10 +157,11 @@
 
     // lắng nghe sự kiên thêm nhóm chat
     socket.on('add-gchat', data => {
-        let id_gchat = data.info.id_gchat;
-        let members = data.member;
+        let id_gchat = data.id_gchat;
+        let name_gchat = data.name_gchat
+        let members = data.members;
         let member_ids = data.member_ids;
-        let msg = data.msg_newest
+        let msg_newest = data.msg_newest
         let action_by = data.action_by
 
         // bật thông báo
@@ -169,56 +170,94 @@
             audio.play();
         }
 
-        // nếu user hiện tại includes trong member_ids thì mới hiển thị
-        if (member_ids.length && member_ids.includes('<?= $cur_uid ?>')) {
-
-            // tạo avatar cho el gchat
-            let index = 1;
-            let avatar = '';
-            for (var mem_id in members) {
-                if (index <= 4) {
-                    let mem = members[mem_id];
-                    avatar += `<img src = "${mem.avatar_url}"
+        // tạo avatar cho el gchat
+        let index = 1;
+        let avatar = '';
+        for (var mem_id in members) {
+            if (index <= 4) {
+                let mem = members[mem_id];
+                avatar += `<img src = "${mem.avatar_url}"
                     class = "img-circle elevation-2 avatar"
                     alt = "${mem.fullname}"
                     style = "width: ${member_ids.length == 2 ? '100%' : '50%'}; object-fit: cover; aspect-ratio: 1;" >`;
-                    index++;
-                }
+                index++;
             }
-            // end tạo avatar
+        }
+        // end tạo avatar
 
-            // tạo element gchat cột bên trái
-            let html_new =
-                `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_gchat}" onclick="onclick_el_gchat('${id_gchat}')">
+        // tạo element gchat cột bên trái
+        let html_new =
+            `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_gchat}" onclick="onclick_el_gchat('${id_gchat}')">
                 <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;">
                     ${avatar}
                 </div>
                 <div style="width: 85%; position: relative;">
                     <div style="width: 100%; font-weight: 500;" class="fullname text-truncate">
-                        ${data.info.name}
+                        ${name_gchat}
                     </div>
                     <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
-                        <div class="text-truncate content" style="width: 80%; font-weight: 600;">${isEmpty(msg) ? '' : msg.content}</div>
-                        <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="${isEmpty(msg) ? '' : msg.create_time}">&nbsp;</div>
+                        <div class="text-truncate content" style="width: 80%; font-weight: 600;">${isEmpty(msg_newest) ? '' : msg_newest.content}</div>
+                        <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="${isEmpty(msg_newest) ? '' : msg_newest.create_time}">&nbsp;</div>
                     </div>
 
-                    <div style="position: absolute;right: 0px;top: 11px;color: red; display: none;" class="delete" onclick="ajax_delete_chat_user('${id_gchat}')">
-                        <i class="fas fa-times-circle"></i>
+                    <div style="position: absolute;right: 0px;top: 11px;color: red; display: none; background-color: #f0f0f0;" class="option">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding: 0 10px;">
+                                <span class="text-secondary">
+                                    <i class="fas fa-ellipsis-h" style="font-size: 1.5rem;"></i>
+                                </span>
+                            </button>
+                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(33px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                <button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-edit-group" data-group="${id_gchat}">
+                                    <span class="text-secondary">Xem thông tin</span>
+                                </button>
+                                <button class="dropdown-item" type="button" onclick="ajax_delete_chat_user('${id_gchat}')">
+                                    <span class="text-secondary">Xóa nhóm này</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>`
-            // end
+        // end
 
-            $('#chat-left .list-group').prepend(html_new);
-            $('#chat-left .alert_empty_chat').hide();
-        }
+        $('#chat-left .list-group').prepend(html_new);
+        $('#chat-left .alert_empty_chat').hide();
     })
 
-    // lắng nghe sự kiện thêm msg mới
-    socket.on('add-msg-to-group', data => {
+    socket.on('delete-gchat', data => {
         let id_gchat = data.id_gchat;
-        let action_by = data.action_by;
-        let el_gchat_left = $(`[id='${data.id_gchat}']`);
+
+        // ẩn bên phải
+        if ($(`#${id_gchat}`).hasClass('active')) {
+            $('#chat_right').hide();
+        }
+
+        // xóa bên trái
+        $(`#${id_gchat}`).remove();
+    })
+
+    socket.on('update-name-gchat', data => {
+        let name_gchat = data.name_gchat;
+        let id_gchat = data.id_gchat;
+        $(`#${id_gchat} .fullname `).html(name_gchat);
+    })
+
+
+    // lắng nghe sự kiện thêm msg mới
+    socket.on('add-msg-to-gchat', data => {
+        let {
+            id_gchat,
+            id_msg,
+            file_list,
+            id_user,
+            content,
+            avatar_url,
+            create_time,
+            action_by
+        } = data;
+
+        let el_gchat_left = $(`[id='${id_gchat}']`);
 
         if (action_by != <?= $cur_uid ?>) {
             var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
@@ -228,15 +267,15 @@
         // nhóm đã tồn tại làm 2 việc chính sau:
         if (el_gchat_left.length) {
             // update bên trái
-            el_gchat_left.find(`.content`).text(data.content);
+            el_gchat_left.find(`.content`).html(content != '' ? content : '<i>File phương tiện</i>');
             el_gchat_left.find(`.content`).css('font-weight', 600)
-            el_gchat_left.find(`.time`).attr('title', data.create_time);
+            el_gchat_left.find(`.time`).attr('title', create_time);
             el_gchat_left.parent().prepend(el_gchat_left);
 
             // update bên phải nếu nhóm đang active
             let isActiveRight = el_gchat_left.hasClass('active');
             if (isActiveRight) {
-                let new_html = html_item_chat(data);
+                let new_html = html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time);
                 $('#chat_right .list-chat')
                     .append(new_html)
                     .scrollTop($('#chat_right .list-chat')[0].scrollHeight);

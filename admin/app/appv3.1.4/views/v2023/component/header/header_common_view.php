@@ -40,10 +40,10 @@
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
 
-<link rel="stylesheet" href="skins/v2023/bs5dialog.css" />
-<script src="js/v2023/bs5dialog.js"></script>
+<!-- <link rel="stylesheet" href="skins/v2023/bs5dialog.css" /> -->
+<!-- <script src="js/v2023/bs5dialog.js"></script> -->
 <script>
-    bs5dialog.startup();
+    // bs5dialog.startup();
 </script>
 
 
@@ -58,6 +58,11 @@
         withCredentials: true,
         extraHeaders: {
             "my-custom-header": "abcd"
-        }
+        },
+        reconnection: true,
+        auth: {
+            'token': '<?php echo EncryptData::Websocket_token_create($userid); ?>',
+            'access_token': ''
+        },
     });
 </script>

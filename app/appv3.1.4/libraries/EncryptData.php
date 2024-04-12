@@ -27,11 +27,12 @@ class EncryptData
 	}
     
     // for create websocket token request
-	public static function Websocket_token_create($userid)
+	public static function Websocket_token_create($userid, $groupid='')
 	{
 		$data = [
 			'domain' => DOMAIN_NAME,
 			'uid' => $userid,
+			'gid' => $groupid,
 			'ctt' => time() //current timestamp
 		];
 		

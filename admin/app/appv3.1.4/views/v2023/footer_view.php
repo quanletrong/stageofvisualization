@@ -295,7 +295,7 @@
 <!-- CHAT  -->
 <script>
 	// lắng nghe sự kiện thêm msg mới
-	socket.on('add-msg-to-group', data => {
+	socket.on('add-msg-to-gchat', data => {
 		let {
 			id_gchat,
 			name_group,

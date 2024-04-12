@@ -237,6 +237,8 @@ class MY_Controller extends CI_Controller
                     'ajax_add_group' => [],
                     'ajax_list_msg_by_group' => [],
                     'ajax_msg_add_to_group' => [],
+                    'ajax_modal_group_info' => [],
+                    'ajax_edit_group' => []
                 ],
                 'discuss' => [
                     'ajax_discuss_list_khach' => [QC, EDITOR],

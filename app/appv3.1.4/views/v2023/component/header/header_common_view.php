@@ -40,7 +40,12 @@
         withCredentials: true,
         extraHeaders: {
             "my-custom-header": "abcd"
-        }
+        },
+        reconnection: true,
+        auth: {
+            'token': '<?php echo EncryptData::Websocket_token_create($userid); ?>',
+            'access_token': ''
+        },
     });
 </script>
 <!-- END SOCKET -->

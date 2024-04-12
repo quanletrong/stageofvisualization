@@ -168,7 +168,8 @@
 
                     let html = ``;
                     for (const [key, chat] of Object.entries(list_chat)) {
-                        html += html_item_chat(chat)
+                        let {id_msg, file_list, id_user, content, avatar_url, create_time} = chat;
+                        html += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time)
                     }
 
                     $('#chat_right .list-chat').html(html).scrollTop($('#chat_right .list-chat')[0].scrollHeight);
@@ -223,7 +224,7 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    socket.emit('add-msg-to-group', kq.data);
+                    socket.emit('add-msg-to-gchat', kq.data);
                 } else {
                     alert(kq.error);
                 }
@@ -237,10 +238,10 @@
         });
     }
 
-    function html_item_chat(chat) {
+    function html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time) {
 
         let list_file = ``;
-        for (const [id_file, file] of Object.entries(chat.file_list)) {
+        for (const [id_file, file] of Object.entries(file_list)) {
             list_file += `
             <div class="" 
                 style="cursor: pointer; width:150px"
@@ -270,23 +271,23 @@
         }
 
         let html = ``;
-        if (<?= $cur_uid ?> == chat.id_user) {
+        if (<?= $cur_uid ?> == id_user) {
             html = `
-            <div id="msg_${chat.id_msg}"  class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px;">
+            <div id="msg_${id_msg}"  class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px;">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
-                    <div style="white-space: pre-line; line-break: anywhere">${chat.content != '' ? `${chat.content}` : ''}</div>
+                    <div style="white-space: pre-line; line-break: anywhere">${content != '' ? `${content}` : ''}</div>
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <small style="color:#7c7c7c" class="time" title="${chat.create_time}">&nbsp;</small>
+                    <small style="color:#7c7c7c" class="time" title="${create_time}">&nbsp;</small>
                 </div>
             </div>`;
         } else {
             html = `
-            <div id="msg_${chat.id_msg}" class="mb-2 me-2 d-flex" style="gap:10px">
-                <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${chat.avatar_url}">
+            <div id="msg_${id_msg}" class="mb-2 me-2 d-flex" style="gap:10px">
+                <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${avatar_url}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                    <div style="white-space: pre-line; line-break: anywhere">${chat.content != '' ? `${chat.content}` : ''}</div>
+                    <div style="white-space: pre-line; line-break: anywhere">${content != '' ? `${content}` : ''}</div>
                     <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <small style="color:#7c7c7c" class="time" title="${chat.create_time}">&nbsp;</small>
+                    <small style="color:#7c7c7c" class="time" title="${create_time}">&nbsp;</small>
                 </div>
             </div>`;
         }

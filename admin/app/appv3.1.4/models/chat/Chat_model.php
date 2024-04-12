@@ -324,7 +324,7 @@ class Chat_model extends CI_Model
         $data = [];
         $data['list'] = [];
         $data['msg_newest'] = [];
-        $data['member'] = [];
+        $data['members'] = [];
         $iconn = $this->db->conn_id;
 
         $sql =
@@ -378,7 +378,7 @@ class Chat_model extends CI_Model
                 $stmt->nextRowset();
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $row['avatar_url'] = url_image($row['avatar'] == null ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
-                    $data['member'][$row['id_gchat']][$row['id_user']] = $row;
+                    $data['members'][$row['id_gchat']][$row['id_user']] = $row;
                 }
 
                 // dữ liệu bổ sung
@@ -386,7 +386,7 @@ class Chat_model extends CI_Model
 
                     // bổ sung tên nhóm nếu tên nhóm chưa được đặt
                     if ($gchat['name'] === null || $gchat['name'] === '') {
-                        $list_mem = $data['member'][$id_gchat];
+                        $list_mem = $data['members'][$id_gchat];
                         $name_group = [];
                         foreach ($list_mem as $id_mem => $mem) {
                             $name_group[$id_mem] = $mem['fullname'];
@@ -426,7 +426,7 @@ class Chat_model extends CI_Model
         $data = [];
         $data['info'] = [];
         $data['msg_newest'] = [];
-        $data['member'] = [];
+        $data['members'] = [];
         $data['member_ids'] = [];
         $iconn = $this->db->conn_id;
 
@@ -467,7 +467,7 @@ class Chat_model extends CI_Model
                     // không thêm user hiện tại vào mảng member
                     if ($row['id_user'] != $id_user) {
                         $row['avatar_url'] = url_image($row['avatar'] == null ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
-                        $data['member'][$row['id_user']] = $row;
+                        $data['members'][$row['id_user']] = $row;
                     }
 
                     $data['member_ids'][] = $row['id_user'];
@@ -477,7 +477,7 @@ class Chat_model extends CI_Model
                 if ($info !== false) {
                     if ($info['name'] === null || $info['name'] === '') {
                         $name_group = [];
-                        foreach ($data['member'] as $id_mem => $mem) {
+                        foreach ($data['members'] as $id_mem => $mem) {
                             $name_group[$id_mem] = $mem['fullname'];
                             $data['info']['name'] = implode(', ', $name_group);
                         }
@@ -572,6 +572,45 @@ class Chat_model extends CI_Model
 
         $stmt->closeCursor();
         return $data;
+    }
+
+    function delete_member_group($id_gchat, $id_member)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "DELETE FROM `tbl_chat__member_group` WHERE `id_gchat` = '$id_gchat' AND `id_user` = '$id_member';";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function edit_name_group($id_gchat, $name_group)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_chat__all_group SET name=? WHERE id_gchat= ?; ";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$name_group, $id_gchat];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
     }
 
     // END GROUP

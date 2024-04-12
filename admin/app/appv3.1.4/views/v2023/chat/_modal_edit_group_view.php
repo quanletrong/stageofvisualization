@@ -1,14 +1,14 @@
-<div class="modal fade" id="modal-add-group" style="display: none" aria-modal="true" role="dialog">
+<div class="modal fade" id="modal-edit-group" style="display: none" aria-modal="true" role="dialog">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Thêm đoạn chat</h4>
+                <h4 class="modal-title">Cập nhật đoạn chat</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="frm_add_group" method="post" action="chat/ajax_add_group">
+                <form id="frm_edit_group" method="post" action="chat/ajax_edit_group">
                     <div class="card-body">
                         <div class="form-group" data-select2-id="16">
                             <label for="sapo">Thành viên</label>
@@ -30,7 +30,8 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer d-flex justify-content-center">
-                        <button type="submit" class="btn btn-lg btn-danger">Thêm đoạn chat</button>
+                        <input type="hidden" name="id_group" class="id_group" value="">
+                        <button type="submit" class="btn btn-lg btn-danger">Cập nhật</button>
                     </div>
                 </form>
             </div>
@@ -41,13 +42,35 @@
 
     <script>
         $(function() {
-            $('#modal-add-group .member_group').select2({});
+            $('#modal-edit-group .member_group').select2({});
 
-            $('#modal-add-group').on('shown.bs.modal', function() {
-                $('#modal-add-group .member_group ').val(null).trigger("change");
+            $('#modal-edit-group').on('show.bs.modal', function(event) {
+
+                var button = $(event.relatedTarget);
+                var id_group = button.data('group');
+
+                $.ajax({
+                    url: `chat/ajax_modal_group_info/${id_group}`,
+                    success: function(data) {
+                        let kq = JSON.parse(data);
+                        if (kq.status) {
+
+                            let members = kq.data.members;
+                            let name = kq.data.name;
+
+                            $('#frm_edit_group .member_group').val(members);
+                            $('#frm_edit_group .member_group').trigger('change');
+
+                            $('#frm_edit_group .name_group').val(name);
+                            $('#frm_edit_group .id_group').val(id_group);
+                        } else {
+                            alert('Lỗi:' + kq.error)
+                        }
+                    }
+                });
             })
 
-            $("#frm_add_group").submit(function(e) {
+            $("#frm_edit_group").submit(function(e) {
 
                 e.preventDefault(); // avoid to execute the actual submit of the form.
 
@@ -61,30 +84,8 @@
                     success: function(data) {
                         let kq = JSON.parse(data);
                         if (kq.status) {
-
-                            let id_gchat = kq.data.id_gchat;
-
-                            $("#modal-add-group").modal("hide");
-
-                            socket.emit('add-gchat', kq.data);
-
-                            // 500ms sau update trái phải
-                            setTimeout(() => {
-                                // update trái
-                                $('.item-chat').removeClass('active');
-                                $(`#${id_gchat}`).addClass('active');
-                                $(`#${id_gchat}`).parent().prepend($(`#${id_gchat}`));
-                                $(`#${id_gchat} .content`).css('font-weight', 300)
-
-                                // update phải
-                                let fullname = $(`#${id_gchat} .fullname`).text();
-                                let avatar = $(`#${id_gchat} .div-avatar`).html();
-                                $('#chat_right .fullname').text(fullname)
-                                $('#chat_right .div-avatar').html(avatar)
-
-                                ajax_list_msg_by_group(id_gchat);
-                            }, 500);
-
+                            $("#modal-edit-group").modal("hide");
+                            socket.emit('edit-gchat', kq.data);
                         } else {
                             alert(kq.error)
                         }

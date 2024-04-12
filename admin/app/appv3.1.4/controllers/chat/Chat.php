@@ -138,7 +138,6 @@ class Chat extends MY_Controller
     {
         $curr_uid = $this->_session_uid();
         $all_member = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
-        $all_group = $this->Chat_model->all_group();
 
         $name = removeAllTags($this->input->post('name_group'));
         $member = $this->input->post('member_group');
@@ -158,36 +157,27 @@ class Chat extends MY_Controller
             isset($all_member[$id_member]) ? '' : resError('Thành viên không tồn tại!');
         }
 
-        // check nhóm đã tồn tại
-        // $id_gchat_unique = $this->_check_group_da_ton_tai($member, $all_group);
-        // if ($id_gchat_unique) {
-        //     //get info nhóm
-        //     $gchat_info = $this->Chat_model->gchat_info($id_gchat_unique, $curr_uid);
-        //     resError($id_gchat_unique, 'nhom_da_ton_tai');
-        //     // resError('Những thành viên này đã có nhóm!');
-        // }
-
         // thêm nhóm
         $avatar = AVATAR_DEFAULT; //TODO: tạm fix, sau thêm chức năng upload avatar
         $create_time = date('Y-m-d H:i:s');
         $new_id_group = $this->Chat_model->add_group($name, $avatar, $curr_uid, $create_time);
 
         // thêm tin nhắn đầu tiên
-        $attach    = '{}';       // mặc định 
-        $status    = 1;          // TODO: trường này chưa có trong db, có thể thêm sau
-        $ip        = '';         // TODO: trường này chưa có trong db, có thể thêm sau
-        $fullname  = '';         // TODO: trường này chưa có trong db, có thể thêm sau
-        $email     = '';         // TODO: trường này chưa có trong db, có thể thêm sau
-        $phone     = '';         // TODO: trường này chưa có trong db, có thể thêm sau
-        $action_by = $curr_uid;  // TODO: trường này chưa có trong db, có thể thêm sau
+        $this->Chat_model->msg_add_to_group($new_id_group, $curr_uid, '<i>Đã tạo đoạn chat.</i>', '{}', $create_time, '', '', '', '', '', $curr_uid);
+
         // thêm thành viên vào nhóm
         foreach ($member as $id_member) {
             $this->Chat_model->add_member_group($new_id_group, $id_member, $create_time);
         }
 
         $gchat_info = $this->Chat_model->gchat_info($new_id_group, $curr_uid);
-        $gchat_info['action_by'] = $curr_uid;
-        resSuccess($gchat_info);
+        $data['id_gchat']   = $new_id_group;
+        $data['name_gchat'] = $gchat_info['info']['name'];
+        $data['members']    = $gchat_info['members'];
+        $data['member_ids'] = $gchat_info['member_ids'];
+        $data['msg_newest'] = $gchat_info['msg_newest'];
+        $data['action_by']  = $curr_uid;
+        resSuccess($data);
     }
 
     // TRUE: nhóm đã tồn tại
@@ -238,8 +228,8 @@ class Chat extends MY_Controller
         isset($list_group['list'][$id_gchat]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
 
         $name_group = $list_group['list'][$id_gchat]['name'];
-        $member_group = array_keys($list_group['member'][$id_gchat]);
-        
+        $member_group = array_keys($list_group['members'][$id_gchat]);
+
         //validate file đính kèm
         $db_attach = [];
         $attach = is_array($attach) ? $attach : [];
@@ -274,5 +264,113 @@ class Chat extends MY_Controller
         $info['action_by'] = $curr_uid;
 
         resSuccess($info);
+    }
+
+    function ajax_modal_group_info($id_group)
+    {
+        $curr_uid = $this->_session_uid();
+        $list_group = $this->Chat_model->list_group_by_user($curr_uid);
+        isset($list_group['list'][$id_group]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+
+        $members = $list_group['members'][$id_group];
+        $name = $list_group['list'][$id_group]['name'];
+
+        resSuccess(['members' => array_keys($members), 'name' => $name]);
+    }
+
+    function ajax_edit_group()
+    {
+        $curr_uid = $this->_session_uid();
+
+        $id_group = removeAllTags($this->input->post('id_group'));
+        $name_post = removeAllTags($this->input->post('name_group'));
+        $member_post = $this->input->post('member_group');
+
+        $all_member = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $list_group = $this->Chat_model->list_group_by_user($curr_uid);
+        isset($list_group['list'][$id_group]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+
+        $name_old = $list_group['list'][$id_group]['name'];
+        $member_old = $list_group['members'][$id_group];
+        $member_old = array_keys($member_old);
+
+
+        // check memmber empty
+        is_array($member_post) ? '' : resError('Không lấy được thành viên');
+        count($member_post) ? '' : resError('Thành viên không được bỏ trống');
+
+        // check member không tồn tại
+        foreach ($member_post as $id_member) {
+            isset($all_member[$id_member]) ? '' : resError('Thành viên không tồn tại!');
+        }
+
+        // member_new, member_remove
+        $member_new = array_values(array_diff($member_post, $member_old));
+        $member_del = array_values(array_diff($member_old, $member_post));
+        $create_time = date('Y-m-d H:i:s');
+
+        // check xem có gi thay đổi không
+        if ($member_new == [] && $member_del == [] && $name_post == $name_old) {
+            resError('Không có gì thay đổi cả');
+        } else {
+            // thêm thành viên vào nhóm
+            $member_new_fullname = [];
+            foreach ($member_new as $id_member) {
+                $this->Chat_model->add_member_group($id_group, $id_member, $create_time);
+                $member_new_fullname[] = "<u>".$all_member[$id_member]['fullname']."</u>";
+            }
+
+            // xóa thành viên
+            $member_del_fullname = [];
+            foreach ($member_del as $id_member) {
+                $this->Chat_model->delete_member_group($id_group, $id_member);
+                $member_del_fullname[] = "<u>".$all_member[$id_member]['fullname']."</u>";
+            }
+
+            // lưu tên mới
+            if ($name_old !== $name_post) {
+                $this->Chat_model->edit_name_group($id_group, $name_post);
+                $msg[] = '<i>Đã đổi tên đoạn chat</i>';
+            }
+
+            // lưu log msg
+            $log = [];
+            if(count($member_new)) {
+                $log[] = '<i>Đã thêm <u>' . implode(", ", $member_new_fullname) . '</u></i>';
+            }
+            if(count($member_del)) {
+                $log[] = '<i>Đã xóa <u>' . implode(", ", $member_del_fullname) . '</u></i>';
+            }
+            if ($name_old !== $name_post) {
+                $this->Chat_model->edit_name_group($id_group, $name_post);
+                $log[] = '<i>Đã đổi tên đoạn chat thành <u>'.$name_post.'</u></i>';
+            }
+
+            $new_id_msg = $this->Chat_model->msg_add_to_group($id_group, $curr_uid, implode('<br>', $log), '{}', $create_time, '', '', '', '', '', $curr_uid);
+            // end log
+
+            // tra ve du lieu
+            $msg_info = $this->Chat_model->msg_info($new_id_msg);
+            $gchat_info = $this->Chat_model->gchat_info($id_group, $curr_uid);
+
+            $data['id_gchat']   = $id_group;
+            $data['name_gchat'] = $gchat_info['info']['name'];
+            $data['members']    = $gchat_info['members'];
+            $data['member_ids'] = $gchat_info['member_ids'];
+            $data['msg_newest'] = $gchat_info['msg_newest'];
+
+            $data['id_msg']      = $new_id_msg;
+            $data['file_list']   = $msg_info['file_list'];
+            $data['id_user']     = $msg_info['id_user'];
+            $data['content']     = $msg_info['content'];
+            $data['avatar_url']  = $msg_info['avatar_url'];
+            $data['create_time'] = $msg_info['create_time'];
+
+            $data['member_new'] = $member_new;
+            $data['member_del'] = $member_del;
+            $data['action_by']  = $curr_uid;
+            
+            resSuccess($data);
+        }
     }
 }
