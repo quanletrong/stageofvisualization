@@ -251,6 +251,7 @@
             id_msg,
             file_list,
             id_user,
+            fullname,
             content,
             avatar_url,
             create_time,
@@ -275,7 +276,7 @@
             // update bên phải nếu nhóm đang active
             let isActiveRight = el_gchat_left.hasClass('active');
             if (isActiveRight) {
-                let new_html = html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time);
+                let new_html = html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname);
                 $('#chat_right .list-chat')
                     .append(new_html)
                     .scrollTop($('#chat_right .list-chat')[0].scrollHeight);

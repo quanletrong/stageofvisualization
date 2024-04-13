@@ -123,7 +123,7 @@
 
             window.history.pushState('chat', 'chat', `/admin/chat/index/${id_group}`);
         }
-        
+
         // end
 
         // set height group
@@ -168,8 +168,16 @@
 
                     let html = ``;
                     for (const [key, chat] of Object.entries(list_chat)) {
-                        let {id_msg, file_list, id_user, content, avatar_url, create_time} = chat;
-                        html += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time)
+                        let {
+                            id_msg,
+                            file_list,
+                            id_user,
+                            fullname_user,
+                            content,
+                            avatar_url,
+                            create_time
+                        } = chat;
+                        html += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user)
                     }
 
                     $('#chat_right .list-chat').html(html).scrollTop($('#chat_right .list-chat')[0].scrollHeight);
@@ -238,7 +246,7 @@
         });
     }
 
-    function html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time) {
+    function html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user) {
 
         let list_file = ``;
         for (const [id_file, file] of Object.entries(file_list)) {
@@ -274,10 +282,10 @@
         if (<?= $cur_uid ?> == id_user) {
             html = `
             <div id="msg_${id_msg}"  class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px;">
-                <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
+                <div class="rounded" style="background: #007bff; color: white; padding: 5px 10px; text-align: end;">
                     <div style="white-space: pre-line; line-break: anywhere">${content != '' ? `${content}` : ''}</div>
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <small style="color:#7c7c7c" class="time" title="${create_time}">&nbsp;</small>
+                    <small style="" class="time" title="${create_time}">&nbsp;</small>
                 </div>
             </div>`;
         } else {
@@ -287,6 +295,7 @@
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
                     <div style="white-space: pre-line; line-break: anywhere">${content != '' ? `${content}` : ''}</div>
                     <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
+                    <small style="color:#7c7c7c">${fullname_user} · </small> 
                     <small style="color:#7c7c7c" class="time" title="${create_time}">&nbsp;</small>
                 </div>
             </div>`;
