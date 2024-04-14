@@ -211,12 +211,15 @@
                                 <button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-edit-group" data-group="${id_gchat}">
                                     <span class="text-secondary">Xem thông tin</span>
                                 </button>
-                                <button class="dropdown-item" type="button" onclick="ajax_delete_chat_user('${id_gchat}')">
-                                    <span class="text-secondary">Xóa nhóm này</span>
-                                </button>
+                                <?php if($role == ADMIN) { ?>
+                                    <button class="dropdown-item" type="button" onclick="ajax_delete_chat_user('${id_gchat}')">
+                                        <span class="text-secondary">Xóa nhóm này</span>
+                                    </button>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>`
         // end

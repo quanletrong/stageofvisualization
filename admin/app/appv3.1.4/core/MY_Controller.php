@@ -232,13 +232,13 @@ class MY_Controller extends CI_Controller
                 'chat' => [
                     'index' => [],
                     'ajax_chat_list_by_user' => [],
-                    'ajax_chat_add' => [],
-                    'ajax_delete_chat_user' => [],
-                    'ajax_add_group' => [],
+                    'ajax_chat_add' => [SALE, QC, EDITOR],
+                    'ajax_delete_chat_user' => [SALE, QC, EDITOR],
+                    'ajax_add_group' => [SALE, QC, EDITOR],
                     'ajax_list_msg_by_group' => [],
                     'ajax_msg_add_to_group' => [],
                     'ajax_modal_group_info' => [],
-                    'ajax_edit_group' => []
+                    'ajax_edit_group' => [SALE, QC, EDITOR]
                 ],
                 'discuss' => [
                     'ajax_discuss_list_khach' => [QC, EDITOR],
