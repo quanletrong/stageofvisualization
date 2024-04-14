@@ -163,20 +163,36 @@ class Chat extends MY_Controller
         $new_id_group = $this->Chat_model->add_group($name, $avatar, $curr_uid, $create_time);
 
         // thêm tin nhắn đầu tiên
-        $this->Chat_model->msg_add_to_group($new_id_group, $curr_uid, '<i>Đã tạo đoạn chat.</i>', '{}', $create_time, '', '', '', '', '', $curr_uid);
+        $new_id_msg = $this->Chat_model->msg_add_to_group($new_id_group, $curr_uid, '<i>Đã tạo đoạn chat.</i>', '{}', $create_time, '', '', '', '', '', $curr_uid);
 
         // thêm thành viên vào nhóm
         foreach ($member as $id_member) {
             $this->Chat_model->add_member_group($new_id_group, $id_member, $create_time);
         }
 
+        // đồng bộ sang bảng tbl_msg_user
+        $this->Chat_model->sync_msg_to_tbl_msg_user($new_id_group, $new_id_msg, $create_time, $member, $curr_uid);
+        
+        # tra du lieu socket
         $gchat_info = $this->Chat_model->gchat_info($new_id_group, $curr_uid);
+        $msg_info = $this->Chat_model->msg_info($new_id_msg);
+
+        // thông tin gchat
         $socket['id_gchat']   = $new_id_group;
         $socket['name_gchat'] = $gchat_info['info']['name'];
         $socket['members']    = $gchat_info['members'];
         $socket['member_ids'] = $gchat_info['member_ids'];
-        $socket['msg_newest'] = $gchat_info['msg_newest'];
         $socket['action_by']  = $curr_uid;
+
+        // thông tin msg
+        $socket['id_msg']      = $new_id_msg;
+        $socket['file_list']   = $msg_info['file_list'];
+        $socket['id_user']     = $msg_info['id_user'];
+        $socket['content']     = $msg_info['content'];
+        $socket['avatar_url']  = $msg_info['avatar_url'];
+        $socket['create_time'] = $msg_info['create_time'];
+        $socket['fullname']    = $msg_info['fullname'];
+
         resSuccess($socket);
     }
 
@@ -204,12 +220,12 @@ class Chat extends MY_Controller
     {
         $curr_uid = $this->_session_uid();
 
-        // set tất cả tin nhắn là đã xem
-        // $this->Chat_model->set_da_xem_all_msg_group($id_group);
-
         $list_group = $this->Chat_model->list_group_by_user($curr_uid);
 
         isset($list_group['list'][$id_group]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+
+        // set tất cả tin nhắn là đã xem sau đó nới get list
+        $this->Chat_model->set_da_xem_all_msg_group_v2($id_group, $curr_uid);
 
         // get lai list
         $chat_list = $this->Chat_model->chat_list_by_group($id_group);
@@ -219,12 +235,12 @@ class Chat extends MY_Controller
 
     function ajax_msg_add_to_group($id_gchat)
     {
-        $curr_uid = $this->_session_uid();
+        $action_by = $this->_session_uid();
         // check right
         $content = removeAllTags($this->input->post('content'));
         $attach = $this->input->post('attach');
 
-        $list_group = $this->Chat_model->list_group_by_user($curr_uid);
+        $list_group = $this->Chat_model->list_group_by_user($action_by);
         isset($list_group['list'][$id_gchat]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
 
         //validate file đính kèm
@@ -243,28 +259,28 @@ class Chat extends MY_Controller
             $db_attach[$id_attach] = $copy['basename'];
         }
 
-        // get list discuss theo order
+        // luu vao bang tbl_msg
         $create_time = date('Y-m-d H:i:s');
         $db_attach =  json_encode($db_attach, JSON_FORCE_OBJECT);
 
-        $status    = 1;          // TODO: trường này chưa có trong db, có thể thêm sau
-        $ip        = '';         // TODO: trường này chưa có trong db, có thể thêm sau
-        $fullname  = '';         // TODO: trường này chưa có trong db, có thể thêm sau
-        $email     = '';         // TODO: trường này chưa có trong db, có thể thêm sau
-        $phone     = '';         // TODO: trường này chưa có trong db, có thể thêm sau
-        $action_by = $curr_uid;  // TODO: trường này chưa có trong db, có thể thêm sau
+        $new_id_msg = $this->Chat_model->msg_add_to_group($id_gchat, $action_by, $content, $db_attach, $create_time);
 
-        $new_id_msg = $this->Chat_model->msg_add_to_group($id_gchat, $curr_uid, $content, $db_attach, $create_time, $status, $ip, $fullname, $phone, $email, $action_by);
+        $gchat_info = $this->Chat_model->gchat_info($id_gchat, $action_by);
 
-        // trả dư liệu
+        // đồng bộ sang bảng tbl_msg_user
+        $this->Chat_model->sync_msg_to_tbl_msg_user($id_gchat, $new_id_msg, $create_time, $gchat_info['member_ids'], $action_by);
+
+        // tra du lieu socket
         $msg_info = $this->Chat_model->msg_info($new_id_msg);
-        $gchat_info = $this->Chat_model->gchat_info($id_gchat, $curr_uid);
 
-        $socket['id_gchat']    = $id_gchat;
-        $socket['name_gchat']  = $gchat_info['info']['name'];
-        $socket['members']     = $gchat_info['members'];
-        $socket['member_ids']  = $gchat_info['member_ids'];
-        $socket['msg_newest']  = $gchat_info['msg_newest'];
+        // thông tin gchat
+        $socket['id_gchat']   = $id_gchat;
+        $socket['name_gchat'] = $gchat_info['info']['name'];
+        $socket['members']    = $gchat_info['members'];
+        $socket['member_ids'] = $gchat_info['member_ids'];
+        $socket['action_by']  = $action_by;
+
+        // thông tin msg
         $socket['id_msg']      = $new_id_msg;
         $socket['file_list']   = $msg_info['file_list'];
         $socket['id_user']     = $msg_info['id_user'];
@@ -272,7 +288,6 @@ class Chat extends MY_Controller
         $socket['avatar_url']  = $msg_info['avatar_url'];
         $socket['create_time'] = $msg_info['create_time'];
         $socket['fullname']    = $msg_info['fullname'];
-        $socket['action_by']   = $curr_uid;
 
         resSuccess($socket);
     }
@@ -358,12 +373,14 @@ class Chat extends MY_Controller
             }
 
             $new_id_msg = $this->Chat_model->msg_add_to_group($id_group, $curr_uid, implode('<br>', $log), '{}', $create_time, '', '', '', '', '', $curr_uid);
+
+            // đồng bộ sang bảng tbl_msg_user
+            $gchat_info = $this->Chat_model->gchat_info($id_group, $curr_uid);
+            $this->Chat_model->sync_msg_to_tbl_msg_user($id_group, $new_id_msg, $create_time, $gchat_info['member_ids'], $curr_uid);
             // end log
 
             // tra ve du lieu
             $msg_info = $this->Chat_model->msg_info($new_id_msg);
-            $gchat_info = $this->Chat_model->gchat_info($id_group, $curr_uid);
-
             $socket['id_gchat']   = $id_group;
             $socket['name_gchat'] = $gchat_info['info']['name'];
             $socket['members']    = $gchat_info['members'];

@@ -50,7 +50,7 @@
                         $da_xem = '300';
                         $msg_newest = [];
                         if (isset($list_group['msg_newest'][$id_group])) {
-                            $da_xem = $list_group['msg_newest'][$id_group]['da_xem'] ? '300' : '600';
+                            $da_xem = $list_group['msg_newest'][$id_group]['seen_time'] != null ? '300' : '600';
                             $msg_newest = $list_group['msg_newest'][$id_group];
                         }
                         ?>

@@ -344,10 +344,10 @@ class Chat_model extends CI_Model
             SELECT * FROM tmp_all_group;
 
             /* tin nhắn mới nhất trong nhóm */
-            SELECT a.*, IF(b.id_da_xem IS NULL, 0, 1) da_xem FROM tmp_ranked_chat a 
-            LEFT JOIN tbl_chat__msg_da_xem b ON a.id_msg = b.id_msg AND b.id_user = $id_user
-            WHERE row_num = 1 
-            ORDER BY create_time DESC;
+            SELECT a.*, b.seen_time FROM tmp_ranked_chat a 
+            LEFT JOIN tbl_chat__msg_user b ON a.id_msg = b.id_msg AND b.id_user = $id_user
+            WHERE a.row_num = 1 
+            ORDER BY a.create_time DESC;
             
             /* ds thành viên trong nhóm */
             SELECT t1.*, t2.username, t2.fullname, t2.avatar  
@@ -399,18 +399,6 @@ class Chat_model extends CI_Model
                     $data['list'][$id_gchat]['msg_newest'] = $msg_newest;
                 }
 
-                // sắp xếp lại mảng gruop theo tin nhắn mới nhất lên đầu mảng
-                // function cb($a, $b){
-                //     if(!isset($a['msg_newest']['strtotime']) || !isset($b['msg_newest']['strtotime'])) {
-                //         return 0;
-                //     }
-                //     if($a['msg_newest']['strtotime'] == $b['msg_newest']['strtotime']){
-                //         return 0;
-                //     }
-                //     return ($a['msg_newest']['strtotime'] > $b['msg_newest']['strtotime']) ? -1 : 1;
-                // }
-                // uasort($data['list'], "cb");
-
             } else {
                 var_dump($stmt->errorInfo());
                 die;
@@ -434,7 +422,10 @@ class Chat_model extends CI_Model
             "SELECT * FROM tbl_chat__all_group WHERE id_gchat=$id_gchat;
 
             /* tin nhắn mới nhất trong nhóm */
-            SELECT * FROM tbl_chat__msg WHERE id_gchat = $id_gchat ORDER BY create_time DESC LIMIT 1;
+            SELECT a.*, b.seen_time
+            FROM tbl_chat__msg a
+            INNER JOIN tbl_chat__msg_user b ON a.id_msg=b.id_msg AND b.id_user=$id_user
+            WHERE a.id_gchat = $id_gchat ORDER BY a.create_time DESC LIMIT 1;
             
             /* ds thành viên trong nhóm */
             SELECT t1.*, t2.username, t2.fullname, t2.avatar  
@@ -457,20 +448,21 @@ class Chat_model extends CI_Model
                 $stmt->nextRowset();
                 $msg = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($msg !== false) {
-                    $msg['strtotime'] = strtotime($msg['create_time']);
                     $data['msg_newest'] = $msg;
                 }
 
                 // thành viên trong nhóm
                 $stmt->nextRowset();
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                    // tất ca id thành viên
+                    $data['member_ids'][] = $row['id_user'];
+
                     // không thêm user hiện tại vào mảng member
                     if ($row['id_user'] != $id_user) {
                         $row['avatar_url'] = url_image($row['avatar'] == null ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
                         $data['members'][$row['id_user']] = $row;
                     }
-
-                    $data['member_ids'][] = $row['id_user'];
                 }
 
                 // bổ sung tên nhóm nếu tên nhóm chưa được đặt
@@ -526,7 +518,7 @@ class Chat_model extends CI_Model
         return $list_chat;
     }
 
-    function msg_add_to_group($id_gchat, $id_user, $content, $file, $create_time, $status, $ip, $fullname, $phone, $email, $action_by)
+    function msg_add_to_group($id_gchat, $id_user, $content, $file, $create_time)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
@@ -534,6 +526,36 @@ class Chat_model extends CI_Model
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             $param = [$id_user, $content, $file, $create_time, $id_gchat];
+
+            if ($stmt->execute($param)) {
+                $new_id = $iconn->lastInsertId();
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $new_id;
+    }
+
+    function sync_msg_to_tbl_msg_user($id_gchat, $id_msg, $created_time, $member_ids, $curr_uid)
+    {
+        $new_id = 0;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT INTO tbl_chat__msg_user (id_gchat, id_msg, id_user, created_time) VALUES ";
+
+        //set other member = chua xem
+        $value=[];
+        foreach($member_ids as $id_user) {
+            $value[] = "($id_gchat, $id_msg, $id_user, '$created_time')";
+        }
+        $sql .= implode(', ', $value) . ";";
+
+        //set current member = da xem
+        $sql .=  "UPDATE tbl_chat__msg_user SET seen_time = '$created_time'  WHERE id_gchat= $id_gchat AND id_user = $curr_uid; ";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
@@ -613,9 +635,6 @@ class Chat_model extends CI_Model
         return $execute;
     }
 
-    // END GROUP
-
-
     function delete_msg_group($id_msg, $text_del)
     {
         $execute = false;
@@ -642,7 +661,7 @@ class Chat_model extends CI_Model
         $sql = "DELETE FROM `tbl_chat__all_group` WHERE `id_gchat` = '$id_gchat'; ";
         $sql .= "DELETE FROM `tbl_chat__member_group` WHERE `id_gchat` = '$id_gchat'; ";
         $sql .= "DELETE FROM `tbl_chat__msg` WHERE `id_gchat` = '$id_gchat'; ";
-        $sql .= "DELETE FROM `tbl_chat__msg_da_xem` WHERE `id_gchat` = '$id_gchat'; ";
+        $sql .= "DELETE FROM `tbl_chat__msg_user` WHERE `id_gchat` = '$id_gchat'; ";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -656,4 +675,28 @@ class Chat_model extends CI_Model
         $stmt->closeCursor();
         return $execute;
     }
+
+    function set_da_xem_all_msg_group_v2($id_group, $id_user)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $seen_time = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_chat__msg_user SET seen_time = '$seen_time' WHERE id_gchat= $id_group AND id_user = $id_user;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    // END GROUP
 }

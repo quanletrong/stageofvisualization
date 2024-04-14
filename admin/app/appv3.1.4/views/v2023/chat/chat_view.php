@@ -137,7 +137,8 @@
         let name_gchat = data.name_gchat
         let members = data.members;
         let member_ids = data.member_ids;
-        let msg_newest = data.msg_newest
+        let content = data.content
+        let create_time = data.create_time
         let action_by = data.action_by
 
         // bật thông báo
@@ -172,8 +173,8 @@
                         ${name_gchat}
                     </div>
                     <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;" onclick="onclick_el_gchat('${id_gchat}')">
-                        <div class="text-truncate content" style="width: 80%; font-weight: 600;">${isEmpty(msg_newest) ? '' : msg_newest.content}</div>
-                        <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="${isEmpty(msg_newest) ? '' : msg_newest.create_time}">&nbsp;</div>
+                        <div class="text-truncate content" style="width: 80%; font-weight: 600;">${content}</div>
+                        <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="${create_time}">&nbsp;</div>
                     </div>
 
                     <div style="position: absolute;right: 0px;top: 11px;color: red; display: none; background-color: #f0f0f0;" class="option">
@@ -251,7 +252,7 @@
         if (el_gchat_left.length) {
             // update bên trái
             el_gchat_left.find(`.content`).html(content != '' ? content : '<i>File phương tiện</i>');
-            el_gchat_left.find(`.content`).css('font-weight', 600)
+            el_gchat_left.find(`.content`).css('font-weight', action_by == <?= $cur_uid ?> ? 300 : 600 )
             el_gchat_left.find(`.time`).attr('title', create_time);
             el_gchat_left.parent().prepend(el_gchat_left);
 
