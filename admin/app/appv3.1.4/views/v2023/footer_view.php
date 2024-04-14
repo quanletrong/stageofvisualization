@@ -302,13 +302,14 @@
 			id_user,
 			fullname,
 			content,
-			file_list
+			file_list,
+			action_by
 		} = data;
 
 		let crr_uid = <?= $this->session->userdata('uid') ?>;
 		let page = '<?= $this->uri->rsegments[1] ?>';
 
-		if (page != 'chat') {
+		if (page != 'chat' && action_by != crr_uid) {
 			$('.sidebar .chat-menu-left i').addClass('zoom-in-out-box text-warning');
 			let count = parseInt($('.sidebar .chat-menu-left .badge').html());
 			$('.sidebar .chat-menu-left .badge').html(count + 1);
@@ -324,7 +325,11 @@
 			let href = `admin/chat/index/${id_gchat}`;
 			let content_show = content.length > 100 ? content.substring(0, 100) + '...' : content;
 			let dinh_kem = isEmpty(file_list) ? '' : '<p><i>[Đính kèm]</i></p>';
-			let fullname_show = `<p style="display: flex;justify-content: flex-end;"><small>${fullname}</small></p>`;
+			let fullname_show =
+				`<p style="display: flex;justify-content: space-between;">
+				<small>${fullname}</small>
+				<small>Xem</small>
+			</p>`;
 
 			$.toast({
 				heading: `<b>${name_gchat}</b>`,
@@ -339,10 +344,6 @@
 				textColor: 'white'
 			})
 		}
-	})
-
-	socket.on('add-msg-to-gchat', data => {
-		
 	})
 </script>
 </body>
