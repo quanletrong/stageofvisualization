@@ -109,40 +109,16 @@
         window.history.pushState('chat', 'chat', `/admin/chat/index/${id_group}`);
     }
 
-    function ajax_delete_chat_user(chat_user) {
+    function ajax_delete_gchat(id_gchat) {
 
-        if (confirm('Bạn muốn xóa đoạn chat này?')) {
+        if (confirm('Are you sure you want to delete this chat?')) {
             $.ajax({
-                url: `chat/ajax_delete_chat_user/${chat_user}`,
+                url: `chat/ajax_delete_gchat/${id_gchat}`,
                 success: function(data, textStatus, jqXHR) {
                     let kq = JSON.parse(data);
 
                     if (kq.status) {
-
-                        // update trái
-                        $(`[id='${chat_user}']`).remove();
-
-                        if ($('.item-chat').length == 0) {
-                            $('#chat-left .alert_empty_chat').show();
-                            $('#chat_right').hide();
-                        }
-
-                        // update phải
-                        let is_active = $(`[id='${chat_user}']`).hasClass('active');
-                        if (is_active) {
-
-                            let item_group_active = $('.item-chat').first();
-                            let id_group = item_group_active.attr('id');
-                            let fullname = item_group_active.find('.fullname').text();
-                            let avatar = item_group_active.find('.div-avatar').html();
-
-                            item_group_active.addClass('active')
-
-                            $('#chat_right .fullname').text(fullname)
-                            $('#chat_right .div-avatar').html(avatar)
-                            ajax_list_msg_by_group(id_group);
-                        }
-
+                        socket.emit('delete-gchat', kq.data);
                     } else {
                         alert(kq.error);
                     }
@@ -187,15 +163,15 @@
 
         // tạo element gchat cột bên trái
         let html_new =
-            `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_gchat}" onclick="onclick_el_gchat('${id_gchat}')">
-                <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;">
+            `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_gchat}">
+                <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;" onclick="onclick_el_gchat('${id_gchat}')">
                     ${avatar}
                 </div>
                 <div style="width: 85%; position: relative;">
-                    <div style="width: 100%; font-weight: 500;" class="fullname text-truncate">
+                    <div style="width: 100%; font-weight: 500;" class="fullname text-truncate" onclick="onclick_el_gchat('${id_gchat}')">
                         ${name_gchat}
                     </div>
-                    <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
+                    <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;" onclick="onclick_el_gchat('${id_gchat}')">
                         <div class="text-truncate content" style="width: 80%; font-weight: 600;">${isEmpty(msg_newest) ? '' : msg_newest.content}</div>
                         <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="${isEmpty(msg_newest) ? '' : msg_newest.create_time}">&nbsp;</div>
                     </div>
@@ -211,8 +187,8 @@
                                 <button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-edit-group" data-group="${id_gchat}">
                                     <span class="text-secondary">Xem thông tin</span>
                                 </button>
-                                <?php if($role == ADMIN) { ?>
-                                    <button class="dropdown-item" type="button" onclick="ajax_delete_chat_user('${id_gchat}')">
+                                <?php if ($role == ADMIN) { ?>
+                                    <button class="dropdown-item" type="button" onclick="ajax_delete_gchat('${id_gchat}')">
                                         <span class="text-secondary">Xóa nhóm này</span>
                                     </button>
                                 <?php } ?>
@@ -231,13 +207,16 @@
     socket.on('delete-gchat', data => {
         let id_gchat = data.id_gchat;
 
-        // ẩn bên phải
+        // ẩn bên phải trước
         if ($(`#${id_gchat}`).hasClass('active')) {
             $('#chat_right').hide();
         }
 
-        // xóa bên trái
+        // xóa bên trai sau
         $(`#${id_gchat}`).remove();
+        if ($('.item-chat').length == 0) {
+            $('#chat-left .alert_empty_chat').show();
+        }
     })
 
     socket.on('update-name-gchat', data => {

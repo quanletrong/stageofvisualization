@@ -19,8 +19,8 @@
 
     <div class="list-group" style="overflow-x: hidden; overflow-y: auto; padding-right:5px">
         <?php foreach ($list_group['list'] as $id_group => $group) { ?>
-            <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $id_group ?>" onclick="onclick_el_gchat('<?= $id_group ?>')">
-                <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;">
+            <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $id_group ?>">
+                <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;" onclick="onclick_el_gchat('<?= $id_group ?>')">
 
                     <?php $num_member = count($list_group['members'][$id_group]); ?>
                     <?php $lst_member = $list_group['members'][$id_group]; ?>
@@ -42,10 +42,10 @@
 
                 </div>
                 <div style="width: 85%; position: relative;">
-                    <div style="width: 80%; font-weight: 500;" class="fullname text-truncate">
+                    <div style="width: 80%; font-weight: 500;" class="fullname text-truncate" onclick="onclick_el_gchat('<?= $id_group ?>')">
                         <?= $group['name'] ?>
                     </div>
-                    <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;">
+                    <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;" onclick="onclick_el_gchat('<?= $id_group ?>')">
                         <?php
                         $da_xem = '300';
                         $msg_newest = [];
@@ -73,7 +73,7 @@
                                     <span class="text-secondary">Xem thông tin</span>
                                 </button>
                                 <?php if($role == ADMIN) { ?>
-                                    <button class="dropdown-item" type="button" onclick="ajax_delete_chat_user('<?= $id_group ?>')">
+                                    <button class="dropdown-item" type="button" onclick="ajax_delete_gchat('<?= $id_group ?>')">
                                         <span class="text-secondary">Xóa nhóm này</span>
                                     </button>
                                 <?php } ?>

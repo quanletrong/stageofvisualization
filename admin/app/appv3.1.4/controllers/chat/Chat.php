@@ -171,13 +171,13 @@ class Chat extends MY_Controller
         }
 
         $gchat_info = $this->Chat_model->gchat_info($new_id_group, $curr_uid);
-        $data['id_gchat']   = $new_id_group;
-        $data['name_gchat'] = $gchat_info['info']['name'];
-        $data['members']    = $gchat_info['members'];
-        $data['member_ids'] = $gchat_info['member_ids'];
-        $data['msg_newest'] = $gchat_info['msg_newest'];
-        $data['action_by']  = $curr_uid;
-        resSuccess($data);
+        $socket['id_gchat']   = $new_id_group;
+        $socket['name_gchat'] = $gchat_info['info']['name'];
+        $socket['members']    = $gchat_info['members'];
+        $socket['member_ids'] = $gchat_info['member_ids'];
+        $socket['msg_newest'] = $gchat_info['msg_newest'];
+        $socket['action_by']  = $curr_uid;
+        resSuccess($socket);
     }
 
     // TRUE: nhóm đã tồn tại
@@ -260,21 +260,21 @@ class Chat extends MY_Controller
         $msg_info = $this->Chat_model->msg_info($new_id_msg);
         $gchat_info = $this->Chat_model->gchat_info($id_gchat, $curr_uid);
 
-        $data['id_gchat']    = $id_gchat;
-        $data['name_gchat']  = $gchat_info['info']['name'];
-        $data['members']     = $gchat_info['members'];
-        $data['member_ids']  = $gchat_info['member_ids'];
-        $data['msg_newest']  = $gchat_info['msg_newest'];
-        $data['id_msg']      = $new_id_msg;
-        $data['file_list']   = $msg_info['file_list'];
-        $data['id_user']     = $msg_info['id_user'];
-        $data['content']     = $msg_info['content'];
-        $data['avatar_url']  = $msg_info['avatar_url'];
-        $data['create_time'] = $msg_info['create_time'];
-        $data['fullname']    = $msg_info['fullname'];
-        $data['action_by']   = $curr_uid;
+        $socket['id_gchat']    = $id_gchat;
+        $socket['name_gchat']  = $gchat_info['info']['name'];
+        $socket['members']     = $gchat_info['members'];
+        $socket['member_ids']  = $gchat_info['member_ids'];
+        $socket['msg_newest']  = $gchat_info['msg_newest'];
+        $socket['id_msg']      = $new_id_msg;
+        $socket['file_list']   = $msg_info['file_list'];
+        $socket['id_user']     = $msg_info['id_user'];
+        $socket['content']     = $msg_info['content'];
+        $socket['avatar_url']  = $msg_info['avatar_url'];
+        $socket['create_time'] = $msg_info['create_time'];
+        $socket['fullname']    = $msg_info['fullname'];
+        $socket['action_by']   = $curr_uid;
 
-        resSuccess($data);
+        resSuccess($socket);
     }
 
     function ajax_modal_group_info($id_group)
@@ -328,14 +328,14 @@ class Chat extends MY_Controller
             $member_new_fullname = [];
             foreach ($member_new as $id_member) {
                 $this->Chat_model->add_member_group($id_group, $id_member, $create_time);
-                $member_new_fullname[] = "<u>".$all_member[$id_member]['fullname']."</u>";
+                $member_new_fullname[] = "<u>" . $all_member[$id_member]['fullname'] . "</u>";
             }
 
             // xóa thành viên
             $member_del_fullname = [];
             foreach ($member_del as $id_member) {
                 $this->Chat_model->delete_member_group($id_group, $id_member);
-                $member_del_fullname[] = "<u>".$all_member[$id_member]['fullname']."</u>";
+                $member_del_fullname[] = "<u>" . $all_member[$id_member]['fullname'] . "</u>";
             }
 
             // lưu tên mới
@@ -346,15 +346,15 @@ class Chat extends MY_Controller
 
             // lưu log msg
             $log = [];
-            if(count($member_new)) {
+            if (count($member_new)) {
                 $log[] = '<i>Đã thêm <u>' . implode(", ", $member_new_fullname) . '</u></i>';
             }
-            if(count($member_del)) {
+            if (count($member_del)) {
                 $log[] = '<i>Đã xóa <u>' . implode(", ", $member_del_fullname) . '</u></i>';
             }
             if ($name_old !== $name_post) {
                 $this->Chat_model->edit_name_group($id_group, $name_post);
-                $log[] = '<i>Đã đổi tên đoạn chat thành <u>'.$name_post.'</u></i>';
+                $log[] = '<i>Đã đổi tên đoạn chat thành <u>' . $name_post . '</u></i>';
             }
 
             $new_id_msg = $this->Chat_model->msg_add_to_group($id_group, $curr_uid, implode('<br>', $log), '{}', $create_time, '', '', '', '', '', $curr_uid);
@@ -364,25 +364,55 @@ class Chat extends MY_Controller
             $msg_info = $this->Chat_model->msg_info($new_id_msg);
             $gchat_info = $this->Chat_model->gchat_info($id_group, $curr_uid);
 
-            $data['id_gchat']   = $id_group;
-            $data['name_gchat'] = $gchat_info['info']['name'];
-            $data['members']    = $gchat_info['members'];
-            $data['member_ids'] = $gchat_info['member_ids'];
-            $data['msg_newest'] = $gchat_info['msg_newest'];
+            $socket['id_gchat']   = $id_group;
+            $socket['name_gchat'] = $gchat_info['info']['name'];
+            $socket['members']    = $gchat_info['members'];
+            $socket['member_ids'] = $gchat_info['member_ids'];
+            $socket['msg_newest'] = $gchat_info['msg_newest'];
 
-            $data['id_msg']      = $new_id_msg;
-            $data['file_list']   = $msg_info['file_list'];
-            $data['id_user']     = $msg_info['id_user'];
-            $data['content']     = $msg_info['content'];
-            $data['avatar_url']  = $msg_info['avatar_url'];
-            $data['create_time'] = $msg_info['create_time'];
-            $data['fullname']    = $msg_info['fullname'];
+            $socket['id_msg']      = $new_id_msg;
+            $socket['file_list']   = $msg_info['file_list'];
+            $socket['id_user']     = $msg_info['id_user'];
+            $socket['content']     = $msg_info['content'];
+            $socket['avatar_url']  = $msg_info['avatar_url'];
+            $socket['create_time'] = $msg_info['create_time'];
+            $socket['fullname']    = $msg_info['fullname'];
 
-            $data['member_new'] = $member_new;
-            $data['member_del'] = $member_del;
-            $data['action_by']  = $curr_uid;
-            
-            resSuccess($data);
+            $socket['member_new'] = $member_new;
+            $socket['member_del'] = $member_del;
+            $socket['action_by']  = $curr_uid;
+
+            resSuccess($socket);
+        }
+    }
+
+    function ajax_del_msg_group($id_msg)
+    {
+
+        if (isIdNumber($id_msg)) {
+            $text_del = '<i>Tin nhắn đã bị xóa</i>';
+            $this->Chat_model->delete_msg_group($id_msg, $text_del);
+
+            // TODO: xu ly del file
+            resSuccess($text_del);
+        } else {
+            resSuccess('Message invalid!');
+        }
+    }
+
+    function ajax_delete_gchat($id_gchat)
+    {
+        if (isIdNumber($id_gchat)) {
+
+            $gchat_info = $this->Chat_model->gchat_info($id_gchat,  0);
+            $socket['id_gchat']   = $id_gchat;
+            $socket['member_ids'] = $gchat_info['member_ids'];
+            $this->Chat_model->delete_group($id_gchat);
+
+            // TODO: xu ly del file
+            resSuccess($socket);
+        } else {
+            resSuccess('Message invalid!');
         }
     }
 }

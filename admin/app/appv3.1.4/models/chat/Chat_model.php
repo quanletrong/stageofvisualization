@@ -614,4 +614,46 @@ class Chat_model extends CI_Model
     }
 
     // END GROUP
+
+
+    function delete_msg_group($id_msg, $text_del)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE `tbl_chat__msg` SET `content` = '$text_del', `file` = '{}' WHERE `id_msg` = '$id_msg';";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function delete_group($id_gchat)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        
+        $sql = "DELETE FROM `tbl_chat__all_group` WHERE `id_gchat` = '$id_gchat'; ";
+        $sql .= "DELETE FROM `tbl_chat__member_group` WHERE `id_gchat` = '$id_gchat'; ";
+        $sql .= "DELETE FROM `tbl_chat__msg` WHERE `id_gchat` = '$id_gchat'; ";
+        $sql .= "DELETE FROM `tbl_chat__msg_da_xem` WHERE `id_gchat` = '$id_gchat'; ";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
 }

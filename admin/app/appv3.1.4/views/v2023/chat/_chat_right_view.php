@@ -19,6 +19,10 @@
     .btn-setting-group:hover {
         color: black;
     }
+
+    .msg-item:hover .btn-xoa-msg {
+        display: block !important;
+    }
 </style>
 <div id="chat_right" class="card mb-0" style="width: 100%; display: none;">
     <div class="card-header text-white p-1">
@@ -246,8 +250,30 @@
         });
     }
 
+    function ajax_del_msg_group(id_msg) {
+        if (confirm("Are you sure you want to delete this message?") == true) {
+            $.ajax({
+                url: `chat/ajax_del_msg_group/${id_msg}`,
+                success: function(data, textStatus, jqXHR) {
+                    let kq = JSON.parse(data);
+
+                    if (kq.status) {
+                        $(`#msg_${id_msg} .rounded`).html(kq.data);
+                    } else {
+                        alert(kq.error);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(data);
+                    alert('Error');
+                }
+            });
+        }
+    }
+
     function html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user) {
 
+        // LIST FILE
         let list_file = ``;
         for (const [id_file, file] of Object.entries(file_list)) {
             list_file += `
@@ -277,12 +303,26 @@
                 }
             </div>`;
         }
+        // END LIST FILE
+
+        // NUT XÓA
+        let xoa = '';
+        <?php if($role == ADMIN) { ?>
+        xoa = 
+        `<div style="width: 20px; cursor: pointer;" onclick="ajax_del_msg_group(${id_msg})">
+            <div class="btn-xoa-msg" style="display:none">
+                <i class="fas fa-trash" style="font-size: 0.75rem; color: red"></i>
+            </div>
+        </div>`;
+        <?php } ?>
+        // END NUT XÓA
 
         let html = ``;
         if (<?= $cur_uid ?> == id_user) {
             html = `
-            <div id="msg_${id_msg}"  class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px;">
-                <div class="rounded" style="background: #007bff; color: white; padding: 5px 10px; text-align: end;">
+            <div id="msg_${id_msg}"  class="mb-2 me-2 d-flex justify-content-end msg-item" style="margin-left:50px; gap:10px">
+                ${xoa}
+                <div class="rounded " style="background: #007bff; color: white; padding: 5px 10px; text-align: end;">
                     <div style="white-space: pre-line; line-break: anywhere">${content != '' ? `${content}` : ''}</div>
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
                     <small style="" class="time" title="${create_time}">&nbsp;</small>
@@ -290,7 +330,7 @@
             </div>`;
         } else {
             html = `
-            <div id="msg_${id_msg}" class="mb-2 me-2 d-flex" style="gap:10px">
+            <div id="msg_${id_msg}" class="mb-2 me-2 d-flex msg-item" style="gap:10px">
                 <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${avatar_url}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
                     <div style="white-space: pre-line; line-break: anywhere">${content != '' ? `${content}` : ''}</div>
@@ -298,6 +338,7 @@
                     <small style="color:#7c7c7c">${fullname_user} · </small> 
                     <small style="color:#7c7c7c" class="time" title="${create_time}">&nbsp;</small>
                 </div>
+                ${xoa}
             </div>`;
         }
         // _.refresh_since_time(`#msg_${chat.id_msg} .time`, chat.create_time);
