@@ -681,7 +681,7 @@ class Chat_model extends CI_Model
         $execute = false;
         $iconn = $this->db->conn_id;
         $seen_time = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_chat__msg_user SET seen_time = '$seen_time' WHERE id_gchat= $id_group AND id_user = $id_user;";
+        $sql = "UPDATE tbl_chat__msg_user SET seen_time = '$seen_time' WHERE id_gchat= $id_group AND id_user = $id_user AND ISNULL(seen_time);";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {

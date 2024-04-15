@@ -84,9 +84,7 @@
             </div>
         <?php } ?>
 
-        <?php if (count($list_group['list']) == 0) { ?>
-            <div class="mt-3 text-center alert_empty_chat" style="display: block;">Không có đoạn chat nào</div>
-        <?php } ?>
+        <div class="mt-3 text-center alert_empty_chat" style="display: <?=count($list_group['list']) ? 'none' : 'block'?>;">Không có đoạn chat nào</div>
     </div>
 
 </div>

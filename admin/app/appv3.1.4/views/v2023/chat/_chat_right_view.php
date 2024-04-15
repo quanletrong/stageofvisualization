@@ -158,7 +158,12 @@
     })
 
     function ajax_list_msg_by_group(id_group) {
-        $('#chat_right').show();
+
+        {
+            $('#chat_right').show();
+            set_vh_list_chat();
+        }
+
         $('#chat_right .list-chat').html('<center><i class="fas fa-sync fa-spin"></i></center>')
 
         $.ajax({
@@ -236,7 +241,19 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
+
+                    // reset form nhập
+                    $('#chat_right .content_chat').val('').attr('rows', 2);
+                    $('#chat_right .chat_list_attach').html('');
+
+                    // build html chat
                     socket.emit('add-msg-to-gchat', kq.data);
+
+                    // build xong rồi scroll xuống dưới
+                    setTimeout(() => {
+                        $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
+                    }, 200);
+
                 } else {
                     alert(kq.error);
                 }
@@ -307,9 +324,9 @@
 
         // NUT XÓA
         let xoa = '';
-        <?php if($role == ADMIN) { ?>
-        xoa = 
-        `<div style="width: 20px; cursor: pointer;" onclick="ajax_del_msg_group(${id_msg})">
+        <?php if ($role == ADMIN) { ?>
+            xoa =
+                `<div style="width: 20px; cursor: pointer;" onclick="ajax_del_msg_group(${id_msg})">
             <div class="btn-xoa-msg" style="display:none">
                 <i class="fas fa-trash" style="font-size: 0.75rem; color: red"></i>
             </div>

@@ -260,14 +260,7 @@
             let isActiveRight = el_gchat_left.hasClass('active');
             if (isActiveRight) {
                 let new_html = html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname);
-                $('#chat_right .list-chat')
-                    .append(new_html)
-                    .scrollTop($('#chat_right .list-chat')[0].scrollHeight);
-
-                $('#chat_right .content_chat').val('').attr('rows', 2);
-                $('#chat_right .chat_list_attach').html('');
-                $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
-
+                $('#chat_right .list-chat').append(new_html);
                 tooltipTriggerList('#chat_right');
                 set_vh_list_chat();
             }
