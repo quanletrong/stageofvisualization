@@ -382,7 +382,6 @@
 		// nhấp nháy hiệu ứng
 		if (num_chat_chua_xem > 0) {
 			$('.sidebar .chat-menu-left i').addClass('zoom-in-out-box text-warning');
-			$('.sidebar .chat-menu-left i').removeClass('zoom-in-out-box text-warning');
 		}
 	}
 </script>
