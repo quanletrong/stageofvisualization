@@ -432,4 +432,12 @@ class Chat extends MY_Controller
             resSuccess('Message invalid!');
         }
     }
+
+    function ajax_count_msg_chua_xem() {
+
+        $curr_uid = $this->_session_uid();
+        $number = $this->Chat_model->count_msg_chua_xem($curr_uid);
+
+        resSuccess($number);
+    }
 }

@@ -52,7 +52,7 @@
     setInterval(() => {
         let time_chat = []
         $('.time').each(function(i, obj) {
-            datetime = $(this).attr('title')
+            let datetime = $(this).attr('title')
             if (datetime != undefined || datetime == '') {
                 let seconds = moment(Date.now()).unix() - moment(datetime).unix();
                 let interval = Math.floor(seconds / 31536000);

@@ -698,5 +698,24 @@ class Chat_model extends CI_Model
         return $execute;
     }
 
+    function count_msg_chua_xem($id_user) {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT count(*) num FROM tbl_chat__msg_user  WHERE id_user = $id_user AND ISNULL(seen_time);";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data['num'];
+    }
     // END GROUP
 }

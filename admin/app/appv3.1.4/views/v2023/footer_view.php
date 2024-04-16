@@ -293,9 +293,21 @@
 </script>
 
 <!-- CHAT  -->
-<script>
+<script type="module">
+	const crr_uid = <?= $this->session->userdata('uid') ?>;
+	const curr_page = '<?= $this->uri->rsegments[1] ?>';
+
+	// init lan dau load page đếm số tin nhắn chưa đọc
+	if (curr_page != 'chat') {
+		let num_chat_chua_xem = await ajax_count_msg_chua_xem();
+		update_msg_icon_badge(num_chat_chua_xem);
+	} else {
+		// page chat thì ẩn đếm số tin nhắn
+		$('.sidebar .chat-menu-left .badge').hide();
+	}
+
 	// lắng nghe sự kiện thêm msg mới
-	socket.on('add-msg-to-gchat', data => {
+	socket.on('add-msg-to-gchat', async data => {
 		let {
 			id_gchat,
 			name_gchat,
@@ -306,20 +318,11 @@
 			action_by
 		} = data;
 
-		let crr_uid = <?= $this->session->userdata('uid') ?>;
-		let page = '<?= $this->uri->rsegments[1] ?>';
-
-		if (page != 'chat' && action_by != crr_uid) {
-			$('.sidebar .chat-menu-left i').addClass('zoom-in-out-box text-warning');
-			let count = parseInt($('.sidebar .chat-menu-left .badge').html());
-			$('.sidebar .chat-menu-left .badge').html(count + 1);
+		// build toast
+		if (curr_page != 'chat' && action_by != crr_uid) {
 
 			var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
 			audio.play();
-
-			// setTimeout(() => {
-			// 	$('.sidebar .chat-menu-left i').removeClass('zoom-in-out-box text-warning');
-			// }, 15000);
 
 			// toast
 			let href = `admin/chat/index/${id_gchat}`;
@@ -343,8 +346,45 @@
 				bgColor: '#4CAF50',
 				textColor: 'white'
 			})
+
+			// cập nhật số tin nhắn chưa đọc vào bên trái
+			let num_chat_chua_xem = await ajax_count_msg_chua_xem();
+			update_msg_icon_badge(num_chat_chua_xem);
 		}
 	})
+
+	async function ajax_count_msg_chua_xem() {
+
+		try {
+			let result = await $.ajax({
+				url: `chat/ajax_count_msg_chua_xem`,
+			});
+
+			let data = 0;
+			let kq = JSON.parse(result);
+			if (kq.status) {
+				return parseInt(kq.data);
+			} else {
+				console.log(kq.error);
+				return 0;
+			}
+		} catch (error) {
+			console.error(error);
+			return 0;
+		}
+	}
+
+	function update_msg_icon_badge(num_chat_chua_xem) {
+
+		// cập nhật số tin nhắn chưa đọc
+		$('.sidebar .chat-menu-left .badge').html(num_chat_chua_xem);
+
+		// nhấp nháy hiệu ứng
+		if (num_chat_chua_xem > 0) {
+			$('.sidebar .chat-menu-left i').addClass('zoom-in-out-box text-warning');
+			$('.sidebar .chat-menu-left i').removeClass('zoom-in-out-box text-warning');
+		}
+	}
 </script>
 </body>
 

@@ -196,7 +196,7 @@
 								<i class="nav-icon fas fa-comments"></i>
 								<p>
 									CHAT
-									<!-- <span class="badge badge-warning right">0</span> -->
+									<span class="badge badge-warning right">0</span>
 								</p>
 							</a>
 						</li>
