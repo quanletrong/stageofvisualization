@@ -50,7 +50,7 @@
                         <button type="button" id="submit-order" class="btn btn-lg btn-danger w-75">Hoàn Thành</button>
                     </div>
                 </div>
-                <small>By Placing an Order, You Agree to Stuccco's
+                <small>By Placing an Order, You Agree to Stage Of Visualization
                     <a class="link-color" target="_blank" href="<?= LINK_TERMS ?>">Terms of Use</a> and
                     <a class="link-color" target="_blank" href="<?= LINK_POLICY ?>">Privacy Policy</a>
                 </small>
