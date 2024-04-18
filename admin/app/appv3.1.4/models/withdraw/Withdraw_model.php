@@ -90,6 +90,71 @@ class Withdraw_model extends CI_Model
         return $data;
     }
 
+    function withdraw_get_list_v2($status)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+        $sql = "SELECT A.create_time, SUM(A.custom) custom, A.`status`, A.id_user, B.username, B.role, B.code_user, B.avatar, B.fullname 
+        FROM tbl_withdraw as A
+        INNER JOIN tbl_user as B ON A.id_user = B.id_user 
+        GROUP BY A.id_user, A.create_time, A.status
+        ORDER BY A.status ASC, A.create_time ASC";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $row;
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function withdraw_get_detail_v2($id_user, $create_time, $status)
+    {
+        $data['list'] = [];
+        $data['services'] = [];
+
+        $iconn = $this->db->conn_id;
+        $sql = "SELECT A.*, B.username, B.role, B.code_user, B.avatar, B.fullname, C.code_order 
+        FROM tbl_withdraw as A
+        INNER JOIN tbl_user as B ON A.id_user = B.id_user
+        INNER JOIN tbl_order as C ON A.id_order = C.id_order
+        WHERE A.id_user = $id_user AND A.create_time = '$create_time' AND A.`status` = $status
+        ORDER BY A.id_order;
+        
+        SELECT A.type_service, sum(A.custom) custom
+        FROM tbl_withdraw as A
+        WHERE A.id_user = $id_user AND A.create_time = '$create_time' AND A.`status` = $status
+        GROUP BY A.type_service;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data['list'][$row['id_withdraw']] = $row;
+                }
+
+                $stmt->nextRowset();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data['services'][$row['type_service']] = $row['custom'];
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
     function withdraw_get_detail($id_user, $status)
     {
         $data['tong_hop'] = [];

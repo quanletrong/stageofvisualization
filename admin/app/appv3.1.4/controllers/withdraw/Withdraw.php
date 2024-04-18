@@ -25,7 +25,8 @@ class Withdraw extends MY_Controller
 
     function index()
     {
-        $withdraw = $this->Withdraw_model->withdraw_get_list();
+        // $withdraw = $this->Withdraw_model->withdraw_get_list();
+        $withdraw = $this->Withdraw_model->withdraw_get_list_v2(0);
 
         $data['withdraw'] = $withdraw;
         $data['title'] = 'Danh sách yêu cầu rút tiền';
@@ -35,49 +36,59 @@ class Withdraw extends MY_Controller
             'header_page_css_js' => 'withdraw'
         ];
         $this->_loadHeader($header);
-        $this->load->view($this->_template_f . 'withdraw/list/withdraw_view', $data);
+        $this->load->view($this->_template_f . 'withdraw/list/withdraw_view_v2', $data);
         $this->_loadFooter();
     }
 
     function detail($id_user)
     {
-        if (!isIdNumber($id_user)) {
-            dbClose();
-            redirect(site_url('withdraw', $this->_langcode));
-            die();
-        }
+        $create_time = $this->input->get('create_time');
+        $status = $this->input->get('status');
 
+        $id_user = isIdNumber($id_user) ? $id_user : 0;
         $uinfo = $this->User_model->get_user_info_by_id($id_user);
 
-        if (empty($uinfo)) {
+        if (empty($uinfo) || strtotime($create_time) === false || !in_array($status, ['1', '0'])) {
             dbClose();
             redirect(site_url('withdraw', $this->_langcode));
             die();
         }
 
-        $status_pending = 0;
-        $list_waiting = $this->Withdraw_model->withdraw_get_detail($id_user, $status_pending);
+        $list_waiting = $this->Withdraw_model->withdraw_get_detail_v2($id_user, $create_time, $status);
 
-        $status_done = 1;
-        $list_done = $this->Withdraw_model->withdraw_get_detail($id_user, $status_done);
+        // table chi tiet yeu cau
+        $list_order = [];
+        foreach($list_waiting['list'] as $id_withdraw => $withdraw) {
 
-        $data['uinfo']      = $uinfo;
-        $data['tong_hop_pending']   = $list_waiting['tong_hop'];
-        $data['all_pending']        = $list_waiting['all'];
-        $data['group_date_pending'] = $list_waiting['group_date'];
+            $id_order     = $withdraw['id_order'];
+            $type_service = $withdraw['type_service'];
+            $custom       = $withdraw['custom'];
+            $code_order   = $withdraw['code_order'];
 
-        $data['tong_hop_done']   = $list_done['tong_hop'];
-        $data['all_done']        = $list_done['all'];
-        $data['group_date_done'] = $list_done['group_date'];
+            $list_order[$id_order]['code_order'] = $code_order;
 
-        $data['title']      = "Yêu cầu rút tiền của người dùng [" . $uinfo['username'] . "]";
+            if(isset($list_order[$id_order]['list_service'][$type_service])) {
+                $list_order[$id_order]['list_service'][$type_service] += $custom;
+            } else {
+                $list_order[$id_order]['list_service'][$type_service] = $custom;
+            }
+        }
+        // end table chi tiet yeu cau
+
+        $data['services']    = $list_waiting['services'];
+        $data['list_order']  = $list_order;
+        $data['status']      = $status;
+        $data['id_user']     = $id_user;
+        $data['create_time'] = $create_time;
+        $data['uinfo']       = $uinfo;
+        $data['title']       = "Yêu cầu rút tiền của người dùng [" . $uinfo['username'] . "]";
 
         $header = [
             'title' => $data['title'],
             'header_page_css_js' => 'withdraw'
         ];
         $this->_loadHeader($header);
-        $this->load->view($this->_template_f . 'withdraw/detail/withdraw_detail_view', $data);
+        $this->load->view($this->_template_f . 'withdraw/detail/withdraw_detail_view_v2', $data);
         $this->_loadFooter();
     }
 
@@ -162,12 +173,12 @@ class Withdraw extends MY_Controller
 
                 $custom = $job_user['num']; // số lượng rút
 
-                if(isset($service_request[$type_service])) {
+                if (isset($service_request[$type_service])) {
                     $service_request[$type_service] += $custom;
                 } else {
                     $service_request[$type_service] = $custom;
                 }
-               
+
                 $this->Withdraw_model->tao_yeu_cau_rut_tien($id_user, $id_order, $id_job, $id_job_user, $type_service, $custom, $create_time);
             }
             // end tao_yeu_cau_rut_tien
@@ -198,28 +209,59 @@ class Withdraw extends MY_Controller
         }
     }
 
-    function ajax_phe_duyet_rut_tien($id_user)
+    function ajax_phe_duyet_rut_tien()
     {
-        !isIdNumber($id_user) ? resError('Error') : '';
+        $cur_uid = $this->_session_uid();
+        $id_user = $this->input->post('id_user');
+        $create_time = $this->input->post('create_time');
+        $status = $this->input->post('status');
+
+        $id_user = isIdNumber($id_user) ? $id_user : 0;
         $uinfo = $this->User_model->get_user_info_by_id($id_user);
-        empty($uinfo) ?  resError('Error') : '';
 
-        $status_pending = 0;
-        $list_waiting = $this->Withdraw_model->withdraw_get_detail($id_user, $status_pending);
+        if (empty($uinfo) || strtotime($create_time) === false || !in_array($status, ['1', '0'])) {
+            resError('Dữ liệu không hợp lệ');
+        }
 
-        if (empty($list_waiting['all'])) {
+        $list_withdraw = $this->Withdraw_model->withdraw_get_detail_v2($id_user, $create_time, $status);
+
+        if (empty($list_withdraw['list'])) {
             resError('Không có yêu cầu nào được thực hiện.');
         }
 
         $arr_id_withdraw = [];
         $arr_id_job_user = [];
-        foreach ($list_waiting['all'] as $id_withdraw => $withdraw) {
+        foreach ($list_withdraw['list'] as $id_withdraw => $withdraw) {
+
             $id_job_user = $withdraw['id_job_user'];
             $arr_id_withdraw[] = $id_withdraw;
             $arr_id_job_user[$id_job_user] = $id_job_user;
         }
 
         $exc = $this->Withdraw_model->phe_duyet_yeu_cau_rut_tien(implode(',', $arr_id_withdraw), implode(',', $arr_id_job_user));
+
+
+        // email gui den ADMIN va nguoi rut
+        $all_user = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $all_admin = $this->User_model->get_list_user_working(1, ADMIN);
+
+        $data['fullname'] = $all_user[$id_user]['fullname'];
+        $data['by'] = $all_user[$cur_uid]['fullname'];
+        $data['approved_time'] = date('Y-m-d H:i:s');;
+        $data['service_request'] = $list_withdraw['services'];
+
+        $email['to'][] = $all_user[$id_user]['email'];
+        foreach ($all_admin as $val) {
+            $email['to'][] = $val['email'];
+        }
+
+        $email['to'] = implode(',', $email['to']);
+        $email['subject'] = "Đã phê duyệt yêu cầu rút tiền - " . $all_user[$id_user]['fullname'];
+        $email['body']    = $this->load->view('v2023/component/tmpl_withdrawal_request_approve', $data, true);
+
+        @sendmail($email);
+        // end email
+
         resSuccess('ok');
     }
 
@@ -249,7 +291,7 @@ class Withdraw extends MY_Controller
 
             $service_request = [];
             foreach ($list_job_chua_rut as $id_job_user => $job_user) {
-                $id_user = $job_user['id_user'];
+                $job_id_user = $job_user['id_user'];
                 $id_order = $job_user['id_order'];
                 $id_job = $job_user['id_job'];
                 $type_job_user = $job_user['type_job_user'];
@@ -264,18 +306,17 @@ class Withdraw extends MY_Controller
 
                 $custom = $job_user['num']; // số lượng rút
 
-                if(isset($service_request[$type_service])) {
+                if (isset($service_request[$type_service])) {
                     $service_request[$type_service] += $custom;
                 } else {
                     $service_request[$type_service] = $custom;
                 }
 
-                $this->Withdraw_model->tao_yeu_cau_rut_tien($id_user, $id_order, $id_job, $id_job_user, $type_service, $custom, $create_time);
+                $this->Withdraw_model->tao_yeu_cau_rut_tien($job_id_user, $id_order, $id_job, $id_job_user, $type_service, $custom, $create_time);
             }
 
 
             // email gui den ADMIN va nguoi rut
-            $uinfo = $this->User_model->get_user_info_by_id($cur_uid);
             $all_admin = $this->User_model->get_list_user_working(1, ADMIN);
 
             $data['fullname'] = $all_user[$id_user]['fullname'];
@@ -283,13 +324,13 @@ class Withdraw extends MY_Controller
             $data['create_time'] = $create_time;
             $data['service_request'] = $service_request;
 
-            $email['to'][] = $uinfo['email'];
+            $email['to'][] = $all_user[$id_user]['email'];
             foreach ($all_admin as $val) {
                 $email['to'][] = $val['email'];
             }
 
             $email['to'] = implode(',', $email['to']);
-            $email['subject'] = "Yêu cầu rút tiền mới - " . $uinfo['fullname'];
+            $email['subject'] = "Yêu cầu rút tiền mới - " . $all_user[$id_user]['fullname'];
             $email['body']    = $this->load->view('v2023/component/tmpl_withdrawal_request_received', $data, true);
 
             @sendmail($email);
