@@ -162,8 +162,12 @@ class Withdraw extends MY_Controller
 
                 $custom = $job_user['num']; // số lượng rút
 
-                $service_request[$type_service] = $custom;
-
+                if(isset($service_request[$type_service])) {
+                    $service_request[$type_service] += $custom;
+                } else {
+                    $service_request[$type_service] = $custom;
+                }
+               
                 $this->Withdraw_model->tao_yeu_cau_rut_tien($id_user, $id_order, $id_job, $id_job_user, $type_service, $custom, $create_time);
             }
             // end tao_yeu_cau_rut_tien
@@ -173,6 +177,7 @@ class Withdraw extends MY_Controller
             $all_admin = $this->User_model->get_list_user_working(1, ADMIN);
 
             $data['fullname'] = $uinfo['fullname'];
+            $data['by'] = $uinfo['fullname'];
             $data['create_time'] = $create_time;
             $data['service_request'] = $service_request;
 
@@ -220,6 +225,7 @@ class Withdraw extends MY_Controller
 
     function ajax_set_rut_tien_ho()
     {
+        $cur_uid     = $this->_session_uid();
         $create_time = date('Y-m-d H:i:s');
         $id_user     = $this->input->post('id_user');
         $fdate       = $this->input->post('fdate');
@@ -240,6 +246,8 @@ class Withdraw extends MY_Controller
         if (empty($list_job_chua_rut)) {
             resError('Chưa có đơn hàng hoàn thành');
         } else {
+
+            $service_request = [];
             foreach ($list_job_chua_rut as $id_job_user => $job_user) {
                 $id_user = $job_user['id_user'];
                 $id_order = $job_user['id_order'];
@@ -256,8 +264,36 @@ class Withdraw extends MY_Controller
 
                 $custom = $job_user['num']; // số lượng rút
 
+                if(isset($service_request[$type_service])) {
+                    $service_request[$type_service] += $custom;
+                } else {
+                    $service_request[$type_service] = $custom;
+                }
+
                 $this->Withdraw_model->tao_yeu_cau_rut_tien($id_user, $id_order, $id_job, $id_job_user, $type_service, $custom, $create_time);
             }
+
+
+            // email gui den ADMIN va nguoi rut
+            $uinfo = $this->User_model->get_user_info_by_id($cur_uid);
+            $all_admin = $this->User_model->get_list_user_working(1, ADMIN);
+
+            $data['fullname'] = $all_user[$id_user]['fullname'];
+            $data['by'] = $all_user[$cur_uid]['fullname'];
+            $data['create_time'] = $create_time;
+            $data['service_request'] = $service_request;
+
+            $email['to'][] = $uinfo['email'];
+            foreach ($all_admin as $val) {
+                $email['to'][] = $val['email'];
+            }
+
+            $email['to'] = implode(',', $email['to']);
+            $email['subject'] = "Yêu cầu rút tiền mới - " . $uinfo['fullname'];
+            $email['body']    = $this->load->view('v2023/component/tmpl_withdrawal_request_received', $data, true);
+
+            @sendmail($email);
+            // end email
 
             dbClose();
             resSuccess('ok');

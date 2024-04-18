@@ -18,17 +18,20 @@
             Tài khoản <strong><?= $fullname ?></strong> có yêu cầu rút tiền mới.
         </p>
 
-        <p>Thời gian tạo: <?= date('d/m/y H:i:s', strtotime($create_time)) ?></p>
-
         <strong>Số lượng:</strong>
         <table border="0" cellspacing="0" cellpadding="0">
             <?php foreach ($service_request as $service => $number) { ?>
                 <tr>
                     <td width=120><?= $service ?></td>
-                    <td><?= $number ?></td>
+                    <td><?= $number ?>,</td>
                 </tr>
             <?php } ?>
         </table>
+
+        <p>
+            Tạo bởi: <?= $by ?> <br>
+            Thời gian tạo: <?= date('H:i d/m/Y', strtotime($create_time)) ?>
+        </p>
 
         <p>Chúc bạn một ngày làm việc hiệu quả.</p>
 
