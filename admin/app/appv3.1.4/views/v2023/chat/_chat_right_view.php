@@ -340,7 +340,7 @@
             <div id="msg_${id_msg}"  class="mb-2 me-2 d-flex justify-content-end msg-item" style="margin-left:50px; gap:10px">
                 ${xoa}
                 <div class="rounded " style="background: #007bff; color: white; padding: 5px 10px; text-align: end;">
-                    <div style="white-space: pre-line; line-break: anywhere">${content != '' ? `${content}` : ''}</div>
+                    <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
                     <small style="" class="time" title="${create_time}">&nbsp;</small>
                 </div>
@@ -350,7 +350,7 @@
             <div id="msg_${id_msg}" class="mb-2 me-2 d-flex msg-item" style="gap:10px">
                 <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${avatar_url}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                    <div style="white-space: pre-line; line-break: anywhere">${content != '' ? `${content}` : ''}</div>
+                    <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
                     <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
                     <small style="color:#7c7c7c">${fullname_user} · </small> 
                     <small style="color:#7c7c7c" class="time" title="${create_time}">&nbsp;</small>
