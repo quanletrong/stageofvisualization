@@ -1340,7 +1340,7 @@ function button_status_order_by_role($role)
         $data[ORDER_PROGRESS]  = status_order(ORDER_PROGRESS);
         $data[ORDER_DONE]      = status_order(ORDER_DONE);
         $data[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);
-        $data[ORDER_FIX]       = status_order(ORDER_FIX);
+        // $data[ORDER_FIX]       = status_order(ORDER_FIX); // Khánh yêu câu bỏ
         $data[ORDER_REWORK]    = status_order(ORDER_REWORK);
         $data[ORDER_CANCLE]    = status_order(ORDER_CANCLE);
         $data[ORDER_COMPLETE]  = status_order(ORDER_COMPLETE);
@@ -1351,7 +1351,8 @@ function button_status_order_by_role($role)
         $data[ORDER_PROGRESS]  = status_order(ORDER_PROGRESS);
         $data[ORDER_DONE]      = status_order(ORDER_DONE);
         $data[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);
-        $data[ORDER_FIX]       = status_order(ORDER_FIX);
+        $data[ORDER_REWORK]    = status_order(ORDER_REWORK);  // Khánh yêu câu thêm
+        // $data[ORDER_FIX]       = status_order(ORDER_FIX); // Khánh yêu câu bỏ
     } else if ($role == EDITOR) {
         $data[ORDER_QC_CHECK]  = status_order(ORDER_QC_CHECK); // Khánh yêu câu thêm
         $data[ORDER_DONE]      = status_order(ORDER_DONE);
@@ -1366,10 +1367,23 @@ function allow_show_button_status_order_by_role($role, $status)
         return true;
     }
     if ($role == QC) {
-        return in_array($status, [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_DELIVERED, ORDER_FIX, ORDER_REWORK]);
+        return in_array($status, [
+            ORDER_PENDING, 
+            ORDER_QC_CHECK, 
+            ORDER_AVAIABLE, 
+            ORDER_PROGRESS, 
+            ORDER_DONE, 
+            ORDER_DELIVERED, 
+            // ORDER_FIX, // Khánh yêu cầu bỏ
+            ORDER_REWORK
+        ]);
     }
     if ($role == EDITOR) {
-        return in_array($status, [ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK]);
+        return in_array($status, [
+            ORDER_PROGRESS, 
+            // ORDER_FIX, // Khánh yêu cầu bỏ
+            ORDER_REWORK
+        ]);
     }
     // không có rule phù hợp
     return false;

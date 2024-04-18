@@ -570,12 +570,13 @@ class Order extends MY_Controller
         if ($new_status == ORDER_DELIVERED) {
             $role == EDITOR ? resError('ED không có quyền đổi trạng thái về DELIVERED') : '';
         }
-        if ($new_status == ORDER_FIX) {
-            $role == EDITOR ? resError('ED không có quyền đổi trạng thái về FIX') : '';
-        }
+        // Khánh bảo bỏ
+        // if ($new_status == ORDER_FIX) {
+        //     $role == EDITOR ? resError('ED không có quyền đổi trạng thái về FIX') : '';
+        // }
         if ($new_status == ORDER_REWORK) {
             $role == EDITOR ? resError('ED không có quyền đổi trạng thái về REWORK') : '';
-            $role == QC     ? resError('QC không có quyền đổi trạng thái về REWORK') : '';
+            // $role == QC     ? resError('QC không có quyền đổi trạng thái về REWORK') : ''; Khánh bảo thêm REWORK cho QC
         }
         if ($new_status == ORDER_CANCLE) {
             $role == EDITOR ? resError('ED không có quyền đổi trạng thái về CANCLE') : '';
