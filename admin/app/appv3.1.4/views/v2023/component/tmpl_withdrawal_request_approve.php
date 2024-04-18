@@ -13,7 +13,7 @@
             <img src="https://stageofvisualization.com/images/logo-21.png" alt="" width="200">
         </div>
 
-        <p>Hi,</p>
+        <p>Xin chào,</p>
         <p>
             Tài khoản <strong><?= $fullname ?></strong> đã được duyệt yêu cầu rút tiền.
         </p>

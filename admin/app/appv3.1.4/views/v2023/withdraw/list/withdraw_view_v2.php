@@ -28,6 +28,7 @@
                 <thead class="thead-danger">
                     <tr>
                         <th class="text-center">DATE CREATED</th>
+                        <th class="text-center">DATE APPROVED</th>
                         <th class="text-center">CODE USER</th>
                         <th class="text-left">FULLNAME</th>
                         <th class="text-center">ROLE</th>
@@ -40,6 +41,7 @@
                     <?php foreach ($withdraw as $id_withdraw => $item) { ?>
                         <tr class="text-default">
                             <td class="align-middle text-center"><?= date('d/m/Y - H:i ', strtotime($item['create_time'])) ?></td>
+                            <td class="align-middle text-center"><?= $item['approve_time'] != null ? date('d/m/Y - H:i ', strtotime($item['approve_time'])) : '' ?></td>
                             <td class="align-middle text-center"><?= $item['code_user'] == '' ? 'UID' . $item['id_user'] : $item['code_user'] ?></td>
                             <td class="align-middle text-left d-flex" style="gap:10px; align-items: center;">
                                 <img src="<?= url_image($item['avatar'], FOLDER_AVATAR) ?>" class="img-circle shadow" style="width: 36px; aspect-ratio: 1; object-fit: cover;">
@@ -50,7 +52,7 @@
                             </td>
                             <td class="align-middle text-center"><?= role_name($item['role']) ?></td>
                             <td class="align-middle text-center">
-                                <?= $item['status'] ? '<span class="badge bg-success">DONE</span>' : '<span class="badge bg-danger">PENDING</span>' ?>
+                                <?= $item['status'] ? '<span class="badge bg-success">APPROVED</span>' : '<span class="badge bg-danger">PENDING</span>' ?>
                             </td>
                             <td class="align-middle text-center"><?= $item['custom'] ?></td>
 

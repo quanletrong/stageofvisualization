@@ -37,7 +37,7 @@
             <!-- PHÊ DUYỆT YÊU CẦU  -->
             <?php if ($status == '0') { ?>
                 <section class="text-center">
-                    <button class="btn btn-danger" onclick="ajax_phe_duyet_rut_tien(this)" style="width: 300px;">Phê duyệt yêu cầu rút tiền</button>
+                    <button class="btn btn-success" onclick="ajax_phe_duyet_rut_tien(this)" style="width: 300px;">APPROVED</button>
                 </section>
             <?php } ?>
 
@@ -71,7 +71,7 @@
                                     <?php } ?>
 
                                     <td class="align-middle text-center">
-                                        <?= $status ? '<span class="badge bg-success">DONE</span>' : '<span class="badge bg-danger">PENDING</span>' ?>
+                                        <?= $status ? '<span class="badge bg-success">APPROVED</span>' : '<span class="badge bg-danger">PENDING</span>' ?>
                                     </td>
                                 </tr>
                             <?php } ?>

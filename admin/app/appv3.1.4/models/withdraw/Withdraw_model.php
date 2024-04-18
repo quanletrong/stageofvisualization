@@ -90,11 +90,11 @@ class Withdraw_model extends CI_Model
         return $data;
     }
 
-    function withdraw_get_list_v2($status)
+    function withdraw_get_list_v2()
     {
         $data = [];
         $iconn = $this->db->conn_id;
-        $sql = "SELECT A.create_time, SUM(A.custom) custom, A.`status`, A.id_user, B.username, B.role, B.code_user, B.avatar, B.fullname 
+        $sql = "SELECT A.create_time, A.approve_time, SUM(A.custom) custom, A.`status`, A.id_user, B.username, B.role, B.code_user, B.avatar, B.fullname 
         FROM tbl_withdraw as A
         INNER JOIN tbl_user as B ON A.id_user = B.id_user 
         GROUP BY A.id_user, A.create_time, A.status
@@ -272,7 +272,8 @@ class Withdraw_model extends CI_Model
 
         $execute = false;
         $iconn = $this->db->conn_id;
-        $sql = "UPDATE tbl_withdraw SET status = 1 WHERE id_withdraw IN ($str_id_withdraw);";
+        $approve_time = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_withdraw SET status = 1, approve_time = '$approve_time' WHERE id_withdraw IN ($str_id_withdraw);";
         $sql .= "UPDATE tbl_job_user SET withdraw_status = 2 WHERE id_job_user IN ($str_id_job_user);";
 
         $stmt = $iconn->prepare($sql);

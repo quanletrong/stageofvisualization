@@ -26,7 +26,7 @@ class Withdraw extends MY_Controller
     function index()
     {
         // $withdraw = $this->Withdraw_model->withdraw_get_list();
-        $withdraw = $this->Withdraw_model->withdraw_get_list_v2(0);
+        $withdraw = $this->Withdraw_model->withdraw_get_list_v2();
 
         $data['withdraw'] = $withdraw;
         $data['title'] = 'Danh sách yêu cầu rút tiền';
