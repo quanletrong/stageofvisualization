@@ -44,40 +44,41 @@
 
             <!-- GROUP DATE PENDING -->
             <section>
-                Chi tiết yêu cầu <small onclick="$('#example1').fadeToggle()" style="cursor: pointer;"> [Ẩn/hiện]</small>
-                <table id="example1" class="table table-bordered">
-                    <thead class="thead-<?= $status ? 'success' : 'danger' ?>">
-                        <tr>
-                            <th class="text-center" width="50">STT</th>
-                            <th class="text-center">WITHDRAW ORDER</th>
-                            <?php foreach ($services as $type_service => $custom) { ?>
-                                <th class="text-center" width="100"><?= $type_service ?></th>
-                            <?php } ?>
-                            <th class="text-center" width="100">STATUS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $index = 1; ?>
-                        <?php foreach ($list_order as $id_order => $item) { ?>
-                            <tr class="text-default">
-                                <td class="align-middle text-center"><?= $index++ ?></td>
-                                <td class="align-middle">
-                                    <a href="order/detail/<?= $id_order ?>"><?= '[ORDER ' . $id_order . ']' ?></a> <?= $item['code_order'] != '' ? $item['code_order'] : '' ?>
-                                </td>
-
+                Chi tiết yêu cầu <small onclick="$('#chi_tiet_table').fadeToggle()" style="cursor: pointer;"> [Ẩn/hiện]</small>
+                <div id="chi_tiet_table">
+                    <table id="example1" class="table table-bordered">
+                        <thead class="thead-<?= $status ? 'success' : 'danger' ?>">
+                            <tr>
+                                <th class="text-center" width="50">STT</th>
+                                <th class="text-center">WITHDRAW ORDER</th>
                                 <?php foreach ($services as $type_service => $custom) { ?>
-                                    <td class="align-middle text-center" ><?= @$item['list_service'][$type_service] ?></td>
+                                    <th class="text-center" width="100"><?= $type_service ?></th>
                                 <?php } ?>
-
-                                <td class="align-middle text-center">
-                                    <?= $status ? '<span class="badge bg-success">DONE</span>' : '<span class="badge bg-danger">PENDING</span>' ?>
-                                </td>
+                                <th class="text-center" width="100">STATUS</th>
                             </tr>
-                        <?php } ?>
+                        </thead>
+                        <tbody>
+                            <?php $index = 1; ?>
+                            <?php foreach ($list_order as $id_order => $item) { ?>
+                                <tr class="text-default">
+                                    <td class="align-middle text-center"><?= $index++ ?></td>
+                                    <td class="align-middle">
+                                        <a href="order/detail/<?= $id_order ?>"><?= '[ORDER ' . $id_order . ']' ?></a> <?= $item['code_order'] != '' ? $item['code_order'] : '' ?>
+                                    </td>
 
-                    </tbody>
-                </table>
+                                    <?php foreach ($services as $type_service => $custom) { ?>
+                                        <td class="align-middle text-center"><?= @$item['list_service'][$type_service] ?></td>
+                                    <?php } ?>
 
+                                    <td class="align-middle text-center">
+                                        <?= $status ? '<span class="badge bg-success">DONE</span>' : '<span class="badge bg-danger">PENDING</span>' ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+
+                        </tbody>
+                    </table>
+                </div>
             </section>
         <?php } else { ?>
             <span>Không có yêu cầu chờ xử lý. <a href="withdraw">Quay lại</a></span>
@@ -86,6 +87,20 @@
 </div>
 
 <script>
+    $(function() {
+
+        $("#example1").DataTable({
+            "pageLength": 1000,
+            "responsive": true,
+            "autoWidth": false,
+            "lengthChange": false,
+            "searching": true,
+            "buttons": ["excel", "pdf"],
+            "ordering": true,
+            "order": []
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
+
     function ajax_phe_duyet_rut_tien(btn) {
 
         if (confirm(`Bạn chắc chắn muốn phê duyệt?`) == true) {
