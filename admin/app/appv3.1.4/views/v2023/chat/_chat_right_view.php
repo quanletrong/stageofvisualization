@@ -243,7 +243,7 @@
                 if (crr_user == before_user) {
                     $(`#${before_msg}`).find('.avatar').css('opacity', 0);
                     $(this).find('.fullname').hide();
-                    $(this).removeClass('mt-2').addClass('mt-1');
+                    $(this).removeClass('mt-3').addClass('mt-1');
                 }
                 // hien tai != truoc
                 else {
@@ -393,7 +393,7 @@
         if (<?= $cur_uid ?> == id_user) {
             html = `
             <div id="msg_${id_msg}" 
-                class="mt-2 me-2 d-flex justify-content-end msg-item" data-by="${id_user}" 
+                class="mt-3 me-2 d-flex justify-content-end msg-item" data-by="${id_user}" 
                 style="margin-left:50px; gap:10px" 
             >
                 ${xoa}
