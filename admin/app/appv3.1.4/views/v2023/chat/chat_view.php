@@ -1,5 +1,4 @@
 <?php ?>
-<script src="js/v2023/moment_2.29.4.min.js"></script>
 <style>
     .main-footer {
         display: none;
@@ -46,47 +45,34 @@
 </div>
 
 <script>
-    setInterval(() => {
-        let time_chat = []
-        $('.time').each(function(i, obj) {
-            let datetime = $(this).attr('title')
-            if (datetime != undefined || datetime == '') {
-                let seconds = moment(Date.now()).unix() - moment(datetime).unix();
-                let interval = Math.floor(seconds / 31536000);
-                if (interval >= 1) {
-                    $(this).html(interval + " năm");
-                    return
-                }
-                interval = Math.floor(seconds / 2592000);
-                if (interval >= 1) {
-                    $(this).html(interval + " tháng");
-                    return
-                }
-                interval = Math.floor(seconds / 86400);
-                if (interval >= 1) {
-                    $(this).html(interval + " ngày");
-                    return
-                }
-                interval = Math.floor(seconds / 3600);
-                if (interval >= 1) {
-                    $(this).html(interval + " giờ");
-                    return
-                }
-                interval = Math.floor(seconds / 60);
-                if (interval >= 1) {
-                    $(this).html(interval + " phút");
-                    return
-                }
-                $(this).html('Vừa xong');
-                return
-            }
-        });
-    }, 1000);
-
-
     $(document).ready(function() {
+        // ân header menu khi vao trang chat
         $('.main-header').hide()
+
+        // setInterval thời gian gửi tin nhắn
+        setInterval(() => {
+            $('#chat-left .time, #chat_right .time:last').each(function(i, obj) {
+                let datetime = $(this).attr('title');
+                if (moment(datetime).fromNow() !== $(this).text()) {
+                    $(this).html(moment(datetime).fromNow());
+                }
+            });
+
+        }, 1000);
+
     })
+
+    $(window).resize(function() {
+
+        //  thay 
+        if (_.isMobile()) {
+            $('#chat_right').hide();
+            $('#chat-left').show();
+        } else {
+            $('#chat_right').show();
+            $('#chat-left').show();
+        }
+    });
 
     function onclick_el_gchat(id_group) {
 
@@ -107,9 +93,7 @@
         ajax_list_msg_by_group(id_group);
 
         // check if mobile: an ben trai, hien ben phai
-        let env = _.findBootstrapEnvironment();
-        let isMobile = ['xs', 'sm'].includes(env);
-        if (isMobile) {
+        if (_.isMobile()) {
             $('#chat_right').show();
             $('#chat-left').hide();
         }
@@ -271,6 +255,9 @@
             if (isActiveRight) {
                 let new_html = html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname);
                 $('#chat_right .list-chat').append(new_html);
+                $('#chat_right .time').html('');
+                $('#chat_right .time:last').html('vài giây trước');
+                an_avatar_gan_nhau();
                 tooltipTriggerList('#chat_right');
                 set_vh_list_chat();
             }

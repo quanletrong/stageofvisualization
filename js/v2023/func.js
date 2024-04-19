@@ -25,7 +25,6 @@ const _ = {
 
         for (let j = 0; j < breaks.length; j++) {
 
-            console.log(`j ${j}`, lineCount)
             lineCount++;
 
             const words = breaks[j].split(' ');
@@ -37,7 +36,6 @@ const _ = {
                 const lineWidth = context.measureText(currentLine).width;
 
                 if (lineWidth + wordWidth > textareaWidth) {
-                    // console.log(`i ${i}`, lineCount)
                     lineCount++;
                     currentLine = words[i] + ' ';
                 } else {
@@ -49,7 +47,12 @@ const _ = {
 
         return lineCount;
     },
-    
+    isIPv4: function (ip) {
+        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
+            return (true)
+        }
+        return (false)
+    },
     downloadURI: function (uri, name) {
         var link = document.createElement("a");
         link.download = name;
@@ -58,6 +61,66 @@ const _ = {
         link.click();
         document.body.removeChild(link);
         delete link;
+    },
+    auto_update_time_since: function (el_target, datetime) {
+        setInterval(() => {
+            let seconds = moment(Date.now()).unix() - moment(datetime).unix();
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) {
+                $(el_target).html(interval + " năm");
+                return
+            }
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) {
+                $(el_target).html(interval + " tháng");
+                return
+            }
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) {
+                $(el_target).html(interval + " ngày");
+                return
+            }
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) {
+                $(el_target).html(interval + " giờ");
+                return
+            }
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) {
+                $(el_target).html(interval + " phút");
+                return
+            }
+            $(el_target).html(interval + " giây");
+            return
+        }, 1000);
+    },
+    
+    findBootstrapEnvironment: function () {
+        let envs = ['xs', 'sm', 'md', 'lg', 'xl'];
+
+        let el = document.createElement('div');
+        document.body.appendChild(el);
+
+        let curEnv = envs.shift();
+
+        for (let env of envs.reverse()) {
+            el.classList.add(`d-${env}-none`);
+
+            if (window.getComputedStyle(el).display === 'none') {
+                curEnv = env;
+                break;
+            }
+        }
+
+        document.body.removeChild(el);
+        return curEnv;
+    },
+
+    isMobile: function() {
+        let env = _.findBootstrapEnvironment();
+        let isMobile = ['xs', 'sm'].includes(env);
+
+        return isMobile;
     }
 }
 

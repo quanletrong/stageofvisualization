@@ -12,6 +12,7 @@
 
 <!-- Toast -->
 <link rel="stylesheet" href="skins/v2023/jquery.toast.css">
+
 <!-- all CSS -->
 <link rel="stylesheet" href="skins/v2023/all.css?v=1">
 
@@ -37,6 +38,24 @@
 <!-- TOAST  -->
 <script src="js/v2023/jquery.toast.js"></script>
 
+<!-- moment -->
+<script src="plugins/moment/moment.min.js"></script>
+<script src="plugins/moment/locale/vi.js"></script>
+<script>moment.locale('vi')</script>
+
+<!-- InputMask (moment phai import truoc) -->
+<script src="plugins/inputmask/jquery.inputmask.min.js"></script>
+
+<!-- jquery-validation -->
+<script src="plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="plugins/jquery-validation/additional-methods.js"></script>
+
+<!-- daterange picker -->
+<link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+<link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
 
@@ -49,8 +68,9 @@
 
 <!-- common js -->
 <script src="js/v2023/common.js?v=4"></script>
-<script src="js/v2023/func.js?v=1"></script>
+<script src="js/v2023/func.js?v=2"></script>
 
+<!-- SOCKET_SERVICES -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
     const socket = io('<?= SOCKET_SERVICES ?>', {

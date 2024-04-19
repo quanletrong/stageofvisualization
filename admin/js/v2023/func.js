@@ -114,6 +114,13 @@ const _ = {
 
         document.body.removeChild(el);
         return curEnv;
+    },
+
+    isMobile: function() {
+        let env = _.findBootstrapEnvironment();
+        let isMobile = ['xs', 'sm'].includes(env);
+
+        return isMobile;
     }
 }
 

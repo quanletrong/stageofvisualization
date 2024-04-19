@@ -1,4 +1,3 @@
-<script src="js/v2023/moment_2.29.4.min.js"></script>
 <style>
     /* ẩn thanh cuộn */
     #tab_content_job textarea {
@@ -42,7 +41,6 @@
 <section>
     <div style="position: fixed; right: 10px; bottom: 0;">
         <div class="d-flex justify-content-end" style="gap:10px; ">
-            <script src="js/v2023/moment_2.29.4.min.js"></script>
             <?php if ($role == ADMIN || $role == SALE) { ?>
                 <div id="small_trao_doi_sale" class="">
                     <div style="position: relative;">

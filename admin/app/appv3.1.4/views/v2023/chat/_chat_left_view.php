@@ -67,7 +67,7 @@
 
                     <div style="position: absolute;right: 0px;top: 11px;color: red; display: none; background-color: #f0f0f0;" class="option">
                         <div class="dropdown dropleft">
-                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding: 0 10px;">
+                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding: 0 20px;">
                                 <span class="text-secondary">
                                     <i class="fas fa-ellipsis-h" style="font-size: 1.5rem;"></i>
                                 </span>
@@ -90,7 +90,7 @@
 
         <div class="mt-3 text-center alert_empty_chat" style="display: <?= count($list_group['list']) ? 'none' : 'block' ?>;">Không có đoạn chat nào</div>
     </div>
-    <div style="    width: 100%; height: 30px; display: flex; align-items: flex-end; justify-content: center;"><a href="admin">Back home</a></div>
+    <div style="    width: 100%; height: 30px; display: flex; align-items: flex-end; justify-content: center;"><a href="">Back home</a></div>
 
 </div>
 <!-- MODAL ADD GROUP -->

@@ -85,8 +85,7 @@
                                 ajax_list_msg_by_group(id_gchat);
 
                                 // check if mobile: an ben trai
-                                let isMobile = ['xs', 'sm'].includes(_.findBootstrapEnvironment());
-                                isMobile ? $('#chat-left').hide() : $('#chat-left').show();
+                                _.isMobile() ? $('#chat-left').hide() : $('#chat-left').show();
                                 // end check if mobile
                             }, 500);
 

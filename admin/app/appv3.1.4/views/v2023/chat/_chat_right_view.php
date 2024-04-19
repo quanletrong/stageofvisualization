@@ -133,8 +133,7 @@
             ajax_list_msg_by_group(id_group);
 
             // check if mobile: an ben trai, hien ben phai
-            let isMobile = ['xs', 'sm'].includes(_.findBootstrapEnvironment());
-            isMobile ? $('#chat_right').hide() : $('#chat_right').show();
+            _.isMobile() ? $('#chat_right').hide() : $('#chat_right').show();
             // end check if mobile
 
             // pushState
@@ -208,7 +207,12 @@
                         html += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user)
                     }
 
-                    $('#chat_right .list-chat').html(html).scrollTop($('#chat_right .list-chat')[0].scrollHeight);
+                    $('#chat_right .list-chat').html(html)
+                    $('#chat_right .time:last').html('&nbsp');
+
+                    an_avatar_gan_nhau();
+
+                    $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
 
                     tooltipTriggerList('#chat_right');
                     $('.lazy').lazy();
@@ -221,6 +225,38 @@
                 alert('Error');
             }
         });
+    }
+
+    function an_avatar_gan_nhau() {
+        // ẩn avatar liên tiêp
+        let before_msg = '';
+        let before_user = '';
+        let index = 1;
+        $('.msg-item').each(function(i, obj) {
+
+            let crr_user = $(this).data('by');
+            let crr_msg = $(this).attr('id');
+
+            if (index > 1) {
+
+                // hien tai = truoc
+                if (crr_user == before_user) {
+                    $(`#${before_msg}`).find('.avatar').css('opacity', 0);
+                    $(this).find('.fullname').hide();
+                    $(this).removeClass('mt-2').addClass('mt-1');
+                }
+                // hien tai != truoc
+                else {
+
+                }
+            }
+
+            before_user = crr_user;
+            before_msg = crr_msg;
+
+            index++;
+        });
+        // end ẩn avatar liên tiêp
     }
 
     function ajax_msg_add_to_group(btn) {
@@ -356,24 +392,27 @@
         let html = ``;
         if (<?= $cur_uid ?> == id_user) {
             html = `
-            <div id="msg_${id_msg}"  class="mb-2 me-2 d-flex justify-content-end msg-item" style="margin-left:50px; gap:10px">
+            <div id="msg_${id_msg}"  class="mt-2 me-2 d-flex justify-content-end msg-item" data-by="${id_user}" style="margin-left:50px; gap:10px">
                 ${xoa}
-                <div class="rounded " style="background: #007bff; color: white; padding: 5px 10px; text-align: end;">
+                <div class="rounded " style="background: #007bff; color: white; padding: 5px 10px; text-align: end;" title="${moment(create_time).fromNow() + ' ' + moment(create_time).format('H:mm MM/DD/YYYY')}" data-bs-toggle="tooltip" data-bs-placement="right">
                     <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <small style="" class="time" title="${create_time}">&nbsp;</small>
+                    <small style="" class="time" title="${create_time}"></small>
                 </div>
             </div>`;
         } else {
             html = `
-            <div id="msg_${id_msg}" class="mb-2 me-2 d-flex msg-item" style="gap:10px">
-                <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${avatar_url}">
-                <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                    <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
-                    <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <small style="color:#7c7c7c">${fullname_user} · </small> 
-                    <small style="color:#7c7c7c" class="time" title="${create_time}">&nbsp;</small>
+            <div id="msg_${id_msg}" class="mt-2 me-2 d-flex msg-item" data-by="${id_user}" style="gap:10px; align-items: flex-end;">
+                <img class="rounded-circle border avatar" style="width:30px; aspect-ratio: 1;object-fit: cover;height: 30px;" src="${avatar_url}">
+                <div>
+                    <small style="color:#7c7c7c; display:block" class="fullname">${fullname_user}</small> 
+                        <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;" title="${moment(create_time).fromNow()+ ' ' + moment(create_time).format('H:mm MM/DD/YYYY')}" data-bs-toggle="tooltip" data-bs-placement="right">
+                        <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
+                        <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
+                        <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
+                    </div>
                 </div>
+                
                 ${xoa}
             </div>`;
         }

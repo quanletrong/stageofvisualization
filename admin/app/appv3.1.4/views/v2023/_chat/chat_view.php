@@ -1,5 +1,4 @@
 <?php ?>
-<script src="js/v2023/moment_2.29.4.min.js"></script>
 <style>
     .main-footer {
         display: none;
