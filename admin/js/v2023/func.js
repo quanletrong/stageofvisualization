@@ -121,6 +121,35 @@ const _ = {
         let isMobile = ['xs', 'sm'].includes(env);
 
         return isMobile;
+    },
+    timeSince: function (datetime) {
+        if (datetime != undefined || datetime == '') {
+            let seconds = moment(Date.now()).unix() - moment(datetime).unix();
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) {
+                // return (interval + " năm");
+                return moment(datetime).format('H:mm DD/MM/YYYY');
+            }
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) {
+                // return (interval + " tháng");
+                return moment(datetime).format('H:mm DD/MM/YYYY');
+            }
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) {
+                // return (interval + " ngày");
+                return moment(datetime).format('H:mm DD/MM/YYYY');
+            }
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) {
+                return (interval + " giờ");
+            }
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) {
+                return (interval + " phút");
+            }
+            return ('Vừa xong');
+        }
     }
 }
 

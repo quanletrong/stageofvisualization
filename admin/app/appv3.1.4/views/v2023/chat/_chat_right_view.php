@@ -350,21 +350,21 @@
         for (const [id_file, file] of Object.entries(file_list)) {
             list_file += `
             <div class="" 
-                style="cursor: pointer; width:150px"
+                style="cursor: pointer;"
             >   ${
                     (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
                     ? 
                     `<img 
                         data-src="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" 
                         class="rounded border lazy" 
-                        style="width:100%; aspect-ratio: 1;object-fit: cover;"
+                        style="width:300px"
                         data-toggle="modal" data-target="#modal-full-image"
                     >`
                     :
                     `<div 
                         onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')" 
                         class="rounded border p-2 text-truncate bg-light" 
-                        style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;"
+                        style="width: 200px;line-break: anywhere; text-align:center;"
                         title="Bấm để tải xuống"
                         data-bs-toggle="tooltip" data-bs-placement="top"
                     >
@@ -392,23 +392,33 @@
         let html = ``;
         if (<?= $cur_uid ?> == id_user) {
             html = `
-            <div id="msg_${id_msg}"  class="mt-2 me-2 d-flex justify-content-end msg-item" data-by="${id_user}" style="margin-left:50px; gap:10px">
+            <div id="msg_${id_msg}" 
+                class="mt-2 me-2 d-flex justify-content-end msg-item" data-by="${id_user}" 
+                style="margin-left:50px; gap:10px" 
+            >
                 ${xoa}
-                <div class="rounded " style="background: #007bff; color: white; padding: 5px 10px; text-align: end;" title="${moment(create_time).fromNow() + ' ' + moment(create_time).format('H:mm MM/DD/YYYY')}" data-bs-toggle="tooltip" data-bs-placement="right">
-                    <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
+                <div class="rounded" 
+                    style="background: #007bff; color: white; padding: 5px 10px; text-align: end;"
+                    title="${_.timeSince(create_time)}" data-bs-toggle="tooltip" data-bs-placement="right"
+                >
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
+                    <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
                     <small style="" class="time" title="${create_time}"></small>
                 </div>
             </div>`;
         } else {
             html = `
-            <div id="msg_${id_msg}" class="mt-2 me-2 d-flex msg-item" data-by="${id_user}" style="gap:10px; align-items: flex-end;">
+            <div id="msg_${id_msg}" class="mt-3 me-2 d-flex msg-item" data-by="${id_user}" style="gap:10px; align-items: flex-end;">
                 <img class="rounded-circle border avatar" style="width:30px; aspect-ratio: 1;object-fit: cover;height: 30px;" src="${avatar_url}">
-                <div>
-                    <small style="color:#7c7c7c; display:block" class="fullname">${fullname_user}</small> 
-                        <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;" title="${moment(create_time).fromNow()+ ' ' + moment(create_time).format('H:mm MM/DD/YYYY')}" data-bs-toggle="tooltip" data-bs-placement="right">
-                        <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
+                <div title="${_.timeSince(create_time)}" data-bs-toggle="tooltip" data-bs-placement="right">
+                    <div class="fullname" style="display:block; display: flex; justify-content: space-between; gap:20px">
+                        <small style="color:#7c7c7c;">${fullname_user}</small> 
+                        <small style="color:#7c7c7c;">${_.timeSince(create_time)}</small> 
+                    </div>
+                   
+                    <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
                         <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
+                        <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
                         <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
                     </div>
                 </div>

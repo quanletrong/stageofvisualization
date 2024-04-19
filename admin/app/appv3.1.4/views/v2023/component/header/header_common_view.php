@@ -68,7 +68,7 @@
 
 <!-- common js -->
 <script src="js/v2023/common.js?v=4"></script>
-<script src="js/v2023/func.js?v=2"></script>
+<script src="js/v2023/func.js?v=3"></script>
 
 <!-- SOCKET_SERVICES -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
