@@ -33,17 +33,14 @@
 <div class="content-wrapper">
     <!-- Main content -->
     <section class="content pt-1">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-4">
-                    <?php $this->load->view('v2023/chat/_chat_left_view.php'); ?>
-                </div>
-                <div class="col-md-8">
-                    <?php $this->load->view('v2023/chat/_chat_right_view.php'); ?>
-                </div>
+        <div class="row">
+            <div class="col-md-4">
+                <?php $this->load->view('v2023/chat/_chat_left_view.php'); ?>
+            </div>
+            <div class="col-md-8">
+                <?php $this->load->view('v2023/chat/_chat_right_view.php'); ?>
             </div>
         </div>
-        <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
 </div>
@@ -93,19 +90,31 @@
 
     function onclick_el_gchat(id_group) {
 
+        // ben trai
         let chat_item = $(`[id='${id_group}']`);
-
         $('.item-chat').removeClass('active');
         chat_item.addClass('active')
         chat_item.find('.content').css('font-weight', 300)
 
+        // ben phai
         let fullname = chat_item.find('.fullname').text();
         let avatar = chat_item.find('.div-avatar').html();
-
-        $('#chat_right .fullname').text(fullname)
-        $('#chat_right .div-avatar').html(avatar)
-
+        let dropdown = chat_item.find('.dropdown').html();
+        $('#chat_right .fullname').text(fullname);
+        $('#chat_right .div-avatar').html(avatar);
+        $('#chat_right .dropdown').html(dropdown);
+        $('#chat_right').show();
         ajax_list_msg_by_group(id_group);
+
+        // check if mobile: an ben trai, hien ben phai
+        let env = _.findBootstrapEnvironment();
+        let isMobile = ['xs', 'sm'].includes(env);
+        if (isMobile) {
+            $('#chat_right').show();
+            $('#chat-left').hide();
+        }
+
+        // pushState
         window.history.pushState('chat', 'chat', `/admin/chat/index/${id_group}`);
     }
 
@@ -119,6 +128,7 @@
 
                     if (kq.status) {
                         socket.emit('delete-gchat', kq.data);
+                        $('#chat-left').show();
                     } else {
                         alert(kq.error);
                     }
@@ -252,7 +262,7 @@
         if (el_gchat_left.length) {
             // update bên trái
             el_gchat_left.find(`.content`).html(content != '' ? content : '<i>File phương tiện</i>');
-            el_gchat_left.find(`.content`).css('font-weight', action_by == <?= $cur_uid ?> ? 300 : 600 )
+            el_gchat_left.find(`.content`).css('font-weight', action_by == <?= $cur_uid ?> ? 300 : 600)
             el_gchat_left.find(`.time`).attr('title', create_time);
             el_gchat_left.parent().prepend(el_gchat_left);
 

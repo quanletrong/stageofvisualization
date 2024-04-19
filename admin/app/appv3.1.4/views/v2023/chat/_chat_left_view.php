@@ -2,12 +2,16 @@
     .dropdown-toggle::after {
         content: none;
     }
+
+    .dropleft .dropdown-toggle::before {
+        content: none;
+    }
 </style>
 <div id="chat-left" class="content" style="background: white; border-radius: 5px; padding: 5px;">
     <div class="header">
         <div style="display: flex; justify-content: space-between;">
             <h3>Đoạn chat</h3>
-            <?php if($role == ADMIN) { ?>
+            <?php if ($role == ADMIN) { ?>
                 <div id="btn-add-group" title="Thêm nhóm" data-toggle="modal" data-target="#modal-add-group"><i class="fas fa-plus-circle"></i></div>
             <?php } ?>
         </div>
@@ -60,19 +64,19 @@
                         <?php } ?>
                     </div>
 
-                    
+
                     <div style="position: absolute;right: 0px;top: 11px;color: red; display: none; background-color: #f0f0f0;" class="option">
-                        <div class="dropdown">
+                        <div class="dropdown dropleft">
                             <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding: 0 10px;">
                                 <span class="text-secondary">
                                     <i class="fas fa-ellipsis-h" style="font-size: 1.5rem;"></i>
                                 </span>
                             </button>
                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(33px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                <button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-edit-group" data-group="<?=$id_group?>">
+                                <button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-edit-group" data-group="<?= $id_group ?>">
                                     <span class="text-secondary">Xem thông tin</span>
                                 </button>
-                                <?php if($role == ADMIN) { ?>
+                                <?php if ($role == ADMIN) { ?>
                                     <button class="dropdown-item" type="button" onclick="ajax_delete_gchat('<?= $id_group ?>')">
                                         <span class="text-secondary">Xóa nhóm này</span>
                                     </button>
@@ -84,15 +88,18 @@
             </div>
         <?php } ?>
 
-        <div class="mt-3 text-center alert_empty_chat" style="display: <?=count($list_group['list']) ? 'none' : 'block'?>;">Không có đoạn chat nào</div>
+        <div class="mt-3 text-center alert_empty_chat" style="display: <?= count($list_group['list']) ? 'none' : 'block' ?>;">Không có đoạn chat nào</div>
     </div>
+    <div style="    width: 100%; height: 30px; display: flex; align-items: flex-end; justify-content: center;"><a href="admin">Back home</a></div>
 
 </div>
 <!-- MODAL ADD GROUP -->
-<?php if($role == ADMIN) { $this->load->view('v2023/chat/_modal_add_group_view.php');}?>
+<?php if ($role == ADMIN) {
+    $this->load->view('v2023/chat/_modal_add_group_view.php');
+} ?>
 
 <!-- MODAL EDIT GROUP -->
-<?php  $this->load->view('v2023/chat/_modal_edit_group_view.php');?>
+<?php $this->load->view('v2023/chat/_modal_edit_group_view.php'); ?>
 
 <script>
     $(document).ready(function() {
@@ -115,7 +122,7 @@
             let windown_height = $(window).height();
             let header = $('#chat-left .header').outerHeight();
 
-            let new_height = windown_height - header - 30;
+            let new_height = windown_height - header - 30 - 30;
             $('#chat-left .list-group').css('height', new_height + 'px');
         }
     })

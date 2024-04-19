@@ -53,7 +53,7 @@ const _ = {
         }
         return (false)
     },
-    downloadURI: function(uri, name) {
+    downloadURI: function (uri, name) {
         var link = document.createElement("a");
         link.download = name;
         link.href = uri;
@@ -93,6 +93,27 @@ const _ = {
             $(el_target).html(interval + " giây");
             return
         }, 1000);
+    },
+    
+    findBootstrapEnvironment: function () {
+        let envs = ['xs', 'sm', 'md', 'lg', 'xl'];
+
+        let el = document.createElement('div');
+        document.body.appendChild(el);
+
+        let curEnv = envs.shift();
+
+        for (let env of envs.reverse()) {
+            el.classList.add(`d-${env}-none`);
+
+            if (window.getComputedStyle(el).display === 'none') {
+                curEnv = env;
+                break;
+            }
+        }
+
+        document.body.removeChild(el);
+        return curEnv;
     }
 }
 

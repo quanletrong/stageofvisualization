@@ -28,10 +28,14 @@
     <div class="card-header text-white p-1">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div class="d-flex align-items-center w-75">
-                <div class="div-avatar" style="height:50px; width: 50px; display: flex; flex-wrap: wrap; align-content: center;"></div>
-                <div style="font-weight: 500; color:black; margin-left:15px" class="fullname text-truncate">...</div>
+                <div class="d-sm-none" style=" color: black; width: 50px;" onclick="back_to_list_gchat()">
+                    <i class="fas fa-chevron-left" style=" font-size: 2rem;"></i>
+                </div>
+                <div class="div-avatar" style="height:50px; width: 50px; display: flex; flex-wrap: wrap; align-content: center;">{{}}</div>
+                <div style="font-weight: 500; color:black; margin-left:15px" class="fullname text-truncate">{{}}</div>
             </div>
-            <div class="btn-setting-group"><i class="fas fa-ellipsis-h"></i></div>
+
+            <div class="dropdown dropleft">{{}}</div>
         </div>
 
     </div>
@@ -119,12 +123,21 @@
         let id_group = item_group_active.attr('id');
         let fullname = item_group_active.find('.fullname').text();
         let avatar = item_group_active.find('.div-avatar').html();
+        let dropdown = item_group_active.find('.dropdown').html();
 
         $('#chat_right .fullname').text(fullname)
         $('#chat_right .div-avatar').html(avatar)
+        $('#chat_right .dropdown').html(dropdown)
         if (id_group != '' && id_group !== undefined) {
+
             ajax_list_msg_by_group(id_group);
 
+            // check if mobile: an ben trai, hien ben phai
+            let isMobile = ['xs', 'sm'].includes(_.findBootstrapEnvironment());
+            isMobile ? $('#chat_right').hide() : $('#chat_right').show();
+            // end check if mobile
+
+            // pushState
             window.history.pushState('chat', 'chat', `/admin/chat/index/${id_group}`);
         }
 
@@ -157,10 +170,16 @@
 
     })
 
+    function back_to_list_gchat() {
+
+        $('#chat_right').hide();
+        $('#chat-left').show();
+    }
+
     function ajax_list_msg_by_group(id_group) {
 
         {
-            $('#chat_right').show();
+            // $('#chat_right').show();
             set_vh_list_chat();
         }
 
