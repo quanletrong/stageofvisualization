@@ -207,7 +207,7 @@
                         html += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user)
                     }
 
-                    $('#chat_right .list-chat').html(html)
+                    $('#chat_right .list-chat').html(html);
                     $('#chat_right .time:last').html('&nbsp');
 
                     an_avatar_gan_nhau();
@@ -357,7 +357,7 @@
                     `<img 
                         data-src="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" 
                         class="rounded border lazy" 
-                        style="width:300px"
+                        style="width:300px; aspect-ratio: 1; object-fit: cover;"
                         data-toggle="modal" data-target="#modal-full-image"
                     >`
                     :
@@ -365,8 +365,6 @@
                         onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')" 
                         class="rounded border p-2 text-truncate bg-light" 
                         style="width: 200px;line-break: anywhere; text-align:center;"
-                        title="Bấm để tải xuống"
-                        data-bs-toggle="tooltip" data-bs-placement="top"
                     >
                         <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                         <span style="font-size:12px;">${file}</span>
