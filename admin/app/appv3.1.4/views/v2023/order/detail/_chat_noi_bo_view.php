@@ -255,5 +255,9 @@
         $('#discuss_noi_bo .list-chat').scrollTop($('#discuss_noi_bo .list-chat')[0].scrollHeight);
 
         $('#small_trao_doi_noi_bo .tin-nhan-moi').text(0).hide();
+
+        // update title
+        clearTimeout(GLOBAL_SETTIMEOUT_CHAT_NOI_BO);
+        document.title = 'Chi tiết đơn hàng';
     }
 </script>

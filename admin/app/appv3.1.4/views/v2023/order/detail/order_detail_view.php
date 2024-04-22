@@ -11,7 +11,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Chi tiết đơn hàng <span style="color: red">#<?=$order['id_order']?></span></h1>
+                        <h1>Chi tiết đơn hàng <span style="color: red">#<?= $order['id_order'] ?></span></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -186,12 +186,12 @@
 
 <!-- SOCKET -->
 <script>
+    var GLOBAL_SETTIMEOUT_CHAT_NOI_BO;
+
     socket.on('update-chat-noi-bo', data => {
         if (data.id_order == <?= $order['id_order'] ?>) {
 
-            var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
-            audio.play();
-
+            // update tin nhan moi
             let tin_nhan_moi = parseInt($('#small_trao_doi_noi_bo .tin-nhan-moi').text());
             tin_nhan_moi = isNaN(tin_nhan_moi) ? 0 : tin_nhan_moi;
             $('#small_trao_doi_noi_bo .tin-nhan-moi').text(tin_nhan_moi + 1).show();
@@ -204,6 +204,27 @@
             $('#discuss_noi_bo .content_discuss').val('').attr('rows', 2);
             $('#discuss_noi_bo .chat_list_attach').html('');
             $('#discuss_noi_bo .list-chat').scrollTop($('#discuss_noi_bo .list-chat')[0].scrollHeight);
+
+
+            // update title, chuông noti
+            if (data.id_user != <?= $curr_uid ?>) {
+
+                // chuông noti
+                var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
+                audio.play();
+
+                // update title
+                clearTimeout(GLOBAL_SETTIMEOUT_CHAT_NOI_BO);
+                if ($('#box_trao_doi_noi_bo').css('display') == 'none') {
+                    (function titleScroller(text) {
+                        document.title = `(${tin_nhan_moi + 1}) ${text}`;
+                        GLOBAL_SETTIMEOUT_CHAT_NOI_BO = setTimeout(function() {
+                            titleScroller(text.substr(1) + text.substr(0, 1));
+                        }, 500);
+                    }(`Tin nhắn nội bộ. `));
+                }
+            }
+
         }
     })
 
