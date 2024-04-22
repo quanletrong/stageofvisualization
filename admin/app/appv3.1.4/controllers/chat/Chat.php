@@ -172,7 +172,7 @@ class Chat extends MY_Controller
 
         // đồng bộ sang bảng tbl_msg_user
         $this->Chat_model->sync_msg_to_tbl_msg_user($new_id_group, $new_id_msg, $create_time, $member, $curr_uid);
-        
+
         # tra du lieu socket
         $gchat_info = $this->Chat_model->gchat_info($new_id_group, $curr_uid);
         $msg_info = $this->Chat_model->msg_info($new_id_msg);
@@ -405,13 +405,22 @@ class Chat extends MY_Controller
 
     function ajax_del_msg_group($id_msg)
     {
+        $id_msg = isIdNumber($id_msg) ? $id_msg : 0;
+        $info = $this->Chat_model->msg_info($id_msg);
 
-        if (isIdNumber($id_msg)) {
+        if (!empty($info)) {
+
             $text_del = '<i>Tin nhắn đã bị xóa</i>';
+
             $this->Chat_model->delete_msg_group($id_msg, $text_del);
 
-            // TODO: xu ly del file
+            // xoa file cu
+            foreach($info['file_list'] as $file) {
+                @unlink($_SERVER['DOCUMENT_ROOT'] . '/' . FOLDER_CHAT_TONG . $file);
+            }
+
             resSuccess($text_del);
+
         } else {
             resSuccess('Message invalid!');
         }
@@ -433,7 +442,8 @@ class Chat extends MY_Controller
         }
     }
 
-    function ajax_count_msg_chua_xem() {
+    function ajax_count_msg_chua_xem()
+    {
 
         $curr_uid = $this->_session_uid();
         $number = $this->Chat_model->count_msg_chua_xem($curr_uid);

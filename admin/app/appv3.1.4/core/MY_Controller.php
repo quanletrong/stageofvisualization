@@ -229,6 +229,9 @@ class MY_Controller extends CI_Controller
             }
 
             $block_method = [
+                'async' => [
+                    'process' => [SALE, QC, EDITOR]
+                ],
                 'chat' => [
                     'index' => [],
                     'ajax_chat_list_by_user' => [],

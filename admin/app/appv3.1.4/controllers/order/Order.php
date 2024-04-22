@@ -1060,11 +1060,15 @@ class Order extends MY_Controller
 
         $this->Job_model->update_image_job($id_job, $copy['basename']);
 
+        // xoa file cu
+        $old_file = $info['image'];
+        unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $FDR_ORDER . $old_file);
+
         //LOG
         $log['type']     = LOG_FILE_MAIN_EDIT;
         $log['id_order'] = $order['id_order'];
         $log['id_job']   = $id_job;
-        $log['old']      = $log['db_old'] = $order['job'][$id_job]['image'];
+        $log['old']      = $log['db_old'] = $old_file;
         $log['new']      = $log['db_new'] = $copy['basename'];
         $this->Log_model->log_add($log, $order);
 
@@ -1138,9 +1142,15 @@ class Order extends MY_Controller
 
         $log['new'] = $attachs[$id_attach]; // log file cũ
 
+        $old_file = $attachs[$id_attach];
         unset($attachs[$id_attach]); // xóa
 
+        // luu db
         $this->Job_model->update_attach_job($id_job, json_encode($attachs));
+
+        // xoa file cu
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+        unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $FDR_ORDER . $old_file);
 
         //LOG
         $log['type']     = LOG_REF_REMOVE;
@@ -1185,6 +1195,9 @@ class Order extends MY_Controller
         $old_attach = $attachs[$id_attach]; // log file cũ
         $attachs[$id_attach] = $copy['basename'];
         $this->Job_model->update_attach_job($id_job, json_encode($attachs));
+
+        // xoa file cu
+        unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $FDR_ORDER . $old_attach);
 
         //LOG
         $log['type']     = LOG_REF_EDIT;
@@ -1307,6 +1320,9 @@ class Order extends MY_Controller
         $info['file_complete'][$id_complete] = $copy['basename'];
         $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
 
+        // xoa file cu
+        unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $FDR_ORDER . $old_file);
+
         //LOG
         $log['type']     = LOG_COMPLETE_EDIT;
         $log['id_order'] = $order['id_order'];
@@ -1341,6 +1357,10 @@ class Order extends MY_Controller
         unset($info['file_complete'][$id_complete]); // xóa
 
         $this->Job_model->update_file_complete_job($id_job, json_encode($info['file_complete']));
+
+        // xoa file cu
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+        unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $FDR_ORDER . $old_file);
 
         //LOG
         $log['type']     = LOG_COMPLETE_REMOVE;
@@ -1480,6 +1500,9 @@ class Order extends MY_Controller
         $rework['attach'][$id_attach] = $copy['basename'];
         $this->Job_model->update_file_attach_rework($id_rework, json_encode($rework['attach']));
 
+        // xoa file cu
+        unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $FDR_ORDER . $old_file);
+
         //LOG
         $log['type']      = LOG_RW_REF_EDIT;
         $log['id_order']  = $rework['id_order'];
@@ -1516,6 +1539,10 @@ class Order extends MY_Controller
         unset($rework['attach'][$id_attach]); // xóa
 
         $this->Job_model->update_file_attach_rework($id_rework, json_encode($rework['attach']));
+
+        // xoa file cu
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+        unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $FDR_ORDER . $old_file);
 
         //LOG
         $log['type']      = LOG_RW_REF_REMOVE;
@@ -1643,6 +1670,9 @@ class Order extends MY_Controller
         $rework['file_complete'][$id_complete_rework] = $copy['basename'];
         $this->Job_model->update_file_complete_rework($id_rework, json_encode($rework['file_complete']));
 
+        // xoa file cu
+        unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $FDR_ORDER . $old_file);
+
         //LOG
         $log['type']     = LOG_RW_FILE_COMPLETE_EDIT;
         $log['id_order'] = $rework['id_order'];
@@ -1680,6 +1710,10 @@ class Order extends MY_Controller
         unset($rework['file_complete'][$id_complete]); // xóa
 
         $this->Job_model->update_file_complete_rework($id_rework, json_encode($rework['file_complete']));
+
+        // xoa file cu
+        $FDR_ORDER = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
+        unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $FDR_ORDER . $old_file);
 
         //LOG
         $log['type']     = LOG_RW_FILE_COMPLETE_REMOVE;
