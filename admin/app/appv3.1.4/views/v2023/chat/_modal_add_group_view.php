@@ -82,6 +82,10 @@
                                 $('#chat_right .fullname').text(fullname)
                                 $('#chat_right .div-avatar').html(avatar)
                                 $('#chat_right').show()
+
+                                // reset ve 1
+                                page_msg = 1;
+                                on_load_page_msg = 1;
                                 ajax_list_msg_by_group(id_gchat);
 
                                 // check if mobile: an ben trai

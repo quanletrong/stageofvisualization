@@ -485,28 +485,34 @@ class Chat_model extends CI_Model
         return $data;
     }
 
-    function chat_list_by_group($id_group)
+    function chat_list_by_group($id_group, $limit, $offset)
     {
-        $list_chat = [];
+        $data['total'] = 0;
+        $data['list'] = [];
         $iconn = $this->db->conn_id;
 
-        $sql = "SELECT A.*, B.username as username, B.role as role, B.fullname as fullname_user, B.avatar as avatar
+        $sql = "SELECT count(*) as total FROM tbl_chat__msg WHERE id_gchat = $id_group;
+        SELECT A.*, B.username as username, B.role as role, B.fullname as fullname_user, B.avatar as avatar
         FROM tbl_chat__msg as A
         LEFT JOIN tbl_user B ON A.id_user = B.id_user 
-        WHERE A.id_gchat = ?
-        ORDER BY A.id_msg ASC; ";
+        WHERE A.id_gchat = $id_group
+        ORDER BY A.id_msg DESC
+        LIMIT $limit OFFSET $offset; ";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([$id_group])) {
-                if ($stmt->rowCount() > 0) {
-                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($stmt->execute()) {
 
-                        $row['avatar_url'] = url_image($row['avatar'] == '' ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
-                        $row['file_list']  = json_decode($row['file'], true);
+                $row =  $stmt->fetch(PDO::FETCH_ASSOC);
+                $data['total'] = $row['total'];
 
-                        $list_chat[] = $row;
-                    }
+                $stmt->nextRowset();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                    $row['avatar_url'] = url_image($row['avatar'] == '' ? AVATAR_DEFAULT : $row['avatar'], FOLDER_AVATAR);
+                    $row['file_list']  = json_decode($row['file'], true);
+
+                    $data['list'][] = $row;
                 }
             } else {
                 var_dump($stmt->errorInfo());
@@ -515,7 +521,7 @@ class Chat_model extends CI_Model
         }
 
         $stmt->closeCursor();
-        return $list_chat;
+        return $data;
     }
 
     function msg_add_to_group($id_gchat, $id_user, $content, $file, $create_time)

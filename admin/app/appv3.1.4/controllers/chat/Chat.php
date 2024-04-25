@@ -220,6 +220,21 @@ class Chat extends MY_Controller
     {
         $curr_uid = $this->_session_uid();
 
+        $data['list'] = [];
+        $data['next_page'] = '';
+
+        $page_msg = removeAllTags($this->input->post('page_msg'));
+
+        // check page khong hop le return rong
+        if(!is_numeric($page_msg) || $page_msg < 1) {
+            resSuccess($data);
+        }
+        // end check page
+        
+        // gioi han moi lan lay tin nhan
+        $limit = 20; 
+        $offset = $page_msg == 1 ? 0 : ($page_msg-1) * $limit;
+
         $list_group = $this->Chat_model->list_group_by_user($curr_uid);
 
         isset($list_group['list'][$id_group]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
@@ -228,9 +243,12 @@ class Chat extends MY_Controller
         $this->Chat_model->set_da_xem_all_msg_group_v2($id_group, $curr_uid);
 
         // get lai list
-        $chat_list = $this->Chat_model->chat_list_by_group($id_group);
+        $response = $this->Chat_model->chat_list_by_group($id_group, $limit, $offset);
+        $data['total'] = $response['total'];
+        $data['list'] = $response['list'];
+        $data['next_page'] = ($page_msg * $limit > $data['total']) ? '' : $page_msg + 1;
 
-        resSuccess($chat_list);
+        resSuccess($data);
     }
 
     function ajax_msg_add_to_group($id_gchat)

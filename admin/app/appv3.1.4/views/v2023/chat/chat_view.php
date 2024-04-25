@@ -45,13 +45,16 @@
 </div>
 
 <script>
+    let page_msg = 1;
+    let on_load_page_msg = 1;
+
     $(document).ready(function() {
         // ân header menu khi vao trang chat
         $('.main-header').hide()
 
         // setInterval thời gian gửi tin nhắn
         setInterval(() => {
-            $('#chat-left .time, #chat_right .time:last').each(function(i, obj) {
+            $('#chat-left .time, #chat_right .time:first').each(function(i, obj) {
                 let datetime = $(this).attr('title');
                 if (moment(datetime).fromNow() !== $(this).text()) {
                     $(this).html(moment(datetime).fromNow());
@@ -90,6 +93,12 @@
         $('#chat_right .div-avatar').html(avatar);
         $('#chat_right .dropdown').html(dropdown);
         $('#chat_right').show();
+
+        // reset ve 1
+        page_msg = 1;
+        on_load_page_msg = 1;
+        $('#chat_right .list-chat').html('');
+
         ajax_list_msg_by_group(id_group);
 
         // check if mobile: an ben trai, hien ben phai
@@ -105,6 +114,11 @@
     function ajax_delete_gchat(id_gchat) {
 
         if (confirm('Are you sure you want to delete this chat?')) {
+
+            // reset ve 1
+            page_msg = 1;
+            on_load_page_msg = 1;
+
             $.ajax({
                 url: `chat/ajax_delete_gchat/${id_gchat}`,
                 success: function(data, textStatus, jqXHR) {
@@ -253,10 +267,11 @@
             // update bên phải nếu nhóm đang active
             let isActiveRight = el_gchat_left.hasClass('active');
             if (isActiveRight) {
-                let new_html = html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname);
-                $('#chat_right .list-chat').append(new_html);
+                let lazy = false;
+                let new_html = html_item_chat(lazy, id_msg, file_list, id_user, content, avatar_url, create_time, fullname);
+                $('#chat_right .list-chat').prepend(new_html);
                 $('#chat_right .time').html('');
-                $('#chat_right .time:last').html('vài giây trước');
+                $('#chat_right .time:first').html('vài giây trước');
                 an_avatar_gan_nhau();
                 tooltipTriggerList('#chat_right');
                 set_vh_list_chat();

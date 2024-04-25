@@ -41,9 +41,8 @@
     </div>
     <div class="card-body bg-white p-1">
         <div style="display: flex; flex-direction: column; justify-content: flex-end;">
-            <div class="list-chat" style="height: 81vh; overflow-y: auto; padding-right: 10px;">
-                <center><i class="fas fa-sync fa-spin"></i></center>
-            </div>
+            <div class="list-chat" style="height: 81vh; overflow-y: auto; padding-right: 10px; display: flex;
+    flex-direction: column-reverse;"></div>
             <div class="mt-2 nhap_du_lieu_chat">
                 <div style="position:relative; margin:5px" class="rounded">
                     <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
@@ -130,6 +129,9 @@
         $('#chat_right .dropdown').html(dropdown)
         if (id_group != '' && id_group !== undefined) {
 
+            // reset ve 1
+            page_msg = 1;
+            on_load_page_msg = 1;
             ajax_list_msg_by_group(id_group);
 
             // check if mobile: an ben trai, hien ben phai
@@ -182,19 +184,28 @@
             set_vh_list_chat();
         }
 
-        $('#chat_right .list-chat').html('<center><i class="fas fa-sync fa-spin"></i></center>')
+        // let old_msg = $('#chat_right .list-chat').html();
+        $('#chat_right .list-chat').append(`<center><i class="fas fa-sync fa-spin"></i></center>`)
 
         $.ajax({
             url: `chat/ajax_list_msg_by_group/${id_group}`,
+            type: "POST",
+            data: {
+                page_msg
+            },
 
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    let list_chat = kq.data;
+                    let {
+                        list,
+                        next_page
+                    } = kq.data;
 
-                    let html = ``;
-                    for (const [key, chat] of Object.entries(list_chat)) {
+                    let new_msg = ``;
+                    for (const [key, chat] of Object.entries(list)) {
+
                         let {
                             id_msg,
                             file_list,
@@ -204,15 +215,21 @@
                             avatar_url,
                             create_time
                         } = chat;
-                        html += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user)
+                        let lazy = true;
+                        new_msg += html_item_chat(lazy, id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user)
                     }
 
-                    $('#chat_right .list-chat').html(html);
-                    $('#chat_right .time:last').html('&nbsp');
+                    // set next page
+                    page_msg = next_page;
+
+                    $('#chat_right .list-chat .fa-sync').parent().remove(); // xoa spin chat
+                    $('#chat_right .list-chat').append(new_msg);
+                    $('#chat_right .time:first').html('&nbsp');
 
                     an_avatar_gan_nhau();
+                    an_time_gan_nhau();
 
-                    $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
+                    // $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
 
                     tooltipTriggerList('#chat_right');
                     $('.lazy').lazy();
@@ -227,12 +244,34 @@
         });
     }
 
+    $("#chat_right .list-chat").scroll(function(e) {
+        // console.log(e)
+
+        let div = $(this).get(0);
+        let scrollTop = Math.abs(div.scrollTop); // vị trí thanh cuộn so với top
+        let scrollHeight = $(this)[0].scrollHeight; // chiều cao list chat
+        let height = $(this).height(); // chiều cao khung chat list
+        // da cuộn lên vị trí cao nhất
+        if ((scrollTop + height) > (scrollHeight - 500)) {
+
+            let id_gchat = $('.item-chat.active').attr('id');
+
+            if (page_msg >= 1 && id_gchat !== undefined && on_load_page_msg != page_msg) {
+
+                on_load_page_msg = page_msg;
+                ajax_list_msg_by_group(id_gchat)
+            }
+        }
+
+
+    });
+
     function an_avatar_gan_nhau() {
         // ẩn avatar liên tiêp
         let before_msg = '';
         let before_user = '';
         let index = 1;
-        $('.msg-item').each(function(i, obj) {
+        $($('.msg-item').get().reverse()).each(function(i, obj) {
 
             let crr_user = $(this).data('by');
             let crr_msg = $(this).attr('id');
@@ -253,6 +292,30 @@
 
             before_user = crr_user;
             before_msg = crr_msg;
+
+            index++;
+        });
+        // end ẩn avatar liên tiêp
+    }
+
+    function an_time_gan_nhau() {
+        // ẩn avatar liên tiêp
+        let before_time = 0;
+        let index = 1;
+
+        $($('.msg-item').get().reverse()).each(function(i, obj) {
+
+            let crr_time = new Date($(this).data('time')).getTime()/1000;
+
+            if (index > 1) {
+
+                // if 2 msg cach nhau 10p thi show
+                if ((crr_time - before_time) > 600 ) {
+                    $(this).find('.time_msg').show();
+                }
+            }
+
+            before_time = crr_time;
 
             index++;
         });
@@ -306,7 +369,7 @@
 
                     // build xong rồi scroll xuống dưới
                     setTimeout(() => {
-                        $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
+                        // $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
                     }, 200);
 
                 } else {
@@ -343,35 +406,39 @@
         }
     }
 
-    function html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user) {
+    function html_item_chat(lazy, id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user) {
 
+        let width_right = $('#chat_right .list-chat').width();
         // LIST FILE
         let list_file = ``;
+
+        let number_file = Object.keys(file_list).length;
+
+        let width_image_pc = number_file == 1 ? '49%' : '30%';
+        let width_image_mb = '100%';
+
         for (const [id_file, file] of Object.entries(file_list)) {
-            list_file += `
-            <div class="" 
-                style="cursor: pointer;"
-            >   ${
-                    (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                    ? 
-                    `<img 
-                        data-src="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" 
-                        class="rounded border lazy" 
-                        style="width:300px; aspect-ratio: 1; object-fit: cover;"
-                        data-toggle="modal" data-target="#modal-full-image"
-                    >`
-                    :
-                    `<div 
-                        onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')" 
-                        class="rounded border p-2 text-truncate bg-light" 
-                        style="width: 200px;line-break: anywhere; text-align:center;"
-                    >
-                        <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
-                        <span style="font-size:12px;">${file}</span>
-                    </div>
-                    `
-                }
-            </div>`;
+            list_file += 
+            `${
+                (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
+                ? 
+                `<img 
+                    ${lazy ? 'src' : 'src'}="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" 
+                    class="rounded border ${lazy ? '' : ''}" 
+                    style="cursor: pointer; width: 100%; max-width:${_.isMobile() ? width_image_mb : width_image_pc}"
+                    data-toggle="modal" data-target="#modal-full-image"
+                >`
+                :
+                `<div 
+                    onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')" 
+                    class="rounded border p-2 text-truncate bg-light" 
+                    style="cursor: pointer; width: 200px;line-break: anywhere; text-align:center;"
+                >
+                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                    <span style="font-size:12px;">${file}</span>
+                </div>
+                `
+            }`;
         }
         // END LIST FILE
 
@@ -387,17 +454,19 @@
         <?php } ?>
         // END NUT XÓA
 
+        // width=${width_right}px; ${width_right * 0.9}px
         let html = ``;
         if (<?= $cur_uid ?> == id_user) {
             html = `
             <div id="msg_${id_msg}" 
-                class="mt-3 me-2 d-flex justify-content-end msg-item" data-by="${id_user}" 
-                style="margin-left:50px; gap:10px" 
+                class="mt-3 me-2 d-flex justify-content-end msg-item" 
+                data-by="${id_user}" 
+                data-time="${create_time}"
+                style="margin-left:50px; gap:10px;" 
             >
                 ${xoa}
                 <div class="rounded" 
-                    style="background: #007bff; color: white; padding: 5px 10px; text-align: end;"
-                    title="${_.timeSince(create_time)}" data-bs-toggle="tooltip" data-bs-placement="right"
+                    style="background: #007bff; color: white; padding: 5px 10px; text-align: end; width: fit-content; max-width:90%"
                 >
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
                     <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
@@ -406,22 +475,33 @@
             </div>`;
         } else {
             html = `
-            <div id="msg_${id_msg}" class="mt-3 me-2 d-flex msg-item" data-by="${id_user}" style="gap:10px; align-items: flex-end;">
-                <img class="rounded-circle border avatar" style="width:30px; aspect-ratio: 1;object-fit: cover;height: 30px;" src="${avatar_url}">
-                <div title="${_.timeSince(create_time)}" data-bs-toggle="tooltip" data-bs-placement="right">
-                    <div class="fullname" style="display:block; display: flex; justify-content: space-between; gap:20px">
-                        <small style="color:#7c7c7c;">${fullname_user}</small> 
-                        <small style="color:#7c7c7c;">${_.timeSince(create_time)}</small> 
-                    </div>
-                   
-                    <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                        <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                        <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
-                        <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
+            <div id="msg_${id_msg}" 
+                class="mt-3 me-2 msg-item" 
+                data-by="${id_user}" 
+                data-time="${create_time}"
+                style=""
+                
+            >
+                <div class="time_msg" style="display:none; text-align:center"><small style="color:#7c7c7c;">${_.timeSince(create_time)}</small> </div>
+                <div style="display:flex; justify-content: flex-start; gap:10px; align-items: flex-end;">
+                    <img class="rounded-circle border avatar" style="width:30px; aspect-ratio: 1;object-fit: cover;height: 30px;" src="${avatar_url}">
+                    <div>
+                        <div class="fullname" style="display:block; display: flex; justify-content: space-between; gap:20px">
+                            <small style="color:#7c7c7c;">${fullname_user}</small> 
+                            <small style="color:#7c7c7c; display:none">${_.timeSince(create_time)}</small> 
+                        </div>
+                    
+                        <div style="display:flex; gap:10px">
+                            <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
+                                <div class="rounded d-flex" style="gap:5px; flex-wrap: wrap;">${list_file}</div>
+                                <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
+                                <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
+                            </div>
+                            ${xoa}
+                        </div>
+                       
                     </div>
                 </div>
-                
-                ${xoa}
             </div>`;
         }
         // _.refresh_since_time(`#msg_${chat.id_msg} .time`, chat.create_time);
@@ -480,7 +560,7 @@
         let new_height = windown_height - card_header - nhap_du_lieu_chat - 30;
         $('#chat_right .list-chat').css('height', new_height + 'px');
 
-        let chat_right = $("#chat_right").outerHeight();
-        $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
+        // let chat_right = $("#chat_right").outerHeight();
+        // $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
     }
 </script>
