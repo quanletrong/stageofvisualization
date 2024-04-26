@@ -239,37 +239,31 @@
         let before_time = 0;
         let before_msg = '';
         let before_user = '';
-        let index = 1;
         $($('.msg-item').get().reverse()).each(function(i, obj) {
 
             let crr_user = $(this).data('by');
             let crr_msg = $(this).attr('id');
             let crr_time = new Date($(this).data('time')).getTime() / 1000;
 
-            if (index > 1) {
+            // chi show avatar hien tai, hide avatar trước
+            if (crr_user == before_user) {
+                $(`#${before_msg}`).find('.avatar').css('opacity', 0);
+            }
 
-                // chi show avatar hien tai, hide avatar trước
-                if (crr_user == before_user) {
-                    $(`#${before_msg}`).find('.avatar').css('opacity', 0);
-                }
+            // chi show fullname truoc, hide fullname hien tai
+            if (crr_user == before_user) {
+                $(this).find('.fullname').hide();
+                $(this).removeClass('mt-3').addClass('mt-1');
+            }
 
-                // chi show fullname truoc, hide fullname hien tai
-                if (crr_user == before_user) {
-                    $(this).find('.fullname').hide();
-                    $(this).removeClass('mt-3').addClass('mt-1');
-                }
-
-                // if (time hien tai - thoi gian truoc) > 10p thi show hien tai, ẩn <= 10p
-                if ((crr_time - before_time) > 600) {
-                    $(this).find('.time_msg').show();
-                }
+            // if (time hien tai - thoi gian truoc) > 10p thi show hien tai, ẩn <= 10p
+            if ((crr_time - before_time) > 600) {
+                $(this).find('.time_msg').show();
             }
 
             before_user = crr_user;
             before_msg = crr_msg;
             before_time = crr_time;
-
-            index++;
         });
         // end ẩn avatar liên tiêp
     }
@@ -363,9 +357,12 @@
         let timeSince = _.timeSince(create_time);
         let width_right = $('#chat_right .list-chat').width();
 
-        let max_width_image_pc = Object.keys(file_list).length == 1 ? '350px' : '250px';
+        let total_file = Object.keys(file_list).length;
+        let max_width_image_pc = total_file == 1 ? '350px' : '250px';
         let max_width_image_mb = '100%';
         let max_width = _.isMobile() ? max_width_image_mb : max_width_image_pc;
+
+        let ratio_imgae = total_file > 1 ? 'aspect-ratio: 1;object-fit: cover;' : '';
 
         // LIST FILE
         let list_file = ``;
@@ -382,7 +379,7 @@
                         <img 
                             src="${src_file}" 
                             class="rounded border" 
-                            style="cursor: pointer; max-width:${max_width}"
+                            style="cursor: pointer; max-width:${max_width}; ${ratio_imgae}"
                         >
                     </a>`
                     :
@@ -415,19 +412,39 @@
         if (<?= $cur_uid ?> == id_user) {
             html = `
             <div id="msg_${id_msg}" 
-                class="mt-3 me-2 d-flex justify-content-end msg-item" 
+                class="mt-3 me-2 msg-item" 
                 data-by="${id_user}" 
                 data-time="${create_time}"
-                style="margin-left:50px; gap:10px;" 
+                title="${timeSince}"
             >
-                ${xoa}
-                <div class="rounded" 
-                    style="background: #007bff; color: white; padding: 5px 10px; text-align: end; width: fit-content; max-width:90%"
-                >
-                    <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
-                    <small style="" class="time" title="${create_time}"></small>
+                <div class="time_msg" style="display:none; text-align:center">
+                    <small style="color:#7c7c7c;">${timeSince}</small>
                 </div>
+                <div class="d-flex justify-content-end" style="gap:10px; margin-left: 40px;">
+                
+                    ${xoa}
+
+                    <div style="display: flex; flex-direction: column; align-items: flex-end;">
+
+                        ${
+                            list_file != ''
+                            ?`<div class="rounded d-flex justify-content-end mb-1" style="flex-wrap: wrap; gap:5px;">${list_file}</div>`
+                            : ``
+                        }
+
+                        ${
+                            content != ''
+                            ? `<div class="rounded mb-1" style="background: #e1f0ff; padding: 5px 10px; width: fit-content;">
+                                <div style="white-space: pre-line;">${content}</div>
+                            </div>`
+                            : ``
+                        }
+
+                        <small style="" class="time" title="${create_time}"></small>
+                    </div>
+                    
+                </div>
+                
             </div>`;
         } else {
             html = `
@@ -448,11 +465,24 @@
                         </div>
                     
                         <div style="display:flex; gap:10px;">
-                            <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                                <div class="rounded d-flex" style="gap:5px; flex-wrap: wrap;">${list_file}</div>
-                                <div style="white-space: pre-line; word-break: break-word;">${content != '' ? `${content}` : ''}</div>
+                            <div>
+                                ${
+                                    list_file != ''
+                                    ?`<div class="rounded d-flex mb-1" style="gap:5px; flex-wrap: wrap;">${list_file}</div>`
+                                    : ``
+                                }
+
+                                ${
+                                    content != ''
+                                    ? `<div class="rounded mb-1" style="background: #f0f0f0;padding: 5px 10px; width: fit-content;">
+                                        <div style="white-space: pre-line; word-break: break-word;"> ${content}</div>
+                                    </div>`
+                                    : ``
+                                }
+                                
                                 <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
                             </div>
+                            
                             ${xoa}
                         </div>
                        
