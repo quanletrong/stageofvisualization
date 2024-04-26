@@ -76,41 +76,12 @@
     </div>
 </div>
 
-<!-- modal full image -->
-<div class="modal fade" id="modal-full-image" style="display: none" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <img src="" alt="" class="w-100">
-            </div>
-        </div>
-    </div>
-    <script>
-        $(document).ready(function() {
-            $('#modal-full-image').on('show.bs.modal', function(event) {
-                var button = $(event.relatedTarget);
-                var image = button.data('src');
-                if (image === undefined || image === '') {
-                    image = button.attr('src');
-                }
-                var modal = $(this);
-                modal.find('.modal-body img').attr('src', image);
-            })
-        })
-    </script>
-</div>
-
 <script>
-    $(document).ready(function() {
+    Fancybox.bind("[data-fancybox]", {
+        // Your custom options
+    });
 
-        $(".list-chat").on("scroll", function() {
-            $('.lazy').lazy();
-        });
+    $(document).ready(function() {
 
         // INIT LẦN ĐẦU
         // load msg
@@ -215,8 +186,7 @@
                             avatar_url,
                             create_time
                         } = chat;
-                        let lazy = true;
-                        new_msg += html_item_chat(lazy, id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user)
+                        new_msg += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user)
                     }
 
                     // set next page
@@ -226,13 +196,11 @@
                     $('#chat_right .list-chat').append(new_msg);
                     $('#chat_right .time:first').html('&nbsp');
 
-                    an_avatar_gan_nhau();
-                    an_time_gan_nhau();
+                    gom_avatar_fullname_time_gan_nhau();
 
                     // $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
 
                     tooltipTriggerList('#chat_right');
-                    $('.lazy').lazy();
                 } else {
                     alert(kq.error);
                 }
@@ -266,8 +234,9 @@
 
     });
 
-    function an_avatar_gan_nhau() {
+    function gom_avatar_fullname_time_gan_nhau() {
         // ẩn avatar liên tiêp
+        let before_time = 0;
         let before_msg = '';
         let before_user = '';
         let index = 1;
@@ -275,46 +244,29 @@
 
             let crr_user = $(this).data('by');
             let crr_msg = $(this).attr('id');
+            let crr_time = new Date($(this).data('time')).getTime() / 1000;
 
             if (index > 1) {
 
-                // hien tai = truoc
+                // chi show avatar hien tai, hide avatar trước
                 if (crr_user == before_user) {
                     $(`#${before_msg}`).find('.avatar').css('opacity', 0);
+                }
+
+                // chi show fullname truoc, hide fullname hien tai
+                if (crr_user == before_user) {
                     $(this).find('.fullname').hide();
                     $(this).removeClass('mt-3').addClass('mt-1');
                 }
-                // hien tai != truoc
-                else {
 
+                // if (time hien tai - thoi gian truoc) > 10p thi show hien tai, ẩn <= 10p
+                if ((crr_time - before_time) > 600) {
+                    $(this).find('.time_msg').show();
                 }
             }
 
             before_user = crr_user;
             before_msg = crr_msg;
-
-            index++;
-        });
-        // end ẩn avatar liên tiêp
-    }
-
-    function an_time_gan_nhau() {
-        // ẩn avatar liên tiêp
-        let before_time = 0;
-        let index = 1;
-
-        $($('.msg-item').get().reverse()).each(function(i, obj) {
-
-            let crr_time = new Date($(this).data('time')).getTime()/1000;
-
-            if (index > 1) {
-
-                // if 2 msg cach nhau 10p thi show
-                if ((crr_time - before_time) > 600 ) {
-                    $(this).find('.time_msg').show();
-                }
-            }
-
             before_time = crr_time;
 
             index++;
@@ -406,55 +358,59 @@
         }
     }
 
-    function html_item_chat(lazy, id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user) {
+    function html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user) {
 
+        let timeSince = _.timeSince(create_time);
         let width_right = $('#chat_right .list-chat').width();
+
+        let max_width_image_pc = Object.keys(file_list).length == 1 ? '350px' : '250px';
+        let max_width_image_mb = '100%';
+        let max_width = _.isMobile() ? max_width_image_mb : max_width_image_pc;
+
         // LIST FILE
         let list_file = ``;
 
-        let number_file = Object.keys(file_list).length;
-
-        let width_image_pc = number_file == 1 ? '49%' : '30%';
-        let width_image_mb = '100%';
-
         for (const [id_file, file] of Object.entries(file_list)) {
-            list_file += 
-            `${
-                (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                ? 
-                `<img 
-                    ${lazy ? 'src' : 'src'}="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" 
-                    class="rounded border ${lazy ? '' : ''}" 
-                    style="cursor: pointer; width: 100%; max-width:${_.isMobile() ? width_image_mb : width_image_pc}"
-                    data-toggle="modal" data-target="#modal-full-image"
-                >`
-                :
-                `<div 
-                    onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')" 
-                    class="rounded border p-2 text-truncate bg-light" 
-                    style="cursor: pointer; width: 200px;line-break: anywhere; text-align:center;"
-                >
-                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
-                    <span style="font-size:12px;">${file}</span>
-                </div>
-                `
-            }`;
+
+            let src_file = `<?= url_image('', FOLDER_CHAT_TONG) ?>${file}`;
+
+            list_file +=
+                `${
+                    _.isImage(file)
+                    ? 
+                    `<a data-src="${src_file}" data-fancybox="gallery" data-caption="${timeSince}">
+                        <img 
+                            src="${src_file}" 
+                            class="rounded border" 
+                            style="cursor: pointer; max-width:${max_width}"
+                        >
+                    </a>`
+                    :
+                    `<div 
+                        onclick="_.downloadURI('${src_file}', '${file}')" 
+                        class="rounded border p-2 text-truncate bg-light" 
+                        style="cursor: pointer; width: 200px;line-break: anywhere; text-align:center;"
+                    >
+                        <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                        <span style="font-size:12px;">${file}</span>
+                    </div>
+                    `
+                }`;
         }
         // END LIST FILE
 
         // NUT XÓA
         let xoa = '';
         <?php if ($role == ADMIN) { ?>
-            xoa =
-                `<div style="width: 20px; cursor: pointer;" onclick="ajax_del_msg_group(${id_msg})">
-            <div class="btn-xoa-msg" style="display:none">
-                <i class="fas fa-trash" style="font-size: 0.75rem; color: red"></i>
-            </div>
-        </div>`;
+            xoa = `
+                <div style="width:20px; cursor: pointer;" onclick="ajax_del_msg_group(${id_msg})">
+                    <div class="btn-xoa-msg" style="display:none">
+                        <i class="fas fa-trash" style="font-size: 0.75rem; color: red"></i>
+                    </div>
+                </div>`;
         <?php } ?>
         // END NUT XÓA
 
-        // width=${width_right}px; ${width_right * 0.9}px
         let html = ``;
         if (<?= $cur_uid ?> == id_user) {
             html = `
@@ -479,22 +435,22 @@
                 class="mt-3 me-2 msg-item" 
                 data-by="${id_user}" 
                 data-time="${create_time}"
-                style=""
-                
+                title="${timeSince}"
             >
-                <div class="time_msg" style="display:none; text-align:center"><small style="color:#7c7c7c;">${_.timeSince(create_time)}</small> </div>
+                <div class="time_msg" style="display:none; text-align:center">
+                    <small style="color:#7c7c7c;">${timeSince}</small>
+                </div>
                 <div style="display:flex; justify-content: flex-start; gap:10px; align-items: flex-end;">
                     <img class="rounded-circle border avatar" style="width:30px; aspect-ratio: 1;object-fit: cover;height: 30px;" src="${avatar_url}">
                     <div>
                         <div class="fullname" style="display:block; display: flex; justify-content: space-between; gap:20px">
                             <small style="color:#7c7c7c;">${fullname_user}</small> 
-                            <small style="color:#7c7c7c; display:none">${_.timeSince(create_time)}</small> 
                         </div>
                     
-                        <div style="display:flex; gap:10px">
+                        <div style="display:flex; gap:10px;">
                             <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
                                 <div class="rounded d-flex" style="gap:5px; flex-wrap: wrap;">${list_file}</div>
-                                <div style="white-space: pre-line;">${content != '' ? `${content}` : ''}</div>
+                                <div style="white-space: pre-line; word-break: break-word;">${content != '' ? `${content}` : ''}</div>
                                 <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
                             </div>
                             ${xoa}
@@ -504,7 +460,7 @@
                 </div>
             </div>`;
         }
-        // _.refresh_since_time(`#msg_${chat.id_msg} .time`, chat.create_time);
+
         return html;
     }
 
