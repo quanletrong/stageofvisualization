@@ -198,8 +198,6 @@
 
                     gom_avatar_fullname_time_gan_nhau();
 
-                    // $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
-
                     tooltipTriggerList('#chat_right');
                 } else {
                     alert(kq.error);
@@ -314,9 +312,7 @@
                     socket.emit('add-msg-to-gchat', kq.data);
 
                     // build xong rồi scroll xuống dưới
-                    setTimeout(() => {
-                        // $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
-                    }, 200);
+                    set_vh_list_chat();
 
                 } else {
                     alert(kq.error);
@@ -545,8 +541,5 @@
 
         let new_height = windown_height - card_header - nhap_du_lieu_chat - 30;
         $('#chat_right .list-chat').css('height', new_height + 'px');
-
-        // let chat_right = $("#chat_right").outerHeight();
-        // $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
     }
 </script>
