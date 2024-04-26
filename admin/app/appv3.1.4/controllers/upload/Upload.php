@@ -148,4 +148,8 @@ class Upload extends MY_Controller
             resError('Sorry. File not found.');
         }
     }
+
+    function refresh() {
+
+    }
 }
