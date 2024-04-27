@@ -68,18 +68,37 @@
 				e.preventDefault();
 				var formData = new FormData($(this).parents('form')[0]);
 
+				var upload_success = false;
 				$.ajax({
 					url: 'upload',
 					type: 'POST',
 					xhr: function() {
+
+						var start_time = Date.now();
+						var end_time = Date.now();
+
 						var xhr = $.ajaxSettings.xhr();
 						xhr.upload.onprogress = function(evt) {
-							let percent = Math.round(evt.loaded / evt.total * 100);
-							percent = percent == 100 ? percent - 1 : percent;
-							$(quanlt_btn_upload).html(`<i class="fas fa-upload mr-2"></i> ${percent} %`);
+							let percent = Math.round(evt.loaded / evt.total * 75);
+							$(quanlt_btn_upload).html(`<i class="fas fa-upload mr-2"></i> <span style="color:red">${percent} %</span>`);
+
+							end_time = Date.now();
 						};
-						xhr.upload.onload = function() {
-							console.log('DONE!')
+
+						xhr.upload.onload = function(evt) {
+
+							var time_setInterval = 0;
+							var time_onprogress = end_time - start_time;
+
+							var myInterval = setInterval(() => {
+								if (time_setInterval <= time_onprogress && upload_success == false) {
+									time_setInterval += 500;
+									let percent = Math.round(75 + (time_setInterval * 20) / time_onprogress);
+									$(quanlt_btn_upload).html(`<i class="fas fa-upload mr-2"></i> <span style="color:red">${percent} %</span>`);
+								} else {
+									clearInterval(myInterval);
+								}
+							}, 500);
 						};
 						return xhr;
 					},
@@ -89,6 +108,7 @@
 						$(quanlt_btn_upload).prop('title', 'Đang upload...')
 					},
 					success: function(response) {
+						upload_success = true;
 						$(quanlt_btn_upload).html(quanlt_btn_upload_old);
 						$(quanlt_btn_upload).prop('disabled', false)
 						callback_upload_image(quanlt_cb, response, quanlt_input_target, quanlt_btn_upload)
@@ -181,9 +201,20 @@
 		formData.append("mimetype", file.type);
 		formData.append('submission-type', type);
 
+		var upload_success = false;
+		var start_time = Date.now();
+		var end_time = Date.now();
+
 		var xhr = new XMLHttpRequest();
 		xhr.responseType = "json";
 		xhr.open('POST', 'upload/siglefile');
+		xhr.progress = function(evt) {
+			let percent = Math.round(evt.loaded / evt.total * 75);
+			console.log(`progress ${percent}%`)
+			// $(quanlt_btn_upload).html(`<i class="fas fa-upload mr-2"></i> <span style="color:red">${percent} %</span>`);
+
+			end_time = Date.now();
+		};
 		xhr.onload = function() {
 			if (xhr.status == 200) {
 				try {
@@ -234,6 +265,14 @@
 	}
 
 	function quanlt_drop_submit_file_form(ev, file, type) {
+
+		let cb = ev.target.dataset.callback;
+		let target = ev.target.dataset.target;
+
+		let onbefore = ev.target.dataset.onbefore;
+		let onprogress = ev.target.dataset.onprogress;
+		let onsuccess = ev.target.dataset.onsuccess;
+
 		var extension = file.type.match(/\/([a-z0-9]+)/i)[1].toLowerCase();
 		var formData = new FormData();
 		formData.append('file', file, file.name);
@@ -241,27 +280,39 @@
 		formData.append("mimetype", file.type);
 		formData.append('submission-type', type);
 
+		var upload_success = false;
+		var start_time = Date.now();
+		var end_time = Date.now();
+		
+		var upload_id = window[onbefore]();
+
 		var xhr = new XMLHttpRequest();
 		xhr.responseType = "json";
 
 		xhr.upload.onprogress = function(e) {
-			let percent = Math.round(e.loaded / e.total * 100);
-			percent = percent == 100 ? percent - 1 : percent;
-			$(ev.target).html(`<i class="fas fa-upload mr-2"></i> ${percent} %`);
+
+			try {
+				let percent = Math.round(e.loaded / e.total * 75);
+				percent = percent == 100 ? percent - 1 : percent;
+				let onprogress = ev.target.dataset.onprogress;
+
+				window[onprogress](percent, upload_id);
+
+			} catch (error) {
+
+			}
 		};
 
 		xhr.open('POST', 'upload/siglefile');
 		xhr.onload = function() {
 			if (xhr.status == 200) {
 				try {
-					let cb = ev.target.dataset.callback;
-					let target = ev.target.dataset.target;
 					let status = xhr.response.data.status
 					let link_file = xhr.response.data.link
 					let name_file = xhr.response.data.name
 
 					if (status) {
-						window[cb](link_file, target, name_file, ev.target);
+						window[onsuccess](link_file, target, name_file, ev.target, upload_id);
 					} else {
 						alert(xhr.response.error)
 					}
