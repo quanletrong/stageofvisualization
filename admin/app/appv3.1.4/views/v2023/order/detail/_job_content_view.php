@@ -251,7 +251,7 @@
                     let html = ``;
                     let fileview = ``;
 
-                    if (isImage(url_image)) {
+                    if (_.isImage(url_image)) {
                         fileview = `
                         <img src="${url_image}" class="img-order-all" alt="" width="100%" data-id="${id_job}" id="main_file_${id_job}">`;
                     } else {
@@ -312,7 +312,7 @@
                     let html = ``;
                     let fileview = ``;
 
-                    if (isImage(url_image)) {
+                    if (_.isImage(url_image)) {
                         fileview = `
                         <img src="${url_image}" alt="" width="100" 
                             id="attach_file_${id_attach}" 
@@ -383,7 +383,7 @@
                     let html = ``;
                     let fileview = ``;
 
-                    if (isImage(url_image)) {
+                    if (_.isImage(url_image)) {
                         fileview = `
                         <img src="${url_image}" alt="" width="100" 
                             id="attach_file_${new_id_attach}" 
@@ -540,7 +540,7 @@
                     let html = ``;
                     let fileview = ``;
 
-                    if (isImage(url_image)) {
+                    if (_.isImage(url_image)) {
                         fileview = `
                         <img id="img_complete_${id_file_complete}" data-id-job="${id_job}" data-id-complete="${id_file_complete}" src="${url_image}" alt="" width="100%">`;
                     } else {
@@ -615,7 +615,7 @@
 
                 if (kq.status) {
                     let fileview = ``;
-                    if (isImage(url_image)) {
+                    if (_.isImage(url_image)) {
                         fileview = `
                         <img id="img_complete_${id_complete}" data-id-job="${id_job}" data-id-complete="${id_complete}" src="${url_image}" alt="" width="100%">`;
                     } else {

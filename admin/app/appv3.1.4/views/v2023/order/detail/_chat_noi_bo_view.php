@@ -23,9 +23,10 @@
                             class="form-control content_discuss bg-white" 
                             style="padding-right: 33px; resize: none; overflow-y: auto;" 
                             data-callback="cb_upload_add_file_attach_chat_noi_bo" 
-                            data-onbefore="onbefore_upload_add_file_attach_chat"
-                            data-onprogress="onprogress_upload_add_file_attach_chat"
-                            data-onsuccess="onsuccess_upload_add_file_attach_chat"
+                            data-onbefore="onbefore_upload_add_file_attach_chat_noi_bo"
+                            data-onprogress="onprogress_upload_add_file_attach_chat_noi_bo"
+                            data-onsuccess="onsuccess_upload_add_file_attach_chat_noi_bo"
+                            data-onerror="onerror_upload_add_file_attach_chat_noi_bo"
                             onpaste="quanlt_handle_paste_image(event)" 
                             ondrop="quanlt_handle_drop_file(event)"
                         ></textarea>
@@ -122,7 +123,9 @@
         let attach = [];
         $('#discuss_noi_bo .chat_list_attach > div').each(function(index) {
             let file = $(this).data('file');
-            attach.push(file);
+
+            file != '' ? attach.push(file) : '';
+
         });
 
         // check empty
@@ -229,7 +232,7 @@
         let id_attach = Date.now();
 
         let html = ``;
-        if (isImage(link_file)) {
+        if (_.isImage(link_file)) {
             html = `
             <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" data-file="${link_file}">
                 <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
@@ -258,7 +261,7 @@
         $('#discuss_noi_bo .chat_list_attach').append(html);
     }
 
-    function onbefore_upload_add_file_attach_chat() {
+    function onbefore_upload_add_file_attach_chat_noi_bo() {
 
         let id_attach = Date.now();
 
@@ -293,22 +296,25 @@
         return id_attach;
     }
 
-    // <i class="fa fa-paperclip" aria-hidden="true"></i> <br>
-    // <span style="font-size:12px;">${file_name}</span>
-
-    function onprogress_upload_add_file_attach_chat(percent, id_attach) {
+    function onprogress_upload_add_file_attach_chat_noi_bo(percent, id_attach) {
         $(`#file_attach_${id_attach} .percent`).text(`${percent} %`);
     }
 
-    function onsuccess_upload_add_file_attach_chat(link_file, target, file_name, btn, id_attach) {
+    function onerror_upload_add_file_attach_chat_noi_bo(id_attach, error_text) {
+        $(`#file_attach_${id_attach} .percent`).text(`Error`);
+        alert(error_text);
+    }
+
+    function onsuccess_upload_add_file_attach_chat_noi_bo(link_file, target, file_name, btn, id_attach) {
         $(`#file_attach_${id_attach} .percent`).hide();
         $(`#file_attach_${id_attach} .file`).show();
+        $(`#file_attach_${id_attach}`).data('file', link_file);
 
         let html = '';
-        if (isImage(link_file)) {
+        if (_.isImage(link_file)) {
             html = `<img width="100%" src="${link_file}" class="img_attach rounded shadow" alt="" style="aspect-ratio: 1;object-fit: cover;">`;
         } else {
-            html = 
+            html =
                 `<div width="100%" class="rounded border p-2 text-truncate shadow" style="line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
                     <i class="fa fa-paperclip" aria-hidden="true"></i> <br>
                     <span style="font-size:12px;">${file_name}</span>

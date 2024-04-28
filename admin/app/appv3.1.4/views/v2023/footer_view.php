@@ -266,12 +266,14 @@
 
 	function quanlt_drop_submit_file_form(ev, file, type) {
 
-		let cb = ev.target.dataset.callback;
-		let target = ev.target.dataset.target;
-
-		let onbefore = ev.target.dataset.onbefore;
-		let onprogress = ev.target.dataset.onprogress;
-		let onsuccess = ev.target.dataset.onsuccess;
+		let {
+			cb,
+			target,
+			onbefore,
+			onprogress,
+			onsuccess,
+			onerror
+		} = ev.target.dataset;
 
 		var extension = file.type.match(/\/([a-z0-9]+)/i)[1].toLowerCase();
 		var formData = new FormData();
@@ -283,7 +285,7 @@
 		var upload_success = false;
 		var start_time = Date.now();
 		var end_time = Date.now();
-		
+
 		var upload_id = window[onbefore]();
 
 		var xhr = new XMLHttpRequest();
@@ -314,14 +316,14 @@
 					if (status) {
 						window[onsuccess](link_file, target, name_file, ev.target, upload_id);
 					} else {
-						alert(xhr.response.error)
+						window[onerror](upload_id, 'Upload failed (ERR001)!');
 					}
 				} catch (error) {
-					alert('Upload failed (ERR001)!');
+					window[onerror](upload_id, 'Upload failed (ERR002)!');
 					console.log(error)
 				}
 			} else {
-				alert('Upload failed (ERR002)!');
+				window[onerror](upload_id, 'Upload failed (ERR003)!');
 				console.log(xhr.status)
 			}
 		};

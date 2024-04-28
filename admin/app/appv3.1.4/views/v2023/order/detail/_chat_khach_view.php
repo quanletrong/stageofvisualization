@@ -18,7 +18,19 @@
                         <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
                         <div class="chat_list_attach d-flex flex-wrap"></div>
 
-                        <textarea name="message" class="form-control content_discuss bg-white" style="padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_khach" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
+                        <textarea 
+                            name="message" 
+                            class="form-control content_discuss bg-white" 
+                            style="padding-right: 33px; resize: none; overflow-y: auto;" 
+                            data-callback="cb_upload_add_file_attach_chat_khach" 
+                            data-onbefore="onbefore_upload_add_file_attach_chat_khach"
+                            data-onprogress="onprogress_upload_add_file_attach_chat_khach"
+                            data-onsuccess="onsuccess_upload_add_file_attach_chat_khach"
+                            data-onerror="onerror_upload_add_file_attach_chat_khach"
+                            onpaste="quanlt_handle_paste_image(event)" 
+                            ondrop="quanlt_handle_drop_file(event)"
+                        ></textarea>
+
 
                         <div style="height: fit-content; position: absolute; bottom: 10px; right:20px">
                             <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_discuss_khach_add(this)"><i class="fas fa-paper-plane"></i></button>
@@ -210,7 +222,7 @@
         let id_attach = Date.now();
 
         let html = ``;
-        if (isImage(link_file)) {
+        if (_.isImage(link_file)) {
             html = `
             <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" data-file="${link_file}">
                 <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
@@ -237,6 +249,69 @@
         }
 
         $('#discuss_khach .chat_list_attach').append(html);
+    }
+
+    function onbefore_upload_add_file_attach_chat_khach() {
+
+        let id_attach = Date.now();
+
+        let html =
+            `<div 
+            class="position-relative image-hover p-2" 
+            style="width:80px" 
+            id="file_attach_${id_attach}" 
+            title="" 
+            data-file=""
+        >
+            <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
+                <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+
+            <div class="file" style="display:none">
+                <div width="100%" class="rounded border p-2 shadow" style="text-align:center; aspect-ratio: 1;object-fit: cover;">0%</div>
+            </div>
+
+            <div class="percent rounded border p-2 shadow" 
+                width="100%" 
+                style="display:block; text-align:center; aspect-ratio: 1;object-fit: cover;"
+            >
+                0%
+            </div>
+        </div>`;
+
+        $('#discuss_khach .chat_list_attach').append(html);
+
+        return id_attach;
+    }
+
+    function onprogress_upload_add_file_attach_chat_khach(percent, id_attach) {
+        $(`#file_attach_${id_attach} .percent`).text(`${percent} %`);
+    }
+
+    function onerror_upload_add_file_attach_chat_khach(id_attach, error_text) {
+        $(`#file_attach_${id_attach} .percent`).text(`Error`);
+        alert(error_text);
+    }
+
+    function onsuccess_upload_add_file_attach_chat_khach(link_file, target, file_name, btn, id_attach) {
+        $(`#file_attach_${id_attach} .percent`).hide();
+        $(`#file_attach_${id_attach} .file`).show();
+        $(`#file_attach_${id_attach}`).data('file', link_file);
+
+        let html = '';
+        if (_.isImage(link_file)) {
+            html = `<img width="100%" src="${link_file}" class="img_attach rounded shadow" alt="" style="aspect-ratio: 1;object-fit: cover;">`;
+        } else {
+            html =
+                `<div width="100%" class="rounded border p-2 text-truncate shadow" style="line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
+                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br>
+                    <span style="font-size:12px;">${file_name}</span>
+                </div>`
+        }
+
+        $(`#file_attach_${id_attach} .file`).html(html);
     }
 
     function open_close_chat_khach() {

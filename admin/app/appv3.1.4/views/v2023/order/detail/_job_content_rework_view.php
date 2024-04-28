@@ -216,7 +216,7 @@
         let id_attach = Date.now();
 
         let html = ``;
-        if (isImage(link_file)) {
+        if (_.isImage(link_file)) {
             html = `
             <div class="position-relative image-hover w-25 p-1" id="file_attach_${id_attach}" data-file="${link_file}">
                 <div class="position-btn" style="position: absolute; display: none; top: 45%; width:100%; gap:10px">
@@ -316,7 +316,7 @@
                     let html = ``;
                     let fileview = ``;
 
-                    if (isImage(url_image)) {
+                    if (_.isImage(url_image)) {
                         fileview = `
                         <img id="img_complete_rework_${id_file_complete}" data-id-rework="${id_rework}" data-id-complete-rework="${id_file_complete}" src="${url_image}" alt="" width="100%">`;
                     } else {
@@ -395,7 +395,7 @@
 
                 if (kq.status) {
                     let fileview = ``;
-                    if (isImage(url_image)) {
+                    if (_.isImage(url_image)) {
                         fileview = `
                         <img id="img_complete_rework_${id_complete_rework}" data-id-rework="${id_rework}" data-id-complete-rework="${id_complete_rework}" src="${url_image}" alt="" width="100%">`;
                     } else {
@@ -499,7 +499,7 @@
                     let html_main = ``;
                     let fileview = ``;
 
-                    if (isImage(url_image)) {
+                    if (_.isImage(url_image)) {
                         fileview = `
                         <img id="img_attach_${id_attach}" data-id-rework="${id_rework}" data-id-attach="${id_attach}" src="${url_image}" alt="" width="100%">`;
                     } else {
@@ -581,7 +581,7 @@
 
                 if (kq.status) {
 
-                    if (isImage(url_image)) {
+                    if (_.isImage(url_image)) {
                         fileview = `
                         <img id="img_attach_${id_attach}" data-id-rework="${id_rework}" data-id-attach="${id_attach}" src="${url_image}" alt="" width="100%">`;
                     } else {
