@@ -286,7 +286,12 @@
 		var start_time = Date.now();
 		var end_time = Date.now();
 
-		var upload_id = window[onbefore]();
+		var dropTo = Date.now();
+
+		// co su kien before drop
+		if(onbefore != undefined) {
+			window[onbefore](ev, dropTo);
+		}
 
 		var xhr = new XMLHttpRequest();
 		xhr.responseType = "json";
@@ -296,34 +301,56 @@
 			try {
 				let percent = Math.round(e.loaded / e.total * 75);
 				percent = percent == 100 ? percent - 1 : percent;
-				let onprogress = ev.target.dataset.onprogress;
+				end_time = Date.now();
 
-				window[onprogress](percent, upload_id);
+				if(onprogress != undefined) {
+					window[onprogress](ev, percent, dropTo);
+				}
 
 			} catch (error) {
 
 			}
 		};
 
+		xhr.upload.onload = function(e) {
+
+			var time_setInterval = 0;
+			var time_onprogress = end_time - start_time;
+
+			var myInterval = setInterval(() => {
+				if (time_setInterval <= time_onprogress && upload_success == false) {
+					time_setInterval += 500;
+					let percent = Math.round(75 + (time_setInterval * 20) / time_onprogress);
+					end_time = Date.now();
+
+					if(onprogress != undefined) {
+						window[onprogress](ev, percent, dropTo);
+					}
+				} else {
+					clearInterval(myInterval);
+				}
+			}, 500);
+		};
+
 		xhr.open('POST', 'upload/siglefile');
 		xhr.onload = function() {
 			if (xhr.status == 200) {
 				try {
-					let status = xhr.response.data.status
-					let link_file = xhr.response.data.link
-					let name_file = xhr.response.data.name
 
-					if (status) {
-						window[onsuccess](link_file, target, name_file, ev.target, upload_id);
+					if (xhr.response.data.status) {
+						if(onsuccess != undefined) {
+							window[onsuccess](ev, xhr.response.data, dropTo);
+						}
+						upload_success = true;
 					} else {
-						window[onerror](upload_id, 'Upload failed (ERR001)!');
+						window[onerror](ev, xhr.response.data, 'Upload failed (ERR001)!', dropTo);
 					}
 				} catch (error) {
-					window[onerror](upload_id, 'Upload failed (ERR002)!');
+					window[onerror](ev, xhr.response.data, 'Upload failed (ERR002)!', dropTo);
 					console.log(error)
 				}
 			} else {
-				window[onerror](upload_id, 'Upload failed (ERR003)!');
+				window[onerror](ev, xhr.response.data, 'Upload failed (ERR003)!', dropTo);
 				console.log(xhr.status)
 			}
 		};

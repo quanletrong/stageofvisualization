@@ -249,8 +249,8 @@
     // cb_upload_image_job
     function cb_upload_image_job(link, target, name, btn) {
 
-        let job_id = $(target).data('id');
-        if (isImage(link)) {
+        let job_id = $(btn).data('target');
+        if (_.isImage(link)) {
             $(btn).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
         } else {
             $(btn).html(
@@ -349,6 +349,12 @@
                                 ondragover="event.preventDefault();"
                                 data-callback="cb_upload_image_job" 
                                 data-target="#image_${job_id}"
+
+                                data-onbefore="onbefore_upload_image_job"
+                                data-onprogress="onprogress_upload_image_job"
+                                data-onsuccess="onsuccess_upload_image_job"
+                                data-onerror="onerror_upload_image_job"
+                                data-job="${job_id}"
                             >
                                 Kéo hình ảnh vào đây hoặc <span class="text-primary">Tải tệp lên</span>
                             </button>
@@ -391,7 +397,42 @@
             .prop('checked', false)
     }
 
-    function isImage(url_image) {
-        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
+    function onbefore_upload_image_job(eventDrop, dropTo) {
+        let {target} = eventDrop;
+        let {job} = target.dataset;
+        $(target).html('');
+        STATE.job[job].image = '';
+    }
+
+    function onprogress_upload_image_job(eventDrop, percent, dropTo) {
+        let {target} = eventDrop;
+        $(target).html(`${percent} %`);
+    }
+
+    function onerror_upload_image_job(eventDrop, error, error_text, dropTo) {
+        let {target} = eventDrop;
+        $(target).html(`Error`);
+        console.log(error)
+        alert(error_text);
+    }
+
+    function onsuccess_upload_image_job(eventDrop, success, dropTo) {
+
+        let {target} = eventDrop;
+        let job = eventDrop.target.dataset.job;
+        let {link, name} = success;
+
+        if (_.isImage(link)) {
+            $(target).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
+        } else {
+            $(target).html(
+                `<div ondragover="$(this).hide()">
+                    <i class="fa fa-paperclip" aria-hidden="true"></i>
+                    <p style="font-size:12px" class="text-truncate">${name}</p>
+                </div>`
+            );
+        }
+        STATE.job[job].image = link;
+        tooltipTriggerList('body');
     }
 </script>

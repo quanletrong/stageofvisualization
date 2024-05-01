@@ -197,7 +197,7 @@
 
         let job_id = $(target).data('id');
 
-        if (isImage(link)) {
+        if (_.isImage(link)) {
             $(btn).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
         } else {
             $(btn).html(
@@ -296,6 +296,13 @@
                                 ondragover="event.preventDefault();"
                                 data-callback="cb_upload_image_job" 
                                 data-target="#image_${job_id}"
+
+                                data-onbefore="onbefore_upload_image_job"
+                                data-onprogress="onprogress_upload_image_job"
+                                data-onsuccess="onsuccess_upload_image_job"
+                                data-onerror="onerror_upload_image_job"
+                                data-job="${job_id}"
+
                             >
                                 Kéo hình ảnh vào đây hoặc <span class="text-primary">Tải tệp lên</span>
                             </button>
@@ -313,6 +320,13 @@
                                 ondragover="event.preventDefault();"
                                 data-callback="cb_upload_attach" 
                                 data-target="#image_${job_id}" 
+
+                                data-onbefore="onbefore_upload_image_attach"
+                                data-onprogress="onprogress_upload_image_attach"
+                                data-onsuccess="onsuccess_upload_image_attach"
+                                data-onerror="onerror_upload_image_attach"
+                                data-job="${job_id}"
+
                                 style="width: fit-content;"
                             >
                                 <i class="fas fa-paperclip"></i> Attach Reference Files
@@ -346,7 +360,129 @@
             .prop('checked', false)
     }
 
-    function isImage(url_image) {
-        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url_image.toLowerCase());
+    // DROP IMAGE JOB
+    function onbefore_upload_image_job(eventDrop, dropTo) {
+        let {
+            target
+        } = eventDrop;
+        let {
+            job
+        } = target.dataset;
+        $(target).html('');
+        STATE.job[job].image = '';
     }
+
+    function onprogress_upload_image_job(eventDrop, percent, dropTo) {
+        let {
+            target
+        } = eventDrop;
+        $(target).html(`${percent} %`);
+    }
+
+    function onerror_upload_image_job(eventDrop, error, error_text, dropTo) {
+        let {
+            target
+        } = eventDrop;
+        $(target).html(`Error`);
+        console.log(error)
+        alert(error_text);
+    }
+
+    function onsuccess_upload_image_job(eventDrop, success, dropTo) {
+
+        let {
+            target
+        } = eventDrop;
+        let job = eventDrop.target.dataset.job;
+        let {
+            link,
+            name
+        } = success;
+
+        if (_.isImage(link)) {
+            $(target).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
+        } else {
+            $(target).html(
+                `<div ondragover="$(this).hide()">
+                    <i class="fa fa-paperclip" aria-hidden="true"></i>
+                    <p style="font-size:12px" class="text-truncate">${name}</p>
+                </div>`
+            );
+        }
+        STATE.job[job].image = link;
+        tooltipTriggerList('body');
+    }
+    // END DROP IMAGE JOB
+
+
+    // DROP IMAGE ATTACH
+    function onbefore_upload_image_attach(eventDrop, dropTo) {
+
+        let job = eventDrop.target.dataset.job;
+        
+        let html =
+            `<div 
+            class="position-relative image-hover p-2" 
+            style="width:80px" 
+            id="file_attach_${dropTo}" 
+            title="" 
+            data-file=""
+        >
+            <div class="position-btn" style="position: absolute; display: block; top: 0; right:0" onclick="remove_attach(this, ${job}, ${dropTo})">
+                <button class="btn btn-sm btn-warning rounded-circle">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+
+            <div class="file" style="display:none">
+                <div width="100%" class="rounded border p-2 shadow" style="text-align:center; aspect-ratio: 1;object-fit: cover;">0%</div>
+            </div>
+
+            <div class="percent rounded border p-2 shadow" 
+                width="100%" 
+                style="display:block; text-align:center; aspect-ratio: 1;object-fit: cover;"
+            >
+                0%
+            </div>
+        </div>`;
+
+        $(`#${job}_attach_pre`).append(html);
+    }
+
+    function onprogress_upload_image_attach(eventDrop, percent, dropTo) {
+        $(`#file_attach_${dropTo} .percent`).text(`${percent} %`);
+    }
+
+    function onerror_upload_image_attach(eventDrop, error, error_text, dropTo) {
+        $(`#file_attach_${dropTo} .percent`).text(`Error`);
+        alert(error_text);
+    }
+
+    function onsuccess_upload_image_attach(eventDrop, success, dropTo) {
+        let job = eventDrop.target.dataset.job;
+        let {
+            link,
+            name
+        } = success;
+        $(`#file_attach_${dropTo} .percent`).hide();
+        $(`#file_attach_${dropTo} .file`).show();
+        $(`#file_attach_${dropTo}`).data('file', link);
+
+        let html = '';
+        if (_.isImage(link)) {
+            html = `<img width="100%" src="${link}" class="img_attach rounded shadow" alt="" style="aspect-ratio: 1;object-fit: cover;">`;
+        } else {
+            html =
+                `<div width="100%" class="rounded border p-2 text-truncate shadow" style="line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
+                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br>
+                    <span style="font-size:12px;">${name}</span>
+                </div>`
+        }
+
+        $(`#file_attach_${dropTo} .file`).html(html);
+
+        let attach = dropTo + Object.keys(STATE.job[job].attach).length;
+        STATE.job[job].attach[attach] = link;
+    }
+    // END DROP IMAGE ATTACH
 </script>
