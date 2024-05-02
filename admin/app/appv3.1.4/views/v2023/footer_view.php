@@ -92,13 +92,13 @@
 
 							var myInterval = setInterval(() => {
 								if (time_setInterval <= time_onprogress && upload_success == false) {
-									time_setInterval += 500;
 									let percent = Math.round(75 + (time_setInterval * 20) / time_onprogress);
 									$(quanlt_btn_upload).html(`<i class="fas fa-upload mr-2"></i> <span style="color:red">${percent} %</span>`);
+									time_setInterval += 100;
 								} else {
 									clearInterval(myInterval);
 								}
-							}, 500);
+							}, 100);
 						};
 						return xhr;
 					},
@@ -275,7 +275,14 @@
 			onerror
 		} = ev.target.dataset;
 
-		var extension = file.type.match(/\/([a-z0-9]+)/i)[1].toLowerCase();
+		try {
+			var extension = file.type.match(/\/([a-z0-9]+)/i)[1].toLowerCase();
+		} catch (error) {
+			console.log(error)
+			alert("File type invalid!")
+			return false;
+		}
+		
 		var formData = new FormData();
 		formData.append('file', file, file.name);
 		formData.append('extension', extension);
@@ -286,7 +293,7 @@
 		var start_time = Date.now();
 		var end_time = Date.now();
 
-		var dropTo = Date.now();
+		var dropTo = _.getRandomInt();
 
 		// co su kien before drop
 		if(onbefore != undefined) {
@@ -337,22 +344,21 @@
 			if (xhr.status == 200) {
 				try {
 
-					if (xhr.response.data.status) {
+					if (xhr.response.status) {
 						if(onsuccess != undefined) {
 							window[onsuccess](ev, xhr.response.data, dropTo);
 						}
-						upload_success = true;
 					} else {
-						window[onerror](ev, xhr.response.data, 'Upload failed (ERR001)!', dropTo);
+						window[onerror](ev, xhr, xhr.response.error, dropTo);
 					}
 				} catch (error) {
-					window[onerror](ev, xhr.response.data, 'Upload failed (ERR002)!', dropTo);
-					console.log(error)
+					window[onerror](ev, xhr, 'Upload failed', dropTo);
 				}
 			} else {
-				window[onerror](ev, xhr.response.data, 'Upload failed (ERR003)!', dropTo);
-				console.log(xhr.status)
+				window[onerror](ev, xhr, 'Upload failed', dropTo);
 			}
+
+			upload_success = true;
 		};
 
 		xhr.send(formData);

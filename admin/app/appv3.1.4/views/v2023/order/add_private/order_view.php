@@ -221,7 +221,7 @@
         </div>`;
         $(`#${job_id}_attach_pre`).append(attach_html);
 
-        $(btn).html(`<i class="fas fa-paperclip"></i> Attach Reference Files`);
+        $(btn).html(`Kéo file vào đây hoặc<span class="text-primary">Tải tệp lên</span>`);
 
         STATE.job[job_id].attach[attach_id] = link;
     }
@@ -233,6 +233,7 @@
         }
     }
 
+    let old_drop;
     function add_job() {
         let job_id = Date.now();
         let job_new = `
@@ -294,6 +295,8 @@
                                 onclick="quanlt_upload(this);" 
                                 ondrop="quanlt_handle_drop_file(event)"
                                 ondragover="event.preventDefault();"
+                                ondragenter="old_drop = $(this).html(); $(this).html('Thả file vào đây')"
+                                ondragleave="$(this).html(old_drop)"
                                 data-callback="cb_upload_image_job" 
                                 data-target="#image_${job_id}"
 
@@ -304,7 +307,7 @@
                                 data-job="${job_id}"
 
                             >
-                                Kéo hình ảnh vào đây hoặc <span class="text-primary">Tải tệp lên</span>
+                                Kéo file vào đây hoặc <span class="text-primary">Tải tệp lên</span>
                             </button>
 
                             <small>Thumbnail shown. The full quality photo <span class="link-color" style="cursor: pointer;">(preview)</span> will be received when the order is placed.</small>
@@ -314,10 +317,12 @@
                             <label for="exampleFormControlInput1" class="form-label fw-bold">Attach Reference Files:</label>
                             <button 
                                 type="button" 
-                                class="form-control form-control-sm" 
+                                class="btn_upload_image w-100 d-flex p-3 rounded bg-light" 
                                 onclick="quanlt_upload(this);" 
                                 ondrop="quanlt_handle_drop_file(event)"
                                 ondragover="event.preventDefault();"
+                                ondragenter="$(this).html('Thả file vào đây')"
+                                ondragleave="$(this).html('Kéo file vào đây hoặc <span class=text-primary>Tải tệp lên</span>')"
                                 data-callback="cb_upload_attach" 
                                 data-target="#image_${job_id}" 
 
@@ -327,9 +332,9 @@
                                 data-onerror="onerror_upload_image_attach"
                                 data-job="${job_id}"
 
-                                style="width: fit-content;"
+                                style="min-height: 150px; border: red 1px dotted; justify-content: center; align-items: center;"
                             >
-                                <i class="fas fa-paperclip"></i> Attach Reference Files
+                                Kéo file vào đây hoặc <span class="text-primary">Tải tệp lên</span>
                             </button>
 
                             <div id="${job_id}_attach_pre" class="d-flex flex-wrap bg-white mt-2" style="gap:10px"></div>
@@ -383,9 +388,8 @@
         let {
             target
         } = eventDrop;
-        $(target).html(`Error`);
+        $(target).html(error_text);
         console.log(error)
-        alert(error_text);
     }
 
     function onsuccess_upload_image_job(eventDrop, success, dropTo) {
@@ -459,6 +463,10 @@
     }
 
     function onsuccess_upload_image_attach(eventDrop, success, dropTo) {
+        let {
+            target
+        } = eventDrop;
+
         let job = eventDrop.target.dataset.job;
         let {
             link,
@@ -480,9 +488,9 @@
         }
 
         $(`#file_attach_${dropTo} .file`).html(html);
+        $(target).html(`Kéo file vào đây hoặc <span class=text-primary>Tải tệp lên</span>`);
 
-        let attach = dropTo + Object.keys(STATE.job[job].attach).length;
-        STATE.job[job].attach[attach] = link;
+        STATE.job[job].attach[dropTo] = link;
     }
     // END DROP IMAGE ATTACH
 </script>

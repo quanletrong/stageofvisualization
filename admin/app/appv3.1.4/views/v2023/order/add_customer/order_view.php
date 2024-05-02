@@ -274,7 +274,7 @@
         </div>`;
         $(`#${job_id}_attach_pre`).append(attach_html);
 
-        $(btn).html(`<i class="fas fa-paperclip"></i> Attach Reference Files`);
+        $(btn).html(`Kéo file vào đây hoặc <span class="text-primary">Tải tệp lên</span>`);
 
         STATE.job[job_id].attach[attach_id] = link;
     }
@@ -347,6 +347,8 @@
                                 onclick="quanlt_upload(this);" 
                                 ondrop="quanlt_handle_drop_file(event)"
                                 ondragover="event.preventDefault();"
+                                ondragenter="old_drop = $(this).html(); $(this).html('Thả file vào đây')"
+                                ondragleave="$(this).html(old_drop)"
                                 data-callback="cb_upload_image_job" 
                                 data-target="#image_${job_id}"
 
@@ -355,8 +357,9 @@
                                 data-onsuccess="onsuccess_upload_image_job"
                                 data-onerror="onerror_upload_image_job"
                                 data-job="${job_id}"
+
                             >
-                                Kéo hình ảnh vào đây hoặc <span class="text-primary">Tải tệp lên</span>
+                                Kéo file vào đây hoặc <span class="text-primary">Tải tệp lên</span>
                             </button>
 
                             <small>Thumbnail shown. The full quality photo <span class="link-color" style="cursor: pointer;">(preview)</span> will be received when the order is placed.</small>
@@ -364,9 +367,26 @@
 
                         <div class="mt-3">
                             <label for="exampleFormControlInput1" class="form-label fw-bold">Attach Reference Files:</label>
-                            <button type="button" class="form-control form-control-sm" onclick="quanlt_upload(this);" data-callback="cb_upload_attach" data-target="#image_${job_id}" style="width: fit-content;">
-                                <i class="fas fa-paperclip"></i>
-                                Attach Reference Files
+                            <button 
+                                type="button" 
+                                class="btn_upload_image w-100 d-flex p-3 rounded bg-light" 
+                                onclick="quanlt_upload(this);" 
+                                ondrop="quanlt_handle_drop_file(event)"
+                                ondragover="event.preventDefault();"
+                                ondragenter="$(this).html('Thả file vào đây')"
+                                ondragleave="$(this).html('Kéo file vào đây hoặc <span class=text-primary>Tải tệp lên</span>')"
+                                data-callback="cb_upload_attach" 
+                                data-target="#image_${job_id}" 
+
+                                data-onbefore="onbefore_upload_image_attach"
+                                data-onprogress="onprogress_upload_image_attach"
+                                data-onsuccess="onsuccess_upload_image_attach"
+                                data-onerror="onerror_upload_image_attach"
+                                data-job="${job_id}"
+
+                                style="min-height: 150px; border: red 1px dotted; justify-content: center; align-items: center;"
+                            >
+                                Kéo file vào đây hoặc <span class="text-primary">Tải tệp lên</span>
                             </button>
 
                             <div id="${job_id}_attach_pre" class="d-flex flex-wrap bg-white mt-2" style="gap:10px"></div>
@@ -397,30 +417,43 @@
             .prop('checked', false)
     }
 
+    // DROP IMAGE JOB
     function onbefore_upload_image_job(eventDrop, dropTo) {
-        let {target} = eventDrop;
-        let {job} = target.dataset;
+        let {
+            target
+        } = eventDrop;
+        let {
+            job
+        } = target.dataset;
         $(target).html('');
         STATE.job[job].image = '';
     }
 
     function onprogress_upload_image_job(eventDrop, percent, dropTo) {
-        let {target} = eventDrop;
+        let {
+            target
+        } = eventDrop;
         $(target).html(`${percent} %`);
     }
 
     function onerror_upload_image_job(eventDrop, error, error_text, dropTo) {
-        let {target} = eventDrop;
-        $(target).html(`Error`);
+        let {
+            target
+        } = eventDrop;
+        $(target).html(error_text);
         console.log(error)
-        alert(error_text);
     }
 
     function onsuccess_upload_image_job(eventDrop, success, dropTo) {
 
-        let {target} = eventDrop;
+        let {
+            target
+        } = eventDrop;
         let job = eventDrop.target.dataset.job;
-        let {link, name} = success;
+        let {
+            link,
+            name
+        } = success;
 
         if (_.isImage(link)) {
             $(target).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
@@ -435,4 +468,81 @@
         STATE.job[job].image = link;
         tooltipTriggerList('body');
     }
+    // END DROP IMAGE JOB
+
+
+    // DROP IMAGE ATTACH
+    function onbefore_upload_image_attach(eventDrop, dropTo) {
+
+        let job = eventDrop.target.dataset.job;
+        
+        let html =
+            `<div 
+            class="position-relative image-hover p-2" 
+            style="width:80px" 
+            id="file_attach_${dropTo}" 
+            title="" 
+            data-file=""
+        >
+            <div class="position-btn" style="position: absolute; display: block; top: 0; right:0" onclick="remove_attach(this, ${job}, ${dropTo})">
+                <button class="btn btn-sm btn-warning rounded-circle">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+
+            <div class="file" style="display:none">
+                <div width="100%" class="rounded border p-2 shadow" style="text-align:center; aspect-ratio: 1;object-fit: cover;">0%</div>
+            </div>
+
+            <div class="percent rounded border p-2 shadow" 
+                width="100%" 
+                style="display:block; text-align:center; aspect-ratio: 1;object-fit: cover;"
+            >
+                0%
+            </div>
+        </div>`;
+
+        $(`#${job}_attach_pre`).append(html);
+    }
+
+    function onprogress_upload_image_attach(eventDrop, percent, dropTo) {
+        $(`#file_attach_${dropTo} .percent`).text(`${percent} %`);
+    }
+
+    function onerror_upload_image_attach(eventDrop, error, error_text, dropTo) {
+        $(`#file_attach_${dropTo} .percent`).text(`Error`);
+        alert(error_text);
+    }
+
+    function onsuccess_upload_image_attach(eventDrop, success, dropTo) {
+        let {
+            target
+        } = eventDrop;
+
+        let job = eventDrop.target.dataset.job;
+        let {
+            link,
+            name
+        } = success;
+        $(`#file_attach_${dropTo} .percent`).hide();
+        $(`#file_attach_${dropTo} .file`).show();
+        $(`#file_attach_${dropTo}`).data('file', link);
+
+        let html = '';
+        if (_.isImage(link)) {
+            html = `<img width="100%" src="${link}" class="img_attach rounded shadow" alt="" style="aspect-ratio: 1;object-fit: cover;">`;
+        } else {
+            html =
+                `<div width="100%" class="rounded border p-2 text-truncate shadow" style="line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
+                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br>
+                    <span style="font-size:12px;">${name}</span>
+                </div>`
+        }
+
+        $(`#file_attach_${dropTo} .file`).html(html);
+        $(target).html(`Kéo file vào đây hoặc <span class=text-primary>Tải tệp lên</span>`);
+
+        STATE.job[job].attach[dropTo] = link;
+    }
+    // END DROP IMAGE ATTACH
 </script>

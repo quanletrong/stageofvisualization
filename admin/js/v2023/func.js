@@ -150,7 +150,11 @@ const _ = {
             }
             return ('Vừa xong');
         }
-    }
+    },
+
+    getRandomInt: function(max=9999999999) {
+        return Math.floor(Math.random() * max);
+      }
 }
 
 const CHAT = {
