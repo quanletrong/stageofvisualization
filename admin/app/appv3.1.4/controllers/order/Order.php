@@ -860,6 +860,8 @@ class Order extends MY_Controller
         !is_numeric($custom) || $custom < 0 ? resError('Tổng custom không hợp lệ') : '';
         $custom == $order['custom']         ? resSuccess('ok') : ''; // giá mới = giá cũ
 
+        $custom <= $order['total_custom_used'] ? resError('Tổng custom phải lớn hơn custom đã sử dụng') : '';
+        
         $kq = $this->Order_model->update_custom_order($id_order, $custom);
 
         // LOG
