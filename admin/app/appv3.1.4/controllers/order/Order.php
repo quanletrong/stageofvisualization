@@ -727,7 +727,8 @@ class Order extends MY_Controller
         }
         // user gán chưa tồn tại thì INSERT bản ghi mới
         else {
-            $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $db_type_service, $working_type, $status, $time_join, 1);
+            $custom_user = $working_type == WORKING_CUSTOM ? 0 : 1;
+            $kq = $this->Order_model->add_job_user($id_order, $id_job, $id_user, $as_uinfo['username'], $db_type_service, $working_type, $status, $time_join, $custom_user);
         }
 
         //LOG
