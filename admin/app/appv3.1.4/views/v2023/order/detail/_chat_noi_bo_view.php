@@ -1,4 +1,4 @@
-<div style="position: fixed; right:0; width: 100%;bottom: 0px; max-width:600px; display: none; z-index: 2;" id="box_trao_doi_noi_bo">
+<div style="position: fixed; right:0; width: 100%;bottom: 0px; max-width:600px; display: none; z-index: 4;" id="box_trao_doi_noi_bo">
     <div id="discuss_noi_bo" class="card card-primary mb-0">
         <div class="card-header text-white" onclick="open_close_chat_noi_bo()" style="cursor: pointer;">
             <div class="d-flex justify-content-between align-items-center">
