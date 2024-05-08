@@ -39,7 +39,7 @@
 </div>
 
 <section>
-    <div style="position: fixed; right: 10px; bottom: 0;">
+    <div style="position: fixed; right: 10px; bottom: 0; z-index:3">
         <div class="d-flex justify-content-end" style="gap:10px; ">
             <?php if ($role == ADMIN || $role == SALE) { ?>
                 <div id="small_trao_doi_sale" class="">
