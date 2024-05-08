@@ -249,7 +249,7 @@
     // cb_upload_image_job
     function cb_upload_image_job(link, target, name, btn) {
 
-        let job_id = $(btn).data('target');
+        let job_id = $(target).data('id');
         if (_.isImage(link)) {
             $(btn).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
         } else {
