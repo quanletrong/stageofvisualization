@@ -32,7 +32,7 @@
             <div class="col-md-3 mb-2">
                 <small>Date - Ngày tạo đơn hàng</small><br>
                 <div class="input-group">
-                    <input type="text" class="form-control daterange-btn" placeholder="Nhập khoảng ngày" id="create_time" value="">
+                    <input type="text" class="form-control daterange-btn" placeholder="Nhập khoảng ngày" id="create_time" value="<?= $filter_time ?>" autocomplete="off">
                     <input type="hidden" name="filter_fdate" value="<?= $filter_fdate ?>">
                     <input type="hidden" name="filter_tdate" value="<?= $filter_tdate ?>">
                     <div class="input-group-append daterange-btn" id="">
@@ -163,43 +163,31 @@
         });
 
 
-        // ngày tạo
-        //Set mặc định ngày
-        let startDate = moment().subtract(29, 'days');
-        let endDate = moment();
-        try {
-            <?php if ($filter_fdate != '') { ?>
-                startDate = moment('<?= $filter_fdate ?>');
-            <?php } ?>
-
-            <?php if ($filter_tdate != '') { ?>
-                endDate = moment('<?= $filter_tdate ?>');
-            <?php } ?>
-        } catch (error) {
-            console.log(error);
-        }
-
-        //Date range as a button
+        // tim theo ngày tạo don
         $('.daterange-btn').daterangepicker({
-                ranges: {
-                    'Hôm nay': [moment(), moment()],
-                    'Hôm qua': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    '7 ngày trước': [moment().subtract(6, 'days'), moment()],
-                    '30 ngày trước': [moment().subtract(29, 'days'), moment()],
-                    'Tháng này': [moment().startOf('month'), moment().endOf('month')],
-                    'Tháng trước': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                },
-                startDate: startDate,
-                endDate: endDate,
-                locale: {
-                    format: 'DD/MM/YYYY'
-                }
+            autoUpdateInput: false,
+            ranges: {
+                'Hôm nay': [moment(), moment()],
+                'Hôm qua': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 ngày trước': [moment().subtract(6, 'days'), moment()],
+                '30 ngày trước': [moment().subtract(29, 'days'), moment()],
+                'Tháng này': [moment().startOf('month'), moment().endOf('month')],
+                'Tháng trước': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
             },
-            function(start, end) {
-                $('input[name="filter_fdate"]').val(start.format('YYYY-MM-D'))
-                $('input[name="filter_tdate"]').val(end.format('YYYY-MM-D'))
+            locale: {
+                format: 'DD/MM/YYYY'
             }
-        )
+        });
 
+        $('.daterange-btn').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            $('input[name="filter_fdate"]').val(picker.startDate.format('YYYY-MM-D'));
+            $('input[name="filter_tdate"]').val(picker.endDate.format('YYYY-MM-D'));
+        });
+
+        $('.daterange-btn').on('cancel.daterangepicker', function(ev, picker) {
+            $('input[name="filter_fdate"]').val('');
+            $('input[name="filter_tdate"]').val('');
+        });
     })
 </script>

@@ -135,10 +135,23 @@ class Order extends MY_Controller
 
         //validate filter date
         $ngay_hien_tai = date("Y-m-d H:i:s");
-        $ba_muoi_ngay_truoc = date("Y-m-d H:i:s", strtotime('today - 29 days'));
-        $filter_fdate = !is_date($filter_fdate) ? $ba_muoi_ngay_truoc : $filter_fdate;
-        $filter_tdate = !is_date($filter_tdate) ? $ngay_hien_tai : $filter_tdate;
-
+        $tsp_fdate = strtotime($filter_fdate);
+        $tsp_tdate = strtotime($filter_tdate);
+        if ($tsp_fdate === false || $tsp_tdate === false || $tsp_fdate > $tsp_tdate) {
+            $filter_fdate = '';
+            $filter_tdate = '';
+            $filter['fdate'] = '';
+            $filter['tdate'] = '';
+            $filter_time = '';
+        } else {
+            $filter['fdate']   = date("Y-m-d", $tsp_fdate) . ' 00:00:00';
+            if ($filter_tdate < $ngay_hien_tai) {
+                $filter['tdate']   = date("Y-m-d", $tsp_tdate) . ' 23:59:59';
+            } else {
+                $filter['tdate']   = date("Y-m-d", $tsp_tdate) . ' ' . date("H:i:s");
+            }
+            $filter_time = date("d/m/Y", $tsp_fdate) .' - ' . date("d/m/Y", $tsp_tdate);
+        }
 
         //validate filter_id_user
         $filter_custom = in_array($filter_custom, ['>=', '>', '=']) ? $filter_custom : '>=';
@@ -158,12 +171,6 @@ class Order extends MY_Controller
         $filter['id_user']      = implode(',', $filter_id_user);
         $filter['custom']       = $filter_custom;
 
-        $filter['fdate']   = date("Y-m-d", strtotime($filter_fdate)) . ' 00:00:00';
-        if ($filter_tdate < $ngay_hien_tai) {
-            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)) . ' 23:59:59';
-        } else {
-            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)) . ' ' . date("H:i:s");
-        }
 
         $list_order = $this->Order_model->get_list_v2($filter, $role);       //lấy tất cả đơn
 
@@ -191,6 +198,7 @@ class Order extends MY_Controller
         $data['filter_order_type']    = $filter_order_type;
         $data['filter_fdate']         = $filter_fdate;
         $data['filter_tdate']         = $filter_tdate;
+        $data['filter_time']          = $filter_time;
         $data['filter_id_user']       = $filter_id_user;
         $data['filter_custom']        = $filter_custom;
 
