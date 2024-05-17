@@ -276,9 +276,14 @@
                 $('#chat_right .list-chat').prepend(new_html);
                 $('#chat_right .time').html('');
                 $('#chat_right .time:first').html('vài giây trước');
-                an_avatar_gan_nhau();
+                gom_avatar_fullname_time_gan_nhau();
                 tooltipTriggerList('#chat_right');
                 set_vh_list_chat();
+
+                if (action_by == <?= $cur_uid ?>) {
+                    let chat_right = $("#chat_right").outerHeight();
+                    $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
+                }
             }
         }
     })
