@@ -528,10 +528,11 @@ class Chat_model extends CI_Model
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
-        $sql = "INSERT INTO tbl_chat__msg (id_user, content, file, create_time, id_gchat) VALUES (?, ?, ?, ?, ?)";
+        $ip = ip_address();
+        $sql = "INSERT INTO tbl_chat__msg (id_user, content, file, create_time, id_gchat, ip) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_user, $content, $file, $create_time, $id_gchat];
+            $param = [$id_user, $content, $file, $create_time, $id_gchat, $ip];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();
