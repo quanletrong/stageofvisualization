@@ -24,18 +24,6 @@
             <form method="GET" action="kpi" id="filter_form">
                 <div class="rounded px-2 py-1 pb-0 mb-2" style="background-color: #dee2e6;">
                     <div class="row">
-                        <!-- Lọc Khoảng ngày-->
-                        <div class="col-md-3 mb-2">
-                            <small>Khoảng ngày</small>
-                            <div class="input-group">
-                                <input type="text" class="form-control daterange-btn" placeholder="Nhập khoảng ngày" id="create_time" value="">
-                                <input type="hidden" name="filter_fdate" value="<?= $filter_fdate ?>">
-                                <input type="hidden" name="filter_tdate" value="<?= $filter_tdate ?>">
-                                <div class="input-group-append daterange-btn" id="">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Lọc theo user -->
                         <div class="col-md-3 mb-2">
@@ -49,7 +37,7 @@
                         </div>
 
                         <!-- Lọc theo user -->
-                        <div class="col-md-2 mb-2">
+                        <div class="col-md-3 mb-2">
                             <small>Role</small>
                             <select class="select2" name="filter_role" id="filter_role">
                                 <option value=""></option>
@@ -61,7 +49,7 @@
                         </div>
 
                         <!-- search -->
-                        <div class="col-md-2 mb-2 ">
+                        <div class="col-md-3 mb-2 ">
                             <small>&nbsp;</small>
                             <div class="d-flex" style="gap:5px; align-items: center;">
                                 <button type="submit" class="btn btn-primary" title="Tìm kiếm"><i class="fas fa-search"></i> Tìm kiếm</button>
@@ -71,7 +59,7 @@
                         </div>
 
                         <!-- vị trí nút export table -->
-                        <div class="col-md-2 mb-2 d-flex align-items-end justify-content-end"></div>
+                        <div class="col-md-3 mb-2 d-flex align-items-end justify-content-end div-export-table"></div>
                     </div>
                 </div>
             </form>
@@ -151,45 +139,7 @@
             "lengthChange": false,
             "searching": false,
             "buttons": ["excel", "pdf"]
-        }).buttons().container().appendTo('#filter_form .col-md-2:eq(-1)');
-
-        // ngày tạo
-        //Set mặc định ngày
-        let startDate = moment().subtract(29, 'days');
-        let endDate = moment();
-        try {
-            <?php if ($filter_fdate != '') { ?>
-                startDate = moment('<?= $filter_fdate ?>');
-            <?php } ?>
-
-            <?php if ($filter_tdate != '') { ?>
-                endDate = moment('<?= $filter_tdate ?>');
-            <?php } ?>
-        } catch (error) {
-            console.log(error);
-        }
-
-        //Date range as a button
-        $('.daterange-btn').daterangepicker({
-                ranges: {
-                    'Hôm nay': [moment(), moment()],
-                    'Hôm qua': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    '7 ngày trước': [moment().subtract(6, 'days'), moment()],
-                    '30 ngày trước': [moment().subtract(29, 'days'), moment()],
-                    'Tháng này': [moment().startOf('month'), moment().endOf('month')],
-                    'Tháng trước': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                },
-                startDate: startDate,
-                endDate: endDate,
-                locale: {
-                    format: 'DD/MM/YYYY'
-                }
-            },
-            function(start, end) {
-                $('input[name="filter_fdate"]').val(start.format('YYYY-MM-D'))
-                $('input[name="filter_tdate"]').val(end.format('YYYY-MM-D'))
-            }
-        )
+        }).buttons().container().appendTo('#filter_form .div-export-table');
     });
 
     function ajax_set_rut_tien_ho(btn, id_user) {
@@ -202,9 +152,7 @@
             $.ajax({
                 url: `withdraw/ajax_set_rut_tien_ho`,
                 data: {
-                    id_user: id_user,
-                    fdate: '<?= $filter_fdate ?>',
-                    tdate: '<?= $filter_tdate ?>'
+                    id_user: id_user
                 },
                 type: "POST",
                 success: function(data, textStatus, jqXHR) {

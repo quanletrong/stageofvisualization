@@ -27,8 +27,6 @@ class Kpi extends MY_Controller
 
     function index()
     {
-        $filter_fdate   = $this->input->get('filter_fdate');
-        $filter_tdate   = $this->input->get('filter_tdate');
         $filter_id_user = $this->input->get('filter_id_user');
         $filter_role = $this->input->get('filter_role');
 
@@ -39,19 +37,6 @@ class Kpi extends MY_Controller
 
         //validate role
         $filter_role = in_array($filter_role, [ADMIN, SALE, QC, EDITOR]) ? $filter_role : '';
-
-        //validate filter date
-        $ngay_hien_tai = date("Y-m-d");
-        $ba_muoi_ngay_truoc = date("Y-m-d", strtotime('today - 29 days'));
-        $filter_fdate = strtotime($filter_fdate) === false ? $ba_muoi_ngay_truoc : $filter_fdate;
-        $filter_tdate = strtotime($filter_tdate) === false ? $ngay_hien_tai : $filter_tdate;
-
-        $filter['fdate']   = date("Y-m-d", strtotime($filter_fdate)) . ' 00:00:00';
-        if($filter_tdate < $ngay_hien_tai) {
-            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' 23:59:59';
-        } else {
-            $filter['tdate']   = date("Y-m-d", strtotime($filter_tdate)).' '. date("H:i:s");
-        }
         
         $filter['id_user'] = $filter_id_user;
         $filter['role']    = $filter_role;
@@ -64,13 +49,11 @@ class Kpi extends MY_Controller
         $data['list_service']   = $list_kpi['list_service'];
         $data['all_user']       = $all_user;
 
-        $data['filter_fdate']   = $filter_fdate;
-        $data['filter_tdate']   = $filter_tdate;
         $data['filter_id_user'] = $filter_id_user;
         $data['filter_role']    = $filter_role;
 
         $header = [
-            'title' => "KPI từ $filter_fdate đến $filter_tdate",
+            'title' => "KPI",
             'header_page_css_js' => 'voucher'
         ];
 

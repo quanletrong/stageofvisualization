@@ -363,8 +363,6 @@ class Withdraw_model extends CI_Model
         $data['list_service'] = [];
         $iconn = $this->db->conn_id;
 
-        $filter_fdate   = isset($filter['fdate'])   ? $filter['fdate']  : '';
-        $filter_tdate   = isset($filter['tdate'])   ? $filter['tdate']  : '';
         $filter_id_user = isset($filter['id_user']) ? $filter['id_user'] : '';
         $filter_role    = isset($filter['role'])    ? $filter['role']   : '';
 
@@ -391,7 +389,6 @@ class Withdraw_model extends CI_Model
                 AND ( tbl_job_user.withdraw_custom < tbl_job_user.custom ) 
                 AND " . QSQL_IN('tbl_job_user.`id_user`', $filter_id_user, $this) . " 
                 AND " . QSQL_IN('tbl_job_user.`role`', $filter_role, $this) . " 
-                AND " . QSQL_BETWEEN('tbl_job_user.time_join', $filter_fdate, $filter_tdate, $this) . " 
             GROUP BY
                 tbl_job_user.id_user,
                 tbl_job_user.type_service

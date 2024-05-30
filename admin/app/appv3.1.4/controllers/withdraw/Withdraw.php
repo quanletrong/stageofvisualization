@@ -270,8 +270,8 @@ class Withdraw extends MY_Controller
         $cur_uid     = $this->_session_uid();
         $create_time = date('Y-m-d H:i:s');
         $id_user     = $this->input->post('id_user');
-        $fdate       = $this->input->post('fdate');
-        $tdate       = $this->input->post('tdate');
+        // $fdate       = $this->input->post('fdate');
+        // $tdate       = $this->input->post('tdate');
 
         //validate filter_id_user
         $all_user = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, QC, EDITOR]));
@@ -279,11 +279,12 @@ class Withdraw extends MY_Controller
         $id_user = isset($all_user[$id_user]) ? $id_user : resError('Tài khoản không hợp lệ (2)');
 
         //validate filter date
-        $fdate = strtotime($fdate) !== false ? $fdate : resError('Ngày bắt đầu không hợp lệ');
-        $tdate = strtotime($tdate) !== false ? $tdate : resError('Ngày kết thúc không hợp lệ');
+        // $fdate = strtotime($fdate) !== false ? $fdate : resError('Ngày bắt đầu không hợp lệ');
+        // $tdate = strtotime($tdate) !== false ? $tdate : resError('Ngày kết thúc không hợp lệ');
 
         // danh sach job chua rut tien
-        $list_job_chua_rut = $this->Withdraw_model->danh_sach_chua_rut_tien($id_user, $fdate . ' 00:00:00', $tdate . ' ' . date('H:s:i'));
+        // $list_job_chua_rut = $this->Withdraw_model->danh_sach_chua_rut_tien($id_user, $fdate . ' 00:00:00', $tdate . ' ' . date('H:s:i'));
+        $list_job_chua_rut = $this->Withdraw_model->danh_sach_chua_rut_tien($id_user);
 
         if (empty($list_job_chua_rut)) {
             resError('Chưa có đơn hàng hoàn thành');
