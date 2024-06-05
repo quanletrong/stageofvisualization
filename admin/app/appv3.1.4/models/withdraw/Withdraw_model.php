@@ -98,7 +98,7 @@ class Withdraw_model extends CI_Model
         FROM tbl_withdraw as A
         INNER JOIN tbl_user as B ON A.id_user = B.id_user 
         GROUP BY A.id_user, A.create_time, A.status
-        ORDER BY A.status ASC, A.create_time ASC";
+        ORDER BY A.status ASC, A.create_time DESC";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
