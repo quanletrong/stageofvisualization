@@ -88,6 +88,12 @@ class Discuss extends MY_Controller
             $copy = copy_image_to_public_upload($url_file, $FDR_ORDER);
 
             !$copy['status'] ? resError($copy['error']) : '';
+
+            // move to thumb
+            if(stringIsImage($url_file)) {
+                copy_image_to_thumb($url_file, $FDR_ORDER . 'thumb', THUMB_WIDTH, THUMB_HEIGHT);
+            }
+
             $id_attach = generateRandomNumber();
             $db_attach[$id_attach] = $copy['basename'];
         }
@@ -130,6 +136,11 @@ class Discuss extends MY_Controller
             $copy = copy_image_to_public_upload($url_file, $FDR_ORDER);
 
             !$copy['status'] ? resError($copy['error']) : '';
+            // move to thumb
+            if(stringIsImage($url_file)) {
+                copy_image_to_thumb($url_file, $FDR_ORDER . 'thumb', THUMB_WIDTH, THUMB_HEIGHT);
+            }
+            
             $id_attach = generateRandomNumber();
             $db_attach[$id_attach] = $copy['basename'];
         }

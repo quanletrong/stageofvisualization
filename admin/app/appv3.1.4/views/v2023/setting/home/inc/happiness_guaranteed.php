@@ -55,7 +55,8 @@
         });
     })
 
-    function cb_upload_image_happy(link, target, name) {
-        $(`${target}_pre`).attr('src', link);
+    function cb_upload_image_happy(res, btn) {
+        let target = $(btn).data('target');
+        $(`${target}_pre`).attr('src', res.link);
     }
 </script>

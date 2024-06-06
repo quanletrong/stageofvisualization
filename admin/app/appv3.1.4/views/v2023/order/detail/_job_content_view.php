@@ -69,7 +69,7 @@
                                         </div>
 
                                         <?php if (stringIsImage($job['image'])) { ?>
-                                            <img src="<?= url_image($job['image'], $FDR_ORDER) ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
+                                            <img src="<?= url_image($job['image'], $FDR_ORDER . '/thumb/') ?>" class="img-order-all" alt="" width="100%" data-id="<?= $id_job ?>" id="main_file_<?= $id_job ?>">
                                         <?php } else { ?>
                                             <div id="main_file_<?= $id_job ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id="<?= $id_job ?>">
                                                 <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
@@ -120,7 +120,7 @@
                                                     </div>
 
                                                     <?php if (stringIsImage($item)) { ?>
-                                                        <img src="<?= url_image($item, $FDR_ORDER) ?>" alt="" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="width: -webkit-fill-available; width: -moz-available;">
+                                                        <img src="<?= url_image($item, $FDR_ORDER . '/thumb/') ?>" alt="" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>" id="attach_file_<?= $key ?>" style="width: -webkit-fill-available; width: -moz-available;">
                                                     <?php } else { ?>
                                                         <div id="attach_file_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-attach="<?= $key ?>">
                                                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
@@ -197,7 +197,7 @@
                                                 </div>
 
                                                 <?php if (stringIsImage($file)) { ?>
-                                                    <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER) ?>" alt="" width="100%">
+                                                    <img id="img_complete_<?= $key ?>" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>" src="<?= url_image($file, $FDR_ORDER . '/thumb/') ?>" alt="" width="100%">
                                                 <?php } else { ?>
                                                     <div id="img_complete_<?= $key ?>" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id-job="<?= $id_job ?>" data-id-complete="<?= $key ?>">
                                                         <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
@@ -230,8 +230,9 @@
 </div>
 
 <script>
-    function cb_upload_edit_main_file(url_image, target, file_name, btn_upload) {
+    function cb_upload_edit_main_file(res, btn_upload) {
 
+        let target = $(btn_upload).data('target');
         let btn_upload_old = $(btn_upload).html();
         $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
@@ -242,7 +243,7 @@
             type: "POST",
             data: {
                 id_job,
-                url_image
+                url_image: res.link
             },
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
@@ -251,14 +252,14 @@
                     let html = ``;
                     let fileview = ``;
 
-                    if (_.isImage(url_image)) {
+                    if (res.thumb != '') {
                         fileview = `
-                        <img src="${url_image}" class="img-order-all" alt="" width="100%" data-id="${id_job}" id="main_file_${id_job}">`;
+                        <img src="${res.thumb}" class="img-order-all" alt="" width="100%" data-id="${id_job}" id="main_file_${id_job}">`;
                     } else {
                         fileview = `
                         <div id="main_file_${id_job}" width="100%" class="rounded border p-2 text-truncate shadow" style="height: 100px; line-break: anywhere; text-align:center" data-id="${id_job}">
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
-                            <span style="font-size:12px;">${file_name}</span>
+                            <span style="font-size:12px;">${res.name}</span>
                         </div>`;
                     }
 
@@ -267,7 +268,7 @@
                         .siblings('.position-btn')
                         .find('.fa-download')
                         .parent()
-                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`);
+                        .attr('onclick', `downloadURI('${res.link}', '${res.name}')`);
 
                     $(target).remove(); // xóa file cũ
 
@@ -288,8 +289,9 @@
         });
     }
 
-    function cb_upload_edit_attach_file(url_image, target, file_name, btn_upload) {
+    function cb_upload_edit_attach_file(res, btn_upload) {
 
+        let target = $(btn_upload).data('target');
         $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
@@ -302,7 +304,7 @@
             data: {
                 id_job,
                 id_attach,
-                url_image
+                url_image: res.link
             },
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
@@ -312,9 +314,9 @@
                     let html = ``;
                     let fileview = ``;
 
-                    if (_.isImage(url_image)) {
+                    if (res.thumb != '') {
                         fileview = `
-                        <img src="${url_image}" alt="" width="100" 
+                        <img src="${res.thumb}" alt="" width="100" 
                             id="attach_file_${id_attach}" 
                             data-id-job="${id_job}" 
                             data-id-attach="${id_attach}" 
@@ -331,7 +333,7 @@
                             width="100%" 
                         > 
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
-                            <span style="font-size:12px;">${file_name}</span>
+                            <span style="font-size:12px;">${res.name}</span>
                         </div>`;
                     }
 
@@ -339,7 +341,7 @@
                         .siblings('.position-btn')
                         .find('.fa-download')
                         .parent()
-                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`); // cập nhật file mới vào nút download
+                        .attr('onclick', `downloadURI('${res.link}', '${res.name}')`); // cập nhật file mới vào nút download
 
                     $(target).remove(); // xóa file cũ
 
@@ -360,21 +362,22 @@
         });
     }
 
-    function cb_upload_add_attach_file(url_image, target, file_name, btn_upload) {
+    function cb_upload_add_attach_file(res, btn_upload) {
 
+        let target = $(btn_upload).data('target');
         $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
         let id_job = $(btn_upload).data('job');
 
-        $(target).attr('src', url_image);
+        $(target).attr('src', res.link);
 
         $.ajax({
             url: `order/ajax_add_attach_file`,
             type: "POST",
             data: {
                 id_job,
-                url_image
+                url_image: res.link
             },
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
@@ -383,9 +386,9 @@
                     let html = ``;
                     let fileview = ``;
 
-                    if (_.isImage(url_image)) {
+                    if (res.thumb != '') {
                         fileview = `
-                        <img src="${url_image}" alt="" width="100" 
+                        <img src="${res.thumb}" alt="" width="100" 
                             id="attach_file_${new_id_attach}" 
                             data-id-job="${id_job}" 
                             data-id-attach="${new_id_attach}" 
@@ -402,7 +405,7 @@
                             width="100%" 
                         > 
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
-                            <span style="font-size:12px;">${file_name}</span>
+                            <span style="font-size:12px;">${res.name}</span>
                         </div>`;
                     }
 
@@ -412,7 +415,7 @@
                         </div>
 
                         <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:5px">
-                            <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')" style="font-size: 10px; padding: 3px 5px;">
+                            <button class="btn btn-sm btn-warning" onclick="downloadURI('${res.link}', '${res.name}')" style="font-size: 10px; padding: 3px 5px;">
                                 <i class="fas fa-download"></i>
                             </button>
                             <?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
@@ -518,18 +521,19 @@
         });
     }
 
-    function cb_upload_add_file_complete(url_image, target, file_name, btn_upload) {
+    function cb_upload_add_file_complete(res, btn_upload) {
 
         $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
 
+        let target = $(btn_upload).data('target');
         let id_job = $(target).data('id-job');
         $.ajax({
             url: `order/ajax_add_file_complete`,
             type: "POST",
             data: {
                 id_job,
-                url_image
+                url_image: res.link
             },
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
@@ -540,9 +544,9 @@
                     let html = ``;
                     let fileview = ``;
 
-                    if (_.isImage(url_image)) {
+                    if (res.thumb != '') {
                         fileview = `
-                        <img id="img_complete_${id_file_complete}" data-id-job="${id_job}" data-id-complete="${id_file_complete}" src="${url_image}" alt="" width="100%">`;
+                        <img id="img_complete_${id_file_complete}" data-id-job="${id_job}" data-id-complete="${id_file_complete}" src="${res.thumb}" alt="" width="100%">`;
                     } else {
                         fileview = `
                         <div 
@@ -554,14 +558,14 @@
                             data-id-complete="${id_file_complete}"
                         > 
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
-                            <span style="font-size:12px;">${file_name}</span>
+                            <span style="font-size:12px;">${res.name}</span>
                         </div>`;
                     }
 
                     html = `
                         <div class="position-relative image-hover w-50 p-1" id="file_complete_${id_file_complete}">
                             <div class="position-btn" style="position: absolute; display: none; top: 20px; width:100%; gap:10px">
-                                <button class="btn btn-sm btn-warning" onclick="downloadURI('${url_image}', '${file_name}')">
+                                <button class="btn btn-sm btn-warning" onclick="downloadURI('${res.link}', '${res.name}')">
                                     <i class="fas fa-download"></i>
                                 </button>    
                                 <button class="btn btn-sm btn-warning" onclick="quanlt_upload(this);" data-callback="cb_upload_edit_file_complete" data-target="#img_complete_${id_file_complete}">
@@ -593,12 +597,12 @@
         });
     }
 
-    function cb_upload_edit_file_complete(url_image, target, file_name, btn_upload) {
+    function cb_upload_edit_file_complete(res, btn_upload) {
 
         let btn_upload_old = $(btn_upload).html();
         $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
-
+        let target = $(btn_upload).data('target');
         let id_job = $(target).data('id-job');
         let id_complete = $(target).data('id-complete');
         console.log(id_job, id_complete)
@@ -608,16 +612,16 @@
             data: {
                 id_job,
                 id_complete,
-                url_image
+                url_image: res.link
             },
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
                     let fileview = ``;
-                    if (_.isImage(url_image)) {
+                    if (res.thumb != '') {
                         fileview = `
-                        <img id="img_complete_${id_complete}" data-id-job="${id_job}" data-id-complete="${id_complete}" src="${url_image}" alt="" width="100%">`;
+                        <img id="img_complete_${id_complete}" data-id-job="${id_job}" data-id-complete="${id_complete}" src="${res.thumb}" alt="" width="100%">`;
                     } else {
                         fileview = `
                         <div 
@@ -629,7 +633,7 @@
                             data-id-complete="${id_complete}"
                         > 
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br/>
-                            <span style="font-size:12px;">${file_name}</span>
+                            <span style="font-size:12px;">${res.name}</span>
                         </div>`;
                     }
 
@@ -637,7 +641,7 @@
                         .siblings('.position-btn')
                         .find('.fa-download')
                         .parent()
-                        .attr('onclick', `downloadURI('${url_image}', '${file_name}')`); // cập nhật file mới vào nút download
+                        .attr('onclick', `downloadURI('${res.link}', '${res.name}')`); // cập nhật file mới vào nút download
 
                     $(target).remove(); // xóa file cũ
 

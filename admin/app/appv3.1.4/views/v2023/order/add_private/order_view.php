@@ -193,37 +193,39 @@
     }
 
     // cb_upload_image_job
-    function cb_upload_image_job(link, target, name, btn) {
+    function cb_upload_image_job(res, btn) {
 
+        let target = $(btn).data('target');
         let job_id = $(target).data('id');
 
-        if (_.isImage(link)) {
-            $(btn).html(`<img class="img-fluid w-50" alt="${name}" src="${link}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
+        if (res.thumb != '') {
+            $(btn).html(`<img class="img-fluid w-50" alt="${res.name}" src="${res.thumb}" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm vào để thay thế file" ondragover="$(this).hide()">`);
         } else {
             $(btn).html(
                 `<div ondragover="$(this).hide()">
                     <i class="fa fa-paperclip" aria-hidden="true"></i>
-                    <p style="font-size:12px" class="text-truncate">${name}</p>
+                    <p style="font-size:12px" class="text-truncate">${res.name}</p>
                 </div>`
             );
         }
-        STATE.job[job_id].image = link;
+        STATE.job[job_id].image = res.link;
         tooltipTriggerList('body');
     }
 
     // cb_upload_image_attach
-    function cb_upload_attach(link, target, name, btn) {
+    function cb_upload_attach(res, btn) {
+        let target = $(btn).data('target');
         let job_id = $(target).data('id');
         let attach_id = Date.now() + Object.keys(STATE.job[job_id].attach).length;
         let attach_html = `<div style="position:relative" class="m-2">
-            <img src="${link}"  style="width:50px;aspect-ratio: 1; object-fit: cover;" class="shadow" >
+            <img src="${res.thumb}"  style="width:50px;aspect-ratio: 1; object-fit: cover;" class="shadow" >
             <i class="fas fa-times" style="position:absolute;right:-10px;top: -10px; color:red; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
         </div>`;
         $(`#${job_id}_attach_pre`).append(attach_html);
 
         $(btn).html(`Kéo file vào đây hoặc<span class="text-primary">Tải tệp lên</span>`);
 
-        STATE.job[job_id].attach[attach_id] = link;
+        STATE.job[job_id].attach[attach_id] = res.link;
     }
 
     function remove_attach(e, job_id, attach_id) {

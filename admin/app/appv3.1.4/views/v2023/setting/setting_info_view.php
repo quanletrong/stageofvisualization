@@ -141,11 +141,13 @@
         });
     })
 
-    function cb_upload_logo_ngang(link, target, name) {
-        $(`${target}_pre`).attr('src', link);
+    function cb_upload_logo_ngang(res, btn) {
+        let target = $(btn).data('target');
+        $(`${target}_pre`).attr('src', res.link);
     }
 
-    function cb_upload_logo_vuong(link, target, name) {
-        $(`${target}_pre`).attr('src', link);
+    function cb_upload_logo_vuong(res, btn) {
+        let target = $(btn).data('target');
+        $(`${target}_pre`).attr('src', res.link);
     }
 </script>

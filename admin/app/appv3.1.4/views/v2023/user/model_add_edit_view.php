@@ -296,8 +296,8 @@
         });
     });
 
-    function cb_upload_image_ava(link, target, name) {
-        $("#imgAccountAvatar").attr('src', link);
-        $("#hdd_avatar").val(link);
+    function cb_upload_image_ava(res, btn) {        
+        $("#imgAccountAvatar").attr('src', res.link);
+        $("#hdd_avatar").val(res.link);
     }
 </script>

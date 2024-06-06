@@ -75,12 +75,13 @@
     })
 
 
-    function cb_upload_image_slide(link, target, name) {
-        $(`${target}_pre`).attr('src', link);
+    function cb_upload_image_slide(res, btn) {
+        let target = $(btn).data('target');
+        $(`${target}_pre`).attr('src', res.link);
         let slide_id = $(target).data('id');
-        SLIDE[slide_id].image = link;
-        SLIDE[slide_id].name = name;
-        $(`#${slide_id} .input-name`).val(name);
+        SLIDE[slide_id].image = res.link;
+        SLIDE[slide_id].name = res.name;
+        $(`#${slide_id} .input-name`).val(res.name);
     }
 
     // <!-- xu lý thêm phong -->

@@ -187,6 +187,7 @@
 <!-- SOCKET -->
 <script>
     var GLOBAL_SETTIMEOUT_CHAT_NOI_BO;
+    var GLOBAL_SETTIMEOUT_CHAT_KHACH;
 
     socket.on('update-chat-noi-bo', data => {
         if (data.id_order == <?= $order['id_order'] ?>) {
@@ -214,11 +215,11 @@
                 audio.play();
 
                 // update title
-                clearTimeout(GLOBAL_SETTIMEOUT_CHAT_NOI_BO);
+                clearTimeout(GLOBAL_SETTIMEOUT_CHAT_KHACH);
                 if ($('#box_trao_doi_noi_bo').css('display') == 'none') {
                     (function titleScroller(text) {
                         document.title = `(${tin_nhan_moi + 1}) ${text}`;
-                        GLOBAL_SETTIMEOUT_CHAT_NOI_BO = setTimeout(function() {
+                        GLOBAL_SETTIMEOUT_CHAT_KHACH = setTimeout(function() {
                             titleScroller(text.substr(1) + text.substr(0, 1));
                         }, 500);
                     }(`Tin nhắn nội bộ. `));
@@ -231,9 +232,7 @@
     socket.on('update-chat-khach', data => {
         if (data.id_order == <?= $order['id_order'] ?>) {
 
-            var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
-            audio.play();
-
+            // update tin nhan moi
             let tin_nhan_moi = parseInt($('#small_trao_doi_sale .tin-nhan-moi').text());
             tin_nhan_moi = isNaN(tin_nhan_moi) ? 0 : tin_nhan_moi;
             $('#small_trao_doi_sale .tin-nhan-moi').text(tin_nhan_moi + 1).show();
@@ -247,7 +246,24 @@
             $('#discuss_khach .chat_list_attach').html('');
             $('#discuss_khach .list-chat').scrollTop($('#discuss_khach .list-chat')[0].scrollHeight);
 
-            tooltipTriggerList('#discuss_khach');
+            // update title, chuông noti
+            if (data.id_user != <?= $curr_uid ?>) {
+
+                // chuông noti
+                var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
+                audio.play();
+
+                // update title
+                clearTimeout(GLOBAL_SETTIMEOUT_CHAT_NOI_BO);
+                if ($('#box_trao_doi_sale').css('display') == 'none') {
+                    (function titleScroller(text) {
+                        document.title = `(${tin_nhan_moi + 1}) ${text}`;
+                        GLOBAL_SETTIMEOUT_CHAT_NOI_BO = setTimeout(function() {
+                            titleScroller(text.substr(1) + text.substr(0, 1));
+                        }, 500);
+                    }(`Tin nhắn khách hàng. `));
+                }
+            }
         }
     })
 

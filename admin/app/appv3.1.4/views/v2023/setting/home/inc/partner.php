@@ -84,13 +84,14 @@
     })
 
 
-    function cb_upload_image_partner(link, target, name) {
-        $(`${target}_pre`).attr('src', link);
+    function cb_upload_image_partner(res, btn) {
+        let target = $(btn).data('target');
+        $(`${target}_pre`).attr('src', res.link);
         let partner_id = $(target).data('id');
-        PARTNER.images[partner_id].image = link;
-        PARTNER.images[partner_id].name = name;
+        PARTNER.images[partner_id].image = res.link;
+        PARTNER.images[partner_id].name = res.name;
 
-        $(`#${partner_id} .input-name`).val(name);
+        $(`#${partner_id} .input-name`).val(res.name);
 
     }
 

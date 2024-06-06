@@ -198,3 +198,8 @@ const LOG = [
 
 // Phương thức thanh toán
 define('PAYPAL', 1);
+
+// 
+define('THUMB_WIDTH', 300);
+define('THUMB_HEIGHT', 300);
+define('THUMB_RATIO', THUMB_WIDTH/THUMB_HEIGHT);

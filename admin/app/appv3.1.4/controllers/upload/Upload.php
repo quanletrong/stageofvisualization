@@ -72,6 +72,9 @@ class Upload extends MY_Controller
                             $link = ROOT_DOMAIN . '/uploads/tmp/' . $name_file;
                             $data[$i]['link'] = $link;
                             $data[$i]['mime'] = $imageFileType;
+
+                            $thumb = copy_image_to_thumb($link, TMP_UPLOAD_PATH . 'thumb', THUMB_WIDTH, THUMB_HEIGHT);
+                            $data[$i]['thumb'] = $thumb['status'] ? $thumb['link'] : '';
                         } else {
                             $data[$i]['status'] = 0;
                             $data[$i]['error'][] = 'Sorry, there was an error uploading your file.';
@@ -137,6 +140,8 @@ class Upload extends MY_Controller
                     $link = ROOT_DOMAIN . '/uploads/tmp/' . $name_file;
                     $data['link'] = $link;
                     $data['mime'] = $imageFileType;
+                    $thumb = copy_image_to_thumb($link, TMP_UPLOAD_PATH . 'thumb', THUMB_WIDTH, THUMB_HEIGHT);
+                    $data['thumb'] = $thumb['status'] ? $thumb['link'] : '';
                 } else {
                     $data['status'] = 0;
                     $data['error'][] = 'Sorry, there was an error uploading your file.';

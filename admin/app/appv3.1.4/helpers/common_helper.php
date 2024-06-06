@@ -940,7 +940,12 @@ function copy_image_to_thumb($url_image, $folder_str = 'uploads/', $max_width, $
                 resize_image($dir_save, $max_width, $max_height, $width, $height, $type);
             }
 
-            return ['status' => true, 'pathname' => $dir_save, 'basename' => $basename];
+            return [
+                'status' => true, 
+                'pathname' => $dir_save, 
+                'basename' => $basename, 
+                'link' => url_image($basename, $FULL_FOLDER)
+            ];
         }
     } else {
         return ['status' => false, 'error' => 'CAN_NOT_GET_IMAGE_INFO'];

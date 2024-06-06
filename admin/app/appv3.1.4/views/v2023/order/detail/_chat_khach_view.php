@@ -169,19 +169,28 @@
         for (const [id_file, file] of Object.entries(discuss.file_list)) {
             list_file += `
                 <div class="" 
-                    onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
                     style="cursor: pointer; width:150px"
-                    data-bs-toggle="tooltip" data-bs-placement="top"
-                    title="Bấm để tải xuống"
                 >   ${
                         (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                        ? `<img src="<?= url_image('', $FDR_ORDER) ?>${file}" class="rounded border"  style="width:100%; aspect-ratio: 1;object-fit: cover;">`
-                        : `
-                        <div class="rounded border p-2 text-truncate bg-light" style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
+                        ? 
+                        `<img 
+                            src="<?= url_image('', $FDR_ORDER . '/thumb/') ?>${file}" 
+                            data-src="<?= url_image('', $FDR_ORDER) ?>${file}" 
+                            class="rounded border"  
+                            style="width:100%; aspect-ratio: 1;object-fit: cover;"
+                            data-toggle="modal" data-target="#modal-full-image"
+                        >`
+                        :
+                        `<div 
+                            class="rounded border p-2 text-truncate bg-light" 
+                            style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;"
+                            onclick="downloadURI('<?= url_image('', $FDR_ORDER) ?>${file}', '${file}')"
+                            title="Bấm để tải xuống"
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                        >
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                             <span style="font-size:12px;">${file}</span>
-                        </div>
-                        `
+                        </div>`
                     }
                 </div>`;
         }
@@ -217,24 +226,23 @@
         }
     }
 
-    // tham số bắt buộc [link_file, target, file_name, btn]
-    function cb_upload_add_file_attach_chat_khach(link_file, target, file_name, btn) {
+    function cb_upload_add_file_attach_chat_khach(res, btn) {
         let id_attach = Date.now();
 
         let html = ``;
-        if (_.isImage(link_file)) {
+        if (res.thumb != '') {
             html = `
-            <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" data-file="${link_file}">
+            <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" data-file="${res.link}">
                 <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
                     <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
-                <img id="img_attach_${id_attach}" src="${link_file}" class="img_attach rounded shadow" alt="" width="100%" style="aspect-ratio: 1;object-fit: cover;">
+                <img id="img_attach_${id_attach}" src="${res.thumb}" class="img_attach rounded shadow" alt="" width="100%" style="aspect-ratio: 1;object-fit: cover;">
             </div>`;
         } else {
             html = `
-            <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" title="${file_name}" data-file="${link_file}">
+            <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" title="${res.name}" data-file="${res.link}">
                 <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
                     <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_khach_attach('#file_attach_${id_attach}')">
                         <i class="fas fa-trash"></i>
@@ -243,7 +251,7 @@
 
                 <div id="img_attach_${id_attach}" width="100%" class="rounded border p-2 text-truncate shadow" style="line-break: anywhere; text-align:center;     aspect-ratio: 1;object-fit: cover;">
                     <i class="fa fa-paperclip" aria-hidden="true"></i> <br>
-                    <span style="font-size:12px;">${file_name}</span>
+                    <span style="font-size:12px;">${res.name}</span>
                 </div>
             </div>`;
         }

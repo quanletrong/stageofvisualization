@@ -229,18 +229,20 @@
         })
     });
 
-    function cb_upload_image_service(link, target) {
-        $(`${target}_pre`).attr('src', link);
+    function cb_upload_image_service(res, btn) {
+        let target = $(btn).data('target');
+        $(`${target}_pre`).attr('src', res.link);
         $(`${target}-error`).hide();
     }
 
-    function cb_upload_image_slide(link, target) {
-        $(`${target}_pre`).attr('src', link);
+    function cb_upload_image_slide(res, btn) {
+        let target = $(btn).data('target');
+        $(`${target}_pre`).attr('src', res.link);
         let slide_id = $(target).data('id');
-        SLIDE[slide_id].image = link;
+        SLIDE[slide_id].image = res.link;
 
-        $(`${target}_pre`).data('src', link);
-        $(`#${slide_id} .btn-full-image`).data('src', link);
+        $(`${target}_pre`).data('src', res.link);
+        $(`#${slide_id} .btn-full-image`).data('src', res.link);
     }
 
     // <!-- xu lý thêm ảnh slide -->

@@ -77,7 +77,7 @@ class Library extends MY_Controller
                 foreach ($arr_image as $id => $it) {
                     $copy = copy_image_to_public_upload($it['image'], FOLDER_LIBRARY);
 
-                    copy_image_to_thumb(url_image($copy['basename'], FOLDER_LIBRARY), FOLDER_LIBRARY_THUMB, 300, 300);
+                    copy_image_to_thumb(url_image($copy['basename'], FOLDER_LIBRARY), FOLDER_LIBRARY_THUMB, THUMB_WIDTH, THUMB_HEIGHT);
 
                     if ($copy['status']) {
                         $this->Library_model->add($id_room, $id_style, $it['name'], $copy['basename'], $status, $this->_session_uid(), $create_time);
@@ -103,7 +103,7 @@ class Library extends MY_Controller
                         // copy and validate image
                         if (strpos($it['image'], 'uploads/tmp') !== false) {
                             $copy = copy_image_to_public_upload($it['image'], FOLDER_LIBRARY);
-                            copy_image_to_thumb(url_image($copy['basename'], FOLDER_LIBRARY), FOLDER_LIBRARY_THUMB, 300, 300);
+                            copy_image_to_thumb(url_image($copy['basename'], FOLDER_LIBRARY), FOLDER_LIBRARY_THUMB, THUMB_WIDTH, THUMB_HEIGHT);
 
                             $image_ok = $copy['basename'];
                         }

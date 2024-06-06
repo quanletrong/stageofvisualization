@@ -138,13 +138,13 @@
 							//upload ok
 							if (value.status) {
 
-								// gán dữ liệu vào thẻ input target
+								// gán dữ liệu vào thẻ input target (TODO: check bo)
 								$(input_target).val(value.link);
 
 								// gọi call back nếu có
 								if (cb != '') {
 									try {
-										window[cb](value.link, input_target, value.name, btn_upload);
+										window[cb](value, btn_upload);
 									} catch (error) {
 										console.log(error)
 									}
@@ -225,7 +225,7 @@
 					let name_file = xhr.response.data.name
 
 					if (status) {
-						window[cb](link_file, target, name_file, ev.target);
+						window[cb](xhr.response.data, ev.target);
 					} else {
 						alert(xhr.response.error)
 					}

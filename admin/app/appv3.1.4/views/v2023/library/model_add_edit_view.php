@@ -201,27 +201,27 @@
         })
     });
 
-    function cb_upload_add_image_library(link, target, name) {
+    function cb_upload_add_image_library(res, btn) {
 
         let image_id = Math.floor(Math.random()*10000)
-        console.log(image_id)
         SLIDE[image_id] = {
-            'name': name,
-            'image': link
+            'name': res.name,
+            'image': res.link
         };
 
         $('#table_add_image tbody').append(html_row_image(image_id));
     }
 
-    function cb_upload_edit_image_library(link, target, name) {
+    function cb_upload_edit_image_library(res, btn) {
+        let target = $(btn).data('target');
         let image_id = $(target).data('id');
         SLIDE[image_id] = {
-            'name': name,
-            'image': link
+            'name': res.name,
+            'image': res.link
         };
 
-        $(`#${image_id} .input-name`).val(name);
-        $(`#image_${image_id}_pre`).attr('src', link);
+        $(`#${image_id} .input-name`).val(res.name);
+        $(`#image_${image_id}_pre`).attr('src', res.link);
     }
 
     function html_row_image(image_id) {

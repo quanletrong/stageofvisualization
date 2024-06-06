@@ -15,6 +15,7 @@
         cursor: pointer;
         margin-right: 10px;
     }
+
     .btn-setting-group:hover {
         color: black;
     }
@@ -227,35 +228,35 @@
         }
     }
 
-    // tham số bắt buộc [link_file, target, file_name, btn]
-    function cb_upload_add_file_attach_chat(link_file, target, file_name, btn) {
+    function cb_upload_add_file_attach_chat(res, btn) {
         let id_attach = Date.now();
-
         let html = ``;
-        if (_.isImage(link_file)) {
+        if (res.thumb != '') {
             html = `
-        <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" data-file="${link_file}">
-            <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
-                <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_attach('#file_attach_${id_attach}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <img id="img_attach_${id_attach}" src="${link_file}" class="img_attach rounded shadow" alt="" width="100%" style="aspect-ratio: 1;object-fit: cover;">
-        </div>`;
+            <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" data-file="${res.link}">
+                <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
+                    <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_attach('#file_attach_${id_attach}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <img id="img_attach_${id_attach}" src="${res.link}" class="img_attach rounded shadow" alt="" width="100%" style="aspect-ratio: 1;object-fit: cover;">
+            </div>`;
         } else {
             html = `
-        <div class="position-relative image-hover p-2" style="width:80px" id="file_attach_${id_attach}" title="${file_name}" data-file="${link_file}">
-            <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
-                <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_attach('#file_attach_${id_attach}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
+            <div class="position-relative image-hover p-2" style="width:80px" 
+                id="file_attach_${id_attach}" title="${res.name}" data-file="${res.link}"
+            >
+                <div class="position-btn" style="position: absolute; display: none; top: 0; right:0">
+                    <button class="btn btn-sm btn-warning rounded-circle" onclick="remove_chat_attach('#file_attach_${id_attach}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
 
-            <div id="img_attach_${id_attach}" width="100%" class="rounded border p-2 text-truncate shadow" style="line-break: anywhere; text-align:center;     aspect-ratio: 1;object-fit: cover;">
-                <i class="fa fa-paperclip" aria-hidden="true"></i> <br>
-                <span style="font-size:12px;">${file_name}</span>
-            </div>
-        </div>`;
+                <div id="img_attach_${id_attach}" width="100%" class="rounded border p-2 text-truncate shadow" style="line-break: anywhere; text-align:center;     aspect-ratio: 1;object-fit: cover;">
+                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br>
+                    <span style="font-size:12px;">${res.name}</span>
+                </div>
+            </div>`;
         }
 
         $('#chat_khach .chat_list_attach').append(html);
