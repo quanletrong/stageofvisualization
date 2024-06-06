@@ -266,6 +266,7 @@ class Order extends MY_Controller
         
         $thumb_dir = $_SERVER["DOCUMENT_ROOT"] . '/' .$data['FDR_ORDER'].'thumb/';
         $order_dir = $_SERVER["DOCUMENT_ROOT"] . '/' .$data['FDR_ORDER'].'/';
+        chmod($order_dir, 0777);
         if ($dh = opendir($order_dir)) {
             while (($file = readdir($dh)) !== false) {
 
