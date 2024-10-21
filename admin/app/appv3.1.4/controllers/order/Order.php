@@ -150,7 +150,7 @@ class Order extends MY_Controller
             } else {
                 $filter['tdate']   = date("Y-m-d", $tsp_tdate) . ' ' . date("H:i:s");
             }
-            $filter_time = date("d/m/Y", $tsp_fdate) .' - ' . date("d/m/Y", $tsp_tdate);
+            $filter_time = date("d/m/Y", $tsp_fdate) . ' - ' . date("d/m/Y", $tsp_tdate);
         }
 
         //validate filter_id_user
@@ -256,6 +256,7 @@ class Order extends MY_Controller
         }
 
         ## chung
+        $data['joined']           = isset($order['team'][$uid]);
         $data['order']            = $order;
         $data['role']             = $role;
         $data['curr_uid']         = $uid;
@@ -263,17 +264,17 @@ class Order extends MY_Controller
         $data['FDR_ORDER']        = FOLDER_ORDER . strtotime($order['create_time']) . '@' . $order['username'] . '/';
 
         // 🔴 QUAN TRONG (tạo thumb cho đơn hàng)
-        
-        $thumb_dir = $_SERVER["DOCUMENT_ROOT"] . '/' .$data['FDR_ORDER'].'thumb/';
-        $order_dir = $_SERVER["DOCUMENT_ROOT"] . '/' .$data['FDR_ORDER'].'/';
-        if(is_dir($order_dir)) {
+
+        $thumb_dir = $_SERVER["DOCUMENT_ROOT"] . '/' . $data['FDR_ORDER'] . 'thumb/';
+        $order_dir = $_SERVER["DOCUMENT_ROOT"] . '/' . $data['FDR_ORDER'] . '/';
+        if (is_dir($order_dir)) {
             chmod($order_dir, 777);
             if ($dh = opendir($order_dir)) {
                 while (($file = readdir($dh)) !== false) {
 
                     // If file
                     if (is_file($order_dir . $file)) {
-                        if(stringIsImage($file) && !is_file($thumb_dir . $file)) {
+                        if (stringIsImage($file) && !is_file($thumb_dir . $file)) {
                             $url_file = url_image($file, $data['FDR_ORDER']);
                             copy_image_to_thumb($url_file, $data['FDR_ORDER'] . 'thumb', THUMB_WIDTH, THUMB_HEIGHT);
                         }
@@ -283,7 +284,7 @@ class Order extends MY_Controller
             }
         }
         // 🔴 END QUAN TRONG (tạo thumb cho đơn hàng)
-        
+
         $header = [
             'title' => 'Chi tiết đơn hàng',
             'header_page_css_js' => 'order'
