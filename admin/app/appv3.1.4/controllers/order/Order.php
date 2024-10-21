@@ -266,19 +266,21 @@ class Order extends MY_Controller
         
         $thumb_dir = $_SERVER["DOCUMENT_ROOT"] . '/' .$data['FDR_ORDER'].'thumb/';
         $order_dir = $_SERVER["DOCUMENT_ROOT"] . '/' .$data['FDR_ORDER'].'/';
-        chmod($order_dir, 0777);
-        if ($dh = opendir($order_dir)) {
-            while (($file = readdir($dh)) !== false) {
+        if(is_dir($order_dir)) {
+            chmod($order_dir, 777);
+            if ($dh = opendir($order_dir)) {
+                while (($file = readdir($dh)) !== false) {
 
-                // If file
-                if (is_file($order_dir . $file)) {
-                    if(stringIsImage($file) && !is_file($thumb_dir . $file)) {
-                        $url_file = url_image($file, $data['FDR_ORDER']);
-                        copy_image_to_thumb($url_file, $data['FDR_ORDER'] . 'thumb', THUMB_WIDTH, THUMB_HEIGHT);
+                    // If file
+                    if (is_file($order_dir . $file)) {
+                        if(stringIsImage($file) && !is_file($thumb_dir . $file)) {
+                            $url_file = url_image($file, $data['FDR_ORDER']);
+                            copy_image_to_thumb($url_file, $data['FDR_ORDER'] . 'thumb', THUMB_WIDTH, THUMB_HEIGHT);
+                        }
                     }
                 }
+                closedir($dh);
             }
-            closedir($dh);
         }
         // 🔴 END QUAN TRONG (tạo thumb cho đơn hàng)
         

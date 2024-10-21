@@ -1698,3 +1698,14 @@ function deleteDirectory($dir) {
 
     return rmdir($dir);
 }
+
+function get_short_name_group($group_name) {
+
+    $words = explode(" ", $group_name);
+    $acronym = "";
+
+    foreach ($words as $w) {
+        $acronym .= mb_substr($w, 0, 1);
+    }
+    return $acronym;
+}
