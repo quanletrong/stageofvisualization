@@ -24,17 +24,25 @@
     <div class="list-group" style="overflow-x: hidden; overflow-y: auto; padding-right:5px">
         <?php foreach ($list_group['list'] as $id_group => $group) { ?>
             <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $id_group ?>">
-                <div class="div-avatar" style="width: 15%; width: 50px; height: 50px; border-radius: 50%; border: 1px solid #dedede; display: flex; align-items: center; justify-content: center; color: white; background-color: blueviolet; font-size: 1.23rem;" onclick="onclick_el_gchat('<?= $id_group ?>')">
+                <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;" onclick="onclick_el_gchat('<?= $id_group ?>')">
 
-                <?php $num_member = count($list_group['members'][$id_group]); ?>
+                    <?php $num_member = count($list_group['members'][$id_group]); ?>
+                    <?php $lst_member = $list_group['members'][$id_group]; ?>
 
-                <?php if($num_member > 1) { ?>
-                    <span><?=get_short_name_group($group['name']) ?></span>
-                <?php } else { ?>
-                    <?php $user = array_shift($list_group['members'][$id_group]); ?>
-                    <img src="<?= $user['avatar_url'] ?>" class="img-circle border avatar" alt="<?= $user['fullname'] ?>" style="width: <?= $num_member == 1 ? '100%' : '50%' ?>; object-fit: cover; aspect-ratio: 1;">
-                <?php } ?>
-                    
+                    <?php $index = 1; ?>
+                    <?php foreach ($lst_member as $user) { ?>
+
+                        <?php if ($index <= 3) { ?>
+                            <img src="<?= $user['avatar_url'] ?>" class="img-circle border avatar" alt="<?= $user['fullname'] ?>" style="width: <?= $num_member == 1 ? '100%' : '50%' ?>; object-fit: cover; aspect-ratio: 1;">
+                        <?php } ?>
+
+                        <?php if ($index == 4) { ?>
+                            <div class="border" style="border-radius: 25px;font-size: 0.8rem;background: white;width: 50%;text-align: center;color: gray;">+<?php echo ($num_member - 3) ?></div>
+                        <?php } ?>
+
+                        <?php $index++; ?>
+
+                    <?php } ?>
 
                 </div>
                 <div style="width: 85%; position: relative;">
