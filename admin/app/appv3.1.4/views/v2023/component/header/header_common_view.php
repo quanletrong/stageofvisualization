@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="skins/v2023/jquery.toast.css">
 
 <!-- all CSS -->
-<link rel="stylesheet" href="skins/v2023/all.css?v=1">
+<link rel="stylesheet" href="skins/v2023/all.css?v=2">
 
 
 
