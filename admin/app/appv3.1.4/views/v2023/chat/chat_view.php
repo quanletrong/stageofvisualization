@@ -9,8 +9,14 @@
         display: none;
     }
 
+    .item-chat {
+        transition: all 0.2s ease-in-out;
+        border-radius: 10px;
+    }
+
     .item-chat:hover {
         background-color: #f0f0f0;
+
     }
 
     .item-chat.active {
@@ -163,34 +169,37 @@
         // tạo avatar cho el gchat
         let index = 1;
         let avatar = '';
-        for (var mem_id in members) {
-            if (index <= 4) {
-                let mem = members[mem_id];
-                avatar += `<img src = "${mem.avatar_url}"
-                    class = "img-circle elevation-2 avatar"
-                    alt = "${mem.fullname}"
-                    style = "width: ${member_ids.length == 2 ? '100%' : '50%'}; object-fit: cover; aspect-ratio: 1;" >`;
-                index++;
-            }
+
+        if (Object.keys(members).length > 1) {
+            avatar = `<div style="min-width: 50px; width: 50px; aspect-ratio: 1; border-radius: 50%; border: 1px solid #dedede; display: flex; align-items: center; justify-content: center; color: white; background-color: #4caf50; font-size: 1.23rem;position: relative; overflow: hidden;">
+                <div style="width: 4ch; overflow: hidden; white-space: nowrap; padding: 0 3px; text-align: center">G</div>
+                <div style="font-size: 10px;position: absolute;bottom: 0;width: 100%;text-align: center;background: rgba(128, 128, 128, 0.7);">TEAM</div>
+            </div>`
+        } else {
+            const [mem_id, mem] = Object.entries(members)[0];
+            avatar =
+                `<div style="min-width: 50px; width: 50px; aspect-ratio: 1; border-radius: 50%; border: 1px solid #dedede; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.23rem;">
+                <img src="${mem.avatar_url}" class="img-circle avatar" alt="${mem.fullname}" style="object-fit: cover; aspect-ratio: 1; width: 100%">
+            </div>`;
         }
         // end tạo avatar
 
         // tạo element gchat cột bên trái
         let html_new =
             `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="${id_gchat}">
-                <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;" onclick="onclick_el_gchat('${id_gchat}')">
+                <div class="div-avatar" onclick="onclick_el_gchat('${id_gchat}')">
                     ${avatar}
                 </div>
-                <div style="width: 85%; position: relative;">
-                    <div style="width: 100%; font-weight: 500;" class="fullname text-truncate" onclick="onclick_el_gchat('${id_gchat}')">
-                        ${name_gchat}
-                    </div>
-                    <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;" onclick="onclick_el_gchat('${id_gchat}')">
-                        <div class="text-truncate content" style="width: 80%; font-weight: 600;">${content}</div>
-                        <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="${create_time}">&nbsp;</div>
+                <div style="flex: 1 1 0%; position: relative;">
+                    <div style="font-weight: 500; display: grid;grid-template-columns: 1fr" onclick="onclick_el_gchat('${id_gchat}')">
+                        <span class="fullname text-truncate">${name_gchat}</span>
+                    </div>                    
+                    <div style="display: grid;grid-template-columns: 4fr 1fr;gap: 15px;" onclick="onclick_el_gchat('${id_gchat}')">
+                        <div class="text-truncate content" style="font-weight: 600;">${content}</div>
+                        <div class="text-truncate time" style="font-weight: 300; font-size: 0.75rem; text-align: right;" title="${create_time}">&nbsp;</div>
                     </div>
 
-                    <div style="position: absolute;right: 0px;top: 11px;color: red; display: none; background-color: #f0f0f0;" class="option">
+                    <div style="position: absolute;right: 0px;top: 0px; display: none;" class="option">
                         <div class="dropdown">
                             <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding: 0 10px;">
                                 <span class="text-secondary">

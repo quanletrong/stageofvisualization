@@ -17,39 +17,37 @@
         </div>
 
         <div class="mb-2">
-            <input type="text" placeholder="Tìm kiếm thành viên" class="form-control">
+            <input type="text" placeholder="Tìm kiếm đoạn chat" class="form-control" id="searchInput">
         </div>
     </div>
 
     <div class="list-group" style="overflow-x: hidden; overflow-y: auto; padding-right:5px">
         <?php foreach ($list_group['list'] as $id_group => $group) { ?>
             <div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-chat" id="<?= $id_group ?>">
-                <div class="div-avatar" style="width: 15%; width: 50px; height:50px; display: flex; flex-wrap: wrap; align-content: center;" onclick="onclick_el_gchat('<?= $id_group ?>')">
 
-                    <?php $num_member = count($list_group['members'][$id_group]); ?>
-                    <?php $lst_member = $list_group['members'][$id_group]; ?>
+                <?php $num_member = count($list_group['members'][$id_group]); ?>
 
-                    <?php $index = 1; ?>
-                    <?php foreach ($lst_member as $user) { ?>
+                <div class="div-avatar" onclick="onclick_el_gchat('<?= $id_group ?>')">
 
-                        <?php if ($index <= 3) { ?>
-                            <img src="<?= $user['avatar_url'] ?>" class="img-circle border avatar" alt="<?= $user['fullname'] ?>" style="width: <?= $num_member == 1 ? '100%' : '50%' ?>; object-fit: cover; aspect-ratio: 1;">
-                        <?php } ?>
-
-                        <?php if ($index == 4) { ?>
-                            <div class="border" style="border-radius: 25px;font-size: 0.8rem;background: white;width: 50%;text-align: center;color: gray;">+<?php echo ($num_member - 3) ?></div>
-                        <?php } ?>
-
-                        <?php $index++; ?>
-
+                    <?php if ($num_member > 1) { ?>
+                        <div style="min-width: 50px; width: 50px; aspect-ratio: 1; border-radius: 50%; border: 1px solid #dedede; display: flex; align-items: center; justify-content: center; color: white; background-color: #4caf50; font-size: 1.23rem; position: relative; overflow: hidden;">
+                            <div style="width: 4ch; overflow: hidden; white-space: nowrap; padding: 0 3px; text-align: center"><?= get_short_name_group($group['name']) ?></div>
+                            <div style="font-size: 10px;position: absolute;bottom: 0;width: 100%;text-align: center;background: rgba(128, 128, 128, 0.7);">TEAM</div>
+                        </div>
+                    <?php } else { ?>
+                        <?php $user = array_shift($list_group['members'][$id_group]); ?>
+                        <div style="min-width: 50px; width: 50px; aspect-ratio: 1; border-radius: 50%; border: 1px solid #dedede; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.23rem;">
+                            <img src="<?= $user['avatar_url'] ?>" class="img-circle avatar" alt="<?= $user['fullname'] ?>" style="object-fit: cover; aspect-ratio: 1; width: 100%;">
+                        </div>
                     <?php } ?>
 
+
                 </div>
-                <div style="width: 85%; position: relative;">
-                    <div style="width: 80%; font-weight: 500;" class="fullname text-truncate" onclick="onclick_el_gchat('<?= $id_group ?>')">
-                        <?= $group['name'] ?>
+                <div style="flex: 1 1 0%; position: relative;">
+                    <div style="font-weight: 500; display: grid;grid-template-columns: 1fr" onclick="onclick_el_gchat('<?= $id_group ?>')">
+                        <span class="fullname text-truncate"><?= $group['name'] ?></span>
                     </div>
-                    <div style="display: flex;justify-content: space-between;gap: 15px;width: 100%;" onclick="onclick_el_gchat('<?= $id_group ?>')">
+                    <div style="display: grid;grid-template-columns: 4fr 1fr;gap: 15px;" onclick="onclick_el_gchat('<?= $id_group ?>')">
                         <?php
                         $da_xem = '300';
                         $msg_newest = [];
@@ -59,13 +57,15 @@
                         }
                         ?>
                         <?php if (count($msg_newest)) { ?>
-                            <div class="text-truncate content" style="width: 80%; font-weight: <?= $da_xem ?>;"><?= $msg_newest['content'] !== '' ? $msg_newest['content'] : '<i>File phương tiện</i>' ?></div>
-                            <div class="time" style="width: 20%; font-weight: 300; font-size: 0.75rem; text-align: right;" title="<?= $msg_newest['create_time'] ?>">&nbsp;</div>
+                            <div class="text-truncate content" style="font-weight: <?= $da_xem ?>;">
+                                <?= $msg_newest['content'] !== '' ? $msg_newest['content'] : '<i>File phương tiện</i>' ?>
+                            </div>
+                            <div class="text-truncate time" style="font-weight: 300; font-size: 0.75rem; text-align: right;" title="<?= $msg_newest['create_time'] ?>">&nbsp;</div>
                         <?php } ?>
                     </div>
 
 
-                    <div style="position: absolute;right: 0px;top: 11px;color: red; display: none; background-color: #f0f0f0;" class="option">
+                    <div style="position: absolute;right: 0px;top: 0px; display: none;" class="option">
                         <div class="dropdown dropleft">
                             <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="padding: 0 20px;">
                                 <span class="text-secondary">
@@ -126,4 +126,15 @@
             $('#chat-left .list-group').css('height', new_height + 'px');
         }
     })
+
+    // Xử lý tìm kiếm đoạn chat
+    document.getElementById('searchInput').addEventListener('input', function() {
+        var searchValue = this.value.toLowerCase();
+        var items = document.querySelectorAll('.list-group > .item-chat');
+
+        items.forEach(function(item) {
+            var fullname = item.querySelector('span.fullname').textContent.toLowerCase();
+            item.style.display = fullname.includes(searchValue) ? 'flex' : 'none';
+        });
+    });
 </script>
