@@ -485,7 +485,7 @@
 
         $(btn_upload).html(`99 %`);
         $(btn_upload).prop('disabled', true)
-        let target = $(btn).data('target');
+        let target = $(btn_upload).data('target');
 
         let id_rework = $(target).data('id-rework');
         $.ajax({
