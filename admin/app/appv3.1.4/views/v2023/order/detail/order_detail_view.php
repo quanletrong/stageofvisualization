@@ -62,18 +62,15 @@
                 </div>
             </div>
 
-            <!-- EDITER, SALE, ADMIN hoặc QC đã tham gia đơn thì hiện box lịch sử -->
-            <?php if ($role != QC || ($role == QC && $joined)) { ?>
-                <div id="small_lich_su" class="">
-                    <div style="position: relative;">
-                        <button class="btn btn-sm btn-primary" onclick="open_close_lich_su(); ajax_log_list(<?= $order['id_order'] ?>)" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
-                            <i class="fas fa-history"></i> LỊCH SỬ
-                        </button>
+            <div id="small_lich_su" class="">
+                <div style="position: relative;">
+                    <button class="btn btn-sm btn-primary" onclick="open_close_lich_su(); ajax_log_list(<?= $order['id_order'] ?>)" data-bs-toggle="tooltip" data-bs-placement="top" title="Mở">
+                        <i class="fas fa-history"></i> LỊCH SỬ
+                    </button>
 
-                        <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white;"></div>
-                    </div>
+                    <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white;"></div>
                 </div>
-            <?php } ?>
+            </div>
 
 
         </div>
@@ -102,12 +99,9 @@
 
 
     <!-- box lịch sử -->
-    <!-- EDITER, SALE, ADMIN hoặc QC đã tham gia đơn thì hiện box lịch sử -->
-    <?php if ($role != QC || ($role == QC && $joined)) { ?>
-        <div>
-            <?php $this->load->view(TEMPLATE_FOLDER . 'order/detail/_history_view.php'); ?>
-        </div>
-    <?php } ?>
+    <div>
+        <?php $this->load->view(TEMPLATE_FOLDER . 'order/detail/_history_view.php'); ?>
+    </div>
 
     <!-- modal -->
     <!-- modal full image -->
