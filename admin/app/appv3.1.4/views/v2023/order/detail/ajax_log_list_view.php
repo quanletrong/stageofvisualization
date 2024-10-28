@@ -1,10 +1,11 @@
 <div style="display: flex; justify-content: center; margin-top: 10px;">
     <select onchange="filter_history(this.value)" class="form-control w-50">
         <option value="">Tất cả lịch sử</option>
-        <option value="Sửa trạng thái đơn hàng">Sửa trạng thái đơn hàng</option>
-        <option value="Sửa Working QC IN">Sửa Working QC IN</option>
-        <option value="Sửa Working QC OUT">Sửa Working QC OUT</option>
-        <option value="Sửa thời gian làm đơn hàng">Sửa thời gian làm đơn hàng</option>
+        <option value="<?=LOG[LOG_STATUS]?>"><?=LOG[LOG_STATUS]?></option>
+        <option value="<?=LOG[LOG_QC_IN_ADD]?>"><?=LOG[LOG_QC_IN_ADD]?></option>
+        <option value="<?=LOG[LOG_QC_OUT_ADD]?>"><?=LOG[LOG_QC_OUT_ADD]?></option>
+        <option value="<?=LOG[LOG_TIME_CUSTOM]?>"><?=LOG[LOG_TIME_CUSTOM]?></option>
+        <option value="<?=LOG[LOG_JOIN_ORDER]?>"><?=LOG[LOG_JOIN_ORDER]?></option>
     </select>
 </div>
 

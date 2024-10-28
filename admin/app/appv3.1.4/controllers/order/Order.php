@@ -1019,6 +1019,14 @@ class Order extends MY_Controller
         // chuyển trạng thái đơn về đang xử lý sau khi add user xong
         $this->Order_model->update_status_order($id_order, ORDER_PROGRESS);
 
+
+        //LOG (Yên câu cầu)
+        $log['type']      = LOG_JOIN_ORDER;
+        $log['id_order']  = $order['id_order'];
+        $log['old']       = '';
+        $log['new']       = $cur_uname;
+        $this->Log_model->log_add($log, $order);
+
         resSuccess('Join thành công');
     }
 
