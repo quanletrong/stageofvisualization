@@ -74,6 +74,8 @@ class Order extends MY_Controller
         $filter_tdate         = $this->input->get('filter_tdate');
         $filter_id_user       = $this->input->get('filter_id_user');
         $filter_custom        = $this->input->get('filter_custom');
+        $filter_page          = $this->input->get('filter_page');
+        $filter_row           = $this->input->get('filter_row');
 
         ### DU LIEU MAC DINH
         if ($role == ADMIN || $role == SALE) {
@@ -159,6 +161,10 @@ class Order extends MY_Controller
             $filter_custom = '>=';
         }
 
+        //validate page
+        $filter_page = is_numeric($filter_page) && $filter_page >= 1 ? $filter_page : 1;
+        $filter_row = is_numeric($filter_row) && $filter_row >= 1 ? $filter_row : 30;
+
         # END FORM FILTER
 
         ### CALL DATABASE
@@ -170,12 +176,18 @@ class Order extends MY_Controller
         $filter['order_type']   = implode(',', $filter_order_type);
         $filter['id_user']      = implode(',', $filter_id_user);
         $filter['custom']       = $filter_custom;
+        $filter['limit']        = $filter_row;
+        $filter['offset']       = ($filter_page - 1) * $filter_row;
 
-
-        $list_order = $this->Order_model->get_list_v2($filter, $role);       //lấy tất cả đơn
+        $list_order = $this->Order_model->get_list_v2($filter, $role);           //lấy theo page
+        $filter_all = $filter;
+        unset($filter_all['limit']);
+        unset($filter_all['offset']);
+        $list_order_all = $this->Order_model->get_list_v2($filter_all, $role);       //lấy tất cả đơn
 
         // sô liệu total
-        $box = $this->Order_model->box_count($list_order);
+        $box = $this->Order_model->box_count($list_order_all);
+        $box['total_order'] = count($list_order_all);
 
         // $ed_type dùng để làm tính total image_avaiable
         $ed_type = $role == EDITOR ? $uinfo['type'] : ED_NOI_BO . "," . ED_CTV;
@@ -201,6 +213,8 @@ class Order extends MY_Controller
         $data['filter_time']          = $filter_time;
         $data['filter_id_user']       = $filter_id_user;
         $data['filter_custom']        = $filter_custom;
+        $data['filter_page']          = $filter_page;
+        $data['filter_row']           = $filter_row;
 
         $data['all_service']    = $all_service;
         $data['all_status']     = $all_status;
