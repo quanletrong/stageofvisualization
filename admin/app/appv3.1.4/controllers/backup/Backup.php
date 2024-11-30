@@ -21,10 +21,10 @@ class Backup extends MY_Controller
         foreach ($discuss_list as $row) {
 
             $filename = $row['filename'];
-            $FDR_ORDER = $_SERVER["DOCUMENT_ROOT"] . '/' . FOLDER_ORDER . strtotime($row['order_create_time']) . '@' . $row['order_create_by'];
-            $THUMB_DIR = $FDR_ORDER . '/thumb';
+            $FDR_ORDER = $_SERVER["DOCUMENT_ROOT"] . '/' . FOLDER_ORDER . strtotime($row['order_create_time']) . '@' . $row['order_create_by'].'/';
+            $THUMB_DIR = $FDR_ORDER . 'thumb';
 
-            if (is_file($FDR_ORDER . '/' . $filename)) {
+            if (is_file($FDR_ORDER . $filename)) {
 
                 // tạo thumb trước khi xóa, điều kiện file là ảnh
                 if (stringIsImage($filename) && !is_file($THUMB_DIR . '/' . $filename)) {
@@ -35,7 +35,7 @@ class Backup extends MY_Controller
                 }
 
                 // xóa file
-                unlink($FDR_ORDER . '/' . $filename);
+                unlink($FDR_ORDER . $filename);
             }
 
             $rm[] = $row['id_discuss'];
