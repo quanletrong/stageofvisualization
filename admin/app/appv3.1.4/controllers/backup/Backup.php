@@ -35,7 +35,7 @@ class Backup extends MY_Controller
                 }
 
                 // xóa file
-                unlink($row['dir']);
+                unlink($FDR_ORDER . '/' . $filename);
             }
 
             $rm[] = $row['id_discuss'];
