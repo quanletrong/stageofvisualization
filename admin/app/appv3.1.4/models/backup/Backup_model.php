@@ -49,7 +49,7 @@ class Backup_model extends CI_Model
         $datatime = date('Y-m-d H:s:i');
 
         $placeholders = implode(',', array_fill(0, count($list_id), '?'));
-        $sql = "UPDATE tbl_bak_order SET bak_date_time = $datatime WHERE id_discuss IN ($placeholders)";
+        $sql = "UPDATE tbl_bak_order SET bak_date_time = '$datatime' WHERE id_discuss IN ($placeholders)";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
