@@ -31,7 +31,7 @@ class Backup extends MY_Controller
 
                     $url_file = url_image($filename, $FDR_ORDER);
 
-                    copy_image_to_thumb($url_file, $THUMB_DIR, THUMB_WIDTH, THUMB_HEIGHT);
+                    copy_image_to_thumb($url_file, $FDR_ORDER . 'thumb', THUMB_WIDTH, THUMB_HEIGHT);
                 }
 
                 // xóa file
