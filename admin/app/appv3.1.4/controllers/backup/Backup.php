@@ -22,12 +22,12 @@ class Backup extends MY_Controller
 
             $filename = $row['filename'];
             $FDR_ORDER = $_SERVER["DOCUMENT_ROOT"] . '/' . FOLDER_ORDER . strtotime($row['order_create_time']) . '@' . $row['order_create_by'].'/';
-            $THUMB_DIR = $FDR_ORDER . 'thumb';
+            $THUMB_DIR = $FDR_ORDER . 'thumb/';
 
             if (is_file($FDR_ORDER . $filename)) {
 
                 // tạo thumb trước khi xóa, điều kiện file là ảnh
-                if (stringIsImage($filename) && !is_file($THUMB_DIR . '/' . $filename)) {
+                if (stringIsImage($filename) && !is_file($THUMB_DIR . $filename)) {
 
                     $url_file = url_image($filename, $FDR_ORDER);
 
