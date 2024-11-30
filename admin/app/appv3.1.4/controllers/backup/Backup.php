@@ -12,6 +12,8 @@ class Backup extends MY_Controller
 
     function rm_discuss()
     {
+        set_time_limit(3600);
+
         $discuss_list  = $this->Backup_model->discuss_list();
 
         // Lưu danh sách discuss đã xóa vào đây.
