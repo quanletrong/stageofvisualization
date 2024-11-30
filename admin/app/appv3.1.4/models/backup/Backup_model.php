@@ -19,9 +19,7 @@ class Backup_model extends CI_Model
         $sql =
             "SELECT * FROM tbl_bak_order 
             WHERE file_type = $FILE_DISCUSS 
-                AND ISNULL(bak_date_time) 
-                AND MONTH(order_create_time) = 3 
-                AND YEAR(order_create_time) = YEAR(CURDATE());";
+                AND ISNULL(bak_date_time);";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
