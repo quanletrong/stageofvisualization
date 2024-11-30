@@ -21,7 +21,6 @@ class Backup_model extends CI_Model
             WHERE file_type = $FILE_DISCUSS 
                 AND ISNULL(bak_date_time) 
                 AND MONTH(order_create_time) = 3 
-                AND id_order IN (144, 145)
                 AND YEAR(order_create_time) = YEAR(CURDATE());";
 
         $stmt = $iconn->prepare($sql);
