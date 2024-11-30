@@ -24,8 +24,6 @@ class Backup extends MY_Controller
             $FDR_ORDER = $_SERVER["DOCUMENT_ROOT"] . '/' . FOLDER_ORDER . strtotime($row['order_create_time']) . '@' . $row['order_create_by'];
             $THUMB_DIR = $FDR_ORDER . '/thumb';
 
-            var_dump($FDR_ORDER);die;
-
             if (is_file($FDR_ORDER . '/' . $filename)) {
 
                 // tạo thumb trước khi xóa, điều kiện file là ảnh
