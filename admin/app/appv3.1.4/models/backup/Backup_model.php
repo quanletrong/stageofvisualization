@@ -68,12 +68,7 @@ class Backup_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
 
-        $sql =
-            "SELECT * FROM tbl_bak_order 
-            WHERE 
-            1=1 
-            AND MONTH(order_create_time) = 3 AND YEAR(order_create_time) = YEAR(CURDATE())
-            AND ISNULL(bak_date_time);";
+        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(bak_date_time);";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -91,5 +86,4 @@ class Backup_model extends CI_Model
         $stmt->closeCursor();
         return $data;
     }
-
 }
