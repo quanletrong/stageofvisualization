@@ -30,7 +30,7 @@ NOTE: chuyển sang /admin/backup/order_insert
 
 ### 3. unlink() danh sách
 
-## 📌 Task 3: unlink() file rác trong đơn.
+## 📌 ✅ Task 3: unlink() file rác trong đơn.
 
 ```
 - Tần suất: 02:00 mỗi ngày

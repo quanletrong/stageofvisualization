@@ -10,9 +10,9 @@ class Backup extends MY_Controller
         $this->load->model('backup/Backup_model');
     }
 
-    function rm_discuss()
+    function order_discuss_unlink()
     {
-        require_once('rm_discuss.php');
+        require_once('order_discuss_unlink.php');
     }
 
     function order_trash_unlink() {

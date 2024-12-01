@@ -9,7 +9,7 @@ class Backup_model extends CI_Model
         parent::__construct();
     }
 
-    function discuss_list()
+    function order_discuss_file_list()
     {
 
         $data = [];
@@ -38,7 +38,7 @@ class Backup_model extends CI_Model
         return $data;
     }
 
-    function discuss_update_bak_date_time($list_id)
+    function order_discuss_file__bak_date_time__update($list_id)
     {
         $exc = false;
         $iconn = $this->db->conn_id;
