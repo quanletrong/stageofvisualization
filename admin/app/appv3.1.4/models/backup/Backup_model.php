@@ -61,4 +61,35 @@ class Backup_model extends CI_Model
 
         return $exc;
     }
+
+    function order_file_list()
+    {
+
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql =
+            "SELECT * FROM tbl_bak_order 
+            WHERE 
+            1=1 
+            AND MONTH(order_create_time) = 3 AND YEAR(order_create_time) = YEAR(CURDATE())
+            AND ISNULL(bak_date_time);";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
 }
