@@ -10,12 +10,19 @@ class Backup extends MY_Controller
         $this->load->model('backup/Backup_model');
     }
 
+    function order_insert()
+    {
+        require_once('order_job_insert.php');
+        require_once('order_rework_insert.php');
+        require_once('order_discuss_insert.php');
+    }
     function order_discuss_unlink()
     {
         require_once('order_discuss_unlink.php');
     }
 
-    function order_trash_unlink() {
+    function order_trash_unlink()
+    {
         require_once('order_trash_unlink.php');
     }
 }

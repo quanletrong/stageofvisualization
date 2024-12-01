@@ -3,7 +3,7 @@
 // 1710411380@SALE_CHINH
 
 // Lấy tất cả file bak_date_time = NULL
-$order_file_list  = $this->Backup_model->order_file_list();
+$order_file_list  = $this->Backup_model->bak_order_file_list();
 
 $order_file_group = []; // Lưu danh sách file của từng order
 

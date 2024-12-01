@@ -2,8 +2,7 @@
 
 ```
 - Tần suất: 00:00 mỗi ngày
-- Endpoint: /cronjob/backup-order-file/get_files.php
-NOTE: chuyển sang /admin/backup/order_insert
+- Endpoint: chuyển sang /admin/backup/order_insert
 - Điều kiện 1: đơn hoàn thành. Xét trường `status` = 9
 - Điều kiện 1: đơn hoàn thành trước hiện tại 3 tháng. Xét trường `done_qc_time`
 ```
@@ -13,12 +12,11 @@ NOTE: chuyển sang /admin/backup/order_insert
   - insert_bak_order_rework.php
   - insert_bak_order_discuss.php
 
-## 📌 Task 2: unlink() file discuss của đơn.
+## 📌✅ Task 2: unlink() file discuss của đơn.
 
 ```
 - Tần suất: 01:00 mỗi ngày
-- Endpoint: /cronjob/backup-order-file/get_files.php
-  Endpoint Mới: /admin/backup/order_discuss_unlink
+- Endpoint Mới: /admin/backup/order_discuss_unlink
 ```
 
 ### 1. Tạo danh sách file discuss cần xóa theo điều kiện:
