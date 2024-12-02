@@ -156,7 +156,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="d-flex" style="flex-wrap: wrap; gap:15px;">
+                    <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:15px;">
                         <div style="display: flex; gap:10px; align-items: center;">
                             <div style="color: gray;">Số đơn hàng/trang</div>
                             <select class="form-control" style="width: fit-content;" onchange="reload_page_by_row(this.value)">
