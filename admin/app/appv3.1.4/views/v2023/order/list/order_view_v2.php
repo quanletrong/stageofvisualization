@@ -148,9 +148,35 @@
 
             <!-- /.row -->
 
-            <nav aria-label="Page navigation" style="margin-bottom: 10px;">
-                <ul class="pagination" id="pagination"></ul>
-            </nav>
+            <!-- PAGING -->
+            <div class="row py-3">
+                <div class="col-md-6">
+                    <div style="color: gray;">
+                        Số đơn hàng đã tìm thấy <b><?php echo $total_order ?></b>.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex" style="flex-wrap: wrap; gap:15px;">
+                        <div style="display: flex; gap:10px; align-items: center;">
+                            <div style="color: gray;">Số đơn hàng/trang</div>
+                            <select class="form-control" style="width: fit-content;" onchange="reload_page_by_row(this.value)">
+                                <option value="30" <?php echo $filter_row == 30 ? 'selected' : '' ?>>30</option>
+                                <option value="50" <?php echo $filter_row == 50 ? 'selected' : '' ?>>50</option>
+                                <option value="100" <?php echo $filter_row == 100 ? 'selected' : '' ?>>100</option>
+                                <option value="200" <?php echo $filter_row == 200 ? 'selected' : '' ?>>200</option>
+                                <option value="300" <?php echo $filter_row == 300 ? 'selected' : '' ?>>300</option>
+                            </select>
+                        </div>
+
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination" id="pagination" style="margin-bottom: 0;"></ul>
+                        </nav>
+
+                    </div>
+                </div>
+            </div>
+            <!-- END PAGING -->
+
         </div>
         <!-- /.container-fluid -->
     </section>
@@ -166,13 +192,8 @@
 <script>
     // sau 5 phut sẽ load lại trang
     setTimeout(() => {
-        // Lấy URL hiện tại
         const currentUrl = new URL(window.location.href);
-
-        // Cập nhật tham số filter_page
         currentUrl.searchParams.set('filter_page', 1);
-
-        // Reload trang với URL mới
         window.location.href = currentUrl.href;
     }, 1000 * 60 * 5);
 
@@ -208,13 +229,8 @@
             last: '<i class="fas fa-angle-double-right"></i>', // Icon Last
             initiateStartPageClick: false, // Không tự động nhảy đến trang đầu khi khởi tạo
             onPageClick: function(event, page) {
-                // Lấy URL hiện tại
                 const currentUrl = new URL(window.location.href);
-
-                // Cập nhật tham số filter_page
                 currentUrl.searchParams.set('filter_page', page);
-
-                // Reload trang với URL mới
                 window.location.href = currentUrl.href;
             }
         });
@@ -246,6 +262,13 @@
 
         })
     });
+
+    function reload_page_by_row(row) {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('filter_row', row);
+        currentUrl.searchParams.set('filter_page', 1);
+        window.location.href = currentUrl.href;
+    }
 
     function drop_change_don_ed_type(ed_type, id_order) {
         $('#drop_change_don_ed_type_' + id_order).html('<i class="fas fa-sync fa-spin "></i>');

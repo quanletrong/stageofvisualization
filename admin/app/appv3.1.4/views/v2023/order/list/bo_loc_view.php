@@ -28,18 +28,12 @@
             </div>
             <!-- END STATUS -->
 
-            <!-- ngày tạo -->
+            <!-- TÌM ORDER CODE -->
             <div class="col-md-3 mb-2">
-                <small>Date - Ngày tạo đơn hàng</small><br>
-                <div class="input-group">
-                    <input type="text" class="form-control daterange-btn" placeholder="Nhập khoảng ngày" id="create_time" value="<?= $filter_time ?>" autocomplete="off">
-                    <input type="hidden" name="filter_fdate" value="<?= $filter_fdate ?>">
-                    <input type="hidden" name="filter_tdate" value="<?= $filter_tdate ?>">
-                    <div class="input-group-append daterange-btn" id="">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
+                <small>JID - Code đơn hàng</small><br>
+                <input type="text" class="form-control" placeholder="Nhập Code đơn hàng" value="<?= htmlentities($filter_code_order) ?>" name="filter_code_order" autocomplete="off">
             </div>
+            <!-- END TÌM ORDER CODE -->
 
             <!-- search -->
             <div class="col-md-4 mb-2 ">
@@ -73,12 +67,20 @@
         </div>
 
         <div class="row" id="filter-expand" style="display: none;">
-            <!-- TÌM ORDER CODE -->
+
+            <!-- LỌC THEO NGÀY -->
             <div class="col-md-4 mb-2">
-                <small>JID - Code đơn hàng</small><br>
-                <input type="text" class="form-control" placeholder="Nhập Code đơn hàng" value="<?= htmlentities($filter_code_order) ?>" name="filter_code_order" autocomplete="off">
+                <small>Date - Ngày tạo đơn hàng</small><br>
+                <div class="input-group">
+                    <input type="text" class="form-control daterange-btn" placeholder="Nhập khoảng ngày" id="create_time" value="<?= $filter_time ?>" autocomplete="off">
+                    <input type="hidden" name="filter_fdate" value="<?= $filter_fdate ?>">
+                    <input type="hidden" name="filter_tdate" value="<?= $filter_tdate ?>">
+                    <div class="input-group-append daterange-btn" id="">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
             </div>
-            <!-- END TÌM ORDER CODE -->
+            <!-- END LỌC THEO NGÀY -->
 
             <!-- TÌM USER CODE -->
             <div class="col-md-4 mb-2">
