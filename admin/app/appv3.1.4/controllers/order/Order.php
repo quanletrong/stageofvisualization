@@ -215,6 +215,7 @@ class Order extends MY_Controller
         $data['filter_custom']        = $filter_custom;
         $data['filter_page']          = $filter_page;
         $data['filter_row']           = $filter_row;
+        $data['total_page']           = ceil(count($list_order_all)/$filter_row);
 
         $data['all_service']    = $all_service;
         $data['all_status']     = $all_status;

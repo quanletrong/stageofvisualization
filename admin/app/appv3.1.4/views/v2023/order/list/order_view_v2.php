@@ -147,6 +147,10 @@
             </table>
 
             <!-- /.row -->
+
+            <nav aria-label="Page navigation" style="margin-bottom: 10px;">
+                <ul class="pagination" id="pagination"></ul>
+            </nav>
         </div>
         <!-- /.container-fluid -->
     </section>
@@ -162,7 +166,14 @@
 <script>
     // sau 5 phut sẽ load lại trang
     setTimeout(() => {
-        window.location.reload();
+        // Lấy URL hiện tại
+        const currentUrl = new URL(window.location.href);
+
+        // Cập nhật tham số filter_page
+        currentUrl.searchParams.set('filter_page', 1);
+
+        // Reload trang với URL mới
+        window.location.href = currentUrl.href;
     }, 1000 * 60 * 5);
 
     $(function() {
@@ -175,7 +186,9 @@
             "responsive": true,
             "autoWidth": false,
             "searching": false,
+            "paging": false,
             "ordering": true,
+            "info": false, // Tắt thông tin
             "order": []
         })
         $('#example1_paginate').parent().prepend($('#example1_length'));
@@ -184,6 +197,27 @@
             'align-items': 'center',
             'justify-content': 'space-between'
         })
+
+        $('#pagination').twbsPagination({
+            totalPages: <?php echo $total_page ?>,
+            startPage: <?php echo $filter_page ?>, // Trang bắt đầu
+            visiblePages: 5,
+            first: '<i class="fas fa-angle-double-left"></i>', // Icon First
+            prev: '<i class="fas fa-angle-left"></i>', // Icon Previous
+            next: '<i class="fas fa-angle-right"></i>', // Icon Next
+            last: '<i class="fas fa-angle-double-right"></i>', // Icon Last
+            initiateStartPageClick: false, // Không tự động nhảy đến trang đầu khi khởi tạo
+            onPageClick: function(event, page) {
+                // Lấy URL hiện tại
+                const currentUrl = new URL(window.location.href);
+
+                // Cập nhật tham số filter_page
+                currentUrl.searchParams.set('filter_page', page);
+
+                // Reload trang với URL mới
+                window.location.href = currentUrl.href;
+            }
+        });
 
         $('.checkox_order').on('change', function() {
             let total = $('.checkox_order').length;
