@@ -25,4 +25,9 @@ class Backup extends MY_Controller
     {
         require_once('order_trash_unlink.php');
     }
+
+    function order_list_to_local()
+    {
+        require_once('order_list_to_local.php');
+    }
 }

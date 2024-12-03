@@ -37,6 +37,13 @@ foreach ($order_rework_file_list as $row) {
 
 // Kiểm tra mảng dữ liệu insert
 if (count($insert_values)) {
-  $str_values = implode(',', $insert_values);
-  $this->Backup_model->bak_order_rework_file_insert($str_values);
+
+  // Mỗi lần insert 1000 mảng, để tránh lỗi sql vượt quá số ký tự
+  $insert_values_chunk = array_chunk($insert_values, 1000);
+
+  // Duyệt qua danh sách mảng chunk để insert
+  foreach ($insert_values_chunk as $values) {
+    $str_values = implode(',', $values);
+    $this->Backup_model->bak_order_rework_file_insert($str_values);
+  }
 }

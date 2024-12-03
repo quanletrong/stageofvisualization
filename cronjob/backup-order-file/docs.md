@@ -1,4 +1,4 @@
-## 📌 Task 1: INSERT những đơn đủ điều kiện vào bảng `tbl_bak_order`
+## 📌 ✅ Task 1: INSERT những đơn đủ điều kiện vào bảng `tbl_bak_order`
 
 ```
 - Tần suất: 00:00 mỗi ngày
@@ -12,7 +12,7 @@
   - insert_bak_order_rework.php
   - insert_bak_order_discuss.php
 
-## 📌✅ Task 2: unlink() file discuss của đơn.
+## 📌 ✅ Task 2: unlink() file discuss của đơn.
 
 ```
 - Tần suất: 01:00 mỗi ngày
@@ -62,7 +62,7 @@
 
 1. api trả về danh sách file cần backup cho local.
 
-- Endpoint: /admin/backup/order_file_list
+- Endpoint: /admin/backup/order_list
 - Điều kiện 1 trường `file_type` = main, ref, complete, rework
 - Điều kiện 2 trường `bak_date_time` = null
 

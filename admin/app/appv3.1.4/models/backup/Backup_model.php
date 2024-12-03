@@ -256,4 +256,33 @@ class Backup_model extends CI_Model
         $stmt->closeCursor();
         return $data;
     }
+
+    // TODO: ❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌
+    function bak_order_list_to_local()
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $file_main = FILE_MAIN;
+        $file_ref = FILE_REF;
+        $file_ref = FILE_REF;
+
+        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(bak_date_time) AND file_type IN ();";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
 }
