@@ -2,9 +2,10 @@
 set_time_limit(3600);
 
 $bak_order_discuss_file_list  = $this->Backup_model->bak_order_discuss_file_list();
+var_dump($bak_order_discuss_file_list);die;
 
 // Lưu danh sách discuss đã xóa vào đây.
-$rm = [];
+$list_ids = [];
 
 // Duyệt qua toàn bộ discuss để xóa
 foreach ($bak_order_discuss_file_list as $row) {
@@ -28,10 +29,10 @@ foreach ($bak_order_discuss_file_list as $row) {
     unlink($ORDER_DIR . $filename);
   }
 
-  $rm[] = $row['id_discuss'];
+  $list_ids[] = $row['id'];
 }
 
 // cập nhật thời gian xóa
-if (count($rm)) {
-  $this->Backup_model->bak_order_discuss_file__bak_date_time__update($rm);
+if (count($list_ids)) {
+  $this->Backup_model->bak_order__unlink_time__update($list_ids);
 }

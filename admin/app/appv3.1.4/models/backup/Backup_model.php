@@ -9,8 +9,8 @@ class Backup_model extends CI_Model
         parent::__construct();
     }
 
-    // TODO: moi tạo model
-    function order_job_file_list($status_order)
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
+    function origin_order_job_file_list($status_order)
     {
         $data = [];
         $iconn = $this->db->conn_id;
@@ -45,8 +45,8 @@ class Backup_model extends CI_Model
         return $data;
     }
 
-    // TODO: moi tạo model
-    function order_rework_file_list($status_order)
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
+    function origin_order_rework_file_list($status_order)
     {
 
         $data = [];
@@ -80,8 +80,8 @@ class Backup_model extends CI_Model
         return $data;
     }
 
-    // ✅
-    function order_discuss_file_list($status_order)
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
+    function origin_order_discuss_file_list($status_order)
     {
         $data = [];
         $iconn = $this->db->conn_id;
@@ -114,7 +114,7 @@ class Backup_model extends CI_Model
         return $data;
     }
 
-    // ✅
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
     function bak_order_job_file_insert($str_values)
     {
         $exc = false;
@@ -135,7 +135,7 @@ class Backup_model extends CI_Model
         return $exc;
     }
 
-    // TODO: moi tạo model
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
     function bak_order_rework_file_insert($str_values)
     {
         $exc = false;
@@ -155,7 +155,8 @@ class Backup_model extends CI_Model
         $stmt->closeCursor();
         return $exc;
     }
-    // ✅
+
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
     function bak_order_discuss_file_insert($str_values)
     {
         $exc = false;
@@ -176,22 +177,17 @@ class Backup_model extends CI_Model
         return $exc;
     }
 
-    // ✅
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
     function bak_order_discuss_file_list()
     {
-
         $data = [];
         $iconn = $this->db->conn_id;
 
-        $FILE_DISCUSS = FILE_DISCUSS;
-        $sql =
-            "SELECT * FROM tbl_bak_order 
-            WHERE file_type = $FILE_DISCUSS 
-                AND ISNULL(bak_date_time);";
+        $sql = "SELECT * FROM tbl_bak_order  WHERE file_type = ? AND ISNULL(unlink_time);";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute()) {
+            if ($stmt->execute([FILE_DISCUSS])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $data[] = $row;
@@ -206,16 +202,16 @@ class Backup_model extends CI_Model
         return $data;
     }
 
-    // ✅
-    function bak_order_discuss_file__bak_date_time__update($list_id)
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
+    function bak_order__unlink_time__update($list_id)
     {
         $exc = false;
         $iconn = $this->db->conn_id;
 
-        $datatime = date('Y-m-d H:s:i');
+        $datatime = date('Y-m-d H:i:s');
 
         $placeholders = implode(',', array_fill(0, count($list_id), '?'));
-        $sql = "UPDATE tbl_bak_order SET bak_date_time = '$datatime' WHERE id_discuss IN ($placeholders)";
+        $sql = "UPDATE tbl_bak_order SET unlink_time = '$datatime' WHERE id IN ($placeholders)";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -231,14 +227,14 @@ class Backup_model extends CI_Model
         return $exc;
     }
 
-    // ✅
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
     function bak_order_file_list()
     {
 
         $data = [];
         $iconn = $this->db->conn_id;
 
-        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(bak_date_time);";
+        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(unlink_time);";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -257,21 +253,97 @@ class Backup_model extends CI_Model
         return $data;
     }
 
-    // TODO: ❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌
-    function bak_order_list_to_local()
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
+    /**
+     * Điều kiện lọc file:
+     * - chỉ lấy file có file_type: main, ref, complete
+     * - file chưa đc tải: download_time = null
+     */
+    function bak_send_order_to_local($type)
     {
         $data = [];
         $iconn = $this->db->conn_id;
 
-        $file_main = FILE_MAIN;
-        $file_ref = FILE_REF;
-        $file_ref = FILE_REF;
-
-        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(bak_date_time) AND file_type IN ();";
+        $placeholders = implode(',', array_fill(0, count($type), '?'));
+        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(download_time) AND file_type IN ($placeholders) AND MONTH(order_create_time) = 3;";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
+            if ($stmt->execute($type)) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    //
+    function bak_order__download_time__update_v1($id_order, $filename)
+    {
+        $exc = false;
+        $iconn = $this->db->conn_id;
+
+        $datatime = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_bak_order SET download_time = '$datatime' WHERE id_order =? AND filename =? LIMIT 1";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $stmt->execute([$id_order, $filename]);
             if ($stmt->execute()) {
+                $exc = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        return $exc;
+    }
+
+    function bak_order__download_time__update($id_order)
+    {
+        $exc = false;
+        $iconn = $this->db->conn_id;
+
+        $datatime = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_bak_order SET download_time = '$datatime' WHERE id_order =? AND file_type IN (?, ?, ?)";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $stmt->execute([$id_order, FILE_MAIN, FILE_REF, FILE_COMPLETE]);
+            if ($stmt->execute()) {
+                $exc = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        return $exc;
+    }
+
+    //  TODO: ❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌
+
+    /**
+     * Điều kiện lọc file để unlink:
+     * - chỉ unlink file có file_type: main, ref, complete
+     * - file đã đc tải: download_time != null
+     */
+    function bak_order_unlink_list()
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT * FROM tbl_bak_order  WHERE !ISNULL(download_time) AND file_type IN (?, ?) AND MONTH(order_create_time) = 3;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute([FILE_REF])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $data[] = $row;

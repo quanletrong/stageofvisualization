@@ -1,7 +1,7 @@
 <?php
 
 // Lấy danh sách file của job
-$order_job_file_list  = $this->Backup_model->order_job_file_list(ORDER_COMPLETE);
+$origin_order_job_file_list  = $this->Backup_model->origin_order_job_file_list(ORDER_COMPLETE);
 
 // Hiển thị dữ liệu
 $type_main     = FILE_MAIN;
@@ -10,7 +10,7 @@ $type_complete = FILE_COMPLETE;
 
 // Duyệt qua danh sach để tạo dữ liệu INSERT
 $insert_values = [];
-foreach ($order_job_file_list as $row) {
+foreach ($origin_order_job_file_list as $row) {
 
   $id_order    = $row['id_order'];
   $create_time = $row['create_time'];

@@ -1,14 +1,14 @@
 <?php
 
 // Thực thi truy vấn
-$order_discuss_file_list  = $this->Backup_model->order_discuss_file_list(ORDER_COMPLETE);
+$origin_order_discuss_file_list  = $this->Backup_model->origin_order_discuss_file_list(ORDER_COMPLETE);
 
 // Hiển thị dữ liệu
 $type_discuss = FILE_DISCUSS;
 
 // Duyệt qua danh sach để tạo dữ liệu INSERT
 $insert_values = [];
-foreach ($order_discuss_file_list as $row) {
+foreach ($origin_order_discuss_file_list as $row) {
 
   $id_order    = $row['id_order'];
   $create_time = $row['create_time'];
