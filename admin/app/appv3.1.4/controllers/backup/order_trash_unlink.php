@@ -1,49 +1,60 @@
 <?php
 
-// 1710411380@SALE_CHINH
+/**
+ * Mục tiêu: Xóa những file tồn tại trong thư mục đơn nhưng không tồn tại trong db
+ */
 
-// Lấy tất cả file unlink_time = NULL
-$order_file_list  = $this->Backup_model->bak_order_file_list();
+// Thoát chương trình nếu 'uploads/order' không tồn tại
+$dir = $_SERVER['DOCUMENT_ROOT'] . '/' . FOLDER_ORDER;
+!is_dir($dir) ? exit() : '';
 
-$order_file_group = []; // Lưu danh sách file của từng order
+// B1. Gom những file cùng đơn vào 1 nhóm
+$files_all  = $this->Backup_model->bak_order_file_list();
+$order_files = groupOrderFiles($files_all);
 
-// Duyệt qua toàn bộ discuss để xóa
-foreach ($order_file_list as $row) {
-  $id_order = $row['id_order'];
-  $filename = $row['filename'];
+// B2 Lọc file rác và xử lý xóa
+foreach ($order_files as $folder => $files_db) {
+  $order_dir = $dir . $folder;
 
-  $FDR_ORDER = strtotime($row['order_create_time']) . '@' . $row['order_create_by'];
+  if (is_dir($order_dir)) {
+    // Tìm các file trong thư mục đơn
+    $files_folder = scanOrder($order_dir);
 
-  $order_file_group[$FDR_ORDER][] =  $filename;
+    // Tìm các file rác trong thư mục đơn. $files_folder - $files_db = file rác
+    $files_trash =  array_diff($files_folder, $files_db);
+
+    // Xóa các file rác
+    deleteFiles($order_dir, $files_trash);
+  }
 }
 
-$dir = $_SERVER['DOCUMENT_ROOT'] . '/' . FOLDER_ORDER;
-if (is_dir($dir)) {
-  foreach ($order_file_group as $folder => $order_file_db) {
+function groupOrderFiles($files_all)
+{
+  $grouped_files = [];
+  foreach ($files_all as $row) {
+    $id_file = $row['id'];
+    $folder = strtotime($row['order_create_time']) . '@' . $row['order_create_by'];
+    $grouped_files[$folder][$id_file] = $row['filename'];
+  }
+  return $grouped_files;
+}
 
-    $order_dir = $dir . $folder;
-
-    if (is_dir($order_dir)) {
-
-      $order_file_folder = [];
-
-      // Duyệt qua danh sách và chỉ lấy các file (không lấy thư mục con)
-      foreach (scandir($order_dir) as $file) {
-        // Kiểm tra nếu là file và không phải thư mục
-        if ($file !== '.' && $file !== '..' && is_file($order_dir . '/' . $file)) {
-          $order_file_folder[] = $file;
-        }
-      }
-
-      // Lấy các file có trong thư mục nhưng không có trong cơ sở dữ liệu
-      $order_file_unlink = array_diff($order_file_folder, $order_file_db);
-
-      // Duyệt qua danh sách $order_file_unlink để xóa file
-      foreach ($order_file_unlink as $file) {
-
-        @unlink($order_dir . '/' . $file); // xóa file
-        @unlink($order_dir . '/thumb/' . $file); // xóa cả file thumb
-      }
+function scanOrder($order_dir)
+{
+  $order_file_folder = [];
+  foreach (scandir($order_dir) as $file) {
+    if ($file !== '.' && $file !== '..' && is_file($order_dir . '/' . $file)) {
+      $order_file_folder[] = $file;
     }
+  }
+
+  return $order_file_folder;
+}
+
+function deleteFiles($order_dir, $files)
+{
+  foreach ($files as $file) {
+    @unlink($order_dir . '/' . $file);
+    @unlink($order_dir . '/thumb/' . $file);
   }
 }

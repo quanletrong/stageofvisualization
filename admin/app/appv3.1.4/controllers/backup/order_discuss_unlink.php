@@ -2,7 +2,6 @@
 set_time_limit(3600);
 
 $bak_order_discuss_file_list  = $this->Backup_model->bak_order_discuss_file_list();
-var_dump($bak_order_discuss_file_list);die;
 
 // Lưu danh sách discuss đã xóa vào đây.
 $list_ids = [];

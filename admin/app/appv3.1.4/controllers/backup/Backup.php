@@ -26,12 +26,14 @@ class Backup extends MY_Controller
         require_once('order_trash_unlink.php');
     }
 
+    // Yêu cầu token
     function send_order_to_local()
     {
         require_once('send_order_to_local.php');
     }
 
     // Đánh dấu file đã được tải về máy local
+    // Yêu cầu token
     function order_set_download_time()
     {
         require_once('order_set_download_time.php');
