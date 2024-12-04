@@ -22,7 +22,6 @@ class Backup_model extends CI_Model
              INNER JOIN tbl_user as c ON c.id_user = a.id_user
              WHERE 
                  1 = 1
-                 -- AND MONTH(a.create_time) =1
                  AND a.status = $status_order
                  AND a.done_qc_time < DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
              ORDER BY a.id_order;
@@ -228,6 +227,10 @@ class Backup_model extends CI_Model
     }
 
     // ✅ ✅ ✅ ✅ ✅ ✅ 
+    /**
+     * Lọc file để xóa rác, điều kiện:
+     * - 
+     */
     function bak_order_file_list()
     {
 
@@ -255,9 +258,10 @@ class Backup_model extends CI_Model
 
     // ✅ ✅ ✅ ✅ ✅ ✅ 
     /**
-     * Điều kiện lọc file:
+     * Lọc file gửi cho local, điều kiện:
      * - chỉ lấy file có file_type: main, ref, complete
      * - file chưa đc tải: download_time = null
+     * ❌ đang lọc theo từng tháng vì dữ liệu rất nhiều.
      */
     function bak_send_order_to_local($type)
     {
@@ -265,7 +269,7 @@ class Backup_model extends CI_Model
         $iconn = $this->db->conn_id;
 
         $placeholders = implode(',', array_fill(0, count($type), '?'));
-        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(download_time) AND file_type IN ($placeholders) AND MONTH(order_create_time) = 3;";
+        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(download_time) AND file_type IN ($placeholders) AND MONTH(order_create_time) = 4;";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
@@ -284,7 +288,11 @@ class Backup_model extends CI_Model
         return $data;
     }
 
-    //
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
+    /**
+     * update download_time theo filename
+     * ❌ đang tạm bỏ
+     */
     function bak_order__download_time__update_v1($id_order, $filename)
     {
         $exc = false;
@@ -306,6 +314,10 @@ class Backup_model extends CI_Model
         return $exc;
     }
 
+    // ✅ ✅ ✅ ✅ ✅ ✅ 
+    /**
+     * update download_time theo đơn
+     */
     function bak_order__download_time__update($id_order)
     {
         $exc = false;
@@ -327,23 +339,23 @@ class Backup_model extends CI_Model
         return $exc;
     }
 
-    //  TODO: ❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌
 
     /**
-     * Điều kiện lọc file để unlink:
-     * - chỉ unlink file có file_type: main, ref, complete
+     * Lọc file để unlink, điều kiện:
+     * - chỉ unlink file có file_type: MAIN REF COMPLETE
      * - file đã đc tải: download_time != null
+     * ❌ đang lọc theo từng tháng vì dữ liệu rất nhiều.
      */
     function bak_order_unlink_list()
     {
         $data = [];
         $iconn = $this->db->conn_id;
 
-        $sql = "SELECT * FROM tbl_bak_order  WHERE !ISNULL(download_time) AND file_type IN (?, ?) AND MONTH(order_create_time) = 3;";
+        $sql = "SELECT * FROM tbl_bak_order  WHERE !ISNULL(download_time) AND ISNULL(unlink_time) AND file_type IN (?, ?, ?);";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            if ($stmt->execute([FILE_REF])) {
+            if ($stmt->execute([FILE_MAIN, FILE_REF, FILE_COMPLETE])) {
                 if ($stmt->rowCount() > 0) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $data[] = $row;
