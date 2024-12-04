@@ -18,5 +18,5 @@ $id_order = removeAllTags($this->input->post_get('order'));
 $this->Backup_model->bak_order__download_time__update($id_order);
 
 header('Content-Type: application/json');
-echo json_encode([$id_order, $filename]);
+echo json_encode([$id_order]);
 exit();

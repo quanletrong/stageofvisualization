@@ -5,6 +5,8 @@
 # .\tickOrder.ps1
 # .\tickOrder.ps1 -OrderID 12345 -FileName "example.pdf"
 
+# powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\xampp\htdocs\stageofvisualization\admin\app\appv3.1.4\controllers\backup\download.ps1
+
 # Command Prompt:
 # powershell -ExecutionPolicy Bypass -File "C:\Scripts\tickOrder.ps1"
 
@@ -13,11 +15,10 @@ $apiGetOrder = "http://stageofvisualization.local/admin/backup/send_order_to_loc
 $apiTickOrder = "http://stageofvisualization.local/admin/backup/order_set_download_time"
 
 # Đọc token từ file token.txt
-# $token = Get-Content "E:\khanh-task-schedule\token.txt"
-$token = '123';
+$token = Get-Content "D:\xampp\htdocs\stageofvisualization\admin\app\appv3.1.4\controllers\backup\token.txt"
 
 # Thư mục gốc để chứa các order
-$rootFolder = "E:\khanh-task-schedule\order"
+$rootFolder = "D:\KHANH\order"
 
 # Gửi yêu cầu đến API để lấy danh sách các order và ảnh
 try {
