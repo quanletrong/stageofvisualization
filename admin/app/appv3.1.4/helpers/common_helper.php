@@ -941,9 +941,9 @@ function copy_image_to_thumb($url_image, $folder_str = 'uploads/', $max_width, $
             }
 
             return [
-                'status' => true, 
-                'pathname' => $dir_save, 
-                'basename' => $basename, 
+                'status' => true,
+                'pathname' => $dir_save,
+                'basename' => $basename,
                 'link' => url_image($basename, $FULL_FOLDER)
             ];
         }
@@ -1210,7 +1210,7 @@ function count_down_time_order($order)
 
     // đã hoàn thành đơn
     if ($order['status'] == ORDER_DELIVERED || $order['status'] == ORDER_COMPLETE) {
-        
+
         return "<script>no_count_down_time_v2($qc_done_str, $expire_str, 'cdt_$id_order')</script>";
     }
     // chưa hoàn thành đơn
@@ -1373,19 +1373,19 @@ function allow_show_button_status_order_by_role($role, $status)
     }
     if ($role == QC) {
         return in_array($status, [
-            ORDER_PENDING, 
-            ORDER_QC_CHECK, 
-            ORDER_AVAIABLE, 
-            ORDER_PROGRESS, 
-            ORDER_DONE, 
-            ORDER_DELIVERED, 
+            ORDER_PENDING,
+            ORDER_QC_CHECK,
+            ORDER_AVAIABLE,
+            ORDER_PROGRESS,
+            ORDER_DONE,
+            ORDER_DELIVERED,
             // ORDER_FIX, // Khánh yêu cầu bỏ
             ORDER_REWORK
         ]);
     }
     if ($role == EDITOR) {
         return in_array($status, [
-            ORDER_PROGRESS, 
+            ORDER_PROGRESS,
             // ORDER_FIX, // Khánh yêu cầu bỏ
             ORDER_REWORK
         ]);
@@ -1631,18 +1631,18 @@ function QSQL_IN($filed, $id_string, $CI)
 //  > >= < <= = !=
 function QSQL_COMPARE($filed, $compare, $value_compare, $CI)
 {
-    if($value_compare !== '') {
-        if($compare == '>') {
+    if ($value_compare !== '') {
+        if ($compare == '>') {
             return " $filed > $value_compare ";
-        } else if($compare == '>=') {
+        } else if ($compare == '>=') {
             return " $filed >= $value_compare ";
-        } else if($compare == '<') {
+        } else if ($compare == '<') {
             return " $filed < $value_compare ";
-        }else if($compare == '<=') {
+        } else if ($compare == '<=') {
             return " $filed <= $value_compare ";
-        } else if($compare == '!=') {
+        } else if ($compare == '!=') {
             return " $filed != $value_compare ";
-        } else if($compare == '=') {
+        } else if ($compare == '=') {
             return " $filed = $value_compare ";
         } else {
             return ' 1=1 ';
@@ -1672,11 +1672,13 @@ function password_streng($password)
     return preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%^&*]{8,}$/', $password);
 }
 
-function isIPV4($ip) {
+function isIPV4($ip)
+{
     return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
 }
 
-function deleteDirectory($dir) {
+function deleteDirectory($dir)
+{
     if (!file_exists($dir)) {
         return true;
     }
@@ -1693,13 +1695,13 @@ function deleteDirectory($dir) {
         if (!deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
             return false;
         }
-
     }
 
     return rmdir($dir);
 }
 
-function get_short_name_group($group_name) {
+function get_short_name_group($group_name)
+{
 
     $words = explode(" ", $group_name);
     $acronym = "";
@@ -1708,4 +1710,60 @@ function get_short_name_group($group_name) {
         $acronym .= mb_substr($w, 0, 1);
     }
     return $acronym;
+}
+
+function renderTable($array)
+{
+    if (empty($array)) return;
+
+    $tableId = generateRandomString(10);
+    echo "<style>
+        #$tableId { 
+            border-collapse: collapse; 
+            width: 100%; 
+        }
+        #$tableId th{ 
+            padding: 15px; 
+            text-align: center; 
+        }
+        #$tableId td { 
+            padding: 5px; 
+            text-align: center; 
+        }
+        #$tableId th { 
+            background-color: #dc3545; 
+            font-size: large;
+            color: white;
+            position: sticky; 
+            top: 0; 
+            z-index: 1; 
+            height: 50px; 
+        }
+        #$tableId tr:hover { 
+            background-color: #e0f7fa; 
+            transition: background-color 0.3s ease; 
+        }
+    </style>";
+
+    echo "<table id='$tableId' border=1>";
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>STT</th>';
+    foreach (array_keys($array[0]) as $key) {
+        echo '<th>' . htmlspecialchars($key) . '</th>';
+    }
+    echo '</tr></thead>';
+
+    echo '<tbody>';
+    $stt = 1;
+    foreach ($array as $row) {
+        echo '<tr>';
+        echo '<td>' . $stt++ . '</td>';
+        foreach ($row as $cell) {
+            echo '<td>' . htmlspecialchars($cell) . '</td>';
+        }
+        echo '</tr>';
+    }
+    echo '</tbody>';
+    echo '</table>';
 }

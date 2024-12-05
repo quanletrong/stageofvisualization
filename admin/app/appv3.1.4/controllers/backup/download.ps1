@@ -11,14 +11,15 @@
 # powershell -ExecutionPolicy Bypass -File "C:\Scripts\tickOrder.ps1"
 
 # API domain
-$apiGetOrder = "http://stageofvisualization.local/admin/backup/send_order_to_local"
-$apiTickOrder = "http://stageofvisualization.local/admin/backup/order_set_download_time"
+$apiGetOrder = "https://stageofvisualization.com/admin/backup/send_order_to_local"
+$apiTickOrder = "https://stageofvisualization.com/admin/backup/order_set_download_time"
+$tokenFile = "D:\svbackup\token.txt"
 
 # Đọc token từ file token.txt
-$token = Get-Content "D:\xampp\htdocs\stageofvisualization\admin\app\appv3.1.4\controllers\backup\token.txt"
+$token = Get-Content $tokenFile
 
 # Thư mục gốc để chứa các order
-$rootFolder = "D:\KHANH\order"
+$rootFolder = "D:\svbackup\order"
 
 # Gửi yêu cầu đến API để lấy danh sách các order và ảnh
 try {

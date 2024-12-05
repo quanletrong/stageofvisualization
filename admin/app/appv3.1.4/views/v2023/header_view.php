@@ -243,6 +243,28 @@
 							</li>
 						<?php } ?>
 
+						<!-- BACKUP -->
+						<?php if (in_array($role, [ADMIN, SALE, QC])) { ?>
+							<hr>
+							<li class="nav-item">
+								<a href="backup" class="nav-link">
+									<i class="nav-icon fas fa-database"></i>
+									<p>
+										Backup dữ liệu
+										<i class="fas fa-angle-left right"></i>
+									</p>
+								</a>
+								<ul class="nav nav-treeview">
+									<li class="nav-item">
+										<a href="backup/report" class="nav-link">
+											<i class="far fa-circle nav-icon"></i>
+											<p>Thống kê theo tháng</p>
+										</a>
+									</li>
+								</ul>
+							</li>
+						<?php } ?>
+
 						<!-- CÀI ĐẶT WEBSITE -->
 						<?php if (in_array($role, [ADMIN])) { ?>
 							<hr>

@@ -10,6 +10,31 @@ class Backup extends MY_Controller
         $this->load->model('backup/Backup_model');
     }
 
+    /** Thống kê */
+    function report()
+    {
+        if (!$this->_isLogin()) {
+            if ($this->input->is_ajax_request()) {
+                echo 'unlogin';
+                die();
+            }
+            $currUrl = getCurrentUrl();
+            dbClose();
+            redirect(site_url('login/?url=' . urlencode($currUrl), $this->_langcode));
+            die();
+        }
+        $header = [
+            'title' => "Thống kê file backup",
+            'header_page_css_js' => 'voucher'
+        ];
+
+        $data['report'] = $this->Backup_model->bak_thong_ke();
+        // renderTable($this->Backup_model->bak_thong_ke());
+        $this->_loadHeader($header);
+        $this->load->view($this->_template_f . 'backup/report_view', $data);
+        $this->_loadFooter();
+    }
+
     /**
      * Mục tiêu:
      * Lưu file đủ điều kiện backup vào bảng
