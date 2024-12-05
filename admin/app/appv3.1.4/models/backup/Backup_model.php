@@ -375,15 +375,15 @@ class Backup_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
         $sql = "SELECT 
-                CONCAT(MONTH(order_create_time), '-', YEAR(order_create_time)) AS 'Tháng',
-                COUNT(DISTINCT id_order) AS 'Tổng đơn',  -- Tổng số bản ghi `id_order` khác nhau
-                SUM(CASE WHEN file_type = 1 THEN 1 ELSE 0 END) AS 'Files Main',
-                SUM(CASE WHEN file_type = 2 THEN 1 ELSE 0 END) AS 'Files Ref',
-                SUM(CASE WHEN file_type = 3 THEN 1 ELSE 0 END) AS 'Files Complete',
-                SUM(CASE WHEN file_type = 5 THEN 1 ELSE 0 END) AS 'Files Nội Bộ',
-                COUNT(*) AS 'Tổng Files',  -- Tổng số bản ghi
-                SUM(CASE WHEN unlink_time IS NOT NULL THEN 1 ELSE 0 END) AS 'Tổng Files delete',
-                SUM(CASE WHEN download_time IS NOT NULL THEN 1 ELSE 0 END) AS 'Files backup'
+                CONCAT(MONTH(order_create_time), '-', YEAR(order_create_time)) AS 'THÁNG',
+                COUNT(DISTINCT id_order) AS 'TỔNG ĐƠN',  -- Tổng số bản ghi `id_order` khác nhau
+                SUM(CASE WHEN file_type = 1 THEN 1 ELSE 0 END) AS 'FILES MAIN',
+                SUM(CASE WHEN file_type = 2 THEN 1 ELSE 0 END) AS 'FILES REF',
+                SUM(CASE WHEN file_type = 3 THEN 1 ELSE 0 END) AS 'FILES COMPLETE',
+                SUM(CASE WHEN file_type = 5 THEN 1 ELSE 0 END) AS 'FILES NỘI BỘ',
+                COUNT(*) AS 'TỔNG FILES',  -- Tổng số bản ghi
+                SUM(CASE WHEN unlink_time IS NOT NULL THEN 1 ELSE 0 END) AS 'FILES ĐÃ XÓA',
+                SUM(CASE WHEN download_time IS NOT NULL THEN 1 ELSE 0 END) AS 'FILES ĐÃ BACKUP'
             FROM 
                 tbl_bak_order
             GROUP BY 
