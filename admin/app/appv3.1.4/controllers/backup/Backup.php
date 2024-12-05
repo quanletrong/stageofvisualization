@@ -8,6 +8,8 @@ class Backup extends MY_Controller
         $this->_module = trim(strtolower(__CLASS__));
         parent::__construct();
         $this->load->model('backup/Backup_model');
+
+        die('Hệ thống đang nâng cấp...');
     }
 
     /**
