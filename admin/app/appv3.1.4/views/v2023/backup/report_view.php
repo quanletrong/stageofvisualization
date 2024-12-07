@@ -21,7 +21,9 @@
   <section class="content">
     <div class="container-fluid">
       <div class="row">
-        <?php renderTable($report) ?>
+        <div style="width: 100%; overflow-x:auto ;">
+          <?php renderTable($report) ?>
+        </div>
       </div>
     </div>
   </section>

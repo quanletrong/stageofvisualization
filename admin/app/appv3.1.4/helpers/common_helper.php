@@ -1715,37 +1715,7 @@ function get_short_name_group($group_name)
 function renderTable($array)
 {
     if (empty($array)) return;
-
-    $tableId = generateRandomString(10);
-    echo "<style>
-        #$tableId { 
-            border-collapse: collapse; 
-            width: 100%; 
-        }
-        #$tableId th{ 
-            padding: 15px; 
-            text-align: center; 
-        }
-        #$tableId td { 
-            padding: 5px; 
-            text-align: center; 
-        }
-        #$tableId th { 
-            background-color: #dc3545; 
-            font-size: large;
-            color: white;
-            position: sticky; 
-            top: 0; 
-            z-index: 1; 
-            height: 50px; 
-        }
-        #$tableId tr:hover { 
-            background-color: #e0f7fa; 
-            transition: background-color 0.3s ease; 
-        }
-    </style>";
-
-    echo "<table id='$tableId' border=1>";
+    echo "<table border=1 class='tbl-basic'>";
     echo '<thead>';
     echo '<tr>';
     echo '<th>STT</th>';

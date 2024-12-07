@@ -14,7 +14,13 @@
 <footer class="main-footer">
 	<!-- To the right -->
 	<div class="float-right d-none d-sm-inline">
-		Anything you want
+		<?php
+		if(ENVIRONMENT == 'development'){
+			echo "<span class='text-red'>".DB_MASTER_HOST."</span>";
+		} else {
+			echo "IP ".ip_address();
+		}
+		?>
 	</div>
 	<!-- Default to the left -->
 	<strong>Copyright &copy; <?= date('Y') == '2023' ? '2023' : '2023-' . date('Y') ?> <a href="<?= site_url() ?>"><?= $this->config->item('product_name') ?></a>.</strong> All rights reserved.

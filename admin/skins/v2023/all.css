@@ -74,3 +74,29 @@ html {
   overflow-y: auto;
 }
 /* END CUSTOM SELECT2 */
+
+.tbl-basic { 
+  border-collapse: collapse; 
+  width: 100%; 
+}
+.tbl-basic th{ 
+  padding: 15px; 
+  text-align: center; 
+}
+.tbl-basic td { 
+  padding: 5px; 
+  text-align: center; 
+}
+.tbl-basic th { 
+  background-color: #dc3545; 
+  font-size: large;
+  color: white;
+  position: sticky; 
+  top: 0; 
+  z-index: 1; 
+  height: 50px; 
+}
+.tbl-basic tr:hover { 
+  background-color: #e0f7fa; 
+  transition: background-color 0.3s ease; 
+}

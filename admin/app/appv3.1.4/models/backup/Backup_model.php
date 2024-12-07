@@ -381,9 +381,9 @@ class Backup_model extends CI_Model
                 SUM(CASE WHEN file_type = 2 THEN 1 ELSE 0 END) AS 'FILES REF',
                 SUM(CASE WHEN file_type = 3 THEN 1 ELSE 0 END) AS 'FILES COMPLETE',
                 SUM(CASE WHEN file_type = 5 THEN 1 ELSE 0 END) AS 'FILES NỘI BỘ',
-                COUNT(*) AS 'TỔNG FILES',  -- Tổng số bản ghi
+                SUM(CASE WHEN download_time IS NOT NULL THEN 1 ELSE 0 END) AS 'FILES ĐÃ BACKUP',
                 SUM(CASE WHEN unlink_time IS NOT NULL THEN 1 ELSE 0 END) AS 'FILES ĐÃ XÓA',
-                SUM(CASE WHEN download_time IS NOT NULL THEN 1 ELSE 0 END) AS 'FILES ĐÃ BACKUP'
+                COUNT(*) AS 'TỔNG FILES'  -- Tổng số bản ghi
             FROM 
                 tbl_bak_order
             GROUP BY 
