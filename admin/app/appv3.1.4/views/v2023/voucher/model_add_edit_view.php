@@ -259,7 +259,7 @@
                 modal.find('.modal-body #expire_date').val('<?= date("Y-m-d H:i:s") ?>');
                 modal.find('.modal-body #price').val('');
                 modal.find('.modal-body #limit').val(1);
-                modal.find('.modal-body #status').bootstrapSwitch('state', false);
+                modal.find('.modal-body #status').bootstrapSwitch('state', true);
 
                 //right
                 modal.find('.modal-body #used_time').text(``);
