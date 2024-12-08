@@ -344,7 +344,7 @@ class MY_Controller extends CI_Controller
                     'ajax_set_rut_tien_ho' => [QC, EDITOR],
                 ],
                 'backup' => [
-                    'report' => [SALE, QC, EDITOR]
+                    'report' => [EDITOR]
                 ],
             ];
 
