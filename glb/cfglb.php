@@ -27,4 +27,7 @@ else
 	define('SMS_ACCOUNT', '');
 	define('SMS_PASS', '');
 	define('SMS_BRAND_NAME', '');
+
+    // TOKEN_BACKUP
+	define('TOKEN_BACKUP', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZXZlbG9wZXIiLCJuYW1lIjoiTGUgVHJvbmcgUXVhbiIsInBob25lIjoiMDM4ODMwMzUyOSIsImVtYWlsIjoibGVxdWFubHR2QGdtYWlsLmNvbSJ9.G7NiUrIyx1bON9BuiQ3K05lODP3JY3Njjroyw3JihkQ');
 }

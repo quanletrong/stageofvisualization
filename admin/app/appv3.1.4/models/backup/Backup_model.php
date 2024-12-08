@@ -269,7 +269,7 @@ class Backup_model extends CI_Model
         $iconn = $this->db->conn_id;
 
         $placeholders = implode(',', array_fill(0, count($type), '?'));
-        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(download_time) AND file_type IN ($placeholders) AND MONTH(order_create_time) = 6;";
+        $sql = "SELECT * FROM tbl_bak_order  WHERE ISNULL(download_time) AND file_type IN ($placeholders) AND MONTH(order_create_time) = 7;";
 
         $stmt = $iconn->prepare($sql);
         if ($stmt) {

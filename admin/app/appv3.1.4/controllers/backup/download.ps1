@@ -1,3 +1,4 @@
+
 # powershell:
 # Get-ExecutionPolicy
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
@@ -10,84 +11,82 @@
 # Command Prompt:
 # powershell -ExecutionPolicy Bypass -File "C:\Scripts\tickOrder.ps1"
 
-# API domain
+$rootFolder = "D:\svbackup\order"
+$tokenFile = "D:\svbackup\token.txt"
 $apiGetOrder = "https://stageofvisualization.com/admin/backup/send_order_to_local"
 $apiTickOrder = "https://stageofvisualization.com/admin/backup/order_set_download_time"
-$tokenFile = "D:\svbackup\token.txt"
-
-# Đọc token từ file token.txt
 $token = Get-Content $tokenFile
+$startTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
-# Thư mục gốc để chứa các order
-$rootFolder = "D:\svbackup\order"
+# 
+Write-Host "`n`n`n`n`n`n`n`n`n"
+Write-Host "Hello! This is stageofvisualization.com's daily data backup software". -ForegroundColor Green
+Write-Host "The program is taking orders...". -ForegroundColor Green
 
-# Gửi yêu cầu đến API để lấy danh sách các order và ảnh
+# 
 try {
+    
     $response = Invoke-WebRequest -Uri $apiGetOrder -Headers @{ "Authorization" = "Bearer $token" }
     $jsonContent = $response.Content
-    # Write-Host "Response from API: $jsonContent"
+
+    if($jsonContent -eq '[]') {
+        Write-Host "No backup orders at this time!" -ForegroundColor Green
+        Write-Host "Press Enter to exit." -ForegroundColor Green
+        Read-Host
+        exit;
+    }
 } catch {
-    Write-Host "Failed to call API: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Failed get order list: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Press Enter to exit." -ForegroundColor Red
+    Read-Host
     exit
 }
-
-# Chuyển đổi nội dung JSON thành đối tượng PowerShell
+# 
 try {
-    $orderData = $jsonContent | ConvertFrom-Json
-      
-    # Đếm số lượng ORDER từ json trả về
-    $orderCount = 0
-    foreach ($order in $orderData.PSObject.Properties) {
-        $orderCount++
-    }
-
-    # Vòng lặp qua từng order trong dữ liệu JSON
     $countDone = 0;
-    Write-Host "Start backup file..."
+    $orderData = $jsonContent | ConvertFrom-Json
+    $orderTotal = ($orderData.PSObject.Properties | Measure-Object).Count
+
+    Write-Host "Found $orderTotal orders to backup. Starting backup file..." -ForegroundColor Green
+
     foreach ($order in $orderData.PSObject.Properties) {
-        
+        # 
+        Write-Host "`nTotal order completed: $countDone/$orderTotal" -ForegroundColor Green
+        # 
         $orderID = $order.Name
         $fileLinks = $order.Value
-
-        # Tạo thư mục cho order này bên trong thư mục rootFolder
         $orderFolder = Join-Path -Path $rootFolder -ChildPath $orderID
         New-Item -ItemType Directory -Path $orderFolder -Force | Out-Null
-
-        # Vòng lặp qua từng liên kết file trong order
+        # 
         foreach ($fileLink in $fileLinks) {
-            # Bắt đầu tải file
-            Write-Host "Downloading: Order #$orderID - File $fileLink" -ForegroundColor Gray
-            try {
-                
-                # Lấy tên file từ URL (tách phần cuối của URL, ví dụ 'qurBP-im.jpg')
+            Write-Host "Downloading order: #$orderID - File $fileLink" -ForegroundColor Gray
+            try {                
                 $fileName = [System.IO.Path]::GetFileName($fileLink)                
                 $destination = Join-Path -Path $orderFolder -ChildPath $fileName
-
-                # Thực hiện tải file
                 Start-BitsTransfer -Source $fileLink -Destination $destination
-                
-                # File download thành công gọi API để đánh dấu vào server
-                # $apiTickOrderWithParams = "$($apiTickOrder)?order=$orderID&filename=$fileName"
-                # $tickDowloaded = Invoke-WebRequest -Uri $apiTickOrderWithParams -Headers @{ "Authorization" = "Bearer $token" }
             }
             catch {
                 Write-Host "Failed to download file: $orderID-$fileLink" -ForegroundColor Red
             }
         }
-
-        # File download thành công gọi API để đánh dấu vào server
-        $apiTickOrderWithParams = "$($apiTickOrder)?order=$orderID"
-        $tickDowloaded = Invoke-WebRequest -Uri $apiTickOrderWithParams -Headers @{ "Authorization" = "Bearer $token" }
-
-        # Tiến trình hoàn thành ORDER 
-        $countDone ++;
-        Write-Host "Total order completed: $countDone/$orderCount" -ForegroundColor Green
+        # 
+        # $apiTickOrderWithParams = "$($apiTickOrder)?order=$orderID"
+        # $tickDowloaded = Invoke-WebRequest -Uri $apiTickOrderWithParams -Headers @{ "Authorization" = "Bearer $token" }
+        # 
+        $countDone ++;        
     }
+    
+    # 
+    Write-Host "Downloaded all orders to $rootFolder!" -ForegroundColor Green
+    Write-Host "Start time backup: $startTime" -ForegroundColor Green
+    Write-Host "End time backup: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")" -ForegroundColor Green
+    Write-Host "Press Enter to exit." -ForegroundColor Green
+    Read-Host
+    exit;
    
 } catch {
-    Write-Host "Failed to parse JSON: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Failed to parse JSON $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Press Enter to exit." -ForegroundColor Red
+    Read-Host
+    exit;
 }
-
-# Dừng script để xem log
-Write-Host "Downloaded all orders to $rootFolder! . Press Enter to exit." -ForegroundColor Green
-Read-Host
