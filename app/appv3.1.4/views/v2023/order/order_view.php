@@ -1,4 +1,5 @@
 <script>
+    VOUCHER = {};
     // chi tiết 1 JOB
     let JOB = {};
     JOB.image = '';
@@ -25,6 +26,8 @@
     STATE.card_yy = '';
     STATE.card_cvv = '';
     STATE.coupon = '';
+
+    STATE.voucher = '';
 </script>
 <div class="container-fluid" style="background-color: #fafafa;">
 
@@ -146,6 +149,12 @@
                 }
                 $('#list-price').html(price_html);
                 $('#total_price').html(total_price);
+                $('#thanh_toan_price').html(total_price);
+
+                // cập nhật lại giá
+                if (STATE.voucher != '') {
+                    ap_dung_voucher(STATE.voucher);
+                }
             } else {
                 scroll_to(error);
             }
@@ -304,7 +313,7 @@
                         CLICK TO ADD FILE
                     </button>
                     
-                    <div class="position-absolute" style="top:20px; right: 20px; cursor: pointer;">
+                    <div class="position-absolute" style="top:20px; right: -10px; cursor: pointer;">
                         <i class="fa-solid fa-xmark fs-3" onclick="step2_remove_job(${job_id})"></i>
                     </div>
                 </div>

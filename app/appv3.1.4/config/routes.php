@@ -54,13 +54,14 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // order
-$route[LINK_ORDER]                                   = 'order/order/index';
+$route[LINK_ORDER]                                     = 'order/order/index';
 $route[LINK_ORDER . '/submit']                         = 'order/order/submit';
 $route[LINK_ORDER . '/ajax_add_rework/(:num)']         = 'order/order/ajax_add_rework/$1';
 $route[LINK_ORDER . '/ajax_delete_file_attach_rework'] = 'order/order/ajax_delete_file_attach_rework';
 $route[LINK_ORDER . '/ajax_add_file_attach_rework']    = 'order/order/ajax_add_file_attach_rework';
 $route[LINK_ORDER . '/ajax_edit_file_attach_rework']   = 'order/order/ajax_edit_file_attach_rework';
 $route[LINK_ORDER . '/ajax_update_requirement_rework'] = 'order/order/ajax_update_requirement_rework';
+$route[LINK_ORDER . '/ajax_voucher_customer']          = 'order/order/ajax_voucher_customer';
 
 // upload
 $route['upload']              = 'upload/upload/index';

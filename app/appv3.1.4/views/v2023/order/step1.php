@@ -29,7 +29,7 @@
             </div>
 
             <div class="mb-3">
-                <button type="button" class="btn btn-lg btn-danger w-100" id="step-1-next">Continue</button>
+                <button type="button" class="btn btn-danger w-100" id="step-1-next">Continue</button>
             </div>
         <?php } ?>
 

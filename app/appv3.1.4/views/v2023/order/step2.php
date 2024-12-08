@@ -5,7 +5,7 @@
         <div class="col-12 col-lg-8">
             <div class="border p-4 shadow div_main_1">
                 <div class="mb-3">
-                    <button type="button" class="btn btn-lg btn-danger w-100" id="button_upload_image_step_2" onclick="add_job()">Click or Drag and Drop Photos</button>
+                    <button type="button" class="btn btn-danger w-100" id="button_upload_image_step_2" onclick="add_job()">Click or Drag and Drop Photos</button>
                 </div>
             </div>
 
@@ -15,7 +15,7 @@
             <div class="border p-4 mt-3 shadow d-none div_main_3">
                 <label for="" class="form-label fw-bold">Want to Add More Photos to Your Order?</label>
                 <div class="mb-3">
-                    <button type="button" class="btn btn-lg btn-dark text-light w-100 " onclick="add_job()">Add More Photos to Order</button>
+                    <button type="button" class="btn btn-dark text-light w-100 " onclick="add_job()">Add More Photos to Order</button>
                 </div>
             </div>
 
@@ -48,8 +48,8 @@
                     <!-- submit -->
                     <div class="mt-3">
                         <div class="d-flex">
-                            <button type="button" class="btn btn-lg btn-secondary w-25 me-3" id="step-2-back">Back Step 1</button>
-                            <button type="button" class="btn btn-lg btn-danger w-75" id="step-2-next">Continue to Next Step</button>
+                            <button type="button" class="btn btn-secondary w-25 me-3" id="step-2-back">Back</button>
+                            <button type="button" class="btn btn-danger w-75" id="step-2-next">Continue to Next Step</button>
                         </div>
 
                     </div>

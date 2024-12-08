@@ -67,7 +67,7 @@ class Order extends MY_Controller
         $style       = isset($order['style']) ? $order['style'] : 0;
         $id_user     = $this->_session_uid();
         $create_time = date('Y-m-d H:i:s');
-        $voucher     = isset($order['coupon']) ? $order['coupon'] : 0;
+        $voucher     = isset($order['voucher']) ? $order['voucher'] : 0;
         $list_job    = isset($order['job']) ? $order['job'] : [];
 
         // VALIDATE
@@ -87,7 +87,7 @@ class Order extends MY_Controller
         # check voucher (ko bắt buộc nhập voucher)
         $info_voucher = [];
         if (isIdNumber($voucher)) {
-            $lst_voucher =  $this->Voucher_model->get_list_voucher_for_create_order_by_customer($id_user, $create_time);
+            $lst_voucher = $this->Voucher_model->voucher_customer_list($id_user, $create_time);
             isset($lst_voucher[$voucher]) ? '' : resError('error_voucher');
             $info_voucher = $lst_voucher[$voucher];
         }
@@ -160,7 +160,17 @@ class Order extends MY_Controller
         // LƯU LICH SU THANH TOAN ORDER
         $price_vou = isset($info_voucher['price']) ? $info_voucher['price'] : 0;
         $code_vou  = isset($info_voucher['code']) ? $info_voucher['code'] : '';
-        $amount    = (float) ($total_price > $price_vou ? ($total_price - $price_vou) : 0);
+        $price_unit_vou = isset($info_voucher['price_unit']) ? $info_voucher['price_unit'] : '';
+
+        // Tiền sau khi áp dụng voucher       
+        if ($price_unit_vou == VOUCHER_PERCENT) {
+            $price_vou = $total_price * $price_vou / 100; // 🔺 quy đổi % giảm giá thành tiền giảm giá
+            $amount  = (float) ($total_price  - $price_vou);
+        } else if ($price_unit_vou == VOUCHER_USD) {
+            $amount  = (float) ($total_price > $price_vou ? ($total_price - $price_vou) : 0);
+        } else {
+            $amount = $total_price;
+        }
 
         $don_khong_can_thanh_toan = $amount == 0;
         $don_can_thanh_toan       = $amount > 0;
@@ -459,5 +469,14 @@ class Order extends MY_Controller
         }
 
         echo "<script>localStorage.setItem($LOCAL_PAY, $local_storage_pay);window.close()</script>";
+    }
+
+    function ajax_voucher_customer()
+    {
+        $cur_uid = $this->_session_uid();
+        $now     = date('Y-m-d H:i:s');
+        $list    = $this->Voucher_model->voucher_customer_list($cur_uid, $now);
+
+        resSuccess($list);
     }
 }
