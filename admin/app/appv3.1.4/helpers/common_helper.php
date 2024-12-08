@@ -1737,3 +1737,27 @@ function renderTable($array)
     echo '</tbody>';
     echo '</table>';
 }
+
+function priceUnitName($unit)
+{
+    $name = '';
+    switch ($unit) {
+        case VOUCHER_PERCENT:
+            $name = '%';
+            break;
+        case VOUCHER_USD:
+            $name = '$';
+            break;
+        case VOUCHER_EUR:
+            $name = '€';
+            break;
+        case VOUCHER_VND:
+            $name = '₫';
+            break;
+        default:
+            $name = $unit;
+            break;
+    }
+
+    return $name;
+}

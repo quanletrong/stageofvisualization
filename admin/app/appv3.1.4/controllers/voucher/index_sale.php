@@ -8,6 +8,7 @@ $cur_uid = $this->_session_uid();
 $list_voucher = $this->Voucher_model->voucher_user_get_list('', $cur_uid);
 
 // lấy thông tin voucher từ ID trên
+$list = [];
 if (!empty($list_voucher)) {
 
     $arr_id = [];

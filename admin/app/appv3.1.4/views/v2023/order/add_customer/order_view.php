@@ -1,4 +1,7 @@
 <script>
+    // danh sách Voucher
+    VOUCHER = {}
+
     // chi tiết 1 JOB
     let JOB = {};
     JOB.image = '';
@@ -43,6 +46,7 @@
         border-left: 14px solid #007bff;
         float: inline-end;
     }
+
     .step-2-active::before {
         content: "";
         display: inline-block;
@@ -173,6 +177,11 @@
                 $('#list-price').html(price_html);
                 $('#total_price').html(total_price);
                 $('#thanh_toan_price').html(total_price);
+
+                // cập nhật lại giá
+                if (STATE.voucher != '') {
+                    ap_dung_voucher(STATE.voucher);
+                }
             } else {
                 scroll_to(error);
             }
@@ -207,7 +216,7 @@
                 success: function(data, textStatus, jqXHR) {
                     let res = JSON.parse(data);
                     if (res.status) {
-                        $(this).html('Hoàn thành');
+                        $('#submit-order').html('Tạo đơn hàng thành công!');
                         $("#modal-payment .username").val($('#user_username').val());
                         $("#modal-payment .fullname").val($('#user_fullname').val());
                         $("#modal-payment .email").val($('#user_email').val());
@@ -219,7 +228,8 @@
 
                         $("#modal-payment .back_to_order").attr('href', `order/detail/${res.data.new_id_order}`)
                     } else {
-                        alert(`Lỗi: ${res.data}`)
+                        alert(`Lỗi: ${res.data}`);
+                        $('#submit-order').html('Có lỗi! Vui lòng bấm tạo lại').prop("disabled", false);
                     }
 
                     console.log(data);
@@ -270,10 +280,25 @@
         let target = $(btn).data('target');
         let job_id = $(target).data('id');
         let attach_id = Date.now() + Object.keys(STATE.job[job_id].attach).length;
-        let attach_html = `<div style="position:relative" class="m-2">
-            <img src="${res.thumb}"  style="width:50px;aspect-ratio: 1; object-fit: cover;" class="shadow">
-            <i class="fas fa-times" style="position:absolute;right:-10px;top: -10px; color:red; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
-        </div>`;
+
+        let attach_html = ``;
+        if (res.thumb != '') {
+            attach_html =
+                `<div style="position:relative" class="m-2">
+                    <img src="${res.thumb}" style="width:50px;aspect-ratio: 1; object-fit: cover;" class="shadow">
+                    <i class="fas fa-times" style="position:absolute;right:-10px;top: -10px; color:red; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
+                </div>`
+        } else {
+            attach_html =
+                `<div style="position:relative" class="m-2">
+                    <div style="width:50px;aspect-ratio: 1; object-fit: cover;" class="shadow d-flex justify-content-center align-items-center flex-column">
+                        <i class="fa fa-paperclip" aria-hidden="true"></i>
+                        <p style="font-size:12px" class="text-truncate">${res.name}</p>
+                    </div>
+                    <i class="fas fa-times" style="position:absolute;right:-10px;top: -10px; color:red; cursor: pointer;" onclick="remove_attach(this, ${job_id}, ${attach_id})"></i>
+                </div>`
+        }
+
         $(`#${job_id}_attach_pre`).append(attach_html);
 
         $(btn).html(`Kéo file vào đây hoặc <span class="text-primary">Tải tệp lên</span>`);
@@ -477,7 +502,7 @@
     function onbefore_upload_image_attach(eventDrop, dropTo) {
 
         let job = eventDrop.target.dataset.job;
-        
+
         let html =
             `<div 
             class="position-relative image-hover p-2" 

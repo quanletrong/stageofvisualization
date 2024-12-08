@@ -16,7 +16,7 @@
 
         <div class="d-flex justify-content-between mt-2 w-100">
             <div>Ngày tạo</div>
-            <div><?= date('H:s | d-m-Y', strtotime($create_time)) ?></div>
+            <div><?= date('H:i | d-m-Y', strtotime($create_time)) ?></div>
         </div>
 
         <div class="d-flex justify-content-between mt-2 w-100">
@@ -29,15 +29,15 @@
             <div><?= $total ?> ảnh</div>
         </div>
 
-        <?php if ($price_vouchor > 0) { ?>
+        <?php if ($price_vou > 0) { ?>
             <div class="d-flex justify-content-between mt-2 w-100">
-                <div>Số tiền đơn</div>
+                <div>Tổng tiền</div>
                 <div class="text-danger" style="color:red; font-size: 1.25rem"><?= $price ?>$</div>
             </div>
 
             <div class="d-flex justify-content-between mt-2 w-100">
                 <div>Giảm giá</div>
-                <div class="text-danger" style="color:red; font-size: 1.25rem">-<?= $price_vouchor ?>$</div>
+                <div class="text-danger" style="color:red; font-size: 1.25rem">-<?= $price_vou ?>$</div>
             </div>
         <?php } ?>
 

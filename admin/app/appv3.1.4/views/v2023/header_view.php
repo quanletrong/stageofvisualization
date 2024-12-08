@@ -85,6 +85,12 @@
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item dropdown">
 					<a class="nav-link" data-toggle="dropdown" href="#" style="color: #161616;">
+
+						<?php
+						if (ENVIRONMENT == 'development') {
+							echo "<span class='text-red'>" . DB_MASTER_HOST . "</span>";
+						}
+						?>
 						<i class="fas fa-user" style="color: #858c93;"></i>
 						Hi! <strong><?= $this->session->userdata('fullname'); ?></strong>
 						<i class="fas fa-chevron-down" style="color: #858c93;"></i>

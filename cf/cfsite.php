@@ -66,3 +66,8 @@ define('FILE_REF', 2);
 define('FILE_COMPLETE', 3);
 define('FILE_REWORK', 4);
 define('FILE_DISCUSS', 5);
+
+define('VOUCHER_PERCENT', 1);
+define('VOUCHER_VND', 2);
+define('VOUCHER_USD', 3);
+define('VOUCHER_EUR', 4);

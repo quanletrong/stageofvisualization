@@ -15,7 +15,7 @@
 
         <p>Xin chào,</p>
         <p>
-            Hệ thống xin thông báo, đơn hàng <a href="<?= site_url('order/detail/' . $id_order) ?>">#<?=$id_order?></a> có thay đổi như sau:
+            Hệ thống xin thông báo, đơn hàng <a href="<?= site_url('order/detail/' . $id_order) ?>">#<?= $id_order ?></a> có thay đổi như sau:
         </p>
 
         <p>
@@ -31,6 +31,12 @@
         <div style="text-align: center; font-size: 12px; margin-top: 20px;">
             © <?= date("Y") ?> stageofvisualization.com
         </div>
+
+        <?php if (ENVIRONMENT == 'development') { ?>
+            <div style="text-align: center; font-size: 12px; margin-top: 20px;">
+                [EMAIL SENT BY DEVELOPER]
+            </div>
+        <?php } ?>
     </div>
 </body>
 

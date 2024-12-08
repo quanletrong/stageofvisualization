@@ -214,7 +214,7 @@
                     }
                 }
 
-                
+
                 //left
                 modal.find('.modal-title').text(`Sửa mã - ${voucher.code}`);
                 modal.find('.modal-body #code').val(voucher.code);
@@ -236,15 +236,14 @@
                 modal.find('.modal-body #code_user_used').val(`${voucher.code_user_used}`);
 
                 // ẩn hiện nút SAVE
-                if(het_han == '1') {
+                if (het_han == '1') {
                     $('#btn_save_voucher button').hide();
                     $('#btn_save_voucher .notice_save').show().text('Không thể chỉnh sửa do Voucher này đã hết hạn');
 
-                } 
-                else if(count_order > 0) {
+                } else if (count_order > 0) {
                     $('#btn_save_voucher button').hide();
                     $('#btn_save_voucher .notice_save').show().text('Không thể chỉnh sửa do Voucher này đã được sử dụng để thanh toán đơn hàng');
-                }else {
+                } else {
                     $('#btn_save_voucher button').show();
                     $('#btn_save_voucher .notice_save').hide();
                 }
@@ -257,7 +256,7 @@
                 modal.find('.modal-title').text(`Thêm mã giảm giá`);
                 modal.find('.modal-body #code').val('');
                 modal.find('.modal-body #note').val('');
-                modal.find('.modal-body #expire_date').val('');
+                modal.find('.modal-body #expire_date').val('<?= date("Y-m-d H:i:s") ?>');
                 modal.find('.modal-body #price').val('');
                 modal.find('.modal-body #limit').val(1);
                 modal.find('.modal-body #status').bootstrapSwitch('state', false);
@@ -278,6 +277,23 @@
 
             $('#voucher_user_sale').select2({});
             $('#voucher_user_khach').select2({});
+
+            $('#expire_date').daterangepicker({
+                "singleDatePicker": true,
+                "timePicker24Hour": true,
+                "timePicker": true,
+                "showDropdowns": true,
+                "autoApply": true,
+                "startDate": $('#expire_date').val(),
+                "endDate": $('#expire_date').val(),
+                "locale": {
+                    "format": 'YYYY-MM-DD HH:mm:ss'
+                }
+            }, function(start, end, label) {
+                console.log(start.format('YYYY-MM-D HH:mm:ss'))
+                // $('#hidden_create_time_set').val(start.format('YYYY-MM-D HH:mm:ss'));
+            });
         });
+
     });
 </script>

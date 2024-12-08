@@ -31,7 +31,7 @@ if (isset($_POST['action'])) {
     $code        = $code                   != '' ? $code : 0;
     $note        = $note                   != '' ? $note : 0;
     $price       = is_numeric($price) || $price > 0 ? $price : 0;
-    $price_unit  = in_array($price_unit, [1, 2, 3, 4]) ? $price_unit : 0;
+    $price_unit  = in_array($price_unit, [VOUCHER_PERCENT, VOUCHER_VND, VOUCHER_USD, VOUCHER_EUR]) ? $price_unit : 0;
     $limit       = is_numeric($limit) && $limit > 0 ? $limit : 0;
     $expire_date = strtotime($expire_date) == false ? 0 : $expire_date;
     $status      = $status                 == 'on' ? 0 : 1;
@@ -56,7 +56,7 @@ if (isset($_POST['action'])) {
     }
 
     // giảm giá theo phần trăm lớn hơn 100% => báo lỗi
-    if ($price_unit == 1 && $price > 100) {
+    if ($price_unit == VOUCHER_PERCENT && $price > 100) {
         $this->session->set_flashdata('flsh_msg', 'Giảm giá không được quá 100%!');
         redirect('voucher');
     }

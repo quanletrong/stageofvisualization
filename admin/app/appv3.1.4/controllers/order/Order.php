@@ -215,7 +215,7 @@ class Order extends MY_Controller
         $data['filter_custom']        = $filter_custom;
         $data['filter_page']          = $filter_page;
         $data['filter_row']           = $filter_row;
-        $data['total_page']           = ceil(count($list_order_all)/$filter_row);
+        $data['total_page']           = ceil(count($list_order_all) / $filter_row);
         $data['total_order']           = count($list_order_all);
 
         $data['all_service']    = $all_service;
@@ -476,9 +476,20 @@ class Order extends MY_Controller
         }
 
         // LƯU LICH SU THANH TOAN ORDER
-        $price_vou = isset($info_voucher['price']) ? $info_voucher['price'] : 0;
-        $code_vou  = isset($info_voucher['code']) ? $info_voucher['code'] : '';
-        $amount    = (float) ($total_price > $price_vou ? ($total_price - $price_vou) : 0);
+        $code_vou       = isset($info_voucher['code']) ? $info_voucher['code'] : '';
+        $price_vou      = isset($info_voucher['price']) ? $info_voucher['price'] : 0;
+        $price_unit_vou = isset($info_voucher['price_unit']) ? $info_voucher['price_unit'] : '';
+
+        // Tiền sau khi áp dụng voucher       
+        if ($price_unit_vou == VOUCHER_PERCENT) {
+            $price_vou = $total_price * $price_vou / 100; // 🔺 quy đổi % giảm giá thành tiền giảm giá
+            $amount  = (float) ($total_price  - $price_vou);
+        } else if ($price_unit_vou == VOUCHER_USD) {
+            $amount  = (float) ($total_price > $price_vou ? ($total_price - $price_vou) : 0);
+        } else {
+            $amount = $total_price;
+        }
+
         $don_khong_can_thanh_toan = $amount == 0 || $type_order == DON_NOI_BO;
         $don_can_thanh_toan       = $amount > 0 && $type_order == DON_TAO_HO;
 
@@ -515,7 +526,7 @@ class Order extends MY_Controller
                 'nguoi_tao'     => $nguoi_tao,
                 'total'         => count($list_job),
                 'price'         => $price,
-                'price_vouchor' => $price_vou,
+                'price_vou'     => $price_vou,
                 'amount'        => $amount
             ];
             $content = $this->load->view($this->_template_f . 'order/add_customer/temp_order_request', $temp, true);

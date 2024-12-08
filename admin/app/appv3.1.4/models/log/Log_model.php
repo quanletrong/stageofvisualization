@@ -99,7 +99,7 @@ class Log_model extends CI_Model
         $stmt->closeCursor();
 
         $typeNoEmail = [LOG_JOIN_ORDER, LOG_LEAVE_ORDER];
-        if(!in_array($type, $typeNoEmail)){
+        if (!in_array($type, $typeNoEmail)) {
             $this->_sendmail($type, $id_order, $id_rework, $id_job, $order, $price_username, $old, $new, $created_time, $by_username);
         }
 
@@ -204,7 +204,12 @@ class Log_model extends CI_Model
             }
 
             $email['to'] = implode(',', $email['to']);
-            $email['subject'] = "#$id_order " . LOG[$type];
+            if (ENVIRONMENT == 'development') {
+                $email['subject'] = "[DEVELOPER] #$id_order " . LOG[$type];
+            } else {
+                $email['subject'] = "#$id_order " . LOG[$type];
+            }
+
             $email['body']    = $this->load->view('v2023/component/tmpl_email_order', $data, true);
 
             @sendmail($email);

@@ -2,7 +2,7 @@
     <div class="fw-semibold fs-5 mb-3 d-flex">
         <div style="width: 33%;text-align: center;background: #bbbbbb;color: white;">LỰA CHỌN KHÁCH HÀNG</div>
         <div style="width: 34%;text-align: center;background: #bbbbbb;color: white;">NỘI DUNG ĐƠN HÀNG</div>
-        <div class="step-3-active"" style="width: 33%;text-align: center;background: #007bff;color: white;">THANH TOÁN</div>
+        <div class="step-3-active" style="width: 33%;text-align: center;background: #007bff;color: white;">THANH TOÁN</div>
     </div>
     <div class="row">
         <div class="col-12">
@@ -28,12 +28,16 @@
 
                 <div id="button_voucher" style="display: none;">
                     <div class="fw-bold mt-2 mb-2 d-flex justify-content-between">
-                        <a class="btn btn-warning btn-sm" style="display: flex;align-items: center;gap: 10px">
-                            <i class="fas fa-gift"></i>
-                            <div class="code_voucher"></div>
-                            <div style="color:red; margin-left: 30px;">$ <span class="price_voucher"></span></div>
-                        </a>
-                        <div>Giảm $ <strong class="price_voucher"></strong></div>
+                        <div style="display: flex; gap:10px">
+                            <a class="btn btn-warning btn-sm" style="display: flex;align-items: center;gap: 10px">
+                                <i class="fas fa-gift"></i>
+                                <div class="code_voucher"></div>
+                                <div style="color:red; margin-left: 30px;">-<span class="price_voucher"></span> <span class="price_unit"></span></div>
+                            </a>
+                            <button class="btn text-red" type="button" onclick=remove_voucher()>Bỏ mã</button>
+                        </div>
+
+                        <div>Giảm <strong class="price_voucher"></strong> <strong class="price_unit"></strong></div>
                     </div>
                 </div>
 
@@ -77,7 +81,7 @@
                         <tr>
                             <th>Mã</th>
                             <th>Mô tả</th>
-                            <th width="100" class="text-center">Giá trị $</th>
+                            <th width="100" class="text-center">Giá trị</th>
                             <th width="100" class="text-center">Còn lại</th>
                             <th width="100"></th>
                         </tr>
@@ -157,6 +161,12 @@
                     Object.entries(kq.data).forEach((entry) => {
                         const [key, value] = entry;
 
+                        // nếu voucher đã được chọn thì button màu xanh, chưa chọn màu đỏ
+                        let button_ap_dung = `<a class="btn btn-danger btn-sm" onclick="ap_dung_voucher(${key})">Áp dụng</a>`;
+                        if (key == STATE.voucher) {
+                            button_ap_dung = `<a class="btn btn-success btn-sm" onclick="ap_dung_voucher(${key})">Đang áp dụng</a>`;
+                        }
+
                         voucher_html += `
                         <tr>
                             <td>
@@ -164,13 +174,16 @@
                                 <small>HSD: ${value.expire_view}</small>
                             </td>
                             <td>${value.note}</td>
-                            <td class="text-center">${value.price} $</td>
-                            <td class="text-center">${value.limit - value.total}</td>
-                            <td><a class="btn btn-danger btn-sm" onclick="ap_dung_voucher(${key}, '${value.code}', '${value.price}')">Áp dụng</a></td>
+                            <td class="text-center"> ${value.price} ${unit_name(value.price_unit)} </td>
+                            <td class="text-center">${value.limit - value.total} lượt</td>
+                            <td>${button_ap_dung}</td>
                         </tr>`
                     });
 
-                    $('#modal-voucher .modal-body .voucher tbody').html(voucher_html)
+                    $('#modal-voucher .modal-body .voucher tbody').html(voucher_html);
+
+                    // lưu vào biến 
+                    VOUCHER = kq.data;
 
                 } else {
                     toasts_danger(kq.error);
@@ -183,33 +196,74 @@
         });
     }
 
-    function ap_dung_voucher(id_voucher, code, price_voucher) {
+    function ap_dung_voucher(id_voucher) {
 
-        price_voucher = parseFloat(price_voucher);
+        let code = VOUCHER[id_voucher].code;
+        let price_voucher = VOUCHER[id_voucher].price;
+        let price_unit = VOUCHER[id_voucher].price_unit;
+
+        price = parseFloat(price_voucher);
+        price_unit = parseInt(price_unit);
         let total_price = parseFloat($('#total_price').text());
 
         $('#button_voucher .code_voucher').text(code);
         $('#button_voucher .price_voucher').text(price_voucher);
+        $('#button_voucher .price_unit').text(unit_name(price_unit));
         $('#button_voucher').show();
 
         let thanh_toan_price = 0;
-        if (total_price > price_voucher) {
-            thanh_toan_price = total_price - price_voucher;
+        // giảm %
+        if (price_unit == <?= VOUCHER_PERCENT ?>) {
+            thanh_toan_price = total_price - (total_price * price_voucher / 100);
+            thanh_toan_price = thanh_toan_price.toFixed(2);
+        }
+        // giảm $
+        else if (price_unit == <?= VOUCHER_USD ?>) {
+            if (total_price > price_voucher) {
+                thanh_toan_price = total_price - price_voucher;
+            } else {
+                thanh_toan_price = 0;
+            }
+        }
+        // khác báo lỗi
+        else {
+            alert('Chỉ áp dụng mã % hoặc USD vào lúc này!')
         }
 
         $('#thanh_toan_price').text(thanh_toan_price)
 
         STATE.voucher = id_voucher;
+
+        $('#modal-voucher').modal('hide');
     }
 
     function remove_voucher() {
-        $('#button_voucher').hide();
-
-        let total_price = $('#total_price').html(total_price);
-
+        let total_price = $('#total_price').text();
         $('#thanh_toan_price').text(total_price)
+        $('#button_voucher').hide();
+        STATE.voucher = '';
+    }
 
-        STATE.voucher = id_voucher;
+    function unit_name(key) {
+        let unit = '';
+        switch (parseInt(key)) {
+            case <?= VOUCHER_PERCENT ?>:
+                unit = '%'
+                break;
+            case <?= VOUCHER_VND ?>:
+                unit = '₫'
+                break;
+            case <?= VOUCHER_USD ?>:
+                unit = '$'
+                break;
+            case <?= VOUCHER_EUR ?>:
+                unit = '€'
+                break;
+            default:
+                break;
+        }
+
+        return unit;
     }
 </script>
 
