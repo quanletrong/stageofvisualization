@@ -58,6 +58,7 @@ define('FOLDER_LIBRARY', 'uploads/library/');
 define('FOLDER_LIBRARY_THUMB', 'uploads/library/thumb/');
 define('FOLDER_ORDER', 'uploads/order/');
 define('FOLDER_CHAT_TONG', 'uploads/chat_tong/');
+define('FOLDER_CHAT_TONG_THUMB', 'uploads/chat_tong/thumb/');
 define('FOLDER_HIW', 'uploads/hiw/');
 
 define('FILE_MAIN', 1);
