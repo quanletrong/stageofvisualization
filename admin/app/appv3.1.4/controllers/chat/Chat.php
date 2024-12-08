@@ -275,6 +275,12 @@ class Chat extends MY_Controller
             !$copy['status'] ? resError($copy['error']) : '';
             $id_attach = generateRandomNumber();
             $db_attach[$id_attach] = $copy['basename'];
+
+            // nếu file là ảnh thì copy to thumb
+            if(stringIsImage($url_file)) {
+                $copyThumb = copy_image_to_thumb($url_file, FOLDER_CHAT_TONG_THUMB, THUMB_WIDTH, THUMB_HEIGHT);
+                !$copyThumb['status'] ? resError($copyThumb['error']) : '';
+            }
         }
 
         // luu vao bang tbl_msg
@@ -434,7 +440,12 @@ class Chat extends MY_Controller
 
             // xoa file cu
             foreach($info['file_list'] as $file) {
+                //xóa file
                 @unlink($_SERVER['DOCUMENT_ROOT'] . '/' . FOLDER_CHAT_TONG . $file);
+                //xóa thumb
+                if(stringIsImage($file)) {
+                    @unlink($_SERVER['DOCUMENT_ROOT'] . '/' . FOLDER_CHAT_TONG_THUMB . $file);
+                }
             }
 
             resSuccess($text_del);
