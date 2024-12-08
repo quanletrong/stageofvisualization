@@ -99,8 +99,4 @@ class Backup extends MY_Controller
     {
         require_once('order_unlink.php');
     }
-
-    function chat_image_to_thumb(){
-        require_once('chat_image_to_thumb.php');
-    }
 }

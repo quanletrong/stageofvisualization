@@ -377,6 +377,7 @@
         for (const [id_file, file] of Object.entries(file_list)) {
 
             let src_file = `<?= url_image('', FOLDER_CHAT_TONG) ?>${file}`;
+            let src_file_thumb = `<?= url_image('', FOLDER_CHAT_TONG . 'thumb/') ?>${file}`;
 
             list_file +=
                 `${
@@ -384,7 +385,7 @@
                     ? 
                     `<a data-src="${src_file}" data-fancybox="gallery" data-caption="${timeSince}">
                         <img 
-                            src="${src_file}" 
+                            src="${src_file_thumb}" 
                             class="rounded border" 
                             style="cursor: pointer; max-width:${max_width}; ${ratio_imgae}"
                         >
