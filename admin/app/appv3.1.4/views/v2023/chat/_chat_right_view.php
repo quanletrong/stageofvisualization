@@ -20,7 +20,8 @@
         color: black;
     }
 
-    .msg-item:hover .btn-xoa-msg {
+    .msg-item:hover .btn-xoa-msg,
+    .msg-item:hover .btn-reply-msg {
         display: block !important;
     }
 </style>
@@ -48,18 +49,17 @@
                     <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
                     <div class="chat_list_attach d-flex flex-wrap"></div>
 
-                    <textarea 
-                        name="message" 
-                        class="form-control content_chat bg-white" 
-                        style="padding-right: 33px; resize: none; overflow-y: auto;" 
-                        data-callback="cb_upload_add_file_attach_chat" 
+                    <textarea
+                        name="message"
+                        class="form-control content_chat bg-white"
+                        style="padding-right: 33px; resize: none; overflow-y: auto;"
+                        data-callback="cb_upload_add_file_attach_chat"
                         data-onbefore="onbefore_upload_add_file_attach_chat"
                         data-onprogress="onprogress_upload_add_file_attach_chat"
                         data-onsuccess="onsuccess_upload_add_file_attach_chat"
                         data-onerror="onerror_upload_add_file_attach_chat"
-                        onpaste="quanlt_handle_paste_image(event)" 
-                        ondrop="quanlt_handle_drop_file(event)"
-                    ></textarea>
+                        onpaste="quanlt_handle_paste_image(event)"
+                        ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                     <div style="height: fit-content; position: absolute; bottom: 10px; right:20px">
                         <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_msg_add_to_group(this)"><i class="fas fa-paper-plane"></i></button>
@@ -410,11 +410,20 @@
             xoa = `
                 <div style="width:20px; cursor: pointer;" onclick="ajax_del_msg_group(${id_msg})">
                     <div class="btn-xoa-msg" style="display:none">
-                        <i class="fas fa-trash" style="font-size: 0.75rem; color: red"></i>
+                        <i class="fas fa-trash" style="font-size: 0.75rem; color: gray"></i>
                     </div>
                 </div>`;
         <?php } ?>
         // END NUT XÓA
+
+        // NUT REPLY
+        let reply = `
+            <div style="width:20px; cursor: pointer;" onclick="reply_msg(${id_msg}, '${content.replace(/[\r\n'"“”‘’]+/g, " ")}', '${fullname_user}')">
+                <div class="btn-reply-msg" style="display:none">
+                    <i class="fas fa-reply" style="font-size: 0.75rem; color: gray"></i>
+                </div>
+            </div>`;
+        // END NUT REPLY
 
         let html = ``;
         if (<?= $cur_uid ?> == id_user) {
@@ -430,7 +439,10 @@
                 </div>
                 <div class="d-flex justify-content-end" style="gap:10px; margin-left: 40px;">
                 
-                    ${xoa}
+                    <div class="d-flex align-items-center gap-1">
+                        ${xoa}
+                        ${reply}
+                    </div>                   
 
                     <div style="display: flex; flex-direction: column; align-items: flex-end;">
 
@@ -491,7 +503,10 @@
                                 <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
                             </div>
                             
-                            ${xoa}
+                            <div class="d-flex align-items-center gap-1">
+                                ${reply}
+                                ${xoa}
+                            </div>  
                         </div>
                        
                     </div>
@@ -587,7 +602,11 @@
     }
 
     function onsuccess_upload_add_file_attach_chat(eventDrop, success, dropTo) {
-        let {link, name, thumb} = success;
+        let {
+            link,
+            name,
+            thumb
+        } = success;
         $(`#file_attach_${dropTo} .percent`).hide();
         $(`#file_attach_${dropTo} .file`).show();
         $(`#file_attach_${dropTo}`).data('file', link);
@@ -614,5 +633,33 @@
 
         let new_height = windown_height - card_header - nhap_du_lieu_chat - 30;
         $('#chat_right .list-chat').css('height', new_height + 'px');
+    }
+
+    function reply_msg(id_msg, content, fullname_user) {
+        
+        content == '' ? content = 'Đính kèm' : '';
+        content.length > 50 ? content = content.slice(0, 50) + "..." : '';
+
+        fullname_user == '<?= strtoupper($cur_fullname) ?>' ? fullname_user = `chính mình` : '';
+        let html = `
+        <div class="d-flex justify-content-between align-items-center rounded mb-1" style="background: #f0f0f0;padding: 5px 10px; width: 100%;">
+            <div>
+                <div class="fw-bold">Đang trả lời ${fullname_user}</div>
+                <div>
+                    <div style="white-space: pre-line; font-size:14px">"${content}"</div>
+                </div>
+            </div>
+            <div style="cursor: pointer;" onclick="remove_reply()"><i class="fas fa-times"></i></div>
+        </div>`;
+
+        $('#chat_right .chat_list_attach').html(`${html}`);
+        $('#chat_right .content_chat').focus();
+
+        set_vh_list_chat();
+    }
+
+    function remove_reply(){
+        $('#chat_right .chat_list_attach').html('');
+        set_vh_list_chat();
     }
 </script>

@@ -61,6 +61,7 @@ class Chat extends MY_Controller
         $active_gchat = isIdNumber($active_gchat) ? $active_gchat : '';
         $data['active_gchat'] = $active_gchat;
         $data['cur_uid'] = $this->_session_uid();
+        $data['cur_fullname'] = $this->_session_fullname();
         $data['all_member'] = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE, QC, EDITOR]));
 
         $header = [
@@ -226,14 +227,14 @@ class Chat extends MY_Controller
         $page_msg = removeAllTags($this->input->post('page_msg'));
 
         // check page khong hop le return rong
-        if(!is_numeric($page_msg) || $page_msg < 1) {
+        if (!is_numeric($page_msg) || $page_msg < 1) {
             resSuccess($data);
         }
         // end check page
-        
+
         // gioi han moi lan lay tin nhan
-        $limit = 20; 
-        $offset = $page_msg == 1 ? 0 : ($page_msg-1) * $limit;
+        $limit = 20;
+        $offset = $page_msg == 1 ? 0 : ($page_msg - 1) * $limit;
 
         $list_group = $this->Chat_model->list_group_by_user($curr_uid);
 
@@ -277,7 +278,7 @@ class Chat extends MY_Controller
             $db_attach[$id_attach] = $copy['basename'];
 
             // nếu file là ảnh thì copy to thumb
-            if(stringIsImage($url_file)) {
+            if (stringIsImage($url_file)) {
                 $copyThumb = copy_image_to_thumb($url_file, FOLDER_CHAT_TONG_THUMB, THUMB_WIDTH, THUMB_HEIGHT);
                 !$copyThumb['status'] ? resError($copyThumb['error']) : '';
             }
@@ -439,17 +440,16 @@ class Chat extends MY_Controller
             $this->Chat_model->delete_msg_group($id_msg, $text_del);
 
             // xoa file cu
-            foreach($info['file_list'] as $file) {
+            foreach ($info['file_list'] as $file) {
                 //xóa file
                 @unlink($_SERVER['DOCUMENT_ROOT'] . '/' . FOLDER_CHAT_TONG . $file);
                 //xóa thumb
-                if(stringIsImage($file)) {
+                if (stringIsImage($file)) {
                     @unlink($_SERVER['DOCUMENT_ROOT'] . '/' . FOLDER_CHAT_TONG_THUMB . $file);
                 }
             }
 
             resSuccess($text_del);
-
         } else {
             resSuccess('Message invalid!');
         }
