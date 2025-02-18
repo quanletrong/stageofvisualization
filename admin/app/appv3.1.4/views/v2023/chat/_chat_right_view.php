@@ -47,6 +47,7 @@
             <div class="mt-2 nhap_du_lieu_chat">
                 <div style="position:relative; margin:5px" class="rounded">
                     <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
+                    <div class="chat_reply d-flex flex-wrap"></div>
                     <div class="chat_list_attach d-flex flex-wrap"></div>
 
                     <textarea
@@ -418,7 +419,7 @@
 
         // NUT REPLY
         let reply = `
-            <div style="width:20px; cursor: pointer;" onclick="reply_msg(${id_msg}, '${content.replace(/[\r\n'"“”‘’]+/g, " ")}', '${fullname_user}')">
+            <div style="width:20px; cursor: pointer;" onclick="reply_msg(${id_msg}, '${content.replace(/[\r\n'"“”‘’]+/g, " ")}', '${fullname_user}', '${id_user}')">
                 <div class="btn-reply-msg" style="display:none">
                     <i class="fas fa-reply" style="font-size: 0.75rem; color: gray"></i>
                 </div>
@@ -635,12 +636,12 @@
         $('#chat_right .list-chat').css('height', new_height + 'px');
     }
 
-    function reply_msg(id_msg, content, fullname_user) {
+    function reply_msg(id_msg, content, fullname_user,id_user) {
         
         content == '' ? content = 'Đính kèm' : '';
         content.length > 50 ? content = content.slice(0, 50) + "..." : '';
 
-        fullname_user == '<?= strtoupper($cur_fullname) ?>' ? fullname_user = `chính mình` : '';
+        id_user == '<?= $cur_uid ?>' ? fullname_user = `chính mình` : '';
         let html = `
         <div class="d-flex justify-content-between align-items-center rounded mb-1" style="background: #f0f0f0;padding: 5px 10px; width: 100%;">
             <div>
@@ -652,14 +653,14 @@
             <div style="cursor: pointer;" onclick="remove_reply()"><i class="fas fa-times"></i></div>
         </div>`;
 
-        $('#chat_right .chat_list_attach').html(`${html}`);
+        $('#chat_right .chat_reply').html(`${html}`);
         $('#chat_right .content_chat').focus();
 
         set_vh_list_chat();
     }
 
     function remove_reply(){
-        $('#chat_right .chat_list_attach').html('');
+        $('#chat_right .chat_reply').html('');
         set_vh_list_chat();
     }
 </script>

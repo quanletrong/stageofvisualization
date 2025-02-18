@@ -143,8 +143,6 @@ class MY_Controller extends CI_Controller
     protected function _session_fullname()
     {
         $fullname = $this->session->userdata('fullname');
-        $fullname = strtolower($fullname);
-        $fullname = preg_match('/^[a-z0-9_@\-\.]+$/', $fullname) ? $fullname : '';
         return $fullname;
     }
 

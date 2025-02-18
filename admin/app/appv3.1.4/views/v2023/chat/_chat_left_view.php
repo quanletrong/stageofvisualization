@@ -37,7 +37,7 @@
                     <?php } else { ?>
                         <?php $user = array_shift($list_group['members'][$id_group]); ?>
                         <div style="min-width: 50px; width: 50px; aspect-ratio: 1; border-radius: 50%; border: 1px solid #dedede; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.23rem;">
-                            <img src="<?= $user['avatar_url'] ?>" class="img-circle avatar" alt="<?= $user['fullname'] ?>" style="object-fit: cover; aspect-ratio: 1; width: 100%;">
+                            <img src="<?= $user['avatar_url'] ?>" class="img-circle avatar" style="object-fit: cover; aspect-ratio: 1; width: 100%;">
                         </div>
                     <?php } ?>
 
