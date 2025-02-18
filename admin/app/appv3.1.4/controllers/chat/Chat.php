@@ -164,7 +164,8 @@ class Chat extends MY_Controller
         $new_id_group = $this->Chat_model->add_group($name, $avatar, $curr_uid, $create_time);
 
         // thêm tin nhắn đầu tiên
-        $new_id_msg = $this->Chat_model->msg_add_to_group($new_id_group, $curr_uid, '<i>Đã tạo đoạn chat.</i>', '{}', $create_time, '', '', '', '', '', $curr_uid);
+        $reply = '{}';
+        $new_id_msg = $this->Chat_model->msg_add_to_group($new_id_group, $curr_uid, '<i>Đã tạo đoạn chat.</i>', '{}', $create_time, $reply);
 
         // thêm thành viên vào nhóm
         foreach ($member as $id_member) {
@@ -256,8 +257,9 @@ class Chat extends MY_Controller
     {
         $action_by = $this->_session_uid();
         // check right
-        $content = removeAllTags($this->input->post('content'));
-        $attach = $this->input->post('attach');
+        $content      = removeAllTags($this->input->post('content'));
+        $attach       = $this->input->post('attach');
+        $id_msg_reply = removeAllTags($this->input->post('id_msg_reply'));
 
         $list_group = $this->Chat_model->list_group_by_user($action_by);
         isset($list_group['list'][$id_gchat]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
@@ -283,12 +285,21 @@ class Chat extends MY_Controller
                 !$copyThumb['status'] ? resError($copyThumb['error']) : '';
             }
         }
+        // reply info (nếu có)
+        $db_reply = '{}';
+        if (is_numeric($id_msg_reply) && $id_msg_reply > 0) {
+            $msg_reply_info = $this->Chat_model->msg_info($id_msg_reply);
+            if ($msg_reply_info !== false) {
+                $db_reply =  json_encode($msg_reply_info, JSON_FORCE_OBJECT);
+            }
+        }
+
 
         // luu vao bang tbl_msg
         $create_time = date('Y-m-d H:i:s');
         $db_attach =  json_encode($db_attach, JSON_FORCE_OBJECT);
 
-        $new_id_msg = $this->Chat_model->msg_add_to_group($id_gchat, $action_by, $content, $db_attach, $create_time);
+        $new_id_msg = $this->Chat_model->msg_add_to_group($id_gchat, $action_by, $content, $db_attach, $create_time, $db_reply);
 
         $gchat_info = $this->Chat_model->gchat_info($id_gchat, $action_by);
 
@@ -397,7 +408,8 @@ class Chat extends MY_Controller
                 $log[] = '<i>Đã đổi tên đoạn chat thành <u>' . $name_post . '</u></i>';
             }
 
-            $new_id_msg = $this->Chat_model->msg_add_to_group($id_group, $curr_uid, implode('<br>', $log), '{}', $create_time, '', '', '', '', '', $curr_uid);
+            $reply = '{}';
+            $new_id_msg = $this->Chat_model->msg_add_to_group($id_group, $curr_uid, implode('<br>', $log), '{}', $create_time, $reply);
 
             // đồng bộ sang bảng tbl_msg_user
             $gchat_info = $this->Chat_model->gchat_info($id_group, $curr_uid);

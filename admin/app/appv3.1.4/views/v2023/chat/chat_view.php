@@ -109,6 +109,9 @@
         page_msg = 1;
         on_load_page_msg = 1;
         $('#chat_right .list-chat').html('');
+        $('#chat_right .content_chat').val('');
+        $('#chat_right .chat_reply').html('');
+        $('#chat_right .chat_list_attach').html('');
 
         ajax_list_msg_by_group(id_group);
 
@@ -260,7 +263,8 @@
             content,
             avatar_url,
             create_time,
-            action_by
+            action_by,
+            reply
         } = data;
 
         let el_gchat_left = $(`[id='${id_gchat}']`);
@@ -281,7 +285,7 @@
             // update bên phải nếu nhóm đang active
             let isActiveRight = el_gchat_left.hasClass('active');
             if (isActiveRight) {
-                let new_html = html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname);
+                let new_html = html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname, reply);
                 $('#chat_right .list-chat').prepend(new_html);
                 $('#chat_right .time').html('');
                 $('#chat_right .time:first').html('vài giây trước');

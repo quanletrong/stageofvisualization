@@ -524,15 +524,15 @@ class Chat_model extends CI_Model
         return $data;
     }
 
-    function msg_add_to_group($id_gchat, $id_user, $content, $file, $create_time)
+    function msg_add_to_group($id_gchat, $id_user, $content, $file, $create_time, $reply)
     {
         $new_id = 0;
         $iconn = $this->db->conn_id;
         $ip = ip_address();
-        $sql = "INSERT INTO tbl_chat__msg (id_user, content, file, create_time, id_gchat, ip) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tbl_chat__msg (id_user, content, file, create_time, id_gchat, ip, reply) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$id_user, $content, $file, $create_time, $id_gchat, $ip];
+            $param = [$id_user, $content, $file, $create_time, $id_gchat, $ip, $reply];
 
             if ($stmt->execute($param)) {
                 $new_id = $iconn->lastInsertId();

@@ -196,9 +196,10 @@
                             fullname_user,
                             content,
                             avatar_url,
+                            reply,
                             create_time
                         } = chat;
-                        new_msg += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user)
+                        new_msg += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user, reply)
                     }
 
                     // set next page
@@ -310,6 +311,7 @@
             data: {
                 'content': content,
                 'attach': attach,
+                'id_msg_reply': $('#id_msg_reply').val()
             },
             success: function(data, textStatus, jqXHR) {
                 let kq = JSON.parse(data);
@@ -360,7 +362,9 @@
         }
     }
 
-    function html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user) {
+    function html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user, reply_db) {
+        console.log(reply_db);
+
 
         let timeSince = _.timeSince(create_time);
         let width_right = $('#chat_right .list-chat').width();
@@ -428,6 +432,27 @@
 
         let html = ``;
         if (<?= $cur_uid ?> == id_user) {
+
+            // REPLY DB (nếu có)
+            let reply_right_html = '';
+            try {
+                let reply_json = JSON.parse(reply_db);
+                let reply_for = reply_json.id_user == '<?= $cur_uid ?>' ? 'chính mình' : reply_json.fullname;
+                reply_right_html = `
+                <div>
+                    <div class="d-flex justify-content-end" style="font-size: 13px; color: gray">Bạn đã trả lời tin nhắn của ${reply_for}</div>
+                    <div class="d-flex justify-content-end">
+                        <div style="font-size: 13px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #68b3ff">
+                            ${reply_json.content == '' ? 'Đính kèm' : reply_json.content}
+                        </div>
+                    </div>
+                </div>`;
+            } catch (error) {
+                console.log(error.message);
+                
+            }
+            // END REPLY DB 
+
             html = `
             <div id="msg_${id_msg}" 
                 class="mt-3 me-2 msg-item" 
@@ -435,11 +460,14 @@
                 data-time="${create_time}"
                 title="${timeSince}"
             >
+                
                 <div class="time_msg" style="display:none; text-align:center">
                     <small style="color:#7c7c7c;">${timeSince}</small>
                 </div>
+
+                ${reply_right_html}
+
                 <div class="d-flex justify-content-end" style="gap:10px; margin-left: 40px;">
-                
                     <div class="d-flex align-items-center gap-1">
                         ${xoa}
                         ${reply}
@@ -460,14 +488,32 @@
                             </div>`
                             : ``
                         }
-
                         <small style="" class="time" title="${create_time}"></small>
-                    </div>
-                    
+                    </div>                            
                 </div>
-                
             </div>`;
         } else {
+
+            // REPLY DB (nếu có)
+            let reply_left_html = '';
+            try {
+                let reply_json = JSON.parse(reply_db);
+                let reply_for = reply_json.id_user == '<?= $cur_uid ?>' ? 'chính mình' : reply_json.fullname;
+                reply_left_html = `
+                <div style="margin-left: 40px;">
+                    <div class="d-flex" style="font-size: 13px; color: gray">${fullname_user} đã trả lời tin nhắn của ${reply_for}</div>
+                    <div class="d-flex">
+                        <div style="font-size: 13px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #68b3ff">
+                            ${reply_json.content == '' ? 'Đính kèm' : reply_json.content}
+                        </div>
+                    </div>
+                </div>`;
+            } catch (error) {
+                console.log(error.message);
+                
+            }
+            // END REPLY DB 
+
             html = `
             <div id="msg_${id_msg}" 
                 class="mt-3 me-2 msg-item" 
@@ -478,6 +524,9 @@
                 <div class="time_msg" style="display:none; text-align:center">
                     <small style="color:#7c7c7c;">${timeSince}</small>
                 </div>
+
+                ${reply_left_html}
+
                 <div style="display:flex; justify-content: flex-start; gap:10px; align-items: flex-end;">
                     <img class="rounded-circle border avatar" style="width:30px; aspect-ratio: 1;object-fit: cover;height: 30px;" src="${avatar_url}">
                     <div>
@@ -636,13 +685,14 @@
         $('#chat_right .list-chat').css('height', new_height + 'px');
     }
 
-    function reply_msg(id_msg, content, fullname_user,id_user) {
-        
+    function reply_msg(id_msg, content, fullname_user, id_user) {
+
         content == '' ? content = 'Đính kèm' : '';
         content.length > 50 ? content = content.slice(0, 50) + "..." : '';
 
         id_user == '<?= $cur_uid ?>' ? fullname_user = `chính mình` : '';
         let html = `
+        <input type="hidden" id="id_msg_reply" value="${id_msg}">
         <div class="d-flex justify-content-between align-items-center rounded mb-1" style="background: #f0f0f0;padding: 5px 10px; width: 100%;">
             <div>
                 <div class="fw-bold">Đang trả lời ${fullname_user}</div>
@@ -659,7 +709,7 @@
         set_vh_list_chat();
     }
 
-    function remove_reply(){
+    function remove_reply() {
         $('#chat_right .chat_reply').html('');
         set_vh_list_chat();
     }
