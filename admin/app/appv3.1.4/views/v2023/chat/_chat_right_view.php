@@ -199,7 +199,7 @@
                             reply,
                             create_time
                         } = chat;
-                        new_msg += html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user, reply)
+                        new_msg += html_item_chat(id_group, id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user, reply)
                     }
 
                     // set next page
@@ -321,6 +321,7 @@
                     // reset form nhập
                     $('#chat_right .content_chat').val('').attr('rows', 2);
                     $('#chat_right .chat_list_attach').html('');
+                    $('#chat_right .chat_reply').html('');
 
                     // build html chat
                     socket.emit('add-msg-to-gchat', kq.data);
@@ -362,9 +363,7 @@
         }
     }
 
-    function html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user, reply_db) {
-        console.log(reply_db);
-
+    function html_item_chat(id_group, id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user, reply_db) {
 
         let timeSince = _.timeSince(create_time);
         let width_right = $('#chat_right .list-chat').width();
@@ -440,16 +439,19 @@
                 let reply_for = reply_json.id_user == '<?= $cur_uid ?>' ? 'chính mình' : reply_json.fullname;
                 reply_right_html = `
                 <div>
-                    <div class="d-flex justify-content-end" style="font-size: 13px; color: gray">Bạn đã trả lời tin nhắn của ${reply_for}</div>
+                    <div class="d-flex justify-content-end" style="font-size: 12px; color: gray">Bạn đã trả lời tin nhắn của ${reply_for}</div>
                     <div class="d-flex justify-content-end">
-                        <div style="font-size: 13px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #68b3ff">
+                        <div 
+                            onclick="scroll_to_msg(${reply_json.id_msg}, ${id_group})"
+                            style="font-size: 12px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #c9c9c9; cursor: pointer"
+                        >
                             ${reply_json.content == '' ? 'Đính kèm' : reply_json.content}
                         </div>
                     </div>
                 </div>`;
             } catch (error) {
                 console.log(error.message);
-                
+
             }
             // END REPLY DB 
 
@@ -498,19 +500,22 @@
             let reply_left_html = '';
             try {
                 let reply_json = JSON.parse(reply_db);
-                let reply_for = reply_json.id_user == '<?= $cur_uid ?>' ? 'chính mình' : reply_json.fullname;
+                let reply_for = reply_json.id_user == '<?= $cur_uid ?>' ? 'bạn' : reply_json.fullname;
                 reply_left_html = `
-                <div style="margin-left: 40px;">
-                    <div class="d-flex" style="font-size: 13px; color: gray">${fullname_user} đã trả lời tin nhắn của ${reply_for}</div>
+                <div>
+                    <div class="d-flex" style="font-size: 12px; color: gray">Đã trả lời tin nhắn của ${reply_for}</div>
                     <div class="d-flex">
-                        <div style="font-size: 13px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #68b3ff">
+                        <div 
+                            style="font-size: 12px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #c9c9c9; cursor: pointer"
+                            onclick="scroll_to_msg(${reply_json.id_msg}, ${id_group})"
+                        >
                             ${reply_json.content == '' ? 'Đính kèm' : reply_json.content}
                         </div>
                     </div>
                 </div>`;
             } catch (error) {
                 console.log(error.message);
-                
+
             }
             // END REPLY DB 
 
@@ -525,14 +530,14 @@
                     <small style="color:#7c7c7c;">${timeSince}</small>
                 </div>
 
-                ${reply_left_html}
-
                 <div style="display:flex; justify-content: flex-start; gap:10px; align-items: flex-end;">
                     <img class="rounded-circle border avatar" style="width:30px; aspect-ratio: 1;object-fit: cover;height: 30px;" src="${avatar_url}">
                     <div>
                         <div class="fullname" style="display:block; display: flex; justify-content: space-between; gap:20px">
                             <small style="color:#7c7c7c;">${fullname_user}</small> 
                         </div>
+
+                        ${reply_left_html}
                     
                         <div style="display:flex; gap:10px;">
                             <div>
@@ -712,5 +717,31 @@
     function remove_reply() {
         $('#chat_right .chat_reply').html('');
         set_vh_list_chat();
+    }
+
+    function scroll_to_msg(id_msg, id_group) {
+        // msg đã tìm thấy thì scroll đến luôn
+        if ($(`#msg_${id_msg}`).length) {
+            $(".list-chat").animate({
+                scrollTop: $(".list-chat").scrollTop() + $(`#msg_${id_msg}`).position().top - 100
+            }, 500);
+
+            $(`#msg_${id_msg}`).css('background', '#f0f0f0');
+            setTimeout(() => {
+                $(`#msg_${id_msg}`).css('background', '');
+            }, 3000);
+
+        } else {
+
+            // cuộn lên đâu list chat để load thêm msg
+            $(".list-chat").animate({
+                scrollTop: -$(".list-chat")[0].scrollHeight
+            }, 500);
+
+            // 1 giây sau gọi lại hàm scroll_to_msg để tìm msg
+            setTimeout(() => {
+                scroll_to_msg(id_msg, id_group);
+            }, 1000);
+        }
     }
 </script>

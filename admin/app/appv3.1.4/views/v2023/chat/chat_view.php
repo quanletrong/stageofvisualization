@@ -285,7 +285,7 @@
             // update bên phải nếu nhóm đang active
             let isActiveRight = el_gchat_left.hasClass('active');
             if (isActiveRight) {
-                let new_html = html_item_chat(id_msg, file_list, id_user, content, avatar_url, create_time, fullname, reply);
+                let new_html = html_item_chat(id_gchat, id_msg, file_list, id_user, content, avatar_url, create_time, fullname, reply);
                 $('#chat_right .list-chat').prepend(new_html);
                 $('#chat_right .time').html('');
                 $('#chat_right .time:first').html('vài giây trước');

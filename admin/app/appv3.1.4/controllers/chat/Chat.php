@@ -164,7 +164,7 @@ class Chat extends MY_Controller
         $new_id_group = $this->Chat_model->add_group($name, $avatar, $curr_uid, $create_time);
 
         // thêm tin nhắn đầu tiên
-        $reply = '{}';
+        $reply = null;
         $new_id_msg = $this->Chat_model->msg_add_to_group($new_id_group, $curr_uid, '<i>Đã tạo đoạn chat.</i>', '{}', $create_time, $reply);
 
         // thêm thành viên vào nhóm
@@ -286,10 +286,11 @@ class Chat extends MY_Controller
             }
         }
         // reply info (nếu có)
-        $db_reply = '{}';
+        $db_reply = null;
         if (is_numeric($id_msg_reply) && $id_msg_reply > 0) {
+
             $msg_reply_info = $this->Chat_model->msg_info($id_msg_reply);
-            if ($msg_reply_info !== false) {
+            if (is_array($msg_reply_info)) {
                 $db_reply =  json_encode($msg_reply_info, JSON_FORCE_OBJECT);
             }
         }
@@ -324,6 +325,7 @@ class Chat extends MY_Controller
         $socket['avatar_url']  = $msg_info['avatar_url'];
         $socket['create_time'] = $msg_info['create_time'];
         $socket['fullname']    = $msg_info['fullname'];
+        $socket['reply']       = $msg_info['reply'];
 
         resSuccess($socket);
     }
@@ -408,7 +410,7 @@ class Chat extends MY_Controller
                 $log[] = '<i>Đã đổi tên đoạn chat thành <u>' . $name_post . '</u></i>';
             }
 
-            $reply = '{}';
+            $reply = null;
             $new_id_msg = $this->Chat_model->msg_add_to_group($id_group, $curr_uid, implode('<br>', $log), '{}', $create_time, $reply);
 
             // đồng bộ sang bảng tbl_msg_user
