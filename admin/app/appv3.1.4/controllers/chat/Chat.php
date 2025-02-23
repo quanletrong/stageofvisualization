@@ -493,4 +493,50 @@ class Chat extends MY_Controller
 
         resSuccess($number);
     }
+
+    function ajax_set_reaction($id_msg)
+    {
+        $action_by =  $this->_session_uid();
+        $fullname =  $this->_session_fullname();
+        $id_msg = isIdNumber($id_msg) ? $id_msg : 0;
+        $reaction = $this->input->post('reaction', false);
+
+        if (!in_array($reaction, ['❤️', '😂', '👍', '😢', '😲', '😡'])) {
+            resError('Reaction không hợp lệ');
+        }
+
+        $info = $this->Chat_model->msg_info($id_msg);
+        !empty($info) ? '' : resError('Tin nhắn không tồn tại');
+
+        $list_group = $this->Chat_model->list_group_by_user($action_by);
+        isset($list_group['list'][$info['id_gchat']]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+
+        $this->Chat_model->set_reaction($id_msg, $reaction, $action_by, $fullname);
+        resSuccess('ok');
+    }
+
+    function ajax_list_reaction_msg()
+    {
+        $data = [];
+        $ok_id_lisst = [];
+        $id_str = removeAllTags($this->input->post('list_id_msg'));
+        $id_list = explode(',', $id_str);
+
+        foreach ($id_list as $id) {
+            if (isIdNumber($id)) $ok_id_lisst[] = $id;
+        }
+
+        if (empty($ok_id_lisst)) return resError('Danh sách id không hợp lệ');
+
+        $list = $this->Chat_model->list_reaction_msg($ok_id_lisst);
+
+        foreach ($list as $it) {
+
+            $reaction = $it['reaction'];
+            $fullname = $it['fullname'];
+
+            $data[$it['id_msg']][$reaction][] = $fullname;
+        }
+        resSuccess($data);
+    }
 }

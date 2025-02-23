@@ -24,6 +24,20 @@
     .msg-item:hover .btn-reply-msg {
         display: block !important;
     }
+
+    .msg-item:hover .btn-reaction-msg {
+        display: block !important;
+    }
+
+    .btn-reaction-msg:hover .choose-reaction {
+        display: flex !important;
+    }
+
+    .icon-reaction:hover {
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
+        transform: scale(1.2);
+    }
 </style>
 <div id="chat_right" class="card mb-0" style="width: 100%; display: none;">
     <div class="card-header text-white p-1">
@@ -187,6 +201,7 @@
                     } = kq.data;
 
                     let new_msg = ``;
+                    let list_id_msg = [];
                     for (const [key, chat] of Object.entries(list)) {
 
                         let {
@@ -200,6 +215,8 @@
                             create_time
                         } = chat;
                         new_msg += html_item_chat(id_group, id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user, reply)
+
+                        list_id_msg.push(id_msg);
                     }
 
                     // set next page
@@ -208,6 +225,10 @@
                     $('#chat_right .list-chat .fa-sync').parent().remove(); // xoa spin chat
                     $('#chat_right .list-chat').append(new_msg);
                     $('#chat_right .time:first').html('&nbsp');
+
+                    if (list_id_msg.length > 0) {
+                        ajax_list_reaction_msg(list_id_msg.join());
+                    }
 
                     gom_avatar_fullname_time_gan_nhau();
 
@@ -374,112 +395,51 @@
         let max_width = _.isMobile() ? max_width_image_mb : max_width_image_pc;
 
         let ratio_imgae = total_file > 1 ? 'aspect-ratio: 1;object-fit: cover;' : '';
+        let role = '<?= $role ?>';
+        let admin = '<?= ADMIN ?>';
+        let cur_uid = '<?= $cur_uid ?>';
 
-        // LIST FILE
-        let list_file = ``;
-
-        for (const [id_file, file] of Object.entries(file_list)) {
-
-            let src_file = `<?= url_image('', FOLDER_CHAT_TONG) ?>${file}`;
-            let src_file_thumb = `<?= url_image('', FOLDER_CHAT_TONG . 'thumb/') ?>${file}`;
-
-            list_file +=
-                `${
-                    _.isImage(file)
-                    ? 
-                    `<a data-src="${src_file}" data-fancybox="gallery" data-caption="${timeSince}">
-                        <img 
-                            src="${src_file_thumb}" 
-                            class="rounded border" 
-                            style="cursor: pointer; max-width:${max_width}; ${ratio_imgae}"
-                        >
-                    </a>`
-                    :
-                    `<div 
-                        onclick="_.downloadURI('${src_file}', '${file}')" 
-                        class="rounded border p-2 text-truncate bg-light" 
-                        style="cursor: pointer; width: 200px;line-break: anywhere; text-align:center;"
-                    >
-                        <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
-                        <span style="font-size:12px;">${file}</span>
-                    </div>
-                    `
-                }`;
-        }
-        // END LIST FILE
+        // HTML LIST FILE
+        let html_list_file = render_files_msg(file_list, timeSince, max_width, ratio_imgae)
 
         // NUT XÓA
-        let xoa = '';
-        <?php if ($role == ADMIN) { ?>
-            xoa = `
-                <div style="width:20px; cursor: pointer;" onclick="ajax_del_msg_group(${id_msg})">
-                    <div class="btn-xoa-msg" style="display:none">
-                        <i class="fas fa-trash" style="font-size: 0.75rem; color: gray"></i>
-                    </div>
-                </div>`;
-        <?php } ?>
-        // END NUT XÓA
+        let html_btn_xoa = role == admin ? render_xoa_msg(id_msg) : '';
 
         // NUT REPLY
-        let reply = `
-            <div style="width:20px; cursor: pointer;" onclick="reply_msg(${id_msg}, '${content.replace(/[\r\n'"“”‘’]+/g, " ")}', '${fullname_user}', '${id_user}')">
-                <div class="btn-reply-msg" style="display:none">
-                    <i class="fas fa-reply" style="font-size: 0.75rem; color: gray"></i>
-                </div>
-            </div>`;
-        // END NUT REPLY
+        let html_btn_reply = render_btn_reply_msg(id_msg, content, fullname_user, id_user);
+
+        // NUT REPLY
+        let html_btn_reaction = render_btn_reaction(id_msg, cur_uid, id_user);
+
+        // NUT REACTION
+        let html_msg_reaction = render_msg_reaction([]);
+
+        // HTML REPLY
+        let html_has_reply = render_msg_has_reply(reply_db, cur_uid, id_user, id_group);
 
         let html = ``;
-        if (<?= $cur_uid ?> == id_user) {
-
-            // REPLY DB (nếu có)
-            let reply_right_html = '';
-            try {
-                let reply_json = JSON.parse(reply_db);
-                let reply_for = reply_json.id_user == '<?= $cur_uid ?>' ? 'chính mình' : reply_json.fullname;
-                reply_right_html = `
-                <div>
-                    <div class="d-flex justify-content-end" style="font-size: 12px; color: gray">Bạn đã trả lời tin nhắn của ${reply_for}</div>
-                    <div class="d-flex justify-content-end">
-                        <div 
-                            onclick="scroll_to_msg(${reply_json.id_msg}, ${id_group})"
-                            style="font-size: 12px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #c9c9c9; cursor: pointer"
-                        >
-                            ${reply_json.content == '' ? 'Đính kèm' : reply_json.content}
-                        </div>
-                    </div>
-                </div>`;
-            } catch (error) {
-                console.log(error.message);
-
-            }
-            // END REPLY DB 
-
+        if (cur_uid == id_user) {
             html = `
-            <div id="msg_${id_msg}" 
-                class="mt-3 me-2 msg-item" 
-                data-by="${id_user}" 
-                data-time="${create_time}"
-                title="${timeSince}"
-            >
+            <div id="msg_${id_msg}" class="mt-3 me-2 msg-item" data-by="${id_user}" data-time="${create_time}" title="${timeSince}">
                 
                 <div class="time_msg" style="display:none; text-align:center">
                     <small style="color:#7c7c7c;">${timeSince}</small>
                 </div>
 
-                ${reply_right_html}
+                ${html_has_reply}
 
                 <div class="d-flex justify-content-end" style="gap:10px; margin-left: 40px;">
-                    <div class="d-flex align-items-center gap-1">
-                        ${xoa}
-                        ${reply}
+                    <div class="d-flex align-items-center" style="gap:8px">
+                        ${html_btn_xoa}
+                        ${html_btn_reply}
+                        ${html_btn_reaction}
                     </div>                   
 
                     <div style="display: flex; flex-direction: column; align-items: flex-end;">
 
                         ${
-                            list_file != ''
-                            ?`<div class="rounded d-flex justify-content-end mb-1" style="flex-wrap: wrap; gap:5px;">${list_file}</div>`
+                            html_list_file != ''
+                            ?`<div class="rounded d-flex justify-content-end mb-1" style="flex-wrap: wrap; gap:5px;">${html_list_file}</div>`
                             : ``
                         }
 
@@ -487,6 +447,7 @@
                             content != ''
                             ? `<div class="rounded mb-1" style="background: #e1f0ff; padding: 5px 10px; width: fit-content;">
                                 <div style="white-space: pre-line;">${content}</div>
+                                <div class="msg-reaction">${html_msg_reaction}</div>
                             </div>`
                             : ``
                         }
@@ -495,37 +456,8 @@
                 </div>
             </div>`;
         } else {
-
-            // REPLY DB (nếu có)
-            let reply_left_html = '';
-            try {
-                let reply_json = JSON.parse(reply_db);
-                let reply_for = reply_json.id_user == '<?= $cur_uid ?>' ? 'bạn' : reply_json.fullname;
-                reply_left_html = `
-                <div>
-                    <div class="d-flex" style="font-size: 12px; color: gray">Đã trả lời tin nhắn của ${reply_for}</div>
-                    <div class="d-flex">
-                        <div 
-                            style="font-size: 12px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #c9c9c9; cursor: pointer"
-                            onclick="scroll_to_msg(${reply_json.id_msg}, ${id_group})"
-                        >
-                            ${reply_json.content == '' ? 'Đính kèm' : reply_json.content}
-                        </div>
-                    </div>
-                </div>`;
-            } catch (error) {
-                console.log(error.message);
-
-            }
-            // END REPLY DB 
-
             html = `
-            <div id="msg_${id_msg}" 
-                class="mt-3 me-2 msg-item" 
-                data-by="${id_user}" 
-                data-time="${create_time}"
-                title="${timeSince}"
-            >
+            <div id="msg_${id_msg}" class="mt-3 me-2 msg-item" data-by="${id_user}" data-time="${create_time}" title="${timeSince}">
                 <div class="time_msg" style="display:none; text-align:center">
                     <small style="color:#7c7c7c;">${timeSince}</small>
                 </div>
@@ -537,20 +469,22 @@
                             <small style="color:#7c7c7c;">${fullname_user}</small> 
                         </div>
 
-                        ${reply_left_html}
+                        ${html_has_reply}
                     
                         <div style="display:flex; gap:10px;">
                             <div>
                                 ${
-                                    list_file != ''
-                                    ?`<div class="rounded d-flex mb-1" style="gap:5px; flex-wrap: wrap;">${list_file}</div>`
+                                    html_list_file != ''
+                                    ?`<div class="rounded d-flex mb-1" style="gap:5px; flex-wrap: wrap;">${html_list_file}</div>`
                                     : ``
                                 }
 
                                 ${
                                     content != ''
-                                    ? `<div class="rounded mb-1" style="background: #f0f0f0;padding: 5px 10px; width: fit-content;">
+                                    ? `
+                                    <div class="rounded mb-1" style="background: #f0f0f0;padding: 5px 10px; width: fit-content;">
                                         <div style="white-space: pre-line; word-break: break-word;"> ${content}</div>
+                                        <div class="msg-reaction">${html_msg_reaction}</div>
                                     </div>`
                                     : ``
                                 }
@@ -558,12 +492,12 @@
                                 <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
                             </div>
                             
-                            <div class="d-flex align-items-center gap-1">
-                                ${reply}
-                                ${xoa}
+                            <div class="d-flex align-items-center" style="gap:8px">
+                                ${html_btn_reaction}
+                                ${html_btn_reply}
+                                ${html_btn_xoa}
                             </div>  
                         </div>
-                       
                     </div>
                 </div>
             </div>`;
@@ -690,7 +624,7 @@
         $('#chat_right .list-chat').css('height', new_height + 'px');
     }
 
-    function reply_msg(id_msg, content, fullname_user, id_user) {
+    function click_reply_msg(id_msg, content, fullname_user, id_user) {
 
         content == '' ? content = 'Đính kèm' : '';
         content.length > 50 ? content = content.slice(0, 50) + "..." : '';
@@ -743,5 +677,219 @@
                 scroll_to_msg(id_msg, id_group);
             }, 1000);
         }
+    }
+
+    // render html nút xóa tin nhắn
+    function render_xoa_msg(id_msg) {
+        return `
+            <div style="width:20px; cursor: pointer;" onclick="ajax_del_msg_group(${id_msg})">
+                <div class="btn-xoa-msg" style="display:none">
+                    <i class="fas fa-trash" style="font-size: 0.85rem; color: gray"></i>
+                </div>
+            </div>`;
+    }
+
+    // render html nút trả lời tin nhắn
+    function render_btn_reply_msg(id_msg, content, fullname_user, id_user) {
+        return `
+            <div
+                style="width:20px; cursor: pointer;" 
+                onclick="click_reply_msg(${id_msg}, '${content.replace(/[\r\n'"“”‘’]+/g, " ")}', '${fullname_user}', '${id_user}')"
+            >
+                <div class="btn-reply-msg" style="display:none">
+                    <i class="fas fa-reply" style="font-size: 0.85rem; color: gray"></i>
+                </div>
+            </div>`;
+    }
+
+    // render html nút reaction tin nhắn
+    function render_btn_reaction(id_msg, cur_uid, id_user) {
+
+        // tùy vào tin nhắn mà hiện vị trí nút reaction
+        let position = ``;
+        if (cur_uid == id_user) {
+            position = 'position: absolute; right:0; flex-direction: row-reverse;';
+        } else {
+            position = 'position: absolute; left:0';
+        }
+
+        return `
+            <div
+                style="width:20px; cursor: pointer;" onclick=""
+            >
+                <div class="btn-reaction-msg position-relative" style="display:none">
+                    <i class="fas fa-smile" style="font-size: 0.85rem; color: gray"></i>
+                    <div class="choose-reaction" style="${position}; display: none; gap: 12px; background: #f0f0f0; padding: 2px 4px; border-radius:10px">
+                        <div onclick="ajax_set_reaction(${id_msg}, '❤️')" class="icon-reaction" title="Yêu thích">❤️</div>
+                        <div onclick="ajax_set_reaction(${id_msg}, '😂')" class="icon-reaction" title="Haha">😂</div>
+                        <div onclick="ajax_set_reaction(${id_msg}, '👍')" class="icon-reaction" title="Thích">👍</div>
+                        <div onclick="ajax_set_reaction(${id_msg}, '😢')" class="icon-reaction" title="Buồn">😢</div>
+                        <div onclick="ajax_set_reaction(${id_msg}, '😲')" class="icon-reaction" title="Wow">😲</div>
+                        <div onclick="ajax_set_reaction(${id_msg}, '😡')" class="icon-reaction" title="Phẫn nộ">😡</div>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    // render html danh sách reaction của tin nhắn
+    function render_msg_reaction(reaction) {
+
+        console.log(reaction);
+
+
+        let list_icon_reaction = Object.keys(reaction);
+        let html_icon_all = ``;
+        list_icon_reaction.forEach(icon => {
+            html_icon_all += `<div>${icon}</div>`
+        })
+
+        if (list_icon_reaction.length == 0) {
+            return '';
+        } else {
+            return `
+            <div style="display: flex;justify-content: flex-end;gap: 5px;background: aliceblue;border-radius: 10px;padding: 0 10px; width: fit-content;">
+                ${html_icon_all}
+                <div>${list_icon_reaction.length}</div>
+            </div>`;
+        }
+    }
+
+    // tin nhắn đang có reply
+    function render_msg_has_reply(reply_db, cur_uid, id_user, id_group) {
+
+        if (reply_db == '' || reply_db == null) {
+            return '';
+        }
+
+        try {
+            let {
+                fullname,
+                id_msg,
+                content
+            } = JSON.parse(reply_db);
+
+            // reply right (chính mình)
+            if (cur_uid == id_user) {
+                let reply_for = reply_db.id_user == cur_uid ? 'chính mình' : fullname;
+                return `
+                <div>
+                    <div class="d-flex justify-content-end" style="font-size: 12px; color: gray">Bạn đã trả lời tin nhắn của ${reply_for}</div>
+                    <div class="d-flex justify-content-end">
+                        <div 
+                            onclick="scroll_to_msg(${id_msg}, ${id_group})"
+                            style="font-size: 12px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #c9c9c9; cursor: pointer"
+                        >
+                            ${content == '' ? 'Đính kèm' : content}
+                        </div>
+                    </div>
+                </div>`
+            }
+            // reply left (người khác)
+            else {
+                let reply_for = reply_db.id_user == cur_uid ? 'bạn' : fullname;
+                return `
+                <div>
+                    <div class="d-flex" style="font-size: 12px; color: gray">Đã trả lời tin nhắn của ${reply_for}</div>
+                    <div class="d-flex">
+                        <div 
+                            style="font-size: 12px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #c9c9c9; cursor: pointer"
+                            onclick="scroll_to_msg(${id_msg}, ${id_group})"
+                        >
+                            ${content == '' ? 'Đính kèm' : content}
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    // render list file trong tin nhắn
+    function render_files_msg(file_list, timeSince, max_width, ratio_imgae) {
+
+        let html_list_file = '';
+        for (const [id_file, file] of Object.entries(file_list)) {
+
+            let src_file = `<?= url_image('', FOLDER_CHAT_TONG) ?>${file}`;
+            let src_file_thumb = `<?= url_image('', FOLDER_CHAT_TONG . 'thumb/') ?>${file}`;
+
+            html_list_file +=
+                `
+                ${_.isImage(file)
+                ? 
+                `<a data-src="${src_file}" data-fancybox="gallery" data-caption="${timeSince}">
+                    <img 
+                        src="${src_file_thumb}" 
+                        class="rounded border" 
+                        style="cursor: pointer; max-width:${max_width}; ${ratio_imgae}"
+                    >
+                </a>`
+                :
+                `<div 
+                    onclick="_.downloadURI('${src_file}', '${file}')" 
+                    class="rounded border p-2 text-truncate bg-light" 
+                    style="cursor: pointer; width: 200px;line-break: anywhere; text-align:center;"
+                >
+                    <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
+                    <span style="font-size:12px;">${file}</span>
+                </div>
+                `
+            }`;
+        }
+
+        return html_list_file;
+    }
+
+    // set reaction cho tin nhắn
+    function ajax_set_reaction(id_msg, reaction) {
+        $.ajax({
+            url: `chat/ajax_set_reaction/${id_msg}`,
+            type: "POST",
+            data: {
+                'reaction': reaction
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    $(`#msg_${id_msg} .msg-reaction`).html(kq.data);
+                } else {
+                    alert(kq.error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    // lấy list reaction theo list id_msg
+    function ajax_list_reaction_msg(list_id_msg) {
+        $.ajax({
+            url: `chat/ajax_list_reaction_msg`,
+            type: "POST",
+            data: {
+                'list_id_msg': list_id_msg
+            },
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    for (const [id_msg, reaction] of Object.entries(kq.data)) {
+                        let html_icons = render_msg_reaction(reaction);
+                        $(`#msg_${id_msg} .msg-reaction`).html(html_icons);
+                    }
+                } else {
+                    alert(kq.error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
     }
 </script>

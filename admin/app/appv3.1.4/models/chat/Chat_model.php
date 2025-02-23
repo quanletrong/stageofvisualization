@@ -398,7 +398,6 @@ class Chat_model extends CI_Model
                     $msg_newest = isset($data['msg_newest'][$id_gchat]) ? $data['msg_newest'][$id_gchat] : [];
                     $data['list'][$id_gchat]['msg_newest'] = $msg_newest;
                 }
-
             } else {
                 var_dump($stmt->errorInfo());
                 die;
@@ -552,8 +551,8 @@ class Chat_model extends CI_Model
         $sql = "INSERT INTO tbl_chat__msg_user (id_gchat, id_msg, id_user, created_time) VALUES ";
 
         //set other member = chua xem
-        $value=[];
-        foreach($member_ids as $id_user) {
+        $value = [];
+        foreach ($member_ids as $id_user) {
             $value[] = "($id_gchat, $id_msg, $id_user, '$created_time')";
         }
         $sql .= implode(', ', $value) . ";";
@@ -664,7 +663,7 @@ class Chat_model extends CI_Model
     {
         $execute = false;
         $iconn = $this->db->conn_id;
-        
+
         $sql = "DELETE FROM `tbl_chat__all_group` WHERE `id_gchat` = '$id_gchat'; ";
         $sql .= "DELETE FROM `tbl_chat__member_group` WHERE `id_gchat` = '$id_gchat'; ";
         $sql .= "DELETE FROM `tbl_chat__msg` WHERE `id_gchat` = '$id_gchat'; ";
@@ -705,7 +704,8 @@ class Chat_model extends CI_Model
         return $execute;
     }
 
-    function count_msg_chua_xem($id_user) {
+    function count_msg_chua_xem($id_user)
+    {
         $data = [];
         $iconn = $this->db->conn_id;
 
@@ -725,4 +725,52 @@ class Chat_model extends CI_Model
         return $data['num'];
     }
     // END GROUP
+
+    function set_reaction($id_msg, $reaction, $id_user, $fullname)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT INTO tbl_chat__reaction (id_msg, reaction, id_user, fullname) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE reaction = ?;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_msg, $reaction, $id_user, $fullname, $reaction];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function list_reaction_msg($id_list)
+    {
+        $list_reaction = [];
+        $iconn = $this->db->conn_id;
+
+        if (empty($id_list)) {
+            return $list_reaction; // Trả về mảng rỗng nếu không có ID nào
+        }
+
+        // Tạo chuỗi placeholder "?, ?, ?" tương ứng với số ID trong mảng
+        $placeholders = rtrim(str_repeat('?,', count($id_list)), ',');
+
+        $sql = "SELECT * FROM tbl_chat__reaction WHERE id_msg IN ($placeholders)";
+        $stmt = $iconn->prepare($sql);
+
+        if ($stmt) {
+            if ($stmt->execute($id_list)) { // Bind danh sách ID
+                $list_reaction = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $list_reaction;
+    }
 }
