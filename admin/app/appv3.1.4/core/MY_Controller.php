@@ -251,6 +251,8 @@ class MY_Controller extends CI_Controller
                     'ajax_del_msg_group' => [SALE, QC, EDITOR],
                     'ajax_delete_gchat' => [SALE, QC, EDITOR],
                     'ajax_count_msg_chua_xem' => [],
+                    'ajax_set_reaction' => [],
+                    'ajax_list_reaction_msg' => [],
                 ],
                 'discuss' => [
                     'ajax_discuss_list_khach' => [QC, EDITOR],
