@@ -38,6 +38,12 @@
         transition: transform 0.2s ease-in-out;
         transform: scale(1.2);
     }
+
+    #modal_show_all_reaction .reaction-item:hover {
+        cursor: pointer;
+        background: #f0f0f0;
+        border-radius: 15px;
+    }
 </style>
 <div id="chat_right" class="card mb-0" style="width: 100%; display: none;">
     <div class="card-header text-white p-1">
@@ -56,7 +62,7 @@
     </div>
     <div class="card-body bg-white p-1">
         <div style="display: flex; flex-direction: column; justify-content: flex-end;">
-            <div class="list-chat" style="height: 81vh; overflow-y: auto; padding-right: 10px; display: flex;
+            <div class="list-chat" style="height: 81vh; overflow-y: auto; padding-right: 10px; padding-bottom: 10px; display: flex;
     flex-direction: column-reverse;"></div>
             <div class="mt-2 nhap_du_lieu_chat">
                 <div style="position:relative; margin:5px" class="rounded">
@@ -227,7 +233,7 @@
                     $('#chat_right .time:first').html('&nbsp');
 
                     if (list_id_msg.length > 0) {
-                        ajax_list_reaction_msg(list_id_msg.join());
+                        ajax_list_reaction_many_msg(list_id_msg.join());
                     }
 
                     gom_avatar_fullname_time_gan_nhau();
@@ -445,12 +451,13 @@
 
                         ${
                             content != ''
-                            ? `<div class="rounded mb-1" style="background: #e1f0ff; padding: 5px 10px; width: fit-content;">
+                            ? `
+                            <div class="rounded mb-1" style="background: #e1f0ff; padding: 5px 10px; width: fit-content;">
                                 <div style="white-space: pre-line;">${content}</div>
-                                <div class="msg-reaction">${html_msg_reaction}</div>
                             </div>`
                             : ``
                         }
+                            <div class="msg-reaction" onclick="show_all_reaction('${id_msg}')">${html_msg_reaction}</div>
                         <small style="" class="time" title="${create_time}"></small>
                     </div>                            
                 </div>
@@ -484,11 +491,10 @@
                                     ? `
                                     <div class="rounded mb-1" style="background: #f0f0f0;padding: 5px 10px; width: fit-content;">
                                         <div style="white-space: pre-line; word-break: break-word;"> ${content}</div>
-                                        <div class="msg-reaction">${html_msg_reaction}</div>
                                     </div>`
                                     : ``
                                 }
-                                
+                                <div class="msg-reaction" onclick="show_all_reaction('${id_msg}')">${html_msg_reaction}</div>
                                 <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
                             </div>
                             
@@ -720,12 +726,10 @@
                 <div class="btn-reaction-msg position-relative" style="display:none">
                     <i class="fas fa-smile" style="font-size: 0.85rem; color: gray"></i>
                     <div class="choose-reaction" style="${position}; display: none; gap: 12px; background: #f0f0f0; padding: 2px 4px; border-radius:10px">
-                        <div onclick="ajax_set_reaction(${id_msg}, '❤️')" class="icon-reaction" title="Yêu thích">❤️</div>
-                        <div onclick="ajax_set_reaction(${id_msg}, '😂')" class="icon-reaction" title="Haha">😂</div>
-                        <div onclick="ajax_set_reaction(${id_msg}, '👍')" class="icon-reaction" title="Thích">👍</div>
-                        <div onclick="ajax_set_reaction(${id_msg}, '😢')" class="icon-reaction" title="Buồn">😢</div>
-                        <div onclick="ajax_set_reaction(${id_msg}, '😲')" class="icon-reaction" title="Wow">😲</div>
-                        <div onclick="ajax_set_reaction(${id_msg}, '😡')" class="icon-reaction" title="Phẫn nộ">😡</div>
+
+                    <?php foreach (REACTION as $key => $rat) { ?>
+                        <div onclick="ajax_set_reaction(${id_msg}, '<?= $key ?>')" class="icon-reaction" title="<?= $rat['title'] ?>"><?= $rat['icon'] ?></div>
+                    <?php } ?>
                     </div>
                 </div>
             </div>`;
@@ -734,22 +738,21 @@
     // render html danh sách reaction của tin nhắn
     function render_msg_reaction(reaction) {
 
-        console.log(reaction);
-
-
+        let reaction_cf = <?= json_encode(REACTION) ?>;
         let list_icon_reaction = Object.keys(reaction);
-        let html_icon_all = ``;
+        let html_list_icon = ``;
         list_icon_reaction.forEach(icon => {
-            html_icon_all += `<div>${icon}</div>`
+            html_list_icon += `<div>${reaction_cf[icon]['icon']}</div>`
         })
 
         if (list_icon_reaction.length == 0) {
             return '';
         } else {
+            let total_reaction = Object.values(reaction).reduce((acc, arr) => acc + arr.length, 0);
             return `
             <div style="display: flex;justify-content: flex-end;gap: 5px;background: aliceblue;border-radius: 10px;padding: 0 10px; width: fit-content;">
-                ${html_icon_all}
-                <div>${list_icon_reaction.length}</div>
+                ${html_list_icon}
+                <div>${total_reaction}</div>
             </div>`;
         }
     }
@@ -854,7 +857,12 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    $(`#msg_${id_msg} .msg-reaction`).html(kq.data);
+                    $(`#msg_${id_msg} .msg-reaction`).html(render_msg_reaction(kq.data));
+                    // build html chat
+                    socket.emit('set-reaction', {
+                        id_msg: id_msg,
+                        reaction: kq.data
+                    });
                 } else {
                     alert(kq.error);
                 }
@@ -867,9 +875,9 @@
     }
 
     // lấy list reaction theo list id_msg
-    function ajax_list_reaction_msg(list_id_msg) {
+    function ajax_list_reaction_many_msg(list_id_msg) {
         $.ajax({
-            url: `chat/ajax_list_reaction_msg`,
+            url: `chat/ajax_list_reaction_many_msg`,
             type: "POST",
             data: {
                 'list_id_msg': list_id_msg
@@ -882,6 +890,89 @@
                         let html_icons = render_msg_reaction(reaction);
                         $(`#msg_${id_msg} .msg-reaction`).html(html_icons);
                     }
+                } else {
+                    alert(kq.error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    // modal show all reaction
+    function show_all_reaction(id_msg) {
+        let html = `
+        <div class="modal fade" id="modal_show_all_reaction" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cảm xúc về tin nhắn</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="list_reaction modal-body">
+                        <center><i class="fas fa-sync fa-spin"></i></center>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        $('#modal_show_all_reaction').remove();
+        $('body').append(html);
+
+        $('#modal_show_all_reaction').modal('show');
+
+        $.ajax({
+            url: `chat/ajax_list_reaction_msg/${id_msg}`,
+            type: "POST",
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    let reaction_cf = <?= json_encode(REACTION) ?>;
+                    let html = ``;
+
+                    kq.data.forEach(reaction => {
+                        let id_raction = reaction['reaction'];
+                        let fullname = reaction['fullname'];
+                        let remove_reaction = reaction['id_user'] == '<?= $cur_uid ?>' ? `ajax_remove_reaction(this, '${id_msg}')` : '';
+                        html += `
+                        <div class="reaction-item d-flex justify-content-between p-2 my-2" onclick="${remove_reaction}">
+                            <div>${fullname}</div>
+                            <div style="display: flex;flex-direction: column;align-items: flex-end;">
+                                <div>${reaction_cf[id_raction]['icon']}</div>
+                                <div style="font-size:12px; color: gray">${reaction['id_user'] == '<?= $cur_uid ?>' ? `Bấm để gỡ` : ''}</div>
+                            </div>
+                        </div>`;
+                    })
+
+                    $('#modal_show_all_reaction .list_reaction').html(html);
+                } else {
+                    alert(kq.error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(data);
+                alert('Error');
+            }
+        });
+    }
+
+    // xóa gỡ bỏ reaction tin nhắn
+    function ajax_remove_reaction(el, id_msg) {
+
+        $(el).remove();
+        $.ajax({
+            url: `chat/ajax_remove_reaction/${id_msg}`,
+            type: "POST",
+            success: function(data, textStatus, jqXHR) {
+                let kq = JSON.parse(data);
+
+                if (kq.status) {
+                    $(`#msg_${id_msg} .msg-reaction`).html(render_msg_reaction(kq.data));
                 } else {
                     alert(kq.error);
                 }

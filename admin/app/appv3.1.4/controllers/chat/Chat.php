@@ -499,9 +499,9 @@ class Chat extends MY_Controller
         $action_by =  $this->_session_uid();
         $fullname =  $this->_session_fullname();
         $id_msg = isIdNumber($id_msg) ? $id_msg : 0;
-        $reaction = $this->input->post('reaction', false);
+        $reaction = removeAllTags($this->input->post('reaction'));
 
-        if (!in_array($reaction, ['❤️', '😂', '👍', '😢', '😲', '😡'])) {
+        if (!isset(REACTION[$reaction])) {
             resError('Reaction không hợp lệ');
         }
 
@@ -512,10 +512,17 @@ class Chat extends MY_Controller
         isset($list_group['list'][$info['id_gchat']]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
 
         $this->Chat_model->set_reaction($id_msg, $reaction, $action_by, $fullname);
-        resSuccess('ok');
+
+        // lấy lại list reaction trả về cho FE
+        $res = [];
+        $list_reaction = $this->Chat_model->list_reaction_msg($id_msg);
+        foreach ($list_reaction as $it) {
+            $res[$it['reaction']][] = $it['fullname'];
+        }
+        resSuccess($res);
     }
 
-    function ajax_list_reaction_msg()
+    function ajax_list_reaction_many_msg()
     {
         $data = [];
         $ok_id_lisst = [];
@@ -528,7 +535,7 @@ class Chat extends MY_Controller
 
         if (empty($ok_id_lisst)) return resError('Danh sách id không hợp lệ');
 
-        $list = $this->Chat_model->list_reaction_msg($ok_id_lisst);
+        $list = $this->Chat_model->list_reaction_many_msg($ok_id_lisst);
 
         foreach ($list as $it) {
 
@@ -538,5 +545,31 @@ class Chat extends MY_Controller
             $data[$it['id_msg']][$reaction][] = $fullname;
         }
         resSuccess($data);
+    }
+
+    function ajax_list_reaction_msg($id_msg)
+    {
+        resSuccess($this->Chat_model->list_reaction_msg(removeAllTags($id_msg)));
+    }
+
+    function ajax_remove_reaction($id_msg) {
+        $action_by =  $this->_session_uid();
+        $id_msg = isIdNumber($id_msg) ? $id_msg : 0;
+
+        $info = $this->Chat_model->msg_info($id_msg);
+        !empty($info) ? '' : resError('Tin nhắn không tồn tại');
+
+        $list_group = $this->Chat_model->list_group_by_user($action_by);
+        isset($list_group['list'][$info['id_gchat']]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+
+        $this->Chat_model->remove_reaction($id_msg, $action_by);
+
+        // lấy lại list reaction trả về cho FE
+        $res = [];
+        $list_reaction = $this->Chat_model->list_reaction_msg($id_msg);
+        foreach ($list_reaction as $it) {
+            $res[$it['reaction']][] = $it['fullname'];
+        }
+        resSuccess($res);
     }
 }

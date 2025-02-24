@@ -746,7 +746,7 @@ class Chat_model extends CI_Model
         return $execute;
     }
 
-    function list_reaction_msg($id_list)
+    function list_reaction_many_msg($id_list)
     {
         $list_reaction = [];
         $iconn = $this->db->conn_id;
@@ -772,5 +772,46 @@ class Chat_model extends CI_Model
 
         $stmt->closeCursor();
         return $list_reaction;
+    }
+
+    function list_reaction_msg($id_msg)
+    {
+        $list_reaction = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT * FROM tbl_chat__reaction WHERE id_msg = $id_msg";
+        $stmt = $iconn->prepare($sql);
+
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $list_reaction = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $list_reaction;
+        
+    }
+
+    function remove_reaction($id_msg, $action_by)  {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "DELETE FROM tbl_chat__reaction WHERE id_msg = ? AND id_user = ?;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_msg, $action_by];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
     }
 }

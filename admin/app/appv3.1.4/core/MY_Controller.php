@@ -253,6 +253,8 @@ class MY_Controller extends CI_Controller
                     'ajax_count_msg_chua_xem' => [],
                     'ajax_set_reaction' => [],
                     'ajax_list_reaction_msg' => [],
+                    'ajax_list_reaction_many_msg' => [],
+                    'ajax_remove_reaction' => [],
                 ],
                 'discuss' => [
                     'ajax_discuss_list_khach' => [QC, EDITOR],

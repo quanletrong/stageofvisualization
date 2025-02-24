@@ -206,4 +206,31 @@ define('PAYPAL', 1);
 // 
 define('THUMB_WIDTH', 300);
 define('THUMB_HEIGHT', 300);
-define('THUMB_RATIO', THUMB_WIDTH/THUMB_HEIGHT);
+define('THUMB_RATIO', THUMB_WIDTH / THUMB_HEIGHT);
+
+define('REACTION', [
+        '1' => [
+                'title' => 'Thích',
+                'icon' => '👍',
+        ],
+        '2' => [
+                'title' => 'Yêu thích',
+                'icon' => '❤️',
+        ],
+        '3' => [
+                'title' => 'Haha',
+                'icon' => '😆',
+        ],
+        '4' => [
+                'title' => 'Wow',
+                'icon' => '😮',
+        ],
+        '5' => [
+                'title' => 'Buồn',
+                'icon' => '😢',
+        ],
+        '6' => [
+                'title' => 'Tức giận',
+                'icon' => '😡',
+        ]
+]);
