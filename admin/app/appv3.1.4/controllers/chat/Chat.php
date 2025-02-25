@@ -514,12 +514,15 @@ class Chat extends MY_Controller
         $this->Chat_model->set_reaction($id_msg, $reaction, $action_by, $fullname);
 
         // lấy lại list reaction trả về cho FE
-        $res = [];
+        $reaction = [];
         $list_reaction = $this->Chat_model->list_reaction_msg($id_msg);
         foreach ($list_reaction as $it) {
-            $res[$it['reaction']][] = $it['fullname'];
+            $reaction[$it['reaction']][] = $it['fullname'];
         }
-        resSuccess($res);
+        $gchat_info = $this->Chat_model->gchat_info($info['id_gchat'], $action_by);
+        $socket['member_ids'] = $gchat_info['member_ids'];
+        $socket['reaction'] = $reaction;
+        resSuccess($socket);
     }
 
     function ajax_list_reaction_many_msg()
@@ -552,7 +555,8 @@ class Chat extends MY_Controller
         resSuccess($this->Chat_model->list_reaction_msg(removeAllTags($id_msg)));
     }
 
-    function ajax_remove_reaction($id_msg) {
+    function ajax_remove_reaction($id_msg)
+    {
         $action_by =  $this->_session_uid();
         $id_msg = isIdNumber($id_msg) ? $id_msg : 0;
 
@@ -565,11 +569,16 @@ class Chat extends MY_Controller
         $this->Chat_model->remove_reaction($id_msg, $action_by);
 
         // lấy lại list reaction trả về cho FE
-        $res = [];
+        $reaction = [];
         $list_reaction = $this->Chat_model->list_reaction_msg($id_msg);
         foreach ($list_reaction as $it) {
-            $res[$it['reaction']][] = $it['fullname'];
+            $reaction[$it['reaction']][] = $it['fullname'];
         }
-        resSuccess($res);
+
+        $gchat_info = $this->Chat_model->gchat_info($info['id_gchat'], $action_by);
+        $socket['member_ids'] = $gchat_info['member_ids'];
+        $socket['reaction'] = $reaction;
+
+        resSuccess($socket);
     }
 }

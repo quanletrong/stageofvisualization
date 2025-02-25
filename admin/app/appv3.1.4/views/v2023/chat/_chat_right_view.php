@@ -857,11 +857,13 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    $(`#msg_${id_msg} .msg-reaction`).html(render_msg_reaction(kq.data));
-                    // build html chat
-                    socket.emit('set-reaction', {
+                    $(`#msg_${id_msg} .msg-reaction`).html(render_msg_reaction(kq.data.reaction));
+
+                    // emit cho các thành viên khác
+                    socket.emit('reaction', {
                         id_msg: id_msg,
-                        reaction: kq.data
+                        reaction: kq.data.reaction,
+                        member_ids: kq.data.member_ids,
                     });
                 } else {
                     alert(kq.error);
@@ -972,7 +974,14 @@
                 let kq = JSON.parse(data);
 
                 if (kq.status) {
-                    $(`#msg_${id_msg} .msg-reaction`).html(render_msg_reaction(kq.data));
+                    $(`#msg_${id_msg} .msg-reaction`).html(render_msg_reaction(kq.data.reaction));
+
+                    // emit cho các thành viên khác
+                    socket.emit('reaction', {
+                        id_msg: id_msg,
+                        reaction: kq.data.reaction,
+                        member_ids: kq.data.member_ids,
+                    });
                 } else {
                     alert(kq.error);
                 }

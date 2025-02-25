@@ -300,4 +300,14 @@
             }
         }
     })
+
+    // lắng nghe sự kiện raction vào tin nhắn
+    socket.on('reaction', data => {
+        let id_msg = data.id_msg;
+        let reaction = data.reaction;
+
+        if ($(`#msg_${id_msg}`).length) {
+            $(`#msg_${id_msg} .msg-reaction`).html(render_msg_reaction(reaction));
+        }
+    })
 </script>

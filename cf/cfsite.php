@@ -7,6 +7,7 @@ define('PRODUCT_NAME', 'Virtual Staging | Stage Of Visualization | Hanoi');
 define('VERSION', 'v2023');
 
 define('SOCKET_SERVICES', 'https://quancoder.online:5001/');
+// define('SOCKET_SERVICES', 'http://localhost:5001/');
 
 define('LINK_OVERVIEW', 'overview');
 define('LINK_HIW', 'how-it-works');
