@@ -390,7 +390,7 @@
         }
     }
 
-    function html_item_chat(id_group, id_msg, file_list, id_user, content, avatar_url, create_time, fullname_user, reply_db) {
+    function html_item_chat(id_group, id_msg, file_list, id_user_create_msg, content, avatar_url, create_time, fullname_user, reply_db) {
 
         let timeSince = _.timeSince(create_time);
         let width_right = $('#chat_right .list-chat').width();
@@ -412,21 +412,21 @@
         let html_btn_xoa = role == admin ? render_xoa_msg(id_msg) : '';
 
         // NUT REPLY
-        let html_btn_reply = render_btn_reply_msg(id_msg, content, fullname_user, id_user);
+        let html_btn_reply = render_btn_reply_msg(id_msg, content, fullname_user, id_user_create_msg);
 
         // NUT REPLY
-        let html_btn_reaction = render_btn_reaction(id_msg, cur_uid, id_user);
+        let html_btn_reaction = render_btn_reaction(id_msg, cur_uid, id_user_create_msg);
 
         // NUT REACTION
         let html_msg_reaction = render_msg_reaction([]);
 
         // HTML REPLY
-        let html_has_reply = render_msg_has_reply(reply_db, cur_uid, id_user, id_group);
+        let html_has_reply = render_msg_has_reply(reply_db, cur_uid, id_user_create_msg, id_group);
 
         let html = ``;
-        if (cur_uid == id_user) {
+        if (cur_uid == id_user_create_msg) {
             html = `
-            <div id="msg_${id_msg}" class="mt-3 me-2 msg-item" data-by="${id_user}" data-time="${create_time}" title="${timeSince}">
+            <div id="msg_${id_msg}" class="mt-3 me-2 msg-item" data-by="${id_user_create_msg}" data-time="${create_time}" title="${timeSince}">
                 
                 <div class="time_msg" style="display:none; text-align:center">
                     <small style="color:#7c7c7c;">${timeSince}</small>
@@ -464,7 +464,7 @@
             </div>`;
         } else {
             html = `
-            <div id="msg_${id_msg}" class="mt-3 me-2 msg-item" data-by="${id_user}" data-time="${create_time}" title="${timeSince}">
+            <div id="msg_${id_msg}" class="mt-3 me-2 msg-item" data-by="${id_user_create_msg}" data-time="${create_time}" title="${timeSince}">
                 <div class="time_msg" style="display:none; text-align:center">
                     <small style="color:#7c7c7c;">${timeSince}</small>
                 </div>
@@ -758,47 +758,43 @@
     }
 
     // tin nhắn đang có reply
-    function render_msg_has_reply(reply_db, cur_uid, id_user, id_group) {
+    function render_msg_has_reply(reply_db, cur_uid, id_user_create_msg, id_group) {
 
         if (reply_db == '' || reply_db == null) {
             return '';
         }
 
         try {
-            let {
-                fullname,
-                id_msg,
-                content
-            } = JSON.parse(reply_db);
+            reply_db = JSON.parse(reply_db);
 
             // reply right (chính mình)
-            if (cur_uid == id_user) {
-                let reply_for = reply_db.id_user == cur_uid ? 'chính mình' : fullname;
+            if (cur_uid == id_user_create_msg) {
+                let reply_for = reply_db.id_user == cur_uid ? 'chính mình' : reply_db.fullname;
                 return `
                 <div>
                     <div class="d-flex justify-content-end" style="font-size: 12px; color: gray">Bạn đã trả lời tin nhắn của ${reply_for}</div>
                     <div class="d-flex justify-content-end">
                         <div 
-                            onclick="scroll_to_msg(${id_msg}, ${id_group})"
+                            onclick="scroll_to_msg(${reply_db.id_msg}, ${id_group})"
                             style="font-size: 12px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #c9c9c9; cursor: pointer"
                         >
-                            ${content == '' ? 'Đính kèm' : content}
+                            ${reply_db.content == '' ? 'Đính kèm' : reply_db.content}
                         </div>
                     </div>
                 </div>`
             }
             // reply left (người khác)
             else {
-                let reply_for = reply_db.id_user == cur_uid ? 'bạn' : fullname;
+                let reply_for = reply_db.id_user == cur_uid ? 'bạn' : reply_db.fullname;
                 return `
                 <div>
                     <div class="d-flex" style="font-size: 12px; color: gray">Đã trả lời tin nhắn của ${reply_for}</div>
                     <div class="d-flex">
                         <div 
                             style="font-size: 12px; padding: 5px 10px 10px 10px; margin-bottom:-10px; border-radius: 5px; background: #c9c9c9; cursor: pointer"
-                            onclick="scroll_to_msg(${id_msg}, ${id_group})"
+                            onclick="scroll_to_msg(${reply_db.id_msg}, ${id_group})"
                         >
-                            ${content == '' ? 'Đính kèm' : content}
+                            ${reply_db.content == '' ? 'Đính kèm' : reply_db.content}
                         </div>
                     </div>
                 </div>`;
