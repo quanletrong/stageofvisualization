@@ -44,6 +44,7 @@ class Order extends MY_Controller
         ### DU LIEU LAM FILTER
         $all_service    = $this->Service_model->get_list();
         $all_user       = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, QC, EDITOR]));
+        $all_user_code  = $this->User_model->get_list_user_working('0,1', implode(",", [ADMIN, SALE, CUSTOMER]));
         $all_ed_type    = [ED_NOI_BO => 'Editor nội bộ', ED_CTV => 'Editor cộng tác viên'];
         $all_order_type = [DON_KHACH_TAO => 'Đơn khách tạo', DON_NOI_BO => 'Đơn nội bộ', DON_TAO_HO => 'Đơn tạo hộ'];
 
@@ -52,7 +53,8 @@ class Order extends MY_Controller
         $all_status[ORDER_AVAIABLE]  = status_order(ORDER_AVAIABLE);   // bỏ sung thêm trạng thái đang xử lý
         $all_status[ORDER_PROGRESS]  = status_order(ORDER_PROGRESS);   // bỏ sung thêm trạng thái đang xử lý
         $all_status[ORDER_DONE]      = status_order(ORDER_DONE);       // bỏ sung thêm trạng thái đang xử lý
-        $all_status[ORDER_FIX]       = status_order(ORDER_FIX);        // bỏ sung thêm trạng thái đang xử lý
+        // Khánh bảo bỏ fix
+        // $all_status[ORDER_FIX]       = status_order(ORDER_FIX);        // bỏ sung thêm trạng thái đang xử lý
         $all_status[ORDER_REWORK]    = status_order(ORDER_REWORK);     // bỏ sung thêm trạng thái đang xử lý
         $all_status[ORDER_DELIVERED] = status_order(ORDER_DELIVERED);  // bỏ sung thêm trạng thái đang xử lý
         $all_status[ORDER_COMPLETE]  = status_order(ORDER_COMPLETE);   // bỏ sung thêm trạng thái đang xử lý
@@ -65,7 +67,7 @@ class Order extends MY_Controller
 
         ### FORM FILTER
         $filter_code_order    = removeAllTags($this->input->get('filter_code_order'));
-        $filter_user_code     = removeAllTags($this->input->get('filter_user_code'));
+        $filter_user_code     = $this->input->get('filter_user_code');
         $filter_order_ed_type = $this->input->get('filter_order_ed_type');
         $filter_status        = $this->input->get('filter_status');
         $filter_service       = $this->input->get('filter_service');
@@ -81,7 +83,7 @@ class Order extends MY_Controller
         if ($role == ADMIN || $role == SALE) {
             $status_filter_default = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_REWORK, ORDER_DELIVERED];
         } else {
-            $status_filter_default = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+            $status_filter_default = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_REWORK]; //  khánh bỏ ORDER_FIX
         }
 
         if ($role == EDITOR) {
@@ -135,6 +137,12 @@ class Order extends MY_Controller
             }
         }
 
+        //validate filter_user_code
+        $filter_user_code = is_array($filter_user_code) ? $filter_user_code : [];
+        foreach ($filter_user_code as $key => $user_code) {
+            $filter_user_code[$key] = removeAllTags($user_code);
+        }
+
         //validate filter date
         $ngay_hien_tai = date("Y-m-d H:i:s");
         $tsp_fdate = strtotime($filter_fdate);
@@ -169,7 +177,7 @@ class Order extends MY_Controller
 
         ### CALL DATABASE
         $filter['code_order']   = $filter_code_order;
-        $filter['user_code']    = $filter_user_code;
+        $filter['user_code']    = implode(',', $filter_user_code);
         $filter['ed_type']      = implode(',', $filter_order_ed_type);
         $filter['status']       = implode(',', $filter_status);
         $filter['type_service'] = implode(',', $filter_service);
@@ -220,6 +228,7 @@ class Order extends MY_Controller
 
         $data['all_service']    = $all_service;
         $data['all_status']     = $all_status;
+        $data['all_user_code']  = $all_user_code;
         $data['all_user']       = $all_user;
         $data['all_ed_type']    = $all_ed_type;
         $data['all_order_type'] = $all_order_type;

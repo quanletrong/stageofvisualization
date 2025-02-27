@@ -1158,10 +1158,12 @@ function status_order($status)
     } else if ($status == ORDER_CANCLE) {
         $data['text'] = 'CANCLE';
         $data['bg'] = 'darkred';
-    } else if ($status == ORDER_FIX) {
-        $data['text'] = 'FIX';
-        $data['bg'] = 'darkred';
-    } else if ($status == ORDER_DONE) {
+    } 
+    // else if ($status == ORDER_FIX) {
+    //     $data['text'] = 'FIX';
+    //     $data['bg'] = 'darkred';
+    // } 
+    else if ($status == ORDER_DONE) {
         $data['text'] = 'DONE';
         $data['bg'] = 'deepskyblue';
     } else if ($status == ORDER_DELIVERED) {
@@ -1623,6 +1625,25 @@ function QSQL_IN($filed, $id_string, $CI)
 {
     if ($id_string !== '') {
         return " $filed IN ($id_string) ";
+    } else {
+        return ' 1=1 ';
+    }
+}
+
+function QSQL_IN_STRING($filed, $in_string, $CI)
+{
+    if ($in_string !== '') {
+        $arr = explode(',', $in_string);
+        $PARAMS = $CI->session->flashdata("PARAMS");
+        $query = [];
+        foreach ($arr as $string) {
+
+            $query[] = "?";
+            $PARAMS[] = $string;
+        }
+        $CI->session->set_flashdata("PARAMS", $PARAMS);
+
+        return " $filed IN (".implode(",", $query).") ";
     } else {
         return ' 1=1 ';
     }

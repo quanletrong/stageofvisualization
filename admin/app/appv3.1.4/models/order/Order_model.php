@@ -2,9 +2,9 @@
 
 class Order_model extends CI_Model
 {
-    private $_status_sort = [ORDER_PENDING, ORDER_DONE, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_FIX, ORDER_REWORK, ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE];
+    private $_status_sort = [ORDER_PENDING, ORDER_DONE, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_REWORK, ORDER_DELIVERED, ORDER_COMPLETE, ORDER_CANCLE];
 
-    private $_status_working = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_FIX, ORDER_REWORK];
+    private $_status_working = [ORDER_PENDING, ORDER_QC_CHECK, ORDER_AVAIABLE, ORDER_PROGRESS, ORDER_DONE, ORDER_REWORK];
 
     public function __construct()
     {
@@ -233,7 +233,7 @@ class Order_model extends CI_Model
                 AND " . QSQL_IN('tbl_order.ed_type', $filter_ed_type, $this) . "
                 
                 AND " . QSQL_LIKE('tbl_order.code_order', $filter_code_order, $this) . "
-                AND " . QSQL_LIKE('tbl_user.code_user', $filter_user_code, $this) . "
+                AND " . QSQL_IN_STRING('tbl_user.code_user', $filter_user_code, $this) . "
 
                 AND (" . QSQL_LIKE_OR('concat(",", tbl_tam.list_user, ",")', $filter_id_user, $this) . ")
                 AND (" . QSQL_LIKE_OR('concat(",", tbl_tam.list_service, ",")', $filter_type_service, $this) . ") 

@@ -77,7 +77,7 @@ define('ORDER_DELIVERED', '6');  //xanh lá
 define('ORDER_REWORK', '7');     //vàng
 define('ORDER_CANCLE', '8');     //đỏ
 define('ORDER_COMPLETE', '9');   //xanh lá
-define('ORDER_FIX', '10');      //đỏ
+// define('ORDER_FIX', '10');      //đỏ Khánh bảo bỏ
 define('ORDER_PAY_WAITING', '11');      //đỏ
 
 // SERVICE

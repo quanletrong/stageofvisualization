@@ -84,8 +84,14 @@
 
             <!-- TÌM USER CODE -->
             <div class="col-md-4 mb-2">
-                <small>Cid - Code khách hàng</small><br>
-                <input type="text" class="form-control" placeholder="Nhập Code khách hàng" value="<?= htmlentities($filter_user_code) ?>" name="filter_user_code" autocomplete="off">
+                <small>Cid - Code khách hàng</small><br>                
+                <select class="select2" name="filter_user_code[]" multiple="multiple">
+                    <?php foreach ($all_user_code as $id => $it) { ?>
+                        <?php if ($it['code_user'] != '') { ?>
+                            <option value="<?= $it['code_user'] ?>" <?= in_array($it['code_user'], $filter_user_code) ? 'selected' : '' ?>><?= $it['code_user'] ?></option>
+                        <?php } ?>
+                    <?php } ?>
+                </select>
             </div>
             <!-- END TÌM USER CODE -->
 
