@@ -255,6 +255,9 @@ class MY_Controller extends CI_Controller
                     'ajax_list_reaction_msg' => [],
                     'ajax_list_reaction_many_msg' => [],
                     'ajax_remove_reaction' => [],
+                    'ajax_list_pinned_msg' => [],
+                    'ajax_set_pin' => [],
+                    'ajax_remove_pinned' => [],
                 ],
                 'discuss' => [
                     'ajax_discuss_list_khach' => [QC, EDITOR],

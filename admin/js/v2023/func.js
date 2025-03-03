@@ -94,7 +94,7 @@ const _ = {
             return
         }, 1000);
     },
-    
+
     findBootstrapEnvironment: function () {
         let envs = ['xs', 'sm', 'md', 'lg', 'xl'];
 
@@ -116,7 +116,7 @@ const _ = {
         return curEnv;
     },
 
-    isMobile: function() {
+    isMobile: function () {
         let env = _.findBootstrapEnvironment();
         let isMobile = ['xs', 'sm'].includes(env);
 
@@ -152,9 +152,12 @@ const _ = {
         }
     },
 
-    getRandomInt: function(max=9999999999) {
+    getRandomInt: function (max = 9999999999) {
         return Math.floor(Math.random() * max);
-      }
+    },
+    truncateText: function (text, length = 50) {
+        return text.length > length ? text.slice(0, length) + "..." : text;
+    }
 }
 
 const CHAT = {

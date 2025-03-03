@@ -21,10 +21,8 @@
     }
 
     .msg-item:hover .btn-xoa-msg,
-    .msg-item:hover .btn-reply-msg {
-        display: block !important;
-    }
-
+    .msg-item:hover .btn-reply-msg,
+    .msg-item:hover .btn-pin-msg,
     .msg-item:hover .btn-reaction-msg {
         display: block !important;
     }
@@ -39,14 +37,14 @@
         transform: scale(1.2);
     }
 
-    #modal_show_all_reaction .reaction-item:hover {
+    #modal_all_reaction .reaction-item:hover {
         cursor: pointer;
         background: #f0f0f0;
         border-radius: 15px;
     }
 </style>
 <div id="chat_right" class="card mb-0" style="width: 100%; display: none;">
-    <div class="card-header text-white p-1">
+    <div class="card-header p-1">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div class="d-flex align-items-center w-75">
                 <div class="d-sm-none" style=" color: black; width: 50px;" onclick="back_to_list_gchat()">
@@ -55,6 +53,9 @@
                 <div class="div-avatar" style="height:50px; width: 50px; display: flex; flex-wrap: wrap; align-content: center;">{{}}</div>
                 <div style="font-weight: 500; color:black; margin-left:15px" class="fullname text-truncate">{{}}</div>
             </div>
+
+            <!-- load view pinned -->
+            <?php $this->load->view('v2023/chat/_chat_right_pinned_view.php'); ?>
 
             <div class="dropdown dropleft">{{}}</div>
         </div>
@@ -136,6 +137,7 @@
             page_msg = 1;
             on_load_page_msg = 1;
             ajax_list_msg_by_group(id_group);
+            ajax_list_pinned_msg(id_group);
 
             // check if mobile: an ben trai, hien ben phai
             _.isMobile() ? $('#chat_right').hide() : $('#chat_right').show();
@@ -265,7 +267,7 @@
             if (page_msg >= 1 && id_gchat !== undefined && on_load_page_msg != page_msg) {
 
                 on_load_page_msg = page_msg;
-                ajax_list_msg_by_group(id_gchat)
+                ajax_list_msg_by_group(id_gchat);
             }
         }
 
@@ -414,8 +416,11 @@
         // NUT REPLY
         let html_btn_reply = render_btn_reply_msg(id_msg, content, fullname_user, id_user_create_msg);
 
-        // NUT REPLY
+        // NUT REACTION
         let html_btn_reaction = render_btn_reaction(id_msg, cur_uid, id_user_create_msg);
+
+        // NUT PIN
+        let html_btn_pin = render_btn_pin_msg(id_msg);
 
         // NUT REACTION
         let html_msg_reaction = render_msg_reaction([]);
@@ -437,6 +442,7 @@
                 <div class="d-flex justify-content-end" style="gap:10px; margin-left: 40px;">
                     <div class="d-flex align-items-center" style="gap:8px">
                         ${html_btn_xoa}
+                        ${html_btn_pin}
                         ${html_btn_reply}
                         ${html_btn_reaction}
                     </div>                   
@@ -494,13 +500,14 @@
                                     </div>`
                                     : ``
                                 }
-                                <div class="msg-reaction" onclick="show_all_reaction('${id_msg}')">${html_msg_reaction}</div>
+                                <div class="msg-reaction" onclick="open_modal_all_reaction('${id_msg}')">${html_msg_reaction}</div>
                                 <small style="color:#7c7c7c" class="time" title="${create_time}"></small>
                             </div>
                             
                             <div class="d-flex align-items-center" style="gap:8px">
                                 ${html_btn_reaction}
                                 ${html_btn_reply}
+                                ${html_btn_pin}
                                 ${html_btn_xoa}
                             </div>  
                         </div>
@@ -900,9 +907,9 @@
     }
 
     // modal show all reaction
-    function show_all_reaction(id_msg) {
+    function open_modal_all_reaction(id_msg) {
         let html = `
-        <div class="modal fade" id="modal_show_all_reaction" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modal_all_reaction" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -918,10 +925,10 @@
             </div>
         </div>`;
 
-        $('#modal_show_all_reaction').remove();
+        $('#modal_all_reaction').remove();
         $('body').append(html);
 
-        $('#modal_show_all_reaction').modal('show');
+        $('#modal_all_reaction').modal('show');
 
         $.ajax({
             url: `chat/ajax_list_reaction_msg/${id_msg}`,
@@ -947,7 +954,7 @@
                         </div>`;
                     })
 
-                    $('#modal_show_all_reaction .list_reaction').html(html);
+                    $('#modal_all_reaction .list_reaction').html(html);
                 } else {
                     alert(kq.error);
                 }

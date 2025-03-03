@@ -581,4 +581,59 @@ class Chat extends MY_Controller
 
         resSuccess($socket);
     }
+
+    function ajax_list_pinned_msg($id_gchat)
+    {
+        $id_gchat = removeAllTags($id_gchat);
+        $action_by =  $this->_session_uid();
+        $list_group = $this->Chat_model->list_group_by_user($action_by);
+        isset($list_group['list'][$id_gchat]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+        resSuccess($this->Chat_model->list_pinned_msg($id_gchat));
+    }
+
+
+    function ajax_set_pin($id_msg)
+    {
+        $action_by =  $this->_session_uid();
+        $id_msg = isIdNumber($id_msg) ? $id_msg : 0;
+
+        $info = $this->Chat_model->msg_info($id_msg);
+        !empty($info) ? '' : resError('Tin nhắn không tồn tại');
+
+        $list_group = $this->Chat_model->list_group_by_user($action_by);
+        isset($list_group['list'][$info['id_gchat']]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+
+        $this->Chat_model->set_pin($id_msg, $info['id_gchat'], $action_by);
+
+        // lấy lại list pin trả về cho FE
+        $list_pin = $this->Chat_model->list_pinned_msg($info['id_gchat']);
+        $gchat_info = $this->Chat_model->gchat_info($info['id_gchat'], $action_by);
+        $socket['pinneds'] = $list_pin;
+        $socket['id_gchat'] = $info['id_gchat'];
+        $socket['member_ids'] = $gchat_info['member_ids'];
+        resSuccess($socket);
+    }
+
+    function ajax_remove_pinned($id_pinned)
+    {
+        $action_by =  $this->_session_uid();
+        $id_pinned = isIdNumber($id_pinned) ? $id_pinned : 0;
+
+        $info = $this->Chat_model->pinned_info($id_pinned);
+        !empty($info) ? '' : resError('Ghim không tồn tại');
+
+        $list_group = $this->Chat_model->list_group_by_user($action_by);
+        isset($list_group['list'][$info['id_gchat']]) ? '' : resError('Bạn không có quyền truy cập nhóm này');
+
+        $this->Chat_model->remove_pinned($id_pinned);
+
+        // lấy lại list pin trả về cho FE
+        $list_pin = $this->Chat_model->list_pinned_msg($info['id_gchat']);
+        $gchat_info = $this->Chat_model->gchat_info($info['id_gchat'], $action_by);
+        $socket['pinneds'] = $list_pin;
+        $socket['id_gchat'] = $info['id_gchat'];
+        $socket['member_ids'] = $gchat_info['member_ids'];
+
+        resSuccess($socket);
+    }
 }

@@ -114,6 +114,7 @@
         $('#chat_right .chat_list_attach').html('');
 
         ajax_list_msg_by_group(id_group);
+        ajax_list_pinned_msg(id_group);
 
         // check if mobile: an ben trai, hien ben phai
         if (_.isMobile()) {
@@ -308,6 +309,14 @@
 
         if ($(`#msg_${id_msg}`).length) {
             $(`#msg_${id_msg} .msg-reaction`).html(render_msg_reaction(reaction));
+        }
+    })
+
+    // lắng nghe sự kiện raction vào tin nhắn
+    socket.on('pinned', data => {
+        let id_gchat = data.id_gchat;
+        if ($(`#${id_gchat}.active`)) {
+            render_pinned_msg(data.pinneds);
         }
     })
 </script>

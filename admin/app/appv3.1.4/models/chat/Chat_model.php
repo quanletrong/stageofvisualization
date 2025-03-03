@@ -793,16 +793,117 @@ class Chat_model extends CI_Model
 
         $stmt->closeCursor();
         return $list_reaction;
-        
     }
 
-    function remove_reaction($id_msg, $action_by)  {
+    function remove_reaction($id_msg, $action_by)
+    {
         $execute = false;
         $iconn = $this->db->conn_id;
         $sql = "DELETE FROM tbl_chat__reaction WHERE id_msg = ? AND id_user = ?;";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
             $param = [$id_msg, $action_by];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function list_pinned_msg($id_gchat)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql =
+            "SELECT 
+            a.id_pinned, a.id_gchat, a.pinned_at, a.id_user as id_user_pinned,
+            b.content as content_msg, b.file as file_list_msg, b.id_user as id_user_create_msg,
+            b.create_time as create_time_msg,
+            c.fullname as fullname_create_msg, c.avatar as avatar_create_msg
+        FROM tbl_chat__pinned as a
+        INNER JOIN tbl_chat__msg as b ON a.id_msg = b.id_msg
+        INNER JOIN tbl_user as c ON b.id_user = c.id_user
+        WHERE a.id_gchat = $id_gchat
+        ORDER BY a.id_pinned DESC;";
+
+        $stmt = $iconn->prepare($sql);
+
+        if ($stmt) {
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                    $row['avatar_create_msg'] = url_image($row['avatar_create_msg'] == '' ? AVATAR_DEFAULT : $row['avatar_create_msg'], FOLDER_AVATAR);
+                    $row['file_list_msg']  = json_decode($row['file_list_msg'], true);
+
+                    $data[] = $row;
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function pinned_info($id_pinned)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql = "SELECT *
+        FROM tbl_chat__pinned as A
+        WHERE A.id_pinned = $id_pinned;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function set_pin($id_msg, $id_gchat, $action_by)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT IGNORE INTO tbl_chat__pinned (id_msg, id_gchat, id_user) VALUES (?, ?, ?);";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_msg, $id_gchat, $action_by];
+
+            if ($stmt->execute($param)) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    function remove_pinned($id_pinned)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "DELETE FROM tbl_chat__pinned WHERE id_pinned = ?;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_pinned];
 
             if ($stmt->execute($param)) {
                 $execute = true;
