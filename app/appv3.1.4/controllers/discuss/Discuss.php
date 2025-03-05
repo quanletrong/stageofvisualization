@@ -105,27 +105,30 @@ class Discuss extends MY_Controller
         resSuccess('ok');
     }
 
-    function ajax_discuss_edit()
-    {
-    }
+    function ajax_discuss_edit() {}
 
-    function ajax_discuss_delete()
-    {
-    }
+    function ajax_discuss_delete() {}
 
     function ajax_chat_tong_list()
     {
+        $list_chat = [];
         if ($this->_isLogin()) {
 
-            $id_user = $this->_session_uid();
-            $list = $this->Discuss_model->chat_list_by_user($id_user);
+            $cur_uid = $this->_session_uid();
+            $room_info  = $this->Discuss_model->room_info_by_id_user($cur_uid);
+
+            if ($room_info !== false) {
+                $id_room = $room_info['id_room'];
+                $list_chat = $this->Discuss_model->list_chat_by_room($id_room);
+            }
         } else {
 
-            $ip = ip_address();
-            $list = $this->Discuss_model->chat_list_by_vang_lai($ip);
+            // $ip = ip_address();
+            // $list_chat = $this->Discuss_model->chat_list_by_vang_lai($ip);
+            $list_chat = []; // TODO: chưa xử lý
         }
 
-        resSuccess($list);
+        resSuccess($list_chat);
     }
 
     function ajax_chat_tong_add()
@@ -167,19 +170,44 @@ class Discuss extends MY_Controller
         }
 
         // get list discuss theo order
-        $create_time = date('Y-m-d H:i:s');
-        $status = 1;
-        $db_attach =  json_encode($db_attach, JSON_FORCE_OBJECT);
         $ip = ip_address();
-        $newid = $this->Discuss_model->chat_add($cur_uid, $content, $db_attach, $create_time, $status, $ip, $fullname, $phone, $email, $action_by);
+        $status = 1;
+        $created_at = date('Y-m-d H:i:s');
+        $updated_at = date('Y-m-d H:i:s');
+        $db_attach =  json_encode($db_attach, JSON_FORCE_OBJECT);
 
-        if ($this->_isLogin()) {
-            $info = $this->Discuss_model->chat_info_by_id_user($newid);
-        } else {
-            $info = $this->Discuss_model->chat_info_by_vang_lai($newid);
+        $id_room = '';
+        $room_info  = $this->Discuss_model->room_info_by_id_user($cur_uid);
+
+        // user chưa có room thực hiện tạo room
+        if ($room_info == false) {
+            $id_room = $this->Discuss_model->room_add($cur_uid);
+        }
+        // room da tồn tại 
+        else {
+            $id_room = $room_info['id_room'];
         }
 
-        resSuccess($info);
+        // $newid = $this->Discuss_model->chat_add($cur_uid, $content, $db_attach, $create_time, $status, $ip, $fullname, $phone, $email, $action_by);
+        $newid = $this->Discuss_model->chat_add_v2($id_room, $cur_uid, $content, $db_attach, $created_at, $updated_at);
+
+        // cập nhật id_msg mới nhất vào
+        $this->Discuss_model->update_newest_msg_to_room($newid, $id_room);
+
+        if ($this->_isLogin()) {
+            // $info = $this->Discuss_model->chat_info_by_id_user($newid);
+            $info = $this->Discuss_model->chat_info_v2($newid);
+            $res['content']    = $info['content'];
+            $res['file_list']  = $info['file_list'];
+            $res['id_user']    = $info['id_user'];
+            $res['fullname']   = $info['fullname'];
+            $res['avatar_url'] = $info['avatar_url'];
+        } else {
+            // $res = $this->Discuss_model->chat_info_by_vang_lai($newid);
+            resError('Chức năng đang bảo trì.');  // TODO: chưa xử lý
+        }
+
+        resSuccess($res);
 
         // $data = [
         //     "ip" => ip_address(),

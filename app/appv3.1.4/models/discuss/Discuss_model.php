@@ -109,13 +109,9 @@ class Discuss_model extends CI_Model
         return $execute;
     }
 
-    function discuss_edit($id_discuss, $content, $file, $update_time, $status)
-    {
-    }
+    function discuss_edit($id_discuss, $content, $file, $update_time, $status) {}
 
-    function discuss_delete($id_discuss)
-    {
-    }
+    function discuss_delete($id_discuss) {}
 
 
     // CHAT TOONGR
@@ -202,6 +198,152 @@ class Discuss_model extends CI_Model
         }
         $stmt->closeCursor();
         return $new_id;
+    }
+
+    function room_info_by_id_user($id_customer)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+        $sql =
+            "SELECT a.*, b.username, b.avatar 
+            FROM `tbl_chat_customer__room` as a
+            INNER JOIN tbl_user as b ON a.id_customer = b.id_user
+            WHERE a.id_customer = ?;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_customer];
+
+            if ($stmt->execute($param)) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function room_add($id_customer)
+    {
+        $new_id = 0;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT INTO tbl_chat_customer__room (id_customer) VALUES (?);";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_customer];
+
+            if ($stmt->execute($param)) {
+                $new_id = $iconn->lastInsertId();
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $new_id;
+    }
+
+    function chat_add_v2($id_room, $id_user, $content, $files, $created_at, $updated_at)
+    {
+        $new_id = 0;
+        $iconn = $this->db->conn_id;
+        $sql = "INSERT INTO tbl_chat_customer__msg (id_room, id_user, content, files, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_room, $id_user, $content, $files, $created_at, $updated_at];
+
+            if ($stmt->execute($param)) {
+                $new_id = $iconn->lastInsertId();
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $new_id;
+    }
+
+    // CHAT TOONGR
+    function list_chat_by_room($id_room)
+    {
+        $list_chat = [];
+        $iconn = $this->db->conn_id;
+
+        $sql =
+            "SELECT a.*, b.username, b.avatar FROM `tbl_chat_customer__msg` as a
+            INNER JOIN tbl_user as b ON a.id_user = b.id_user
+            WHERE a.id_room = $id_room;";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                        $row['avatar_url'] = url_image($row['avatar'], FOLDER_AVATAR);
+                        $row['file_list']  = json_decode($row['files'], true);
+
+                        $list_chat[] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $list_chat;
+    }
+
+    function chat_info_v2($id_msg)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+
+        $sql =
+            "SELECT a.*, b.username, b.fullname, b.avatar FROM `tbl_chat_customer__msg` as a
+            INNER JOIN tbl_user as b ON a.id_user = b.id_user
+            WHERE a.id_msg = $id_msg";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                if (!empty($data)) {
+                    $data['avatar_url'] = url_image($data['avatar'], FOLDER_AVATAR);
+                    $data['file_list']  = json_decode($data['files'], true);
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+
+        $stmt->closeCursor();
+        return $data;
+    }
+
+    function update_newest_msg_to_room($id_msg, $id_room)
+    {
+        $exc = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_chat_customer__room  SET id_msg_newest = ? WHERE id_room = ? ;";
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            $param = [$id_msg, $id_room];
+
+            if ($stmt->execute($param)) {
+                $exc = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $exc;
     }
 
     function chat_info_by_id_user($id_chat)

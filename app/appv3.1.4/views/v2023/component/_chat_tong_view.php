@@ -178,7 +178,7 @@
                                 "id_user": "test",
                                 "content": "Xin chào Quý khách! Tôi là chuyên viên tư vấn thiết kế.<br/> Bạn cần tôi hỗ trợ gì không?",
                                 "file": "{}",
-                                "create_time": moment(),
+                                "created_at": moment(),
                                 "status": "1",
                                 "type": "3",
                                 "username": "Stage of visualization",
@@ -301,23 +301,23 @@
             }
 
             let html = ``;
-            if ('<?= $cur_uid ?>' == discuss.action_by || discuss.action_by == 0) {
+            if ('<?= $cur_uid ?>' == discuss.id_user || discuss.id_user == 0) {
                 html = `
-            <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${discuss.create_time}">
+            <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${discuss.created_at}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
                     <div style="white-space: pre-line;">${discuss.content != '' ? `${discuss.content}` : ''}</div>
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <small style="color:#7c7c7c">${moment(discuss.create_time).fromNow()}</small>
+                    <small style="color:#7c7c7c">${moment(discuss.created_at).fromNow()}</small>
                 </div>
             </div>`;
             } else {
                 html = `
-            <div class="mb-2 me-2 d-flex" style="gap:10px" title="${discuss.create_time}">
+            <div class="mb-2 me-2 d-flex" style="gap:10px" title="${discuss.created_at}">
                 <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${discuss.avatar_url}" alt="${discuss.fullname}" title="${discuss.fullname}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
                     <div style="white-space: pre-line;">${discuss.content != '' ? `${discuss.content}` : ''}</div>
                     <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <small style="color:#7c7c7c">${moment(discuss.create_time).fromNow()}</small>
+                    <small style="color:#7c7c7c">${moment(discuss.created_at).fromNow()}</small>
                 </div>
             </div>`;
             }
