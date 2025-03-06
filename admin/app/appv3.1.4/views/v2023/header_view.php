@@ -240,7 +240,7 @@
 
 						<?php if (in_array($role, [ADMIN, SALE])) { ?>
 							<li class="nav-item">
-								<a href="contact" class="nav-link">
+								<a href="chat_customer" class="nav-link">
 									<i class="nav-icon fas fa-comment-medical"></i>
 									<p>
 										Phản hồi người dùng

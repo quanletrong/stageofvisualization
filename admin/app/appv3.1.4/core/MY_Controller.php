@@ -359,6 +359,11 @@ class MY_Controller extends CI_Controller
                 'backup' => [
                     'report' => [EDITOR]
                 ],
+                'chat_customer' => [
+                    'index' => [QC, EDITOR, CUSTOMER],
+                    'ajax_msg_list_by_room' => [QC, EDITOR, CUSTOMER],
+                    'ajax_msg_add_to_room' => [QC, EDITOR, CUSTOMER],
+                ]
             ];
 
             // khong phai admin 
