@@ -96,12 +96,13 @@ $route[LINK_USER_LOGIN . '/ggcallback'] = 'login/login/ggcallback';
 $route[LINK_USER_REGISTER]              = 'signup/signup/index';
 
 
-//discuss
-$route['discuss/ajax_discuss_list'] = 'discuss/discuss/ajax_discuss_list';
-$route['discuss/ajax_discuss_add'] = 'discuss/discuss/ajax_discuss_add';
+// chat order
+$route['chat_order/ajax_msg_list_by_order'] = 'chat_order/chat_order/ajax_msg_list_by_order';
+$route['chat_order/ajax_msg_add_to_order'] = 'chat_order/chat_order/ajax_msg_add_to_order';
 
-$route['discuss/ajax_chat_tong_list'] = 'discuss/discuss/ajax_chat_tong_list';
-$route['discuss/ajax_chat_tong_add'] = 'discuss/discuss/ajax_chat_tong_add';
+// chat customer
+$route['chat_customer/ajax_msg_list_by_room'] = 'chat_customer/chat_customer/ajax_msg_list_by_room';
+$route['chat_customer/ajax_msg_add_to_room'] = 'chat_customer/chat_customer/ajax_msg_add_to_room';
 
 //payment
 $route['checkout/pay/(:num)'] = 'checkout/checkout/pay/$1';

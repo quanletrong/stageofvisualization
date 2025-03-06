@@ -244,7 +244,8 @@ class Checkout extends MY_Controller
                     // LƯU CHAT
                     $temp = [];
                     $content = $this->load->view($this->_template_f . 'component/template_pay_success', $temp, true);
-                    $this->Discuss_model->discuss_add($this->_session_uid(), $id_order, $content, '{}', $update_time, 1, CHAT_KHACH);
+                    // TODO: sửa lại hàm. thêm vào table khác
+                    // $this->Discuss_model->discuss_add($this->_session_uid(), $id_order, $content, '{}', $update_time, 1, CHAT_KHACH);
 
                     // LƯU LOG
                     $log['type']      = LOG_PAYED_ORDER;

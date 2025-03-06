@@ -43,10 +43,10 @@
                             <!-- HIỂN THỊ FILE ĐÍNH KÈM -->
                             <div class="chat_list_attach d-flex flex-wrap"></div>
 
-                            <textarea name="message" class="form-control content_discuss bg-white" rows="2" style="padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_tong" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
+                            <textarea name="message" class="form-control textarea_msg bg-white" rows="2" style="padding-right: 33px; resize: none; overflow-y: auto;" data-callback="cb_upload_add_file_attach_chat_tong" onpaste="quanlt_handle_paste_image(event)" ondrop="quanlt_handle_drop_file(event)"></textarea>
 
                             <div style="height: fit-content; position: absolute; bottom: 10px; right:20px">
-                                <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_chat_tong_add(this)"><i class="fas fa-paper-plane"></i></button>
+                                <button type="button" class="text-primary p-0 border-0 btn-send" style="background: none;" onclick="ajax_msg_add_to_room(this)"><i class="fas fa-paper-plane"></i></button>
                             </div>
                         </div>
 
@@ -136,44 +136,46 @@
     <!-- END Modal nhập thông tin cá nhân khi chat -->
 
     <script>
-        $(document).ready(function() {
-            ajax_chat_tong_list();
+        Fancybox.bind("[data-fancybox]", {
+            // Your custom options
+        });
 
-            $(`#section_chat_tong .chat .content_discuss`).on('keypress keyup', function(e) {
+        $(document).ready(function() {
+            ajax_msg_list_by_room();
+
+            $(`#section_chat_tong .chat .textarea_msg`).on('keypress keyup', function(e) {
                 let line = _.calculateNumLines(e.target.value, this);
                 line = line < 2 ? 2 : line // tối thiểu 2 rows
                 line = line > 5 ? 5 : line; // tối đa 10 rows
                 $(this).attr('rows', line)
             })
 
-            $("#section_chat_tong .chat .content_discuss").keypress(function(e) {
+            $("#section_chat_tong .chat .textarea_msg").keypress(function(e) {
                 if (e.which == 13 && !e.shiftKey) {
-                    ajax_chat_tong_add($(`#section_chat_tong .chat .btn-send`));
+                    ajax_msg_add_to_room($(`#section_chat_tong .chat .btn-send`));
                     return false;
                 }
             });
 
         })
 
-        function ajax_chat_tong_list() {
+        function ajax_msg_list_by_room() {
             $.ajax({
-                url: `discuss/ajax_chat_tong_list`,
+                url: `chat_customer/ajax_msg_list_by_room`,
                 type: "POST",
                 success: function(data, textStatus, jqXHR) {
                     let kq = JSON.parse(data);
 
                     if (kq.status) {
-                        let list_discuss = kq.data;
-
                         let html = ``;
-                        for (const [key, discuss] of Object.entries(list_discuss)) {
-                            html += html_item_chat(discuss)
+                        for (const [key, msg] of Object.entries(kq.data)) {
+                            html += html_item_chat(msg)
                         }
 
                         // mặc định nếu không có data thì hiển thị mặc định hello
                         if (html == ``) {
                             let hello = {
-                                "id_discuss": "",
+                                "id_msg": "",
                                 "id_order": "",
                                 "id_user": "test",
                                 "content": "Xin chào Quý khách! Tôi là chuyên viên tư vấn thiết kế.<br/> Bạn cần tôi hỗ trợ gì không?",
@@ -207,32 +209,38 @@
             });
         }
 
-        function ajax_chat_tong_add(btn) {
+        function ajax_msg_add_to_room(btn) {
 
-            // check thông tin cá nhân
             let fullname = localStorage.getItem("chat_fullname");
             let email = localStorage.getItem("chat_email");
             let phone = localStorage.getItem("chat_phone");
-            if ('<?= $cur_uid ?>' == '0') {
 
-                $('#exampleModalCaNhan .fullname').val(fullname)
-                $('#exampleModalCaNhan .email').val(email)
-                $('#exampleModalCaNhan .phone').val(phone)
+            // check thông tin cá nhân
+            // if ('<?= $cur_uid ?>' == '0') {
 
-                if (fullname == null) {
-                    $('#exampleModalCaNhan').modal('show');
-                    return;
-                } else {
-                    if (email == null && phone == null) {
-                        $('#exampleModalCaNhan').modal('show');
-                        return;
-                    }
-                }
-            }
+            //     $('#exampleModalCaNhan .fullname').val(fullname)
+            //     $('#exampleModalCaNhan .email').val(email)
+            //     $('#exampleModalCaNhan .phone').val(phone)
 
+            //     if (fullname == null) {
+            //         $('#exampleModalCaNhan').modal('show');
+            //         return;
+            //     } else {
+            //         if (email == null && phone == null) {
+            //             $('#exampleModalCaNhan').modal('show');
+            //             return;
+            //         }
+            //     }
+            // }
             // end check thông tin cá nhân
 
-            let content = $('#section_chat_tong .chat .content_discuss').val();
+            // yêu cầu user đăng nhập
+            if ('<?= $cur_uid ?>' == '0') {
+                $('#modal_login').modal('show');
+                return;
+            }
+
+            let content = $('#section_chat_tong .chat .textarea_msg').val();
             let attach = [];
             $('#section_chat_tong .chat .chat_list_attach > div').each(function(index) {
                 let file = $(this).data('file');
@@ -250,7 +258,7 @@
             $(btn).prop("disabled", true);
 
             $.ajax({
-                url: `discuss/ajax_chat_tong_add`,
+                url: `chat_customer/ajax_msg_add_to_room`,
                 type: "POST",
                 data: {
                     'content': content,
@@ -263,7 +271,7 @@
                     let kq = JSON.parse(data);
 
                     if (kq.status) {
-                        socket.emit('update-chat-tong', kq.data)
+                        socket.emit('add-msg-to-customer-room', kq.data)
                     } else {
                         alert(kq.error);
                     }
@@ -277,47 +285,52 @@
             });
         }
 
-        function html_item_chat(discuss) {
+        function html_item_chat(msg) {
 
             let list_file = ``;
-            for (const [id_file, file] of Object.entries(discuss.file_list)) {
-                list_file += `
-                <div class="" 
-                    onclick="_.downloadURI('<?= url_image('', FOLDER_CHAT_TONG) ?>${file}', '${file}')"
-                    style="cursor: pointer; width:150px"
-                    data-bs-toggle="tooltip" data-bs-placement="top"
-                    title="Bấm để tải xuống"
-                >   ${
-                        (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i).test(file)
-                        ? `<img src="<?= url_image('', FOLDER_CHAT_TONG) ?>${file}" class="rounded border"  style="width:100%; aspect-ratio: 1;object-fit: cover;">`
-                        : `
-                        <div class="rounded border p-2 text-truncate bg-light" style="width: 100%;line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;">
+            for (const [id_file, file] of Object.entries(msg.file_list)) {
+
+                let timeSince = _.timeSince(msg.created_at);
+                let src_file = `<?= url_image('', FOLDER_CHAT_TONG) ?>${file}`;
+                let src_file_thumb = `<?= url_image('', FOLDER_CHAT_TONG . 'thumb/') ?>${file}`;
+
+                list_file +=
+                    `${ 
+                        _.isImage(file)
+                        ? 
+                        `<a data-src="${src_file}" data-fancybox="gallery" data-caption="${timeSince}">
+                            <img src="${src_file_thumb}" class="rounded border"  style="width:150px; aspect-ratio: 1;object-fit: cover;">
+                        </a>`
+                        : 
+                        `<div 
+                            onclick="_.downloadURI('${src_file}', '${file}')"
+                            class="rounded border p-2 text-truncate bg-light"
+                            style="cursor: pointer; width:150px; line-break: anywhere; text-align:center; aspect-ratio: 1;object-fit: cover;"
+                        >
                             <i class="fa fa-paperclip" aria-hidden="true"></i> <br />
                             <span style="font-size:12px;">${file}</span>
-                        </div>
-                        `
-                    }
-                </div>`;
+                        </div>`
+                    }`;
             }
 
             let html = ``;
-            if ('<?= $cur_uid ?>' == discuss.id_user || discuss.id_user == 0) {
+            if ('<?= $cur_uid ?>' == msg.id_user || msg.id_user == 0) {
                 html = `
-            <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${discuss.created_at}">
+            <div class="mb-2 me-2 d-flex justify-content-end" style="margin-left:50px; margin-right:15px" title="${msg.created_at}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px; text-align: end;">
-                    <div style="white-space: pre-line;">${discuss.content != '' ? `${discuss.content}` : ''}</div>
+                    <div style="white-space: pre-line;">${msg.content != '' ? `${msg.content}` : ''}</div>
                     <div class="d-flex justify-content-end" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <small style="color:#7c7c7c">${moment(discuss.created_at).fromNow()}</small>
+                    <small style="color:#7c7c7c">${moment(msg.created_at).fromNow()}</small>
                 </div>
             </div>`;
             } else {
                 html = `
-            <div class="mb-2 me-2 d-flex" style="gap:10px" title="${discuss.created_at}">
-                <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${discuss.avatar_url}" alt="${discuss.fullname}" title="${discuss.fullname}">
+            <div class="mb-2 me-2 d-flex" style="gap:10px" title="${msg.created_at}">
+                <img class="rounded-circle border" style="width:40px; aspect-ratio: 1;object-fit: cover;height: 40px;" src="${msg.avatar_url}" alt="${msg.fullname}" title="${msg.fullname}">
                 <div class="rounded" style="background: #f0f0f0;padding: 5px 10px;">
-                    <div style="white-space: pre-line;">${discuss.content != '' ? `${discuss.content}` : ''}</div>
+                    <div style="white-space: pre-line;">${msg.content != '' ? `${msg.content}` : ''}</div>
                     <div class="rounded d-flex" style="flex-wrap: wrap; gap:5px">${list_file}</div>
-                    <small style="color:#7c7c7c">${moment(discuss.created_at).fromNow()}</small>
+                    <small style="color:#7c7c7c">${moment(msg.created_at).fromNow()}</small>
                 </div>
             </div>`;
             }
@@ -367,34 +380,31 @@
 
     <!-- SOCKET -->
     <script>
-        socket.on('update-chat-tong', data => {
-            let check_id_user = data.id_user == '<?= $cur_uid ?>';
-            let check_ip = data.id_user == '<?= ip_address() ?>';
+        socket.on('add-msg-to-customer-room', data => {
 
-            if (check_id_user || check_ip) {
-
+            if (data.id_user != '<?= $cur_uid ?>') {
                 var audio = new Audio('images/Tieng-ting-www_tiengdong_com.mp3');
                 audio.play();
-
-                let small_chat = $('#section_chat_tong .small_chat');
-                let chat = $('#section_chat_tong .chat');
-                let content_discuss = $('#section_chat_tong .chat .content_discuss');
-                let chat_list_attach = $('#section_chat_tong .chat .chat_list_attach');
-                let list_chat = $('#section_chat_tong .chat .list-chat');
-
-                let cur_number = parseInt(small_chat.find('.tin-nhan-moi').text());
-                cur_number = isNaN(cur_number) ? 0 : cur_number;
-                small_chat.find('.tin-nhan-moi').text(cur_number + 1).show();
-
-                let new_html = html_item_chat(data);
-
-                list_chat.append(new_html).scrollTop(list_chat[0].scrollHeight);
-                content_discuss.attr('rows', 2).val('');
-                chat_list_attach.html('');
-                list_chat.scrollTop(list_chat[0].scrollHeight);
-
-                tooltipTriggerList(chat);
             }
+
+            let small_chat = $('#section_chat_tong .small_chat');
+            let chat = $('#section_chat_tong .chat');
+            let textarea_msg = $('#section_chat_tong .chat .textarea_msg');
+            let chat_list_attach = $('#section_chat_tong .chat .chat_list_attach');
+            let list_chat = $('#section_chat_tong .chat .list-chat');
+
+            let cur_number = parseInt(small_chat.find('.tin-nhan-moi').text());
+            cur_number = isNaN(cur_number) ? 0 : cur_number;
+            small_chat.find('.tin-nhan-moi').text(cur_number + 1).show();
+
+            let new_html = html_item_chat(data);
+
+            list_chat.append(new_html).scrollTop(list_chat[0].scrollHeight);
+            textarea_msg.attr('rows', 2).val('');
+            chat_list_attach.html('');
+            list_chat.scrollTop(list_chat[0].scrollHeight);
+
+            tooltipTriggerList(chat);
         })
     </script>
     <!-- END SOCKET -->

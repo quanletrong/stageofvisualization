@@ -229,7 +229,7 @@
 <!-- /.drop file -->
 
 <!-- CHAT BOX -->
-<?php $this->load->view(TEMPLATE_FOLDER . 'component/_chat_tong_view.php');?>
+<?php $this->load->view(TEMPLATE_FOLDER . 'component/_chat_customer_view.php');?>
 <?php $this->load->view(TEMPLATE_FOLDER . 'component/_modal_login_view.php');?>
 <!-- END CHAT BOX -->
 

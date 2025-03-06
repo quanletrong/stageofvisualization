@@ -14,6 +14,10 @@
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.plugins.min.js"></script>
 
+<!-- fancybox -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.umd.min.js" integrity="sha512-VNk0UJk87TUyZyWXUFuTk6rUADFyTsVpVGaaFQQIgbEXAMAdGpYaFWmguyQzEQ2cAjCEJxR2C++nSm0r2kOsyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.min.css" integrity="sha512-s4DOVHc73MjMnsueMjvJSnYucSU3E7WF0UVGRQFd/QDzeAx0D0BNuAX9fbZSLkrYW7V2Ly0/BKHSER04bCJgtQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 <!-- bs5dialog https://ymlluo.github.io/bs5dialog/dist/index.html -->
 <link rel="stylesheet" href="skins/v2023/bs5dialog.css" />
 <script src="js/v2023/bs5dialog.js"></script>
@@ -25,7 +29,7 @@
 <!-- common js -->
 <script src="js/v2023/common.js?v=1"></script>
 
-<script src="js/v2023/func.js"></script>
+<script src="js/v2023/func.js?v=1"></script>
 
 <!-- SOCKET -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>

@@ -1,25 +1,23 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Account_model extends CI_Model
-{	
-	function __construct()
-	{
-		parent::__construct();
-	}
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
 
-    function get_user_info_by_email($email) {
+    function get_user_info_by_email($email)
+    {
         $data = array();
         $iconn = $this->db->conn_id;
         $sql = "SELECT * FROM tbl_user WHERE email = :email";
         $stmt = $iconn->prepare($sql);
-        if($stmt)
-        {
+        if ($stmt) {
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
 
-            if($stmt->execute())
-            {
-                if($stmt->rowCount() > 0)
-                {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
                     $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
                 $stmt->closeCursor();
@@ -30,20 +28,18 @@ class Account_model extends CI_Model
         $stmt->closeCursor();
         return $data;
     }
-    
-    function get_user_info_by_phone($phone) {
+
+    function get_user_info_by_phone($phone)
+    {
         $data = array();
         $iconn = $this->db->conn_id;
         $sql = "SELECT * FROM tbl_user WHERE phone = :phone";
         $stmt = $iconn->prepare($sql);
-        if($stmt)
-        {
+        if ($stmt) {
             $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
 
-            if($stmt->execute())
-            {
-                if($stmt->rowCount() > 0)
-                {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
                     $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
                 $stmt->closeCursor();
@@ -54,20 +50,18 @@ class Account_model extends CI_Model
         $stmt->closeCursor();
         return $data;
     }
-    
-    function get_user_info_by_uname($uname) {
+
+    function get_user_info_by_uname($uname)
+    {
         $data = array();
         $iconn = $this->db->conn_id;
         $sql = "SELECT * FROM tbl_user WHERE username = :uname";
         $stmt = $iconn->prepare($sql);
-        if($stmt)
-        {
+        if ($stmt) {
             $stmt->bindParam(':uname', $uname, PDO::PARAM_STR);
 
-            if($stmt->execute())
-            {
-                if($stmt->rowCount() > 0)
-                {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
                     $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
                 $stmt->closeCursor();
@@ -78,20 +72,18 @@ class Account_model extends CI_Model
         $stmt->closeCursor();
         return $data;
     }
-    
-    function get_user_info_by_uid($uid) {
+
+    function get_user_info_by_uid($uid)
+    {
         $data = array();
         $iconn = $this->db->conn_id;
         $sql = "SELECT * FROM tbl_user WHERE id_user = :uid";
         $stmt = $iconn->prepare($sql);
-        if($stmt)
-        {
+        if ($stmt) {
             $stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
 
-            if($stmt->execute())
-            {
-                if($stmt->rowCount() > 0)
-                {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
                     $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
                 $stmt->closeCursor();
@@ -102,9 +94,9 @@ class Account_model extends CI_Model
         $stmt->closeCursor();
         return $data;
     }
-    
-    
-    
+
+
+
     function add($uname, $pass, $fullname, $email, $phone, $avatar, $role, $status, $uid_creare = 0)
     {
         $id = 0;
@@ -114,7 +106,7 @@ class Account_model extends CI_Model
         $sql = "INSERT INTO tbl_user (username, password, fullname, email, phone, avatar, role, status, `type`, user_service, id_user_create, create_time, update_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $iconn->prepare($sql);
         if ($stmt) {
-            $param = [$uname, $pass, $fullname, $email, $phone, $avatar, $role, $status, $type, $user_service, $uid_creare , date('Y-m-d H:i:s'), ""];
+            $param = [$uname, $pass, $fullname, $email, $phone, $avatar, $role, $status, $type, $user_service, $uid_creare, date('Y-m-d H:i:s'), ""];
 
             if ($stmt->execute($param)) {
                 $id = $iconn->lastInsertId();
@@ -165,5 +157,31 @@ class Account_model extends CI_Model
         }
         $stmt->closeCursor();
         return $execute;
+    }
+
+    function get_list_user_working($status, $role)
+    {
+        $data = [];
+        $iconn = $this->db->conn_id;
+        $sql = "SELECT *
+        FROM tbl_user
+        WHERE status IN ($status) AND role IN ($role) 
+        ORDER BY role ASC";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[$row['id_user']] = $row;
+                    }
+                }
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $data;
     }
 }
