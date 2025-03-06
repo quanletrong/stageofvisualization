@@ -14,9 +14,20 @@ class Chat_customer_model extends CI_Model
         $data = [];
         $iconn = $this->db->conn_id;
         $sql =
-            "SELECT a.*, b.username, b.avatar 
+            "SELECT 
+            -- thông tin room
+            a.*,            
+            -- thông tin user tạo nhóm
+            b.username, b.fullname, b.avatar, 
+            -- nội dung tin nhắn mới nhất trong nhóm
+            c.content as newest_content, c.files as newest_files, c.id_user_seen, c.created_at as newst_created_at
+
             FROM `tbl_chat_customer__room` as a
+            -- thêm thông tin người tạo nhóm
             INNER JOIN tbl_user as b ON a.id_customer = b.id_user
+            -- thêm nội dung tin nhắn mới nhất trong nhóm
+            INNER JOIN tbl_chat_customer__msg as c ON a.id_msg_newest = c.id_msg
+
             WHERE a.id_customer = ?;";
 
         $stmt = $iconn->prepare($sql);
@@ -25,6 +36,10 @@ class Chat_customer_model extends CI_Model
 
             if ($stmt->execute($param)) {
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($data !== false) {
+                    $data['avatar_url'] = url_image($data['avatar'] == null ? AVATAR_DEFAULT : $data['avatar'], FOLDER_AVATAR);
+                    $data['file_list']  = json_decode($data['newest_files'], true);
+                }
             } else {
                 var_dump($stmt->errorInfo());
                 die;

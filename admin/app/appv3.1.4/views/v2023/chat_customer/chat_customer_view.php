@@ -144,53 +144,36 @@
     }
 
     // lắng nghe sự kiên thêm nhóm room
-    //TODO: sửa lại
-    socket.on('add-room', data => {
+    function add_room(data) {
         let id_room = data.id_room;
-        let name_room = data.name_room
-        let members = data.members;
-        let member_ids = data.member_ids;
-        let content = data.content
-        let create_time = data.create_time
-        let action_by = data.action_by
-
-        // bật thông báo
-        if (action_by != <?= $cur_uid ?>) {
-            var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
-            audio.play();
-        }
+        let id_customer = data.id_customer;
+        let id_msg_newest = data.id_msg_newest;
+        let fullname = data.fullname;
+        let avatar_url = data.avatar_url;
+        let newest_content = data.newest_content;
+        let newst_created_at = data.newst_created_at;
+        let newest_files = data.newest_files;
 
         // tạo avatar cho el gchat
         let index = 1;
-        let avatar = '';
-
-        if (Object.keys(members).length > 1) {
-            avatar = `<div style="min-width: 50px; width: 50px; aspect-ratio: 1; border-radius: 50%; border: 1px solid #dedede; display: flex; align-items: center; justify-content: center; color: white; background-color: #4caf50; font-size: 1.23rem;position: relative; overflow: hidden;">
-                <div style="width: 4ch; overflow: hidden; white-space: nowrap; padding: 0 3px; text-align: center">G</div>
-                <div style="font-size: 10px;position: absolute;bottom: 0;width: 100%;text-align: center;background: rgba(128, 128, 128, 0.7);">TEAM</div>
+        let avatar =
+            `<div style="min-width: 50px; width: 50px; aspect-ratio: 1; border-radius: 50%; border: 1px solid #dedede; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.23rem;">
+                <img src="${avatar_url}" class="img-circle avatar" alt="${fullname}" style="object-fit: cover; aspect-ratio: 1; width: 100%">
             </div>`
-        } else {
-            const [mem_id, mem] = Object.entries(members)[0];
-            avatar =
-                `<div style="min-width: 50px; width: 50px; aspect-ratio: 1; border-radius: 50%; border: 1px solid #dedede; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.23rem;">
-                <img src="${mem.avatar_url}" class="img-circle avatar" alt="${mem.fullname}" style="object-fit: cover; aspect-ratio: 1; width: 100%">
-            </div>`;
-        }
-        // end tạo avatar
 
         // tạo element gchat cột bên trái
         let html_new =
-            `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-room" id="${id_gchat}">
-                <div class="div-avatar" onclick="onclick_room('${id_gchat}')">
+            `<div style="display: flex;gap: 5px;width: 100%; cursor: pointer; align-items: center; padding:5px; margin-bottom: 2px;" class="item-room" id="${id_room}">
+                <div class="div-avatar" onclick="onclick_room('${id_room}')">
                     ${avatar}
                 </div>
                 <div style="flex: 1 1 0%; position: relative;">
-                    <div style="font-weight: 500; display: grid;grid-template-columns: 1fr" onclick="onclick_room('${id_gchat}')">
-                        <span class="fullname text-truncate">${name_gchat}</span>
+                    <div style="font-weight: 500; display: grid;grid-template-columns: 1fr" onclick="onclick_room('${id_room}')">
+                        <span class="fullname text-truncate">${fullname}</span>
                     </div>                    
-                    <div style="display: grid;grid-template-columns: 4fr 1fr;gap: 15px;" onclick="onclick_room('${id_gchat}')">
-                        <div class="text-truncate content" style="font-weight: 600;">${content}</div>
-                        <div class="text-truncate time" style="font-weight: 300; font-size: 0.75rem; text-align: right;" title="${create_time}">&nbsp;</div>
+                    <div style="display: grid;grid-template-columns: 4fr 1fr;gap: 15px;" onclick="onclick_room('${id_room}')">
+                        <div class="text-truncate content" style="font-weight: 600;">${newest_content}</div>
+                        <div class="text-truncate time" style="font-weight: 300; font-size: 0.75rem; text-align: right;" title="${newst_created_at}">&nbsp;</div>
                     </div>
 
                     <div style="position: absolute;right: 0px;top: 0px; display: none;" class="option">
@@ -201,14 +184,9 @@
                                 </span>
                             </button>
                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(33px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                <button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-edit-room" data-room="${id_gchat}">
+                                <button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-edit-room" data-room="${data}">
                                     <span class="text-secondary">Xem thông tin</span>
-                                </button>
-                                <?php if ($role == ADMIN) { ?>
-                                    <button class="dropdown-item" type="button" onclick="ajax_delete_room('${id_gchat}')">
-                                        <span class="text-secondary">Xóa nhóm này</span>
-                                    </button>
-                                <?php } ?>
+                                </button>                                
                             </div>
                         </div>
                     </div>
@@ -219,7 +197,7 @@
 
         $('#chat-left .list-room').prepend(html_new);
         $('#chat-left .alert_empty_chat').hide();
-    })
+    };
 
     //TODO: sửa lại
     socket.on('delete-gchat', data => {
@@ -289,6 +267,10 @@
                     $('#chat_right .list-chat').scrollTop($('#chat_right .list-chat')[0].scrollHeight);
                 }
             }
+        }
+        // nhóm chưa có thì thêm vào cột trái
+        else {
+            add_room(data.room_info);
         }
     })
 </script>

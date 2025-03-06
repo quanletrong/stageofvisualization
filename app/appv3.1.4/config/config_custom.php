@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 
 $config['product_name'] = 'Admin Virtual Staging';
 $config['show_custom_error'] = 0;

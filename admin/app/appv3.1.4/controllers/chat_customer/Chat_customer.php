@@ -76,6 +76,8 @@ class Chat_customer extends MY_Controller
         $room_info  = $this->Chat_customer_model->room_info($id_room);
         if ($room_info === false) resError('Nhóm không đúng');
 
+        $id_customer = $room_info['id_customer'];
+
         // validate file đính kèm
         $db_attach = [];
         $attach = is_array($attach) ? $attach : [];
@@ -124,11 +126,11 @@ class Chat_customer extends MY_Controller
 
         // mảng chưa danh sách ADMIN, SALE, và KHÁCH nhận tin nhắn
         $manager = $this->User_model->get_list_user_working(1, implode(",", [ADMIN, SALE]));
+        $member_ids[] = $id_customer;
         foreach ($manager as $id_manager => $val) {
             $member_ids[] = $id_manager;
         }
         $socket['member_ids'] = $member_ids;
-        $socket['member_ids'][] = $room_info['id_customer'];
 
         // thông tin msg
         $socket['id_room']    = $id_room;

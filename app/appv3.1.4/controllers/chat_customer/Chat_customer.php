@@ -44,19 +44,10 @@ class Chat_customer extends MY_Controller
         $content = removeAllTags($this->input->post('content'));
         $attach = $this->input->post('attach');
 
-
         if ($this->_isLogin()) {
             $cur_uid = $this->_session_uid();
-            $action_by = $this->_session_uid();
-            $fullname =  '';
-            $email = '';
-            $phone = '';
         } else {
             $cur_uid = ip_address();
-            $action_by = 0;
-            $fullname = removeAllTags($this->input->post('fullname'));
-            $email = removeAllTags($this->input->post('email'));
-            $phone = removeAllTags($this->input->post('phone'));
         }
 
         //validate file đính kèm
@@ -83,7 +74,7 @@ class Chat_customer extends MY_Controller
 
         // Biến lưu id_room. Nếu room chưa tồn tại thì tạo mới.
         $room_info = $this->Chat_customer_model->room_info_by_id_user($cur_uid);
-        $id_room = count($room_info) ? $room_info['id_room'] : $this->Chat_customer_model->room_add($cur_uid);
+        $id_room = $room_info !== false ? $room_info['id_room'] : $this->Chat_customer_model->room_add($cur_uid);
 
         $reply = null; // TODO: chưa xử lý reply
         $created_at = date('Y-m-d H:i:s');
@@ -98,11 +89,11 @@ class Chat_customer extends MY_Controller
             $msg_info = $this->Chat_customer_model->msg_info($newid);
             // mảng chưa danh sách ADMIN, SALE, và KHÁCH nhận tin nhắn
             $manager = $this->Account_model->get_list_user_working(1, implode(",", [ADMIN, SALE]));
+            $member_ids[] = $cur_uid;
             foreach ($manager as $id_manager => $val) {
                 $member_ids[] = $id_manager;
             }
             $socket['member_ids'] = $member_ids;
-            $socket['member_ids'][] = $room_info['id_customer'];
 
             // thông tin msg
             $socket['id_room']    = $id_room;
@@ -114,6 +105,9 @@ class Chat_customer extends MY_Controller
             $socket['avatar_url'] = $msg_info['avatar_url'];  // ảnh người tạo tin nhắn
             $socket['created_at'] = $msg_info['created_at'];  // thời gian tạo tin nhắn
             $socket['reply']      = $msg_info['reply'];       // phản hồi tin nhắn
+
+            //  thông tin room
+            $socket['room_info'] = $this->Chat_customer_model->room_info_by_id_user($cur_uid);
 
             resSuccess($socket);
         } else {
