@@ -347,8 +347,9 @@
         // HTML LIST FILE
         let html_list_file = render_files_msg(file_list, timeSince, max_width, ratio_imgae)
 
-        // NUT XÓA
-        let html_btn_xoa = role == admin ? render_xoa_msg(id_msg) : '';
+        // NUT XÓA TODO: thêm nút xóa tin nhắn
+        // let html_btn_xoa = role == admin ? render_xoa_msg(id_msg) : '';
+        let html_btn_xoa = '';
 
         // NUT REPLY
         let html_btn_reply = render_btn_reply_msg(id_msg, content, fullname_user, id_user_create_msg);

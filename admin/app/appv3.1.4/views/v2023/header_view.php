@@ -239,11 +239,12 @@
 						<?php } ?>
 
 						<?php if (in_array($role, [ADMIN, SALE])) { ?>
-							<li class="nav-item">
+							<li class="nav-item chat-customer-menu-left">
 								<a href="chat_customer" class="nav-link">
 									<i class="nav-icon fas fa-comment-medical"></i>
 									<p>
 										Phản hồi người dùng
+										<span class="badge badge-warning right">0</span>
 									</p>
 								</a>
 							</li>

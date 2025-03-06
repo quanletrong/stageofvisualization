@@ -363,6 +363,7 @@ class MY_Controller extends CI_Controller
                     'index' => [QC, EDITOR, CUSTOMER],
                     'ajax_msg_list_by_room' => [QC, EDITOR, CUSTOMER],
                     'ajax_msg_add_to_room' => [QC, EDITOR, CUSTOMER],
+                    'ajax_count_msg_unread_of_customer' => [QC, EDITOR, CUSTOMER],
                 ]
             ];
 

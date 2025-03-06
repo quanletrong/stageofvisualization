@@ -103,6 +103,7 @@ $route['chat_order/ajax_msg_add_to_order'] = 'chat_order/chat_order/ajax_msg_add
 // chat customer
 $route['chat_customer/ajax_msg_list_by_room'] = 'chat_customer/chat_customer/ajax_msg_list_by_room';
 $route['chat_customer/ajax_msg_add_to_room'] = 'chat_customer/chat_customer/ajax_msg_add_to_room';
+$route['chat_customer/ajax_count_msg_unread_of_manager'] = 'chat_customer/chat_customer/ajax_count_msg_unread_of_manager';
 
 //payment
 $route['checkout/pay/(:num)'] = 'checkout/checkout/pay/$1';

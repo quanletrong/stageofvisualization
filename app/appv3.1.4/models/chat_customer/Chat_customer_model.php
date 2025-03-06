@@ -169,4 +169,50 @@ class Chat_customer_model extends CI_Model
         $stmt->closeCursor();
         return $new_id;
     }
+
+    // 2025
+    // Đêm số tin nhắn chưa đọc của khách
+    function count_msg_unread_of_manager($id_customer)
+    {
+        $total_unread = 0;
+        $iconn = $this->db->conn_id;
+        $sql =
+            "SELECT count(*) as total
+            FROM tbl_chat_customer__msg as a
+            INNER JOIN tbl_chat_customer__room as b ON a.id_room = b.id_room
+            WHERE ISNULL(id_user_seen) AND b.id_customer = $id_customer AND a.id_user != $id_customer";
+        $stmt = $iconn->prepare($sql);
+
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $data = $stmt->fetch(PDO::FETCH_ASSOC);
+                $total_unread = $data['total'];
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $total_unread;
+    }
+
+    // set đã xem tin nhắn của quản lý
+    function set_seen_all_msg_of_manager($id_room, $id_customer)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_chat_customer__msg SET id_user_seen=$id_customer WHERE id_room = $id_room AND id_user != $id_customer";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
 }

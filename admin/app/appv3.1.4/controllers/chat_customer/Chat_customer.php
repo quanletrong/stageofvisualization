@@ -46,8 +46,16 @@ class Chat_customer extends MY_Controller
 
     function ajax_msg_list_by_room($id_room)
     {
-        // set tất cả tin nhắn là đã xem sau đó nới get list
-        // $this->Chat_customer_model->set_da_xem_all_msg_group_v2($id_group, $curr_uid);
+
+        // validate id_room
+        $id_room      = isIdNumber($id_room) ? $id_room : 0;
+        $room_info  = $this->Chat_customer_model->room_info($id_room);
+        if ($room_info === false) resError('Nhóm không đúng');
+
+        // set tất cả tin nhắn của khách bằng đã xem
+        $id_user_seen = $this->_session_uid();
+        $id_customer = $room_info['id_customer'];
+        $this->Chat_customer_model->set_seen_all_msg_of_customer($id_room, $id_user_seen, $id_customer);
 
         // get lai list
         $msg_list = $this->Chat_customer_model->msg_list_by_room($id_room);
@@ -181,8 +189,9 @@ class Chat_customer extends MY_Controller
         }
     }
 
-    function ajax_count_msg_unread()
+    //  đếm số tin nhắn chưa đọc của khách
+    function ajax_count_msg_unread_of_customer()
     {
-        resSuccess($this->Chat_customer_model->count_msg_unread());
+        resSuccess($this->Chat_customer_model->count_msg_unread_of_customer());
     }
 }

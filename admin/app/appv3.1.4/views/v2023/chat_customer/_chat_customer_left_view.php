@@ -56,9 +56,10 @@
                                     data-room="<?= htmlspecialchars(json_encode($room), ENT_QUOTES, 'UTF-8') ?>">
                                     <span class="text-secondary">Xem thông tin</span>
                                 </button>
-                                <button class="dropdown-item" type="button" onclick="ajax_delete_room('<?= $id_room ?>')">
+                                <!-- TODO: thêm chức năng xóa nhóm -->
+                                <!-- <button class="dropdown-item" type="button" onclick="ajax_delete_room('<?= $id_room ?>')">
                                     <span class="text-secondary">Xóa nhóm này</span>
-                                </button>
+                                </button> -->
                             </div>
                         </div>
                     </div>

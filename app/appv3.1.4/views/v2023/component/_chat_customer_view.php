@@ -14,10 +14,10 @@
     </style>
     <div style="position: fixed; right: 10px; bottom: 50px;" class="small_chat">
         <div style="position: relative;">
-            <button class="btn btn-sm btn-primary rounded-circle" onclick="CHAT.open_close_chat('#section_chat_tong')" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm" style="width: 3rem; height:3rem">
+            <button class="btn btn-sm btn-primary rounded-circle" onclick="CHAT.open_close_chat('#section_chat_tong'); ajax_msg_list_by_room();" data-bs-toggle="tooltip" data-bs-placement="top" title="Bấm" style="width: 3rem; height:3rem">
                 <i class="fa-solid fa-comment" style="font-size: 1.5rem;"></i>
             </button>
-            <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white;"></div>
+            <div class="tin-nhan-moi bg-danger rounded-circle" style="position: absolute;top: -10px;right: -8px;width: 20px;height: 20px;font-size: 0.7rem;text-align: center;line-height: 1.8;color: white; display: none;"></div>
         </div>
 
     </div>
@@ -36,7 +36,9 @@
             <div class="card-body bg-white p-1">
                 <div style="display: flex; flex-direction: column; height: 80vh; justify-content: flex-end;">
                     <div class="list-chat" style="height: auto; overflow-y: auto;">
-                        <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
+                        <div class="d-flex justify-content-center" style="overflow: hidden;">
+                            <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
+                        </div>
                     </div>
                     <div class="mt-2 nhap_du_lieu_chat">
                         <div style="position:relative; margin: 5px" class="rounded">
@@ -141,7 +143,9 @@
         });
 
         $(document).ready(function() {
-            ajax_msg_list_by_room();
+
+            // đếm số tin nhắn chưa đọc hiển thị vào badge
+            ajax_count_msg_unread_of_manager();
 
             $(`#section_chat_tong .chat .textarea_msg`).on('keypress keyup', function(e) {
                 let line = _.calculateNumLines(e.target.value, this);
@@ -158,6 +162,30 @@
             });
 
         })
+
+        function ajax_count_msg_unread_of_manager() {
+
+            $.ajax({
+                url: `chat_customer/ajax_count_msg_unread_of_manager`,
+                success: function(data, textStatus, jqXHR) {
+                    let kq = JSON.parse(data);
+
+                    if (kq.status) {
+                        let count_msg_unread = parseInt(kq.data);
+                        if (count_msg_unread) {
+                            $('#section_chat_tong .small_chat .tin-nhan-moi').html(count_msg_unread);
+                            $('#section_chat_tong .small_chat .tin-nhan-moi').show();
+                        }
+                    } else {
+                        alert(kq.error);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(data);
+                    alert('Error');
+                }
+            });
+        }
 
         function ajax_msg_list_by_room() {
             $.ajax({
@@ -378,8 +406,8 @@
         }
     </script>
 
-    <!-- SOCKET -->
     <script>
+        // <!-- SOCKET -->
         socket.on('add-msg-to-customer-room', data => {
 
             if (data.id_user != '<?= $cur_uid ?>') {
@@ -406,6 +434,6 @@
 
             tooltipTriggerList(chat);
         })
+        // <!-- END SOCKET -->
     </script>
-    <!-- END SOCKET -->
 </section>

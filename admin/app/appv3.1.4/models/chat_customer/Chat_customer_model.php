@@ -213,14 +213,37 @@ class Chat_customer_model extends CI_Model
         return $exc;
     }
 
-    function count_msg_unread()
+    function set_seen_all_msg_of_customer($id_room, $id_user_seen, $id_customer)
+    {
+        $execute = false;
+        $iconn = $this->db->conn_id;
+        $sql = "UPDATE tbl_chat_customer__msg SET id_user_seen=$id_user_seen WHERE id_room = $id_room AND id_user = $id_customer";
+
+        $stmt = $iconn->prepare($sql);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $execute = true;
+            } else {
+                var_dump($stmt->errorInfo());
+                die;
+            }
+        }
+        $stmt->closeCursor();
+        return $execute;
+    }
+
+    // Đêm số tin nhắn chưa đọc của khách
+    function count_msg_unread_of_customer()
     {
         $total_unread = 0;
         $iconn = $this->db->conn_id;
-        $sql = "SELECT count(*) as total FROM tbl_chat_customer__msg WHERE ISNULL(id_user_seen)";
+        $sql =
+            "SELECT count(*) as total FROM tbl_chat_customer__msg as a
+            INNER JOIN tbl_chat_customer__room as b ON a.id_user = b.id_customer
+            WHERE ISNULL(id_user_seen)";
         $stmt = $iconn->prepare($sql);
-        if ($stmt) {
 
+        if ($stmt) {
             if ($stmt->execute()) {
                 $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 $total_unread = $data['total'];

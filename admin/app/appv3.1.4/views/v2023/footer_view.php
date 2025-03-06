@@ -15,10 +15,10 @@
 	<!-- To the right -->
 	<div class="float-right d-none d-sm-inline">
 		<?php
-		if(ENVIRONMENT == 'development'){
-			echo "<span class='text-red'>".DB_MASTER_HOST."</span>";
+		if (ENVIRONMENT == 'development') {
+			echo "<span class='text-red'>" . DB_MASTER_HOST . "</span>";
 		} else {
-			echo "IP ".ip_address();
+			echo "IP " . ip_address();
 		}
 		?>
 	</div>
@@ -288,7 +288,7 @@
 			alert("File type invalid!")
 			return false;
 		}
-		
+
 		var formData = new FormData();
 		formData.append('file', file, file.name);
 		formData.append('extension', extension);
@@ -302,7 +302,7 @@
 		var dropTo = _.getRandomInt();
 
 		// co su kien before drop
-		if(onbefore != undefined) {
+		if (onbefore != undefined) {
 			window[onbefore](ev, dropTo);
 		}
 
@@ -316,7 +316,7 @@
 				percent = percent == 100 ? percent - 1 : percent;
 				end_time = Date.now();
 
-				if(onprogress != undefined) {
+				if (onprogress != undefined) {
 					window[onprogress](ev, percent, dropTo);
 				}
 
@@ -336,7 +336,7 @@
 					let percent = Math.round(75 + (time_setInterval * 20) / time_onprogress);
 					end_time = Date.now();
 
-					if(onprogress != undefined) {
+					if (onprogress != undefined) {
 						window[onprogress](ev, percent, dropTo);
 					}
 				} else {
@@ -351,7 +351,7 @@
 				try {
 
 					if (xhr.response.status) {
-						if(onsuccess != undefined) {
+						if (onsuccess != undefined) {
 							window[onsuccess](ev, xhr.response.data, dropTo);
 						}
 					} else {
@@ -389,13 +389,22 @@
 	const crr_uid = <?= $this->session->userdata('uid') ?>;
 	const curr_page = '<?= $this->uri->rsegments[1] ?>';
 
-	// init lan dau load page đếm số tin nhắn chưa đọc
+	// init lan dau load page đếm số tin nhắn chưa đọc của nội bộ
 	if (curr_page != 'chat') {
-		let num_chat_chua_xem = await ajax_count_msg_chua_xem();
-		update_msg_icon_badge(num_chat_chua_xem);
+		let num_chat_chua_xem = await ajax_count_chat_chua_xem();
+		update_chat_icon_badge(num_chat_chua_xem);
 	} else {
 		// page chat thì ẩn đếm số tin nhắn
 		$('.sidebar .chat-menu-left .badge').hide();
+	}
+
+	// init lan dau load page đếm số tin nhắn chưa đọc của khách
+	if (curr_page != 'chat_customer') {
+		let num_chat_chua_xem = await ajax_count_msg_unread_of_customer();
+		update_chat_customer_icon_badge(num_chat_chua_xem);
+	} else {
+		// page chat thì ẩn đếm số tin nhắn
+		$('.sidebar .chat-customer-menu-left .badge').hide();
 	}
 
 	// lắng nghe sự kiện thêm msg mới
@@ -440,12 +449,58 @@
 			})
 
 			// cập nhật số tin nhắn chưa đọc vào bên trái
-			let num_chat_chua_xem = await ajax_count_msg_chua_xem();
-			update_msg_icon_badge(num_chat_chua_xem);
+			let num_chat_chua_xem = await ajax_count_chat_chua_xem();
+			update_chat_icon_badge(num_chat_chua_xem);
 		}
 	})
 
-	async function ajax_count_msg_chua_xem() {
+	// lắng nghe sự kiện thêm msg mới
+	socket.on('add-msg-to-customer-room', async data => {
+		let {
+			id_room,
+			id_user,
+			fullname,
+			content,
+			file_list,
+			action_by
+		} = data;
+
+		// build toast
+		if (curr_page != 'chat_customer' && action_by != crr_uid) {
+
+			var audio = new Audio('<?= ROOT_DOMAIN ?>images/Tieng-ting-www_tiengdong_com.mp3');
+			audio.play();
+
+			// toast
+			let href = `admin/chat_customer/index/${id_room}`;
+			let content_show = content.length > 100 ? content.substring(0, 100) + '...' : content;
+			let dinh_kem = isEmpty(file_list) ? '' : '<p><i>[Đính kèm]</i></p>';
+			let fullname_show =
+				`<p style="display: flex;justify-content: space-between;">
+				<small>${fullname}</small>
+				<small>Xem</small>
+			</p>`;
+
+			$.toast({
+				heading: `<b>KHÁCH HÀNG NHẮN TIN</b>`,
+				text: `<a style="text-decoration: none; border-bottom: none;" href="${href}">
+					${content_show} 
+					${dinh_kem}
+					${fullname_show}
+				</a>`,
+				loader: true,
+				hideAfter: 15000,
+				bgColor: '#4CAF50',
+				textColor: 'white'
+			})
+
+			// cập nhật số tin nhắn chưa đọc vào bên trái
+			let num_chat_chua_xem = await ajax_count_msg_unread_of_customer();
+			update_chat_customer_icon_badge(num_chat_chua_xem);
+		}
+	})
+
+	async function ajax_count_chat_chua_xem() {
 
 		try {
 			let result = await $.ajax({
@@ -466,7 +521,28 @@
 		}
 	}
 
-	function update_msg_icon_badge(num_chat_chua_xem) {
+	async function ajax_count_msg_unread_of_customer() {
+
+		try {
+			let result = await $.ajax({
+				url: `chat_customer/ajax_count_msg_unread_of_customer`,
+			});
+
+			let data = 0;
+			let kq = JSON.parse(result);
+			if (kq.status) {
+				return parseInt(kq.data);
+			} else {
+				console.log(kq.error);
+				return 0;
+			}
+		} catch (error) {
+			console.error(error);
+			return 0;
+		}
+	}
+
+	function update_chat_icon_badge(num_chat_chua_xem) {
 
 		// cập nhật số tin nhắn chưa đọc
 		$('.sidebar .chat-menu-left .badge').html(num_chat_chua_xem);
@@ -474,6 +550,17 @@
 		// nhấp nháy hiệu ứng
 		if (num_chat_chua_xem > 0) {
 			$('.sidebar .chat-menu-left i').addClass('zoom-in-out-box text-warning');
+		}
+	}
+
+	function update_chat_customer_icon_badge(num_chat_chua_xem) {
+
+		// cập nhật số tin nhắn chưa đọc
+		$('.sidebar .chat-customer-menu-left .badge').html(num_chat_chua_xem);
+
+		// nhấp nháy hiệu ứng
+		if (num_chat_chua_xem > 0) {
+			$('.sidebar .chat-customer-menu-left i').addClass('zoom-in-out-box text-warning');
 		}
 	}
 </script>

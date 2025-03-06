@@ -23,6 +23,11 @@ class Chat_customer extends MY_Controller
 
             if ($room_info !== false) {
                 $id_room = $room_info['id_room'];
+
+                // set tất cả tin nhắn của quản lý thành đã xem trước khi lấy list
+                $this->Chat_customer_model->set_seen_all_msg_of_manager($id_room, $cur_uid);
+
+                // lấy list
                 $list_chat = $this->Chat_customer_model->list_chat_by_room($id_room);
             }
         } else {
@@ -114,5 +119,13 @@ class Chat_customer extends MY_Controller
         } else {
             resError('Chức năng đang bảo trì.');  // TODO: chưa xử lý
         }
+    }
+
+    //  đếm số tin nhắn chưa đọc của khách
+    function ajax_count_msg_unread_of_manager()
+    {
+        $id_customer = $this->_session_uid();
+
+        resSuccess($this->Chat_customer_model->count_msg_unread_of_manager($id_customer));
     }
 }
