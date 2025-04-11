@@ -63,7 +63,7 @@
 </div>
 
 <div class="container-fluid">
-    <div class="container">
+    <!-- <div class="container"> -->
         <div class="row mt-3" id="list_image">
 
             <?php foreach ($library as $id => $lb) { ?>
@@ -77,7 +77,7 @@
         <center class="mt-3 d-none">
             <button class="btn btn-outline-danger">View more...</button>
         </center>
-    </div>
+    <!-- </div> -->
 </div>
 
 <!-- Button trigger modal -->
